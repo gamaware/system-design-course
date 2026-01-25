@@ -11,6 +11,20 @@
 
 Course materials and demos for Scalable Systems Design.
 
+### 📚 Demos
+
+#### Horizontal Scalability Demo
+Hands-on workshop demonstrating horizontal scaling with AWS ECS Fargate, Application Load Balancer, and autoscaling. Students learn to:
+- Deploy containerized microservices using AWS CDK (Infrastructure as Code)
+- Configure Application Load Balancers for traffic distribution
+- Implement CPU-based autoscaling policies
+- Monitor and observe scaling behavior with CloudWatch
+- Perform load testing to trigger autoscaling events
+
+**Technologies**: AWS ECS Fargate, AWS CDK (Python), Application Load Balancer, CloudWatch, Docker, Ruby on Rails (frontend), Node.js, Crystal
+
+**Key Concepts**: Horizontal scaling, load balancing, autoscaling, containerization, infrastructure as code, observability
+
 ### 👨🏫 Instructor
 
 **Mtro. Jorge Alejandro García Martínez**
