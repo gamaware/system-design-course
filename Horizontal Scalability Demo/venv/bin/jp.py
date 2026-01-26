@@ -1,4 +1,4 @@
-#!/Users/joalgama/Documents/ITESO/Diseño de Sistemas Escalables/O2025_ESI3901C/ECS/venv/bin/python3
+#!/Users/gamaware/Documents/Repos/personal/system-design-course/Horizontal Scalability Demo/venv/bin/python3
 
 import sys
 import json

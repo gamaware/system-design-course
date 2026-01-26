@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/Users/joalgama/Documents/ITESO/Diseño de Sistemas Escalables/O2025_ESI3901C/ECS/venv/bin/python3" "$0" "$@"
+'''exec' "/Users/gamaware/Documents/Repos/personal/system-design-course/Horizontal Scalability Demo/venv/bin/python3" "$0" "$@"
 ' '''
 import sys
 from awslogs.bin import main
