@@ -1,0 +1,6 @@
+lib
+.shards
+*.dwarf
+cdk.out
+cdk.context.json
+.DS_Store
