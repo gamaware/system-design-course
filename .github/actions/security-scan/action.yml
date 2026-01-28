@@ -1,0 +1,28 @@
+name: 'Security Scan'
+description: 'Run SAST and SCA security scans'
+inputs:
+  scan-path:
+    description: 'Path to scan'
+    required: false
+    default: '.'
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Semgrep SAST
+      uses: semgrep/semgrep-action@v1
+      with:
+        config: auto
+        
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: ${{ inputs.scan-path }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
