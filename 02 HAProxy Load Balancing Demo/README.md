@@ -275,18 +275,7 @@ This will:
 
 - [HAProxy Documentation](https://docs.haproxy.org/)
 - [HAProxy Configuration Manual](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/)
-- [HAProxy Load Balancing Guide](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/load-balancing/)
 - [AWS EC2 Documentation](https://docs.aws.amazon.com/ec2/)
-
-## Next Steps
-
-After completing this lab, consider:
-
-1. **SSL/TLS Termination**: Configure HTTPS with certificates
-2. **Rate Limiting**: Implement request rate limits
-3. **Docker Integration**: Run backends in containers
-4. **Service Discovery**: Integrate with Consul or etcd
-5. **Advanced Monitoring**: Set up Prometheus + Grafana
 
 ## Author
 
