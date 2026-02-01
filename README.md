@@ -13,7 +13,7 @@ Course materials and demos for Scalable Systems Design.
 
 ### 📚 Demos
 
-#### [Horizontal Scalability Demo](./Horizontal%20Scalability%20Demo)
+#### [01 Horizontal Scalability Demo](./01%20Horizontal%20Scalability%20Demo)
 Hands-on workshop demonstrating horizontal scaling with AWS ECS Fargate, Application Load Balancer, and autoscaling. Students learn to:
 - Deploy containerized microservices using AWS CDK (Infrastructure as Code)
 - Configure Application Load Balancers for traffic distribution
@@ -25,7 +25,7 @@ Hands-on workshop demonstrating horizontal scaling with AWS ECS Fargate, Applica
 
 **Key Concepts**: Horizontal scaling, load balancing, autoscaling, containerization, infrastructure as code, observability
 
-#### [HAProxy Load Balancing Demo](./HAProxy%20Load%20Balancing%20Demo)
+#### [02 HAProxy Load Balancing Demo](./02%20HAProxy%20Load%20Balancing%20Demo)
 Comprehensive lab exploring load balancing algorithms with HAProxy on AWS EC2. Students learn to:
 - Configure HAProxy as a load balancer
 - Test and compare 6 different load balancing algorithms (Round Robin, Least Connections, Random, Weighted, Source Hash, URI Hash)
