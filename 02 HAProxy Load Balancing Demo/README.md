@@ -275,7 +275,7 @@ This will:
 
 - [HAProxy Documentation](https://docs.haproxy.org/)
 - [HAProxy Configuration Manual](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/)
-- [Load Balancing Algorithms](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/core-concepts/load-balancing/)
+- [HAProxy Load Balancing Guide](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/load-balancing/)
 - [AWS EC2 Documentation](https://docs.aws.amazon.com/ec2/)
 
 ## Next Steps
