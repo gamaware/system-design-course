@@ -190,31 +190,21 @@ Run load test to observe behavior under stress:
 
 ## Architecture Diagram
 
-```
-                    ┌─────────────────┐
-                    │   Client(s)     │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │   HAProxy       │
-                    │   Port 8080     │
-                    └────────┬────────┘
-                             │
-        ┌────────────────────┼────────────────────┐
-        │                    │                    │
-        ▼                    ▼                    ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│  Backend 1   │    │  Backend 2   │    │  Backend 3   │
-│  Port 8001   │    │  Port 8002   │    │  Port 8003   │
-└──────────────┘    └──────────────┘    └──────────────┘
-        │                    │                    │
-        ▼                    ▼                    ▼
-┌──────────────┐    ┌──────────────┐
-│  Backend 4   │    │  Backend 5   │
-│  Port 8004   │    │  Port 8005   │
-│  (Backup)    │    │  (Backup)    │
-└──────────────┘    └──────────────┘
+```mermaid
+graph TD
+    Client[Client/s] --> HAProxy[HAProxy<br/>Port 8080]
+    HAProxy --> Backend1[Backend 1<br/>Port 8001]
+    HAProxy --> Backend2[Backend 2<br/>Port 8002]
+    HAProxy --> Backend3[Backend 3<br/>Port 8003]
+    HAProxy -.Backup.-> Backend4[Backend 4<br/>Port 8004<br/>Backup]
+    HAProxy -.Backup.-> Backend5[Backend 5<br/>Port 8005<br/>Backup]
+    
+    style HAProxy fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
+    style Backend1 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
+    style Backend2 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
+    style Backend3 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
+    style Backend4 fill:#666,stroke:#232f3e,stroke-width:2px,color:#fff
+    style Backend5 fill:#666,stroke:#232f3e,stroke-width:2px,color:#fff
 ```
 
 ## Key Concepts
@@ -283,9 +273,10 @@ This will:
 
 ## Additional Resources
 
-- [HAProxy Documentation](http://www.haproxy.org/documentation.html)
-- [Load Balancing Algorithms Explained](https://www.haproxy.com/blog/load-balancing-algorithms)
-- [HAProxy Best Practices](https://www.haproxy.com/blog/haproxy-best-practices)
+- [HAProxy Documentation](https://docs.haproxy.org/)
+- [HAProxy Configuration Manual](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/)
+- [Load Balancing Algorithms](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/core-concepts/load-balancing/)
+- [AWS EC2 Documentation](https://docs.aws.amazon.com/ec2/)
 
 ## Next Steps
 
@@ -301,6 +292,9 @@ After completing this lab, consider:
 
 Created by [Alex Garcia](https://github.com/gamaware)
 
+- [LinkedIn Profile](https://www.linkedin.com/in/gamaware/)
+- [Personal Website](https://alexgarcia.info/)
+
 ## License
 
-This lab is part of the System Design Course at ITESO.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
