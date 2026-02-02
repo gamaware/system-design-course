@@ -2,6 +2,7 @@
 
 ![DNS](https://img.shields.io/badge/DNS-%234285F4.svg?style=for-the-badge&logo=google-domains&logoColor=white)
 ![BIND](https://img.shields.io/badge/BIND9-%23326CE5.svg?style=for-the-badge&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
 ## Overview

@@ -7,7 +7,7 @@
 ![IaC](https://img.shields.io/badge/IaC-%23326CE5.svg?style=for-the-badge&logoColor=white)
 ![Scalability](https://img.shields.io/badge/Scalability-%234285F4.svg?style=for-the-badge&logo=googlecloud&logoColor=white)
 
-## 🚀 Diseño de Sistemas Escalables - ITESO
+## 🚀 Scalable Systems Design - ITESO
 
 Course materials and demos for Scalable Systems Design.
 
