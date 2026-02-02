@@ -37,6 +37,21 @@ Comprehensive lab exploring load balancing algorithms with HAProxy on AWS EC2. S
 
 **Key Concepts**: Load balancing algorithms, health checks, failover, session persistence, high availability
 
+### 🧪 Labs
+
+#### [03 DNS and BIND Lab](./03%20DNS%20and%20BIND%20Lab)
+Hands-on lab teaching DNS fundamentals through practical exercises. Students learn to:
+- Use `dig` to query and diagnose DNS records
+- Explore different DNS record types (A, AAAA, CNAME, MX, NS, TXT, PTR)
+- Configure BIND9 as an authoritative DNS server
+- Implement DNS-based load balancing with Round Robin
+- Compare DNS load balancing vs HAProxy load balancing
+- Validate DNS configurations with diagnostic tools
+
+**Technologies**: BIND9, dig, AWS EC2, Linux
+
+**Key Concepts**: DNS resolution, DNS record types, authoritative DNS servers, DNS load balancing, Round Robin
+
 ### 👨🏫 Instructor
 
 **Mtro. Jorge Alejandro García Martínez**
