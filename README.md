@@ -39,6 +39,20 @@ Comprehensive lab exploring load balancing algorithms with HAProxy on AWS EC2. S
 
 ### 🧪 Labs
 
+#### [01 EC2 Basics Lab](./01%20EC2%20Basics%20Lab)
+Foundational lab teaching Amazon EC2 fundamentals through hands-on exercises. Students learn to:
+- Understand key EC2 components (AMI, instance type, key pair, security group, VPC)
+- Create and manage SSH key pairs for secure access
+- Launch and configure EC2 instances
+- Connect to Linux instances via SSH
+- Navigate the EC2 console and view instance details
+- Manage instance lifecycle (start, stop, terminate)
+- Understand EC2 pricing and Free Tier eligibility
+
+**Technologies**: AWS EC2, Amazon Linux 2023, SSH, Security Groups
+
+**Key Concepts**: Virtual servers, SSH authentication, security groups, instance lifecycle, cloud computing basics
+
 #### [03 DNS and BIND Lab](./03%20DNS%20and%20BIND%20Lab)
 Hands-on lab teaching DNS fundamentals through practical exercises. Students learn to:
 - Use `dig` to query and diagnose DNS records
