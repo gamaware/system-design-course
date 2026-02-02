@@ -176,6 +176,9 @@ A key pair is required for SSH access to your instance.
 1. In the left navigation pane, under **Network & Security**, click **Key Pairs**
 2. Click **Create key pair** button (top-right)
 
+![Key Pairs Page](screenshots/key-pairs-page.png)
+*The Key Pairs page showing existing key pairs and the Create key pair button*
+
 ### Step 3.3: Configure Key Pair
 
 Enter the following details:
@@ -194,6 +197,9 @@ Enter the following details:
 - Standard format for SSH clients
 - Works with OpenSSH on Linux/macOS
 - For Windows PuTTY, choose `.ppk`
+
+![Create Key Pair Form](screenshots/create-key-pair-form.png)
+*Configure the key pair with ED25519 type and .pem format*
 
 ### Step 3.4: Download Private Key
 
@@ -254,6 +260,9 @@ Now you'll launch an EC2 instance using the launch wizard.
 - Use descriptive names
 - For production: add tags like `Environment`, `Project`, `Owner`
 - Tags help with organization and cost tracking
+
+![Launch Wizard - Name and AMI](screenshots/launch-wizard-name-ami.png)
+*Enter instance name and select Amazon Linux 2023 AMI*
 
 ### Step 4.3: Choose AMI
 
@@ -319,6 +328,9 @@ Keep the default settings:
 
 **Important:** Using "My IP" restricts SSH access to only your current IP address. This is more secure than "Anywhere" (0.0.0.0/0).
 
+![Network Settings](screenshots/launch-wizard-network-settings.png)
+*Configure VPC, subnet, and security group with SSH access*
+
 ### Step 4.7: Configure Storage
 
 **Configure storage:**
@@ -338,6 +350,9 @@ Keep the default settings:
 **Free Tier:**
 - 30 GB of EBS storage per month
 - gp2 or gp3 volumes
+
+![Configure Storage](screenshots/launch-wizard-storage.png)
+*Configure 8 GB gp3 root volume (Free Tier eligible)*
 
 ### Step 4.8: Review and Launch
 
@@ -369,6 +384,9 @@ Find your instance by:
 - **Name column:** Look for `EC2-Lab-Instance`
 - **Instance ID:** The unique identifier (starts with `i-`)
 - **Instance state:** Should show `Running` (green dot)
+
+![Instances List](screenshots/instances-list.png)
+*The Instances page showing your EC2 instance*
 
 **Instance states:**
 - **Pending** - Instance is launching
@@ -443,6 +461,9 @@ The instance details page has several tabs. Explore each one:
 - Network in/out
 - Disk read/write
 - Status checks
+
+![Instance Details](screenshots/instance-details.png)
+*Instance details page showing configuration information*
 
 ### Step 6.3: Note Important Information
 
@@ -535,6 +556,9 @@ If command not found, you need to install an SSH client (beyond scope of this la
 2. Click **Connect** button (top-right)
 3. Click **SSH client** tab
 4. Review the connection instructions
+
+![Connect Button](screenshots/connect-button.png)
+*Click the Connect button to see SSH connection instructions*
 
 ### Step 8.3: Connect via SSH
 
@@ -689,6 +713,9 @@ To avoid charges, stop your instance when not in use.
 3. Click **Instance state** menu (top-right)
 4. Select **Stop instance**
 5. Click **Stop** in confirmation dialog
+
+![Instance State Menu](screenshots/instance-state-menu.png)
+*The Instance state dropdown showing Stop, Start, Reboot, and Terminate options*
 
 ### Step 9.2: Monitor State Change
 
