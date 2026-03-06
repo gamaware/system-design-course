@@ -66,6 +66,20 @@ Hands-on lab teaching DNS fundamentals through practical exercises. Students lea
 
 **Key Concepts**: DNS resolution, DNS record types, authoritative DNS servers, DNS load balancing, Round Robin
 
+#### [04 Keycloak OAuth Lab](./04%20Keycloak%20OAuth%20Lab)
+Comprehensive lab exploring OAuth 2.0 authentication with Keycloak as an Identity and Access Management solution. Students learn to:
+- Deploy Keycloak on EC2 with SSL/TLS encryption
+- Configure OAuth 2.0 realms, clients, and users
+- Implement JWT token-based authentication
+- Build a Flask API with OAuth 2.0 token validation
+- Understand authentication vs authorization in distributed systems
+- Compare IAM solutions (Keycloak, AWS Cognito, Auth0, Firebase)
+- Test security patterns and token lifecycle management
+
+**Technologies**: Keycloak, Docker, Python Flask, OAuth 2.0, OpenID Connect, JWT, SSL/TLS, AWS EC2
+
+**Key Concepts**: OAuth 2.0, OpenID Connect, JWT tokens, token introspection, identity federation, multi-tenancy, distributed authentication, API security
+
 ### 👨🏫 Instructor
 
 **Mtro. Jorge Alejandro García Martínez**
