@@ -293,13 +293,13 @@ ls -lh
 
 ---
 
-## Task 3.5: Demonstrate Encryption in Transit
+## Task 3: Demonstrate Encryption in Transit
 
 ### Understanding the Problem: Plaintext vs Encrypted Traffic
 
 Before deploying Keycloak with HTTPS, let's demonstrate why encryption matters by comparing HTTP (plaintext) and HTTPS (encrypted) traffic.
 
-### Step 3.5.1: Capture Plaintext HTTP Traffic
+### Step 3.1: Capture Plaintext HTTP Traffic
 
 ```bash
 # Create a test file with sensitive data
@@ -337,7 +337,7 @@ secret-password-123
 ```
 ☠️ **The password is completely visible!** Anyone monitoring the network can read it.
 
-### Step 3.5.2: Capture Encrypted HTTPS Traffic
+### Step 3.2: Capture Encrypted HTTPS Traffic
 
 ```bash
 # Capture traffic on Keycloak's HTTPS port
