@@ -18,5 +18,4 @@ ignore: |
   node_modules/
   .git/
   */node_modules/
-  01-introduction-horizontal-scalability/ecsdemo-*/kubernetes/
-  01-introduction-horizontal-scalability/ecsdemo-*/copilot/
+  01-introduction-horizontal-scalability/ecsdemo-*/
