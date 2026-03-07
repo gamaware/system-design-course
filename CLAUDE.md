@@ -41,7 +41,7 @@ technology (e.g., `03-load-balancing-haproxy`, `06-security-https-oauth2-keycloa
 - Format: `type: description` (e.g., `fix:`, `feat:`, `docs:`, `chore:`, `ci:`).
 - Never commit directly to `main` — enforced by `no-commit-to-branch` hook.
 - Always work on a feature branch and create a PR.
-- Do NOT add `Co-Authored-By` watermarks to commits.
+- Do NOT add `Co-Authored-By` watermarks or any Claude/AI attribution to commits, code, or content. Ever.
 
 ### Pull Requests
 
@@ -98,9 +98,10 @@ All hooks must pass before committing. Install with `pre-commit install`.
 
 - Must pass both `shellcheck` and `shellharden`.
 - Use `shellharden --replace` to auto-fix quoting issues.
-- Quote all variables, use `"$var"` not `$var`.
+- Quote all variables. Prefer `"$var"` over `"${var}"` — only use braces when needed (e.g., `"${var}_suffix"`).
 - Use arrays properly for word splitting scenarios.
-- Scripts must have shebangs and executable permissions (`git add --chmod=+x`).
+- Scripts must have shebangs and executable permissions (`chmod +x`).
+- Editing tools may strip executable permissions — verify with `git diff --stat` and restore with `chmod +x` if needed.
 
 ## Markdown
 
@@ -135,6 +136,8 @@ Monitors GitHub Actions dependencies weekly.
 - **CodeRabbit** — Auto-reviews via `.coderabbit.yaml`. Detailed suggestions with path-specific instructions.
 - **GitHub Copilot** — Auto-reviews via ruleset. Custom instructions in `.github/copilot-instructions.md`.
 - Both reviewers run on every PR. Address comments from both before merging.
+- Reviewers may comment on issues already fixed in subsequent commits.
+  Verify current file state before acting — stale comments can be dismissed.
 
 ## Security
 
