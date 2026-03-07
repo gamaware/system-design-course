@@ -1,3 +1,5 @@
+# ecsdemo-platform
+
 ## Base VPC module for the ECS workshop
 
 This repository is part of the ECS Workshop.

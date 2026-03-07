@@ -2,15 +2,15 @@
 
 set -x
 
-IP=$(ip route show |grep -o src.* |cut -f2 -d" ")
+IP=$(ip route show |grep -o 'src.*' |cut -f2 -d" ")
 # kubernetes sets routes differently -- so we will discover our IP differently
 if [[ ${IP} == "" ]]; then
   IP=$(hostname -i)
 fi
-SUBNET=$(echo ${IP} | cut -f1 -d.)
-NETWORK=$(echo ${IP} | cut -f3 -d.)
+SUBNET=$(echo "$IP" | cut -f1 -d.)
+NETWORK=$(echo "$IP" | cut -f3 -d.)
 
-case "${SUBNET}" in
+case "$SUBNET" in
     10)
         orchestrator=ecs
         ;;
@@ -22,28 +22,24 @@ case "${SUBNET}" in
         ;;
 esac
 
-if [[ "${orchestrator}" == 'ecs' ]]; then
-    case "${NETWORK}" in
+if [[ "$orchestrator" == 'ecs' ]]; then
+    case "$NETWORK" in
       100)
         zone=a
-        color=Crimson
         ;;
       101)
         zone=b
-        color=CornflowerBlue
         ;;
       102)
         zone=c
-        color=LightGreen
         ;;
       *)
         zone=unknown
-        color=Yellow
         ;;
     esac
 fi
 
-if [[ "${orchestrator}" == 'kubernetes' ]]; then
+if [[ "$orchestrator" == 'kubernetes' ]]; then
     if ((0<=${NETWORK} && ${NETWORK}<32))
         then
             zone=a
@@ -79,8 +75,8 @@ fi
 # Still no luck? Perhaps we're running fargate!
 if [[ -z ${zone} ]]; then
   export AWS_DEFAULT_REGION=$REGION
-  ip_addr=$(curl -m2 -s ${ECS_CONTAINER_METADATA_URI} | jq -r '.Networks[].IPv4Addresses[]')
-  declare -a subnets=( $(aws ec2 describe-subnets | jq -r .Subnets[].CidrBlock| sed ':a;N;$!ba;s/\n/ /g') )
+  ip_addr=$(curl -m2 -s "$ECS_CONTAINER_METADATA_URI" | jq -r '.Networks[].IPv4Addresses[]')
+  mapfile -t subnets < <(aws ec2 describe-subnets | jq -r '.Subnets[].CidrBlock')
   for sub in "${subnets[@]}"; do
     ip_match=$(echo -e "from netaddr import IPNetwork, IPAddress\nif IPAddress('$ip_addr') in IPNetwork('$sub'):\n    print('true')" | python3)
     if [[ $ip_match == "true" ]];then
@@ -89,7 +85,8 @@ if [[ -z ${zone} ]]; then
   done
 fi
 
-export CODE_HASH="$(cat code_hash.txt)"
+CODE_HASH="$(cat code_hash.txt)"
+export CODE_HASH
 export IP
 export AZ="${IP} in AZ-${zone}"
 

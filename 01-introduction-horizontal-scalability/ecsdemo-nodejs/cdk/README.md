@@ -1,3 +1,5 @@
+# ecsdemo-nodejs CDK
+
 ## NodeJS Application module for the ECS workshop
 
 This repository is part of the ECS Workshop.

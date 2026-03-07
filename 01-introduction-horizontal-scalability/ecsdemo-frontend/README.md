@@ -1,3 +1,5 @@
+# ecsdemo-frontend
+
 ## Frontend Application module for the ECS workshop
 
 This repository is part of the ECS Workshop.
