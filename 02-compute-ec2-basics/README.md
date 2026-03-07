@@ -324,8 +324,7 @@ Now you'll launch an EC2 instance using the launch wizard.
 **Free Tier limits:**
 
 - 750 hours per month (enough to run 1 instance 24/7)
-- Valid for 12 months from account creation (if created before July 15, 2025)
-- Or 6 months with credits (if created on/after July 15, 2025)
+- Check current Free Tier terms at <https://aws.amazon.com/free/>
 
 ### Step 4.5: Select Key Pair
 
@@ -932,9 +931,9 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 
 Now that you understand EC2 basics, you're ready for more advanced labs:
 
-1. **[02 HAProxy Load Balancing Demo](../02%20HAProxy%20Load%20Balancing%20Demo)** - Learn load balancing algorithms
-2. **[03 DNS and BIND Lab](../03%20DNS%20and%20BIND%20Lab)** - Configure DNS servers
-3. **[01 Horizontal Scalability Demo](../01%20Horizontal%20Scalability%20Demo)** - Deploy autoscaling applications
+1. **[Load Balancing: HAProxy](../03-load-balancing-haproxy)** - Learn load balancing algorithms
+2. **[DNS: dig and BIND9](../04-dns-dig-bind9)** - Configure DNS servers
+3. **[Introduction: Horizontal Scalability](../01-introduction-horizontal-scalability)** - Deploy autoscaling applications
 
 **Additional learning:**
 

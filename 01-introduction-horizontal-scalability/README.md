@@ -77,7 +77,7 @@ This workshop is organized into phases:
 ```bash
 # Clone the repository
 git clone https://github.com/gamaware/system-design-course.git
-cd "system-design-course/01 Horizontal Scalability Demo"
+cd system-design-course/01-introduction-horizontal-scalability
 
 # Run quick start script
 chmod +x quick-start.sh
@@ -347,7 +347,7 @@ aws application-autoscaling describe-scaling-activities \
 
 ```bash
 # Run cleanup script
-./cleanup.sh
+./setup-minimal.sh
 ```
 
 ### Option 2: Manual Cleanup

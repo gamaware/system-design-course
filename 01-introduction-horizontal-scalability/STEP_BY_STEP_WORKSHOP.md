@@ -9,10 +9,10 @@ platform infrastructure, deploying the frontend service, manual scaling, and imp
 
 ```bash
 # Make setup script executable
-chmod +x setup.sh
+chmod +x setup-minimal.sh
 
 # Run the setup script
-./setup.sh
+./setup-minimal.sh
 ```
 
 ### Step 1.2: Configure AWS Credentials

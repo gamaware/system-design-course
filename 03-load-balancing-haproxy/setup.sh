@@ -14,11 +14,11 @@ mkdir -p ~/backend{1..5}
 
 # Create unique content for each backend
 echo "Setting up backend content..."
-echo "<h1>🟢 Backend 1 - Servidor Principal</h1><p>Capacidad: Alta</p>" > ~/backend1/index.html
-echo "<h1>🔵 Backend 2 - Servidor Secundario</h1><p>Capacidad: Media</p>" > ~/backend2/index.html
-echo "<h1>🟡 Backend 3 - Servidor Terciario</h1><p>Capacidad: Baja</p>" > ~/backend3/index.html
-echo "<h1>🟠 Backend 4 - Servidor de Respaldo</h1><p>Capacidad: Alta</p>" > ~/backend4/index.html
-echo "<h1>🔴 Backend 5 - Servidor de Emergencia</h1><p>Capacidad: Muy Baja</p>" > ~/backend5/index.html
+echo "<h1>Backend 1 - Primary Server</h1><p>Capacity: High</p>" > ~/backend1/index.html
+echo "<h1>Backend 2 - Secondary Server</h1><p>Capacity: Medium</p>" > ~/backend2/index.html
+echo "<h1>Backend 3 - Tertiary Server</h1><p>Capacity: Low</p>" > ~/backend3/index.html
+echo "<h1>Backend 4 - Backup Server</h1><p>Capacity: High</p>" > ~/backend4/index.html
+echo "<h1>Backend 5 - Emergency Server</h1><p>Capacity: Very Low</p>" > ~/backend5/index.html
 
 # Create content for URI hash testing
 echo "Setting up URI-specific content..."

@@ -22,7 +22,7 @@ echo "⚙️  Setting up environment variables..."
 cat > .env << EOF
 export AWS_DEFAULT_REGION=us-east-1
 export AWS_REGION=us-east-1
-export AWS_ACCOUNT_ID=311141527383
+export AWS_ACCOUNT_ID=YOUR_AWS_ACCOUNT_ID
 export WORKSHOP_NAME=ecsworkshop
 export CLUSTER_NAME=container-demo
 EOF

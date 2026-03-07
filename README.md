@@ -127,7 +127,7 @@ multi-tenancy, distributed authentication, API security
 
 - **Days**: Wednesday 7:00-9:00 AM, Friday 9:00-11:00 AM
 - **Location**: T216
-- **Semester**: Spring 2026
+- **Frequency**: Every semester
 
 ### 👤 Author
 

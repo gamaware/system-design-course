@@ -727,7 +727,7 @@ cd ~
 git clone https://github.com/gamaware/system-design-course.git
 
 # Navigate to the lab directory
-cd system-design-course/04\ Keycloak\ OAuth\ Lab/
+cd system-design-course/06-security-https-oauth2-keycloak/
 
 # Verify app.py exists
 ls -lh app.py
@@ -794,7 +794,7 @@ export KEYCLOAK_DNS
 export CLIENT_SECRET
 
 # Navigate to the lab directory
-cd ~/system-design-course/04\ Keycloak\ OAuth\ Lab/
+cd ~/system-design-course/06-security-https-oauth2-keycloak/
 
 # Run Flask in background
 python app.py &
@@ -1136,7 +1136,7 @@ This lab is part of the Scalable Systems Design course at ITESO.
 
 **Instructor:** Mtro. Jorge Alejandro García Martínez
 **Email:** <alejandrogarcia@iteso.mx>
-**Course:** Scalable Systems Design - Spring 2026
+**Course:** Scalable Systems Design (ITE3901)
 
 ---
 
@@ -1145,4 +1145,4 @@ This lab is part of the Scalable Systems Design course at ITESO.
 If you encounter issues or have suggestions for improving this lab, please contact the instructor
 or submit feedback through Canvas.
 
-**Canvas Course:** [https://canvas.iteso.mx/courses/55229](https://canvas.iteso.mx/courses/55229)
+**Canvas Course:** Check your semester's Canvas page for the course link.

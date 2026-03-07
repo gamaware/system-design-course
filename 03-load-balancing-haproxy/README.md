@@ -68,7 +68,7 @@ HAProxy Load Balancing Demo/
 
 ```bash
 git clone https://github.com/gamaware/system-design-course.git
-cd system-design-course/HAProxy\ Load\ Balancing\ Demo
+cd system-design-course/03-load-balancing-haproxy
 ```
 
 ### 2. Run Setup
@@ -95,6 +95,9 @@ Each algorithm has its own test script:
 
 # Test Least Connections
 ./scripts/test-leastconn.sh
+
+# Test Random
+./scripts/test-random.sh
 
 # Test Weighted Round Robin
 ./scripts/test-weighted.sh
