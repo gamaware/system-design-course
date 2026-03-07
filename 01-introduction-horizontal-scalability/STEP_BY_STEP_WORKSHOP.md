@@ -15,6 +15,16 @@ chmod +x setup-minimal.sh
 ./setup-minimal.sh
 ```
 
+### Step 1.1b: Update AWS Account ID
+
+```bash
+# Get your AWS account ID
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+# Update the .env file with your actual account ID
+sed -i "s/YOUR_AWS_ACCOUNT_ID/$ACCOUNT_ID/" .env
+```
+
 ### Step 1.2: Configure AWS Credentials
 
 ```bash

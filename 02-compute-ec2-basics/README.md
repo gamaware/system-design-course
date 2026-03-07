@@ -881,12 +881,8 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 
 ### Free Tier Limits
 
-**EC2 Free Tier (12 months or 6 months with credits):**
-
-- 750 hours/month of t2.micro or t3.micro
-- 30 GB of EBS storage
-- 2 million I/O operations
-- 1 GB of snapshots
+Free Tier terms and limits change periodically. Always check the current details at
+<https://aws.amazon.com/free/>.
 
 **How to stay within Free Tier:**
 

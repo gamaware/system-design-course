@@ -343,14 +343,7 @@ aws application-autoscaling describe-scaling-activities \
 
 ## Cleanup
 
-### Option 1: Automated Cleanup
-
-```bash
-# Run cleanup script
-./setup-minimal.sh
-```
-
-### Option 2: Manual Cleanup
+### Manual Cleanup
 
 ```bash
 # Delete services in reverse order

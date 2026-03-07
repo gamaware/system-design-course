@@ -273,7 +273,7 @@ copilot svc logs -n ecsdemo-frontend
 # Connect to the bastion host (CDK deployment creates one)
 aws ssm start-session --target i-xxxxxxxxx
 
-# Or use siege locally (installed via setup.sh)
+# Or use siege locally (installed via setup-minimal.sh)
 siege -c 10 -t 60s http://your-load-balancer-url
 ```
 
