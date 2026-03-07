@@ -54,7 +54,7 @@ fi
 # Deploy Frontend
 echo ""
 echo "🌐 Deploying Frontend Service..."
-cd ../../ecsdemo-frontend/cdk
+cd ../../ecsworkshop-frontend/cdk
 
 echo "📋 Synthesizing frontend templates..."
 cdk synth > /dev/null
@@ -76,7 +76,7 @@ echo ""
 
 # Try to get the load balancer URL
 FRONTEND_URL=$(aws cloudformation describe-stacks \
-  --stack-name ecsdemo-frontend \
+  --stack-name ecsworkshop-frontend \
   --query 'Stacks[0].Outputs[?OutputKey==`LoadBalancerDNS`].OutputValue' \
   --output text 2>/dev/null || echo "")
 
@@ -86,17 +86,17 @@ if [ ! -z "$FRONTEND_URL" ]; then
     echo "📱 Open this URL in your browser to see the application!"
 else
     echo "🔍 To get the frontend URL, run:"
-    echo "aws cloudformation describe-stacks --stack-name ecsdemo-frontend --query 'Stacks[0].Outputs'"
+    echo "aws cloudformation describe-stacks --stack-name ecsworkshop-frontend --query 'Stacks[0].Outputs'"
 fi
 
 echo ""
 echo "📊 To monitor your deployment:"
-echo "• View logs: awslogs get /ecs/ecsdemo-frontend --start='1 hour ago'"
-echo "• Check service: aws ecs describe-services --cluster container-demo --services ecsdemo-frontend"
-echo "• Scale service: Edit desired_count in ecsdemo-frontend/cdk/app.py and redeploy"
+echo "• View logs: awslogs get /ecs/ecsworkshop-frontend --start='1 hour ago'"
+echo "• Check service: aws ecs describe-services --cluster container-demo --services ecsworkshop-frontend"
+echo "• Scale service: Edit desired_count in ecsworkshop-frontend/cdk/app.py and redeploy"
 echo ""
 echo "🧹 To clean up later:"
-echo "• cd ecsdemo-frontend/cdk && cdk destroy"
+echo "• cd ecsworkshop-frontend/cdk && cdk destroy"
 echo "• cd ../../ecsdemo-platform/cdk && cdk destroy"
 
 cd ../../

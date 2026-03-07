@@ -518,8 +518,8 @@ The instance details page has several tabs. Explore each one:
 
 Write down these values (you'll need them for SSH):
 
-- **Public IPv4 address:** (e.g., <YOUR_PUBLIC_IP>)
-- **Public IPv4 DNS:** (e.g., <YOUR_PUBLIC_DNS>)
+- **Public IPv4 address:** (e.g., `<YOUR_PUBLIC_IP>`)
+- **Public IPv4 DNS:** (e.g., `<YOUR_PUBLIC_DNS>`)
 
 ---
 

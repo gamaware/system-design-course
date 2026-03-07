@@ -229,7 +229,7 @@ aws application-autoscaling put-scaling-policy \
   --policy-name cpu-scaling-policy \
   --policy-type TargetTrackingScaling \
   --target-tracking-scaling-policy-configuration \
-  '{"TargetValue":50.0,"PredefinedMetricSpecification":{"PredefinedMetricType":"ECSServiceAverageCPUUtilization"}}'
+  '{"TargetValue":50.0,"PredefinedMetricSpecification":{"PredefinedMetricType":"ECSServiceAverageCPUUtilization"},"ScaleInCooldown":30,"ScaleOutCooldown":30}'
 ```
 
 ### Phase 7: Load Testing
