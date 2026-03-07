@@ -518,8 +518,8 @@ The instance details page has several tabs. Explore each one:
 
 Write down these values (you'll need them for SSH):
 
-- **Public IPv4 address:** (e.g., 18.201.118.201)
-- **Public IPv4 DNS:** (e.g., ec2-18-201-118-201.eu-west-1.compute.amazonaws.com)
+- **Public IPv4 address:** (e.g., <YOUR_PUBLIC_IP>)
+- **Public IPv4 DNS:** (e.g., <YOUR_PUBLIC_DNS>)
 
 ---
 
@@ -625,13 +625,13 @@ If command not found, you need to install an SSH client (beyond scope of this la
 cd ~/.ssh
 
 # Connect to instance (replace with your public DNS)
-ssh -i "ec2-lab-key-pair.pem" ec2-user@ec2-18-201-118-201.eu-west-1.compute.amazonaws.com
+ssh -i "ec2-lab-key-pair.pem" ec2-user@<YOUR_PUBLIC_DNS>
 ```
 
 **Alternative using IP address:**
 
 ```bash
-ssh -i "ec2-lab-key-pair.pem" ec2-user@18.201.118.201
+ssh -i "ec2-lab-key-pair.pem" ec2-user@<YOUR_PUBLIC_IP>
 ```
 
 **On Windows (PowerShell):**
@@ -641,7 +641,7 @@ ssh -i "ec2-lab-key-pair.pem" ec2-user@18.201.118.201
 cd $HOME\.ssh
 
 # Connect to instance
-ssh -i "ec2-lab-key-pair.pem" ec2-user@ec2-18-201-118-201.eu-west-1.compute.amazonaws.com
+ssh -i "ec2-lab-key-pair.pem" ec2-user@<YOUR_PUBLIC_DNS>
 ```
 
 ### Step 8.4: Accept Host Key
@@ -649,7 +649,7 @@ ssh -i "ec2-lab-key-pair.pem" ec2-user@ec2-18-201-118-201.eu-west-1.compute.amaz
 First time connecting, you'll see:
 
 ```text
-The authenticity of host 'ec2-18-201-118-201.eu-west-1.compute.amazonaws.com (18.201.118.201)' can't be established.
+The authenticity of host '<YOUR_PUBLIC_DNS> (<YOUR_PUBLIC_IP>)' can't be established.
 ED25519 key fingerprint is SHA256:examplehxj9aOr1MogvKOoMNskVVIRBQBoq0example.
 This key is not known by any other names.
 Are you sure you want to continue connecting (yes/no/[fingerprint])?

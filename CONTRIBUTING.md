@@ -28,7 +28,7 @@ Open a [GitHub Issue](../../issues) describing:
 - Each module lives in its own directory (`NN-topic-name/`)
 - Every module must have a `README.md` with learning objectives, technologies, and step-by-step instructions
 - Scripts must pass ShellCheck (`shellcheck script.sh`)
-- Markdown must pass markdownlint (config in `.markdownlint.json`)
+- Markdown must pass markdownlint (config in `.markdownlint.yaml`)
 - Keep instructions reproducible — avoid steps that depend on local machine state
 
 ## Questions

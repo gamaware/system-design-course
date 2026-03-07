@@ -228,7 +228,8 @@ aws application-autoscaling put-scaling-policy \
   --resource-id service/container-demo/ecsdemo-frontend \
   --policy-name cpu-scaling-policy \
   --policy-type TargetTrackingScaling \
-  --target-tracking-scaling-policy-configuration file://scaling-policy.json
+  --target-tracking-scaling-policy-configuration \
+  '{"TargetValue":50.0,"PredefinedMetricSpecification":{"PredefinedMetricType":"ECSServiceAverageCPUUtilization"}}'
 ```
 
 ### Phase 7: Load Testing
@@ -285,10 +286,10 @@ aws ecs describe-services \
 
 ### CPU-Based Scaling
 
-**Target**: 75% CPU utilization
-**Scale Out**: Add tasks when CPU > 75%
-**Scale In**: Remove tasks when CPU < 75%
-**Cooldown**: 60 seconds
+**Target**: 50% CPU utilization
+**Scale Out**: Add tasks when CPU > 50%
+**Scale In**: Remove tasks when CPU < 50%
+**Cooldown**: 30 seconds
 
 ### Memory-Based Scaling (Optional)
 

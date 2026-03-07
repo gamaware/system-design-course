@@ -16,7 +16,7 @@ reviews:
       instructions: >
         Review for clarity, completeness of learning objectives, accurate
         technology and concept listings, and reproducibility of steps.
-    - path: "0[1-6]-*/**"
+    - path: "[0-1][0-9]-*/**"
       instructions: >
         Review lab content for technical accuracy, clear step-by-step
         instructions, and educational value. Flag any steps that may

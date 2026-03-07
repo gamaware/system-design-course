@@ -155,7 +155,7 @@ copilot svc deploy
 ```bash
 # Get the load balancer URL from CloudFormation outputs
 aws cloudformation describe-stacks \
-  --stack-name ecsdemo-frontend \
+  --stack-name ecsworkshop-frontend \
   --query 'Stacks[0].Outputs[?OutputKey==`LoadBalancerDNS`].OutputValue' \
   --output text
 ```

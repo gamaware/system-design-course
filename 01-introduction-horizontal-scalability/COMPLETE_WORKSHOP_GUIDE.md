@@ -174,57 +174,15 @@ aws cloudwatch get-metric-statistics \
 
 ## Part 6: Complete Workshop Script
 
-Create a script to run the complete workshop:
+Run the complete workshop script:
 
 ```bash
-#!/bin/bash
-# complete-workshop.sh
-
-echo "🚀 Starting ECS Workshop Autoscaling Demo"
-
-# Activate environment
-source activate.sh
-
-# Deploy autoscaling changes
-echo "📦 Deploying autoscaling configuration..."
-cd ecsdemo-frontend/cdk
-cdk diff
-cdk deploy --require-approval never
-
-# Get ALB URL
-echo "🔍 Getting Load Balancer URL..."
-alb_url=$(aws cloudformation describe-stacks \
-  --stack-name ecsworkshop-frontend \
-  --query "Stacks" \
-  --output json | jq -r '.[].Outputs[] | select(.OutputKey | contains("LoadBalancer")) | .OutputValue')
-
-echo "🌐 Load Balancer URL: http://$alb_url"
-
-# Start log monitoring in background
-echo "📊 Starting log monitoring..."
-log_group=$(awslogs groups -p ecsworkshop-frontend)
-awslogs get -G -S --timestamp --start 1m --watch $log_group &
-LOG_PID=$!
-
-# Start service monitoring in background
-echo "📈 Starting service monitoring..."
-watch -n 10 'aws ecs describe-services \
-  --cluster container-demo \
-  --services ecsdemo-frontend \
-  --query "services[0].{DesiredCount:desiredCount,RunningCount:runningCount,PendingCount:pendingCount}" \
-  --output table' &
-WATCH_PID=$!
-
-# Run load test
-echo "⚡ Starting load test..."
-echo "Press Ctrl+C to stop monitoring after load test completes"
-siege -c 20 -t 2m http://$alb_url
-
-# Cleanup background processes
-kill $LOG_PID $WATCH_PID 2>/dev/null
-
-echo "✅ Workshop complete! Check the AWS Console for detailed metrics."
+chmod +x complete-workshop.sh
+./complete-workshop.sh
 ```
+
+The script automates deployment, log monitoring, service monitoring, and load testing.
+See `complete-workshop.sh` for the full implementation.
 
 ## Key Learning Points
 

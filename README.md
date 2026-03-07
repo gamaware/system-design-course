@@ -121,7 +121,7 @@ multi-tenancy, distributed authentication, API security
 #### Mtro. Jorge Alejandro García Martínez
 
 - Email: <alejandrogarcia@iteso.mx>
-- Canvas: [https://canvas.iteso.mx/courses/55229](https://canvas.iteso.mx/courses/55229)
+- Canvas: Check your semester's Canvas page for the course link
 
 ### 📅 Schedule
 

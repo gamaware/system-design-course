@@ -12,7 +12,17 @@ Brief description of what this PR changes and why.
 - [ ] `04-dns-dig-bind9`
 - [ ] `05-distributed-systems-high-availability`
 - [ ] `06-security-https-oauth2-keycloak`
-- [ ] Other: ___
+- [ ] `07-networking`
+- [ ] `08-distributed-file-systems`
+- [ ] `09-databases`
+- [ ] `10-caching-cdn`
+- [ ] `11-proxies`
+- [ ] `12-solutions-architecture`
+- [ ] `13-distributed-messaging`
+- [ ] `14-serverless`
+- [ ] `15-artificial-intelligence`
+- [ ] `16-containers`
+- [ ] Repository config / CI / docs
 
 ## Type of Change
 
