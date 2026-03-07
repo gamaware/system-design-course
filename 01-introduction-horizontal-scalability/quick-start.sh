@@ -26,7 +26,7 @@ echo "✅ AWS credentials verified"
 
 # Check CDK bootstrap
 echo "🔍 Checking CDK bootstrap..."
-if ! aws cloudformation describe-stacks --stack-name CDKToolkit --region $AWS_REGION &>/dev/null; then
+if ! aws cloudformation describe-stacks --stack-name CDKToolkit --region "$AWS_REGION" &>/dev/null; then
     echo "📦 Bootstrapping CDK..."
     cdk bootstrap
 fi

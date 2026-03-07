@@ -6,7 +6,10 @@
 
 ## Overview
 
-This hands-on lab teaches Amazon EC2 fundamentals through practical exercises. Students will learn how to launch an EC2 instance, configure security settings, connect via SSH, and manage instance lifecycle. This lab is based on AWS Tutorial 2 and provides the foundation for all subsequent labs in this course.
+This hands-on lab teaches Amazon EC2 fundamentals through practical exercises. Students will learn
+how to launch an EC2 instance, configure security settings, connect via SSH, and manage instance
+lifecycle. This lab is based on AWS Tutorial 2 and provides the foundation for all subsequent labs
+in this course.
 
 ## Learning Objectives
 
@@ -29,6 +32,7 @@ This hands-on lab teaches Amazon EC2 fundamentals through practical exercises. S
 ## What is Amazon EC2?
 
 **Amazon Elastic Compute Cloud (EC2)** provides scalable computing capacity in the AWS Cloud:
+
 - Virtual servers (instances) that you can launch in minutes
 - Pay only for what you use (per-second billing)
 - Complete control over the operating system and software
@@ -46,43 +50,52 @@ This lab is divided into 9 tasks that build upon each other. Complete each task 
 Before launching an instance, let's understand the key components. Think of an EC2 instance like a rental house:
 
 ### AMI (Amazon Machine Image)
+
 **Analogy:** House building materials and amenities
 
 The AMI is a template containing:
+
 - Operating system (Linux, Windows, etc.)
 - Pre-installed software
 - Configuration settings
 
 **Common AMIs:**
+
 - Amazon Linux 2023 (AWS-optimized, Free Tier eligible)
 - Ubuntu Server
 - Red Hat Enterprise Linux
 - Microsoft Windows Server
 
 ### Instance Type
+
 **Analogy:** House size and features
 
 Determines the hardware resources:
+
 - CPU (compute power)
 - Memory (RAM)
 - Storage capacity
 - Network performance
 
 **Example types:**
+
 - `t2.micro` / `t3.micro` - Free Tier eligible, 1 vCPU, 1 GB RAM
 - `t2.small` - 1 vCPU, 2 GB RAM
 - `m5.large` - 2 vCPU, 8 GB RAM
 
 ### Key Pair
+
 **Analogy:** Your front door key
 
 A key pair consists of:
+
 - **Public key** - Stored on the EC2 instance
 - **Private key** - Downloaded to your computer (keep it secure!)
 
 Used for secure SSH authentication without passwords.
 
 ### Network (VPC and Subnet)
+
 **Analogy:** Neighborhood and street
 
 - **VPC (Virtual Private Cloud)** - Your isolated network in AWS
@@ -91,9 +104,11 @@ Used for secure SSH authentication without passwords.
 - **Private subnet** - No direct internet access
 
 ### Security Group
+
 **Analogy:** The gatekeeper
 
 Acts as a virtual firewall:
+
 - Controls inbound traffic (who can connect to your instance)
 - Controls outbound traffic (where your instance can connect)
 - Rules specify protocols, ports, and source IPs
@@ -101,6 +116,7 @@ Acts as a virtual firewall:
 **Example rule:** Allow SSH (port 22) from your IP address
 
 ### EBS Volume
+
 **Analogy:** Storage units
 
 - **Root volume** - Contains the operating system (from AMI)
@@ -108,6 +124,7 @@ Acts as a virtual firewall:
 - Persistent storage that survives instance stops
 
 ### Name Tag
+
 **Analogy:** The house name
 
 - Optional but recommended
@@ -128,20 +145,20 @@ graph TB
                 EC2["EC2 Instance<br/>Amazon Linux 2023<br/>t3.micro<br/>Public IP: x.x.x.x"]
                 SG["Security Group<br/>Allow SSH (22)<br/>from your IP"]
                 EBS["EBS Root Volume<br/>8 GB gp3<br/>Contains AMI"]
-                
+
                 EC2 -.->|protected by| SG
                 EC2 -.->|storage| EBS
             end
         end
     end
-    
+
     User["Your Computer<br/>SSH Client<br/>Private Key"]
     Internet["Internet Gateway"]
-    
+
     User -->|SSH connection<br/>port 22| Internet
     Internet --> SG
     SG -->|allowed| EC2
-    
+
     style EC2 fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
     style SG fill:#DD344C,stroke:#232F3E,stroke-width:2px,color:#fff
     style EBS fill:#527FFF,stroke:#232F3E,stroke-width:2px,color:#fff
@@ -149,6 +166,7 @@ graph TB
 ```
 
 **Key points:**
+
 1. Your instance runs in a public subnet with internet access
 2. Security group filters incoming SSH traffic
 3. You authenticate using your private key
@@ -163,10 +181,11 @@ A key pair is required for SSH access to your instance.
 ### Step 3.1: Open EC2 Console
 
 1. Sign in to AWS Management Console
-2. Navigate to EC2: https://console.aws.amazon.com/ec2/
+2. Navigate to EC2: <https://console.aws.amazon.com/ec2/>
 3. Select your preferred region (top-right corner)
 
 **Region selection tips:**
+
 - Choose a region close to you for lower latency
 - Ensure it's Free Tier eligible
 - Common choices: `us-east-1`, `us-west-2`, `eu-west-1`
@@ -184,16 +203,19 @@ A key pair is required for SSH access to your instance.
 Enter the following details:
 
 **Name:** `ec2-lab-key-pair`
+
 - Use a descriptive name
 - Can include letters, numbers, hyphens
 - Max 255 characters
 
 **Key pair type:** `ED25519`
+
 - More secure than RSA
 - Smaller key size
 - Supported by Linux instances
 
 **Private key file format:** `.pem`
+
 - Standard format for SSH clients
 - Works with OpenSSH on Linux/macOS
 - For Windows PuTTY, choose `.ppk`
@@ -210,6 +232,7 @@ Enter the following details:
 ### Step 3.5: Secure Your Private Key
 
 **On Linux/macOS:**
+
 ```bash
 # Move to secure location
 mkdir -p ~/.ssh
@@ -224,6 +247,7 @@ ls -l ~/.ssh/ec2-lab-key-pair.pem
 ```
 
 **On Windows:**
+
 ```powershell
 # Move to secure location
 mkdir $HOME\.ssh -Force
@@ -234,6 +258,7 @@ Move-Item $HOME\Downloads\ec2-lab-key-pair.pem $HOME\.ssh\
 ```
 
 **Security best practices:**
+
 - Never share your private key
 - Never commit it to version control
 - Store it in a secure location
@@ -253,10 +278,12 @@ Now you'll launch an EC2 instance using the launch wizard.
 ### Step 4.2: Name Your Instance
 
 **Name and tags section:**
+
 - **Name:** `EC2-Lab-Instance`
 - This creates a tag with Key=`Name`, Value=`EC2-Lab-Instance`
 
 **Tagging best practices:**
+
 - Use descriptive names
 - For production: add tags like `Environment`, `Project`, `Owner`
 - Tags help with organization and cost tracking
@@ -267,11 +294,13 @@ Now you'll launch an EC2 instance using the launch wizard.
 ### Step 4.3: Choose AMI
 
 **Application and OS Images (Amazon Machine Image):**
+
 - Select **Amazon Linux 2023 AMI**
 - Architecture: **64-bit (x86)**
 - Look for **Free tier eligible** label
 
 **Why Amazon Linux 2023?**
+
 - Optimized for AWS
 - Long-term support
 - Pre-configured with AWS tools
@@ -281,16 +310,19 @@ Now you'll launch an EC2 instance using the launch wizard.
 ### Step 4.4: Choose Instance Type
 
 **Instance type:**
+
 - Select **t3.micro** (or **t2.micro** if t3 not available)
 - Should show **Free tier eligible**
 
 **Instance type details:**
+
 - 1 vCPU
 - 1 GB RAM
 - Up to 5 Gbps network
 - EBS-only storage
 
 **Free Tier limits:**
+
 - 750 hours per month (enough to run 1 instance 24/7)
 - Valid for 12 months from account creation (if created before July 15, 2025)
 - Or 6 months with credits (if created on/after July 15, 2025)
@@ -298,10 +330,12 @@ Now you'll launch an EC2 instance using the launch wizard.
 ### Step 4.5: Select Key Pair
 
 **Key pair (login):**
+
 - Select **ec2-lab-key-pair** (created in Task 3)
 - If you don't see it, click the refresh icon
 
 **What happens:**
+
 - AWS places the public key on your instance
 - You use the private key to authenticate via SSH
 
@@ -310,16 +344,19 @@ Now you'll launch an EC2 instance using the launch wizard.
 **Network settings:**
 
 Keep the default settings:
+
 - **VPC:** Default VPC
 - **Subnet:** No preference (default subnet)
 - **Auto-assign public IP:** Enable
 
 **Firewall (security groups):**
+
 - Select **Create security group**
 - **Security group name:** `ec2-lab-sg`
 - **Description:** `Allow SSH access for EC2 lab`
 
 **Inbound security group rules:**
+
 - **Type:** SSH
 - **Protocol:** TCP
 - **Port range:** 22
@@ -336,11 +373,13 @@ Keep the default settings:
 **Configure storage:**
 
 Keep the default settings:
+
 - **Volume type:** gp3 (General Purpose SSD)
 - **Size:** 8 GB
 - **Delete on termination:** Yes (checked)
 
 **Storage types:**
+
 - **gp3** - General Purpose SSD (balanced price/performance)
 - **gp2** - Previous generation General Purpose SSD
 - **io1/io2** - Provisioned IOPS SSD (high performance)
@@ -348,6 +387,7 @@ Keep the default settings:
 - **sc1** - Cold HDD (infrequent access)
 
 **Free Tier:**
+
 - 30 GB of EBS storage per month
 - gp2 or gp3 volumes
 
@@ -363,6 +403,7 @@ Keep the default settings:
 ### Step 4.9: Confirm Launch
 
 You'll see a success message:
+
 - "Successfully initiated launch of instance"
 - Instance ID will be shown (e.g., `i-1234567890abcdef0`)
 - Click **View all instances** or click the instance ID
@@ -381,6 +422,7 @@ Learn how to locate and identify your instance in the EC2 console.
 ### Step 5.2: Locate Your Instance
 
 Find your instance by:
+
 - **Name column:** Look for `EC2-Lab-Instance`
 - **Instance ID:** The unique identifier (starts with `i-`)
 - **Instance state:** Should show `Running` (green dot)
@@ -389,6 +431,7 @@ Find your instance by:
 *The Instances page showing your EC2 instance*
 
 **Instance states:**
+
 - **Pending** - Instance is launching
 - **Running** - Instance is active and running
 - **Stopping** - Instance is shutting down
@@ -403,6 +446,7 @@ Find your instance by:
 This usually takes 1-2 minutes.
 
 **Status checks:**
+
 - **System status check** - AWS infrastructure health
 - **Instance status check** - Your instance's software/network
 
@@ -425,6 +469,7 @@ Explore the instance details to understand its configuration.
 The instance details page has several tabs. Explore each one:
 
 **Details tab:**
+
 - **Instance ID** - Unique identifier
 - **Instance type** - t3.micro
 - **Public IPv4 address** - Used for SSH connection
@@ -437,16 +482,19 @@ The instance details page has several tabs. Explore each one:
 - **Availability Zone** - Physical data center location
 
 **Security tab:**
+
 - **Security groups** - ec2-lab-sg
 - **IAM role** - None (not needed for this lab)
 
 **Networking tab:**
+
 - **Public IPv4 address** - For internet access
 - **Public IPv4 DNS** - Hostname for SSH
 - **Private IPv4 address** - For VPC communication
 - **Elastic IP** - None (not needed for this lab)
 
 **Storage tab:**
+
 - **Root device name** - /dev/xvda
 - **Root device type** - EBS
 - **Volume ID** - The EBS volume attached
@@ -454,9 +502,11 @@ The instance details page has several tabs. Explore each one:
 - **Volume type** - gp3
 
 **Tags tab:**
+
 - **Key:** Name, **Value:** EC2-Lab-Instance
 
 **Monitoring tab:**
+
 - CPU utilization
 - Network in/out
 - Disk read/write
@@ -468,6 +518,7 @@ The instance details page has several tabs. Explore each one:
 ### Step 6.3: Note Important Information
 
 Write down these values (you'll need them for SSH):
+
 - **Public IPv4 address:** (e.g., 18.201.118.201)
 - **Public IPv4 DNS:** (e.g., ec2-18-201-118-201.eu-west-1.compute.amazonaws.com)
 
@@ -482,26 +533,31 @@ Before connecting, understand the components involved in SSH access.
 Think of connecting to your instance like going to your house:
 
 **Connection protocol (SSH):** Your mode of transport
+
 - SSH creates a secure, encrypted tunnel
 - Protects your data from eavesdropping
 - Standard protocol for remote Linux access
 
 **Public DNS/IP:** The house address
+
 - Unique address for your instance
 - Enables SSH to find your instance on the internet
 - Can use either IP address or DNS name
 
 **Security group:** The gatekeeper
+
 - Filters incoming connections
 - Only allows SSH from your IP address
 - Blocks all other traffic
 
 **Private key:** Your front door key
+
 - Proves your identity
 - Must match the public key on the instance
 - Required for authentication
 
 **Instance username:** The resident's name
+
 - Determines which user account you log into
 - For Amazon Linux: `ec2-user`
 - For Ubuntu: `ubuntu`
@@ -514,7 +570,7 @@ sequenceDiagram
     participant You as Your Computer
     participant SG as Security Group
     participant EC2 as EC2 Instance
-    
+
     You->>SG: SSH connection request (port 22)
     Note over SG: Check: Is source IP allowed?
     alt IP allowed
@@ -544,7 +600,8 @@ ssh -V
 ```
 
 **Expected output:**
-```
+
+```text
 OpenSSH_8.9p1, LibreSSL 3.3.6
 ```
 
@@ -573,6 +630,7 @@ ssh -i "ec2-lab-key-pair.pem" ec2-user@ec2-18-201-118-201.eu-west-1.compute.amaz
 ```
 
 **Alternative using IP address:**
+
 ```bash
 ssh -i "ec2-lab-key-pair.pem" ec2-user@18.201.118.201
 ```
@@ -591,7 +649,7 @@ ssh -i "ec2-lab-key-pair.pem" ec2-user@ec2-18-201-118-201.eu-west-1.compute.amaz
 
 First time connecting, you'll see:
 
-```
+```text
 The authenticity of host 'ec2-18-201-118-201.eu-west-1.compute.amazonaws.com (18.201.118.201)' can't be established.
 ED25519 key fingerprint is SHA256:examplehxj9aOr1MogvKOoMNskVVIRBQBoq0example.
 This key is not known by any other names.
@@ -601,6 +659,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 Type `yes` and press Enter.
 
 **What's happening:**
+
 - SSH is verifying the instance's identity
 - The fingerprint is stored in `~/.ssh/known_hosts`
 - Future connections won't ask again
@@ -609,7 +668,7 @@ Type `yes` and press Enter.
 
 You'll see the Amazon Linux welcome message:
 
-```
+```text
    ,     #_
    ~\_  ####_        Amazon Linux 2023
   ~~  \_#####\
@@ -689,11 +748,13 @@ To avoid charges, stop your instance when not in use.
 ### Understanding Instance States
 
 **Running:**
+
 - Instance is active
 - You're charged for compute time
 - Can connect via SSH
 
 **Stopped:**
+
 - Instance is shut down
 - No compute charges
 - Still charged for EBS storage (minimal)
@@ -701,6 +762,7 @@ To avoid charges, stop your instance when not in use.
 - Public IP may change on restart
 
 **Terminated:**
+
 - Instance is permanently deleted
 - All data lost (unless EBS volumes set to persist)
 - Cannot be restarted
@@ -720,6 +782,7 @@ To avoid charges, stop your instance when not in use.
 ### Step 9.2: Monitor State Change
 
 Watch the **Instance state** column:
+
 - **Stopping** - Instance is shutting down
 - **Stopped** - Instance is fully stopped
 
@@ -728,6 +791,7 @@ This takes about 30-60 seconds.
 ### Step 9.3: Verify No Charges
 
 When stopped:
+
 - ✅ No compute charges
 - ⚠️ Small EBS storage charge (~$0.80/month for 8 GB)
 - ✅ Still within Free Tier limits (30 GB/month)
@@ -735,6 +799,7 @@ When stopped:
 ### Step 9.4: Restart Instance (Optional)
 
 To restart later:
+
 1. Select your instance
 2. Click **Instance state** → **Start instance**
 3. Wait for state to become **Running**
@@ -759,6 +824,7 @@ When you're completely done with the lab:
 **Error:** `Connection timed out`
 
 **Solutions:**
+
 1. Check security group allows SSH from your IP
 2. Verify instance is in **Running** state
 3. Verify you're using the correct public IP/DNS
@@ -768,6 +834,7 @@ When you're completely done with the lab:
 **Error:** `Permission denied (publickey)`
 
 **Solutions:**
+
 1. Verify you're using the correct private key file
 2. Check key file permissions: `chmod 400 ec2-lab-key-pair.pem`
 3. Verify you're using correct username (`ec2-user` for Amazon Linux)
@@ -776,6 +843,7 @@ When you're completely done with the lab:
 **Error:** `WARNING: UNPROTECTED PRIVATE KEY FILE!`
 
 **Solution:**
+
 ```bash
 chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 ```
@@ -783,6 +851,7 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 ### Instance won't start
 
 **Solutions:**
+
 1. Check AWS Service Health Dashboard
 2. Try stopping and starting again
 3. Check if you've reached instance limits
@@ -791,6 +860,7 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 ### Lost private key
 
 **Solution:**
+
 - You cannot recover a lost private key
 - You must create a new key pair
 - Launch a new instance with the new key pair
@@ -799,6 +869,7 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 ### IP address changed after restart
 
 **This is normal behavior:**
+
 - Public IP addresses are dynamic by default
 - They change when you stop/start an instance
 - Solutions:
@@ -812,12 +883,14 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 ### Free Tier Limits
 
 **EC2 Free Tier (12 months or 6 months with credits):**
+
 - 750 hours/month of t2.micro or t3.micro
 - 30 GB of EBS storage
 - 2 million I/O operations
 - 1 GB of snapshots
 
 **How to stay within Free Tier:**
+
 - Use only t2.micro or t3.micro instances
 - Run only 1 instance at a time
 - Stop instances when not in use
@@ -826,11 +899,13 @@ chmod 400 ~/.ssh/ec2-lab-key-pair.pem
 ### Monitoring Costs
 
 **Check your usage:**
+
 1. Go to AWS Billing Dashboard
 2. Click **Free Tier** in left navigation
 3. View current usage vs. limits
 
 **Set up billing alerts:**
+
 1. Go to AWS Billing Dashboard
 2. Click **Billing preferences**
 3. Enable **Receive Free Tier Usage Alerts**
@@ -862,9 +937,10 @@ Now that you understand EC2 basics, you're ready for more advanced labs:
 3. **[01 Horizontal Scalability Demo](../01%20Horizontal%20Scalability%20Demo)** - Deploy autoscaling applications
 
 **Additional learning:**
-- AWS EC2 User Guide: https://docs.aws.amazon.com/ec2/
-- AWS Free Tier: https://aws.amazon.com/free/
-- AWS Well-Architected Framework: https://aws.amazon.com/architecture/well-architected/
+
+- AWS EC2 User Guide: <https://docs.aws.amazon.com/ec2/>
+- AWS Free Tier: <https://aws.amazon.com/free/>
+- AWS Well-Architected Framework: <https://aws.amazon.com/architecture/well-architected/>
 
 ---
 

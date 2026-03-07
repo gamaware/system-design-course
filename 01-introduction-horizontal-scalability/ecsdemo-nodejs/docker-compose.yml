@@ -6,7 +6,7 @@ services:
       - "3000:3000"
     logging:
       driver: awslogs
-      options: 
+      options:
         awslogs-group: ecsdemo-nodejs
         awslogs-region: ${AWS_REGION}
         awslogs-stream-prefix: ecsdemo-nodejs

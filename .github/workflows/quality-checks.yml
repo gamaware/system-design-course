@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Lint Markdown files
         uses: DavidAnson/markdownlint-cli2-action@v18
         with:
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check links in markdown files
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Lint YAML files
         uses: ibiqlik/action-yamllint@v3
         with:
@@ -68,45 +68,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check required files
         run: |
           echo "Checking repository structure..."
-          
+
           # Check for LICENSE
           if [ ! -f "LICENSE" ]; then
             echo "❌ LICENSE file missing"
             exit 1
           fi
           echo "✅ LICENSE found"
-          
+
           # Check for main README
           if [ ! -f "README.md" ]; then
             echo "❌ README.md missing"
             exit 1
           fi
           echo "✅ README.md found"
-          
+
           # Check for .gitignore
           if [ ! -f ".gitignore" ]; then
             echo "❌ .gitignore missing"
             exit 1
           fi
           echo "✅ .gitignore found"
-          
+
           # Check each lab/demo has README
           for dir in */; do
             if [[ "$dir" == .* ]] || [[ "$dir" == "node_modules/" ]]; then
               continue
             fi
-            
+
             if [ ! -f "${dir}README.md" ]; then
               echo "⚠️  ${dir} missing README.md"
             else
               echo "✅ ${dir}README.md found"
             fi
           done
-          
+
           echo "✅ Repository structure validation complete"
 
   readme-quality:
@@ -114,29 +114,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check README content
         run: |
           echo "Checking README quality..."
-          
+
           # Check main README has key sections
           if ! grep -q "## " README.md; then
             echo "⚠️  README.md should have sections (##)"
           fi
-          
+
           # Check for badges
           if ! grep -q "!\[" README.md; then
             echo "⚠️  README.md should have badges"
           fi
-          
+
           # Check for author info
           if ! grep -q -i "author\|created by" README.md; then
             echo "⚠️  README.md should have author information"
           fi
-          
+
           # Check for license mention
           if ! grep -q -i "license" README.md; then
             echo "⚠️  README.md should mention license"
           fi
-          
+
           echo "✅ README quality check complete"

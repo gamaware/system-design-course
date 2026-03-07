@@ -18,7 +18,7 @@ from os import getenv
 
 # Creating a construct that will populate the required objects created in the platform repo such as vpc, ecs cluster, and service discovery namespace
 class BasePlatform(Construct):
-    
+
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
         self.environment_name = 'ecsworkshop'
@@ -28,14 +28,14 @@ class BasePlatform(Construct):
             self, "VPC",
             vpc_name='{}-base/BaseVPC'.format(self.environment_name)
         )
-        
+
         self.sd_namespace = aws_servicediscovery.PrivateDnsNamespace.from_private_dns_namespace_attributes(
             self, "SDNamespace",
             namespace_name=cdk.Fn.import_value('NSNAME'),
             namespace_arn=cdk.Fn.import_value('NSARN'),
             namespace_id=cdk.Fn.import_value('NSID')
         )
-        
+
         self.ecs_cluster = aws_ecs.Cluster.from_cluster_attributes(
             self, "ECSCluster",
             cluster_name=cdk.Fn.import_value('ECSClusterName'),
@@ -43,15 +43,15 @@ class BasePlatform(Construct):
             vpc=self.vpc,
             default_cloud_map_namespace=self.sd_namespace
         )
-        
+
         self.services_sec_grp = aws_ec2.SecurityGroup.from_security_group_id(
             self, "ServicesSecGrp",
             security_group_id=cdk.Fn.import_value('ServicesSecGrp')
         )
-        
+
 
 class CrystalService(Stack):
-    
+
     def __init__(self, scope: Stack, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
@@ -63,7 +63,7 @@ class CrystalService(Stack):
             cpu='256',
             memory_mib='512',
             #appmesh-proxy-uncomment
-            # proxy_configuration=aws_ecs.AppMeshProxyConfiguration( 
+            # proxy_configuration=aws_ecs.AppMeshProxyConfiguration(
             #     container_name="envoy",
             #     properties=aws_ecs.AppMeshProxyConfigurationProps(
             #         app_ports=[3000],
@@ -75,12 +75,12 @@ class CrystalService(Stack):
             # )
             #appmesh-proxy-uncomment
         )
-        
+
         self.logGroup = aws_logs.LogGroup(self,"ecsworkshopCrystal",
             # log_group_name="ecsworkshop-crystal",
             retention=aws_logs.RetentionDays.ONE_WEEK
         )
-        
+
         self.container = self.fargate_task_def.add_container(
             "CrystalServiceContainerDef",
             image=aws_ecs.ContainerImage.from_registry("public.ecr.aws/aws-containers/ecsdemo-crystal"),
@@ -94,7 +94,7 @@ class CrystalService(Stack):
             },
             container_name="crystal-app"
         )
-        
+
         self.container.add_port_mappings(
             aws_ecs.PortMapping(
                 container_port=3000
@@ -126,7 +126,7 @@ class CrystalService(Stack):
         #     min_capacity=3,
         #     max_capacity=10
         # )
-        
+
         # We will use target_utilization_percent=20% for testing purposes
         # self.autoscale.scale_on_cpu_utilization(
         #     "CPUAutoscaling",
@@ -134,21 +134,21 @@ class CrystalService(Stack):
         #     scale_in_cooldown=Duration.seconds(30),
         #     scale_out_cooldown=Duration.seconds(30)
         # )
-        
-        
+
+
         # App Mesh Implementation
         # self.appmesh()
 
-        
+
     def appmesh(self):
-        
+
         # Importing app mesh service
         self.mesh = aws_appmesh.Mesh.from_mesh_arn(
             self,
             "EcsWorkShop-AppMesh",
             mesh_arn=cdk.Fn.import_value("MeshArn")
         )
-        
+
         # Importing App Mesh virtual gateway
         self.mesh_vgw = aws_appmesh.VirtualGateway.from_virtual_gateway_attributes(
             self,
@@ -156,7 +156,7 @@ class CrystalService(Stack):
             mesh=self.mesh,
             virtual_gateway_name=cdk.Fn.import_value("MeshVGWName")
         )
-        
+
         # App Mesh virtual node configuration
         self.mesh_crystal_vn = aws_appmesh.VirtualNode(
             self,
@@ -167,7 +167,7 @@ class CrystalService(Stack):
             service_discovery=aws_appmesh.ServiceDiscovery.cloud_map(self.fargate_service.cloud_map_service),
             access_log=aws_appmesh.AccessLog.from_file_path("/dev/stdout")
         )
-        
+
        # App Mesh envoy proxy container configuration
         self.envoy_container = self.fargate_task_def.add_container(
             "CrystalServiceProxyContdef",
@@ -194,21 +194,21 @@ class CrystalService(Stack):
             ),
             user="1337"
         )
-        
+
         self.envoy_container.add_ulimits(aws_ecs.Ulimit(
             hard_limit=15000,
             name=aws_ecs.UlimitName.NOFILE,
             soft_limit=15000
             )
         )
-        
+
         # Primary container needs to depend on envoy before it can be reached out
         self.container.add_container_dependencies(aws_ecs.ContainerDependency(
                container=self.envoy_container,
                condition=aws_ecs.ContainerDependencyCondition.HEALTHY
            )
         )
-        
+
         # Enable app mesh Xray observability
         #ammmesh-xray-uncomment
         # self.xray_container = self.fargate_task_def.add_container(
@@ -223,45 +223,45 @@ class CrystalService(Stack):
         #     memory_reservation_mib=256,
         #     user="1337"
         # )
-        
+
         # self.envoy_container.add_container_dependencies(aws_ecs.ContainerDependency(
         #       container=self.xray_container,
         #       condition=aws_ecs.ContainerDependencyCondition.START
         #   )
         # )
         #ammmesh-xray-uncomment
-        
+
         self.fargate_task_def.add_to_task_role_policy(
             aws_iam.PolicyStatement(
                 actions=['ec2:DescribeSubnets'],
                 resources=['*']
             )
         )
-        
+
         self.fargate_service.connections.allow_from_any_ipv4(
             port_range=aws_ec2.Port(protocol=aws_ec2.Protocol.TCP, string_representation="tcp_3000", from_port=3000, to_port=3000),
             description="Allow TCP connections on port 3000"
         )
-        
+
         # Adding policies to work with observability (xray and cloudwath)
         self.fargate_task_def.execution_role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonEC2ContainerRegistryReadOnly"))
         self.fargate_task_def.execution_role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name("CloudWatchLogsFullAccess"))
-        
+
         self.fargate_task_def.task_role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name("CloudWatchFullAccess"))
         # self.fargate_task_def.task_role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name("AWSXRayDaemonWriteAccess"))
         self.fargate_task_def.task_role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name("AWSAppMeshEnvoyAccess"))
-        
-        
-        # Adding mesh virtual service 
+
+
+        # Adding mesh virtual service
         self.mesh_crystal_vs = aws_appmesh.VirtualService(self,"mesh-crystal-vs",
             virtual_service_provider=aws_appmesh.VirtualServiceProvider.virtual_node(self.mesh_crystal_vn),
             virtual_service_name="{}.{}".format(self.fargate_service.cloud_map_service.service_name,self.fargate_service.cloud_map_service.namespace.namespace_name)
         )
-        
+
         # Exporting CF (outputs) to make references from other cdk projects.
         CfnOutput(self, "MeshCrystalVSARN",value=self.mesh_crystal_vs.virtual_service_arn,export_name="MeshCrystalVSARN")
         CfnOutput(self, "MeshCrystalVSName",value=self.mesh_crystal_vs.virtual_service_name,export_name="MeshCrystalVSName")
-        
+
 
 
 _env = Environment(account=getenv('AWS_ACCOUNT_ID'), region=getenv('AWS_DEFAULT_REGION'))

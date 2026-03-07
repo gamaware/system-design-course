@@ -1,0 +1,23 @@
+name: Update Pre-commit Hooks
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-hooks:
+    name: Update Pre-commit Hooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Hooks
+        uses: ./.github/actions/update-pre-commit-composite
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

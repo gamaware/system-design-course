@@ -5,6 +5,7 @@ This guide walks you through the ECS Workshop adapted for local macOS developmen
 ## Prerequisites Setup
 
 ### 1. Initial Setup
+
 ```bash
 # Run the setup script
 chmod +x setup.sh
@@ -27,6 +28,7 @@ cdk bootstrap
 ## Workshop Architecture
 
 This workshop demonstrates a microservices architecture with:
+
 - **Platform**: VPC, ECS Cluster, Security Groups, Load Balancer
 - **Frontend**: Ruby on Rails web application
 - **Backend Services**: Node.js and Crystal services (optional)
@@ -34,6 +36,7 @@ This workshop demonstrates a microservices architecture with:
 ## Deployment Options
 
 You can choose between two deployment methods:
+
 1. **CDK (Recommended for learning)**: Infrastructure as Code with Python
 2. **Copilot CLI**: Simplified container deployment tool
 
@@ -63,6 +66,7 @@ cdk deploy --require-approval never
 ```
 
 **What gets deployed:**
+
 - VPC with public/private subnets across AZs
 - ECS Cluster named "container-demo"
 - Service Discovery namespace
@@ -101,6 +105,7 @@ cdk deploy --require-approval never
 ```
 
 **What gets deployed:**
+
 - Application Load Balancer (ALB)
 - ECS Fargate Service
 - Task Definition with container specs
@@ -146,6 +151,7 @@ copilot svc deploy
 ### Get the Application URL
 
 **CDK:**
+
 ```bash
 # Get the load balancer URL from CloudFormation outputs
 aws cloudformation describe-stacks \
@@ -155,6 +161,7 @@ aws cloudformation describe-stacks \
 ```
 
 **Copilot:**
+
 ```bash
 # Get the service URL
 copilot svc show -n ecsdemo-frontend --json | jq -r .routes[].url
@@ -173,6 +180,7 @@ copilot svc show -n ecsdemo-frontend --json | jq -r .routes[].url
 ### Manual Scaling
 
 **CDK:**
+
 ```bash
 # Edit the desired_count in app.py, then redeploy
 cd ecsdemo-frontend/cdk
@@ -181,6 +189,7 @@ cdk deploy --require-approval never
 ```
 
 **Copilot:**
+
 ```bash
 # Edit the manifest file
 vim copilot/ecsdemo-frontend/manifest.yml
@@ -194,12 +203,14 @@ copilot svc deploy
 ### Auto Scaling
 
 **CDK:**
+
 ```bash
 # Add auto scaling configuration to your CDK code
 # Example: Configure target tracking scaling based on CPU utilization
 ```
 
 **Copilot:**
+
 ```bash
 # Add to manifest.yml
 count:
@@ -219,6 +230,7 @@ count:
 ### View Service Status
 
 **CDK:**
+
 ```bash
 # Check ECS service status
 aws ecs describe-services \
@@ -227,6 +239,7 @@ aws ecs describe-services \
 ```
 
 **Copilot:**
+
 ```bash
 # Check service status
 copilot svc status -n ecsdemo-frontend
@@ -238,12 +251,14 @@ copilot app show ecsworkshop
 ### View Logs
 
 **CDK:**
+
 ```bash
 # Using awslogs (installed in requirements.txt)
 awslogs get /ecs/ecsdemo-frontend --start='1 hour ago'
 ```
 
 **Copilot:**
+
 ```bash
 # Tail logs in real-time
 copilot svc logs -n ecsdemo-frontend --follow
@@ -300,6 +315,7 @@ copilot svc deploy
 ### Remove All Resources
 
 **CDK:**
+
 ```bash
 # Delete in reverse order
 cd ecsdemo-frontend/cdk
@@ -310,6 +326,7 @@ cdk destroy
 ```
 
 **Copilot:**
+
 ```bash
 # Delete services
 copilot svc delete -n ecsdemo-frontend
@@ -328,17 +345,20 @@ copilot app delete ecsworkshop
 ### Common Issues
 
 1. **CDK Bootstrap Error**
+
    ```bash
    cdk bootstrap aws://311141527383/us-east-1
    ```
 
 2. **Docker Not Running**
+
    ```bash
    # Start Docker Desktop manually
    open /Applications/Docker.app
    ```
 
 3. **AWS Credentials Not Set**
+
    ```bash
    aws configure
    # Or set environment variables

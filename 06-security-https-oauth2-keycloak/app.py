@@ -15,10 +15,10 @@ CLIENT_ID = "OAuth-Client"
 def verify_token(token):
     """
     Verify token using Keycloak introspection endpoint.
-    
+
     Args:
         token (str): JWT token to verify
-    
+
     Returns:
         dict: Token information if valid, None if invalid
     """
@@ -28,7 +28,7 @@ def verify_token(token):
         "client_secret": CLIENT_SECRET
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    
+
     try:
         response = requests.post(
             KEYCLOAK_INTROSPECT_URL,
@@ -38,15 +38,15 @@ def verify_token(token):
             timeout=10
         )
         response_json = response.json()
-        
+
         # Log for debugging
         print(f"[{datetime.now()}] Token introspection: {json.dumps(response_json, indent=2)}")
-        
+
         # Check if token is active
         if response_json.get("active", False):
             return response_json
         return None
-    
+
     except requests.exceptions.RequestException as e:
         print(f"Error connecting to Keycloak: {e}")
         return None
@@ -67,13 +67,13 @@ def secure_data():
     Requires valid JWT token in Authorization header.
     """
     auth_header = request.headers.get('Authorization')
-    
+
     if not auth_header:
         return jsonify({
             "error": "Missing Authorization header",
             "message": "Include 'Authorization: Bearer <token>' header"
         }), 401
-    
+
     # Extract token from "Bearer <token>"
     try:
         token = auth_header.split(" ")[1]
@@ -82,10 +82,10 @@ def secure_data():
             "error": "Invalid Authorization header format",
             "message": "Use format 'Bearer <token>'"
         }), 401
-    
+
     # Verify token with Keycloak
     token_info = verify_token(token)
-    
+
     if token_info:
         return jsonify({
             "message": "Secure Data Access Granted",

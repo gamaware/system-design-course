@@ -9,7 +9,9 @@
 
 ## Overview
 
-This hands-on lab teaches OAuth 2.0 authentication fundamentals using Keycloak as an Identity and Access Management (IAM) solution. Students will deploy Keycloak on EC2 with SSL/TLS, configure OAuth clients and realms, and build a Flask API that validates JWT tokens for secure access control.
+This hands-on lab teaches OAuth 2.0 authentication fundamentals using Keycloak as an Identity and
+Access Management (IAM) solution. Students will deploy Keycloak on EC2 with SSL/TLS, configure
+OAuth clients and realms, and build a Flask API that validates JWT tokens for secure access control.
 
 ## Learning Objectives
 
@@ -57,18 +59,21 @@ In modern distributed architectures, centralized authentication provides:
 Understanding the distinction is fundamental:
 
 ### Authentication (Who are you?)
+
 - Verifies user identity
 - Methods: username/password, biometrics, certificates, tokens
 - Result: Confirmed identity
 
 ### Authorization (What can you do?)
+
 - Determines user permissions
 - Based on: roles, permissions, policies, context
 - Result: Access granted or denied
 
 ## OAuth 2.0 Fundamentals
 
-**OAuth 2.0** is an authorization framework that enables applications to obtain limited access to user resources without exposing credentials.
+**OAuth 2.0** is an authorization framework that enables applications to obtain limited access to
+user resources without exposing credentials.
 
 ### Key Concepts
 
@@ -88,7 +93,8 @@ Keycloak uses JWT tokens for OAuth 2.0:
 - **Scalable** - Can be validated independently by any service
 
 **JWT Structure:**
-```
+
+```text
 header.payload.signature
 ```
 
@@ -108,7 +114,7 @@ A **Realm** is a workspace that manages its own set of users, credentials, roles
 ## IAM Solutions Comparison
 
 | Feature | Keycloak | AWS Cognito | Auth0 | Firebase Auth |
-|---------|----------|-------------|-------|---------------|
+| ------- | -------- | ----------- | ----- | ------------- |
 | Type | Open Source | Managed Service | SaaS | SaaS |
 | Cost | Free (self-hosted) | Pay-per-use | Freemium | Freemium |
 | Scalability | Manual (clustering) | Automatic | Automatic | Automatic |
@@ -131,7 +137,7 @@ sequenceDiagram
     participant User as Browser (User)
     participant KC as Keycloak (Auth Server)
     participant API as Flask API (Resource Server)
-    
+
     User->>KC: 1. Authenticate (username/password)
     KC->>User: 2. Return JWT Access Token
     User->>API: 3. Request /secure-data with Bearer Token
@@ -141,6 +147,7 @@ sequenceDiagram
 ```
 
 **Flow:**
+
 1. User authenticates with Keycloak using credentials
 2. Keycloak issues JWT access token
 3. User sends token to Flask API in Authorization header
@@ -173,6 +180,7 @@ This lab is divided into tasks that build upon each other:
 Keycloak is a Java enterprise application that requires significant resources:
 
 **Minimum Requirements:**
+
 - **Instance Type:** t3.small (2 vCPU, 2 GB RAM)
 - **Storage:** 20 GB
 - **Why t2.micro is insufficient:** Keycloak's JVM requires ~1.5 GB RAM plus OS overhead
@@ -194,7 +202,8 @@ Keycloak is a Java enterprise application that requires significant resources:
    - **Storage:** 20 GB gp3 (default)
 
 3. **Configure Security Group**
-   ```
+
+   ```text
    Rule 1: SSH (22) - Source: My IP - Description: SSH access
    Rule 2: Custom TCP (8443) - Source: 0.0.0.0/0 - Description: Keycloak HTTPS
    Rule 3: Custom TCP (5000) - Source: 0.0.0.0/0 - Description: Flask API
@@ -231,6 +240,7 @@ pip install flask flask-jwt-extended requests
 ```
 
 **Component Explanation:**
+
 - **docker.io** - Container runtime for Keycloak
 - **jq** - JSON processor for parsing API responses
 - **python3-full** - Complete Python installation with pip and venv
@@ -279,6 +289,7 @@ ls -lh
 ```
 
 **OpenSSL Parameters Explained:**
+
 - `-newkey rsa:2048` - Generate 2048-bit RSA private key
 - `-nodes` - Don't encrypt private key (no password required)
 - `-keyout tls.key` - Output file for private key
@@ -288,6 +299,7 @@ ls -lh
 - `-subj "/CN=$KEYCLOAK_DNS"` - Certificate Common Name (must match hostname)
 
 **Files Created:**
+
 - `tls.key` - Private key (keep secure)
 - `tls.crt` - Public certificate (can be shared)
 
@@ -297,7 +309,8 @@ ls -lh
 
 ### Understanding the Problem: Plaintext vs Encrypted Traffic
 
-Before deploying Keycloak with HTTPS, let's demonstrate why encryption matters by comparing HTTP (plaintext) and HTTPS (encrypted) traffic.
+Before deploying Keycloak with HTTPS, let's demonstrate why encryption matters by comparing HTTP
+(plaintext) and HTTPS (encrypted) traffic.
 
 ### Step 3.1: Capture Plaintext HTTP Traffic
 
@@ -332,9 +345,11 @@ rm test.txt
 ```
 
 **What you'll see:**
-```
+
+```text
 secret-password-123
 ```
+
 ☠️ **The password is completely visible!** Anyone monitoring the network can read it.
 
 ### Step 3.2: Capture Encrypted HTTPS Traffic
@@ -360,27 +375,31 @@ rm http_capture.pcap https_capture.pcap
 ```
 
 **What you'll see:**
-```
+
+```text
 ...E..@.@..............!.....P.......
 .........x.2.K...........h..........
 ..........3.-./.,.0...........+./...
 ```
+
 ✅ **Encrypted gibberish!** The data is protected by TLS encryption.
 
 ### Key Takeaways
 
 | Protocol | Port | Encryption | Security |
-|----------|------|------------|----------|
+| -------- | ---- | ---------- | -------- |
 | HTTP | 8080 | ❌ None | Passwords visible in plaintext |
 | HTTPS | 8443 | ✅ TLS/SSL | Data encrypted, unreadable |
 
 **Why this matters for OAuth:**
+
 - JWT tokens contain sensitive user information
 - Without HTTPS, tokens can be intercepted and stolen
 - Attackers could replay stolen tokens to impersonate users
 - HTTPS encrypts all traffic between client and server
 
 **In production:**
+
 - Always use HTTPS for authentication endpoints
 - Never send tokens over HTTP
 - Use certificates from trusted CAs (Let's Encrypt, DigiCert)
@@ -405,6 +424,7 @@ sudo docker run -d --name keycloak -p 8443:8443 \
 ```
 
 **Docker Parameters Explained:**
+
 - `-d` - Run in detached mode (background)
 - `--name keycloak` - Container name for reference
 - `-p 8443:8443` - Map port 8443 (host:container)
@@ -428,6 +448,7 @@ sudo netstat -tlnp | grep 8443
 ```
 
 **Expected Output:**
+
 - Container STATUS: "Up X minutes"
 - Logs: "Keycloak X.X.X started in XXXXms"
 - Port: `tcp6 0 0 :::8443 :::* LISTEN`
@@ -440,12 +461,14 @@ echo "Access Keycloak at: https://$KEYCLOAK_DNS:8443"
 ```
 
 **Browser Access:**
+
 1. Navigate to `https://<KEYCLOAK_DNS>:8443`
 2. Accept certificate warning (self-signed certificate)
 3. Click "Administration Console"
 4. Login: `admin` / `admin`
 
 ✅ **Success Indicators:**
+
 - Keycloak welcome page loads
 - SSL certificate is active (padlock icon with warning)
 - Admin console is accessible
@@ -489,6 +512,7 @@ echo "Token expires in: $TIME_LEFT seconds ($((TIME_LEFT / 60)) minutes)"
 ```
 
 **OAuth 2.0 Flow Used:** Resource Owner Password Credentials Grant
+
 - `grant_type=password` - Direct username/password exchange
 - `client_id=admin-cli` - Special client for CLI administration
 - Response includes `access_token` (JWT)
@@ -515,6 +539,7 @@ curl -sk -H "Authorization: Bearer $ADMIN_TOKEN" \
 ```
 
 **Realm Configuration:**
+
 - `realm` - Unique identifier (used in URLs)
 - `enabled` - Activate realm immediately
 - `displayName` - Human-readable name
@@ -555,6 +580,7 @@ export CLIENT_UUID
 ```
 
 **Client Configuration:**
+
 - `clientId` - Public identifier for the client
 - `clientAuthenticatorType: "client-secret"` - Uses shared secret
 - `directAccessGrantsEnabled` - Allows password grant flow
@@ -611,6 +637,7 @@ echo "Temporary password set: temppass123"
 ```
 
 **User Configuration:**
+
 - `username` - Login identifier (immutable)
 - `enabled` - User can authenticate
 - `emailVerified` - Skip email verification flow
@@ -638,6 +665,7 @@ echo "Temporary password set: temppass123"
 ### Step 6.4: Verify Active Session
 
 From admin console:
+
 1. **Go to Sessions** (left menu)
 2. **Verify testuser session is active**
 3. **Check IP address matches your location**
@@ -659,20 +687,20 @@ echo "Client Secret: $CLIENT_SECRET"
 # If secret is null, regenerate it
 if [ -z "$CLIENT_SECRET" ] || [ "$CLIENT_SECRET" = "null" ]; then
   echo "Regenerating client secret..."
-  
+
   # Get client UUID
   CLIENT_UUID=$(curl -sk -H "Authorization: Bearer $ADMIN_TOKEN" \
     "https://$KEYCLOAK_DNS:8443/admin/realms/OAuth-Demo/clients" | \
     jq -r '.[] | select(.clientId=="OAuth-Client") | .id')
-  
+
   curl -sk -X POST \
     "https://$KEYCLOAK_DNS:8443/admin/realms/OAuth-Demo/clients/$CLIENT_UUID/client-secret" \
     -H "Authorization: Bearer $ADMIN_TOKEN"
-  
+
   CLIENT_SECRET=$(curl -sk -H "Authorization: Bearer $ADMIN_TOKEN" \
     "https://$KEYCLOAK_DNS:8443/admin/realms/OAuth-Demo/clients/$CLIENT_UUID/client-secret" | \
     jq -r .value)
-  
+
   echo "New Client Secret: $CLIENT_SECRET"
 fi
 
@@ -681,6 +709,7 @@ export CLIENT_SECRET
 ```
 
 **Client Secret:**
+
 - Shared credential between Keycloak and application
 - Must be kept confidential (never expose in frontend code)
 - Used to authenticate the client when requesting tokens
@@ -708,15 +737,18 @@ ls -lh app.py
 
 The `app.py` file creates a REST API with three endpoints that demonstrate OAuth 2.0 authentication:
 
-**1. Configuration (Lines 1-12)**
+#### 1. Configuration (Lines 1-12)
+
 - Reads `KEYCLOAK_DNS` and `CLIENT_SECRET` from environment variables
 - Builds the Keycloak introspection URL dynamically
 - Sets the client ID to "OAuth-Client"
 
-**2. Token Verification Function (Lines 14-40)**
+#### 2. Token Verification Function (Lines 14-40)
+
 ```python
 def verify_token(token):
 ```
+
 - Takes a JWT token as input
 - Sends it to Keycloak's introspection endpoint with client credentials
 - Keycloak validates the token and returns user information
@@ -725,20 +757,24 @@ def verify_token(token):
 **3. Three API Endpoints:**
 
 **`/health` (Public)** - No authentication required
+
 - Returns API status and timestamp
 - Used to verify the API is running
 
 **`/secure-data` (Protected)** - Requires valid JWT token
+
 - Extracts token from `Authorization: Bearer <token>` header
 - Calls `verify_token()` to validate with Keycloak
 - If valid: Returns protected data + user info
 - If invalid: Returns 401 (missing token) or 403 (invalid token)
 
 **`/public-data` (Public)** - No authentication required
+
 - Returns public data for comparison
 - Shows the difference between protected and public endpoints
 
 **Security Flow:**
+
 1. Client sends request with `Authorization: Bearer <JWT>`
 2. Flask extracts the JWT token
 3. Flask asks Keycloak "Is this token valid?"
@@ -775,6 +811,7 @@ curl -s http://localhost:5000/health | jq .
 ```
 
 **Expected Output:**
+
 ```json
 {
   "status": "healthy",
@@ -823,6 +860,7 @@ export TOKEN
 ```
 
 **Token Request Parameters:**
+
 - `grant_type=password` - Resource Owner Password Credentials flow
 - `client_id` - OAuth client identifier
 - `client_secret` - Client authentication credential
@@ -843,6 +881,7 @@ curl -X GET "http://$KEYCLOAK_DNS:5000/public-data" | jq .
 ```
 
 **Expected Results:**
+
 - `/secure-data` without token → HTTP 401 (Unauthorized)
 - `/secure-data` with invalid header → HTTP 401
 - `/public-data` → HTTP 200 (Success)
@@ -859,6 +898,7 @@ curl -X GET "http://$KEYCLOAK_DNS:5000/secure-data" \
 ```
 
 **Expected Output:**
+
 ```json
 {
   "message": "Secure Data Access Granted",
@@ -874,6 +914,7 @@ curl -X GET "http://$KEYCLOAK_DNS:5000/secure-data" \
 ```
 
 ✅ **Success Indicators:**
+
 - HTTP Status: 200
 - User information included in response
 - Protected data returned
@@ -897,6 +938,7 @@ curl -X GET "https://$KEYCLOAK_DNS:8443/realms/OAuth-Demo/.well-known/openid-con
 ```
 
 **SSL Verification:**
+
 - Certificate subject should match `$KEYCLOAK_DNS`
 - Strict validation fails with self-signed certificates (expected)
 - In production, use certificates from trusted CA (Let's Encrypt, DigiCert, etc.)
@@ -968,6 +1010,7 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 ### Security Best Practices
 
 ✅ **Do:**
+
 - Use HTTPS for all authentication traffic
 - Implement token expiration and refresh
 - Validate tokens on every request
@@ -975,6 +1018,7 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 - Implement proper CORS and redirect URI whitelisting
 
 ❌ **Don't:**
+
 - Expose client secrets in frontend code
 - Use self-signed certificates in production
 - Store tokens in localStorage (use httpOnly cookies)
@@ -990,6 +1034,7 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 **Problem:** Container exits immediately or shows "OutOfMemoryError"
 
 **Solution:**
+
 - Verify instance type is t3.small or larger (not t2.micro)
 - Check logs: `sudo docker logs keycloak`
 - Ensure ports are not already in use: `sudo netstat -tlnp | grep 8443`
@@ -999,6 +1044,7 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 **Problem:** Connection timeout or refused
 
 **Solution:**
+
 - Verify Security Group allows port 8443 from 0.0.0.0/0
 - Check container is running: `sudo docker ps`
 - Verify DNS is correct: `echo $KEYCLOAK_DNS`
@@ -1009,6 +1055,7 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 **Problem:** Flask API returns 403 even with valid token
 
 **Solution:**
+
 - Verify CLIENT_SECRET is correct: `echo $CLIENT_SECRET`
 - Check token hasn't expired: Calculate time left
 - Ensure Flask can reach Keycloak (network connectivity)
@@ -1019,6 +1066,7 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 **Problem:** API calls return 401 Unauthorized
 
 **Solution:**
+
 - Tokens expire after 15 minutes
 - Regenerate admin token: Re-run Step 4.1
 - Export new token: `export ADMIN_TOKEN=<new_token>`
@@ -1028,20 +1076,24 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 ## Additional Resources
 
 ### Keycloak Documentation
+
 - [Official Documentation](https://www.keycloak.org/documentation)
 - [Admin REST API](https://www.keycloak.org/docs-api/latest/rest-api/)
 - [Server Administration Guide](https://www.keycloak.org/docs/latest/server_admin/)
 
 ### OAuth 2.0 & OpenID Connect
+
 - [OAuth 2.0 RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)
 - [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html)
 - [JWT RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)
 
 ### AWS Security
+
 - [AWS Well-Architected Framework - Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/)
 - [EC2 Security Groups](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)
 
 ### Flask & Python
+
 - [Flask Documentation](https://flask.palletsprojects.com/)
 - [Flask-JWT-Extended](https://flask-jwt-extended.readthedocs.io/)
 - [Requests Library](https://requests.readthedocs.io/)
@@ -1082,14 +1134,15 @@ After completing this lab, consider exploring:
 
 This lab is part of the Scalable Systems Design course at ITESO.
 
-**Instructor:** Mtro. Jorge Alejandro García Martínez  
-**Email:** alejandrogarcia@iteso.mx  
+**Instructor:** Mtro. Jorge Alejandro García Martínez
+**Email:** <alejandrogarcia@iteso.mx>
 **Course:** Scalable Systems Design - Spring 2026
 
 ---
 
 ## Feedback
 
-If you encounter issues or have suggestions for improving this lab, please contact the instructor or submit feedback through Canvas.
+If you encounter issues or have suggestions for improving this lab, please contact the instructor
+or submit feedback through Canvas.
 
 **Canvas Course:** [https://canvas.iteso.mx/courses/55229](https://canvas.iteso.mx/courses/55229)

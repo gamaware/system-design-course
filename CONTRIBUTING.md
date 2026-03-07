@@ -11,6 +11,7 @@ Thank you for your interest in improving these course materials.
 ## How to Report an Issue
 
 Open a [GitHub Issue](../../issues) describing:
+
 - Which module/lab is affected
 - What is wrong or unclear
 - What the correct behavior or content should be
@@ -32,4 +33,4 @@ Open a [GitHub Issue](../../issues) describing:
 
 ## Questions
 
-Reach out via Canvas or email: alejandrogarcia@iteso.mx
+Reach out via Canvas or email: <alejandrogarcia@iteso.mx>

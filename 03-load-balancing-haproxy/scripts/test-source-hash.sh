@@ -15,7 +15,7 @@ first_backend=""
 for i in {1..10}; do
     result=$(curl -s http://localhost:8080 | grep -o "Backend [0-9]")
     echo "Request $i: $result"
-    if [ -z "$first_backend" ]; then
+    if [ "$first_backend" = "" ]; then
         first_backend="$result"
     fi
 done

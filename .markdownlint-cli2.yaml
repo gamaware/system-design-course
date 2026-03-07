@@ -1,0 +1,6 @@
+ignores:
+  - "01-introduction-horizontal-scalability/ecsdemo-crystal/README.md"
+  - "01-introduction-horizontal-scalability/ecsdemo-frontend/README.md"
+  - "01-introduction-horizontal-scalability/ecsdemo-nodejs/README.md"
+  - "01-introduction-horizontal-scalability/ecsdemo-nodejs/cdk/README.md"
+  - "01-introduction-horizontal-scalability/ecsdemo-platform/README.md"

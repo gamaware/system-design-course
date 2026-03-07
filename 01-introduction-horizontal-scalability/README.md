@@ -7,7 +7,9 @@
 
 ## Overview
 
-This hands-on workshop demonstrates horizontal scaling using AWS ECS Fargate, Application Load Balancer, and autoscaling. Students will deploy a microservices architecture, configure load balancing, implement CPU-based autoscaling, and observe scaling behavior under load.
+This hands-on workshop demonstrates horizontal scaling using AWS ECS Fargate, Application Load
+Balancer, and autoscaling. Students will deploy a microservices architecture, configure load
+balancing, implement CPU-based autoscaling, and observe scaling behavior under load.
 
 ## Learning Objectives
 
@@ -26,20 +28,20 @@ graph TB
     ALB --> Frontend[Frontend Service<br/>Ruby on Rails]
     Frontend --> NodeJS[NodeJS Service<br/>Backend API]
     Frontend --> Crystal[Crystal Service<br/>Backend API]
-    
+
     subgraph ECS Cluster
         Frontend
         NodeJS
         Crystal
     end
-    
+
     subgraph Auto Scaling
         ASG[Auto Scaling Group]
         CW[CloudWatch Metrics]
         ASG -.Monitors.-> Frontend
         CW -.Triggers.-> ASG
     end
-    
+
     style ALB fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
     style Frontend fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
     style NodeJS fill:#68a063,stroke:#232f3e,stroke-width:2px,color:#fff
@@ -85,6 +87,7 @@ chmod +x quick-start.sh
 ### Option 2: Step-by-Step Workshop (Recommended for Learning)
 
 Follow the detailed guides:
+
 - [STEP_BY_STEP_WORKSHOP.md](./STEP_BY_STEP_WORKSHOP.md) - Complete walkthrough
 - [COMPLETE_WORKSHOP_GUIDE.md](./COMPLETE_WORKSHOP_GUIDE.md) - Comprehensive guide
 - [WORKSHOP_GUIDE.md](./WORKSHOP_GUIDE.md) - Original workshop guide
@@ -92,18 +95,21 @@ Follow the detailed guides:
 ## Services Architecture
 
 ### Frontend Service (Ruby on Rails)
+
 - **Purpose**: Main web interface
 - **Technology**: Ruby on Rails
 - **Port**: 3000
 - **Scaling**: Horizontal with ALB
 
 ### NodeJS Service
+
 - **Purpose**: Backend API service
 - **Technology**: Node.js/Express
 - **Port**: 3000
 - **Features**: Service discovery integration
 
 ### Crystal Service
+
 - **Purpose**: High-performance backend API
 - **Technology**: Crystal language
 - **Port**: 3000
@@ -112,18 +118,21 @@ Follow the detailed guides:
 ## Key Features
 
 ### Infrastructure as Code (AWS CDK)
+
 - Python-based CDK stacks
 - Reproducible deployments
 - Version-controlled infrastructure
 - Easy teardown and recreation
 
 ### Horizontal Scaling
+
 - ECS Fargate for serverless containers
 - Application Load Balancer for traffic distribution
 - Target tracking autoscaling policies
 - CloudWatch metrics integration
 
 ### Observability
+
 - CloudWatch Logs for application logs
 - CloudWatch Metrics for performance monitoring
 - Service discovery for microservices communication
@@ -152,6 +161,7 @@ cdk deploy --require-approval never
 ```
 
 **Creates:**
+
 - VPC with public/private subnets
 - ECS Cluster
 - Security Groups
@@ -166,6 +176,7 @@ cdk deploy --require-approval never
 ```
 
 **Creates:**
+
 - Application Load Balancer
 - ECS Service with Fargate tasks
 - Target Group
@@ -355,6 +366,7 @@ source deactivate.sh
 ## Cost Considerations
 
 **Estimated costs for running this workshop:**
+
 - ECS Fargate tasks: ~$0.04/hour per task
 - Application Load Balancer: ~$0.025/hour
 - NAT Gateway: ~$0.045/hour
@@ -366,23 +378,27 @@ source deactivate.sh
 
 ## Key Concepts
 
-### Horizontal Scaling
+### Horizontal Scaling Concepts
+
 - Adding more instances of the same service
 - Distributes load across multiple containers
 - Increases availability and fault tolerance
 - Scales based on demand
 
 ### Vertical Scaling (Not Covered)
+
 - Increasing resources (CPU/memory) of existing instances
 - Limited by instance size constraints
 - Requires downtime for changes
 
 ### Autoscaling Strategies
+
 - **Target Tracking**: Maintain specific metric target
 - **Step Scaling**: Scale based on metric thresholds
 - **Scheduled Scaling**: Scale at specific times
 
 ### Load Balancing
+
 - **Round Robin**: Distribute requests evenly
 - **Least Outstanding Requests**: Send to least busy target
 - **Health Checks**: Remove unhealthy targets automatically

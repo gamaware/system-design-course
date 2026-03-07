@@ -16,7 +16,7 @@ uris=("/api" "/static" "/admin" "/api/users" "/static/css" "/admin/config")
 
 for uri in "${uris[@]}"; do
     echo "Testing URI: $uri"
-    for i in {1..3}; do
+    for _ in {1..3}; do
         curl -s "http://localhost:8080$uri" | grep -o "Backend [0-9]" || echo "  (no match)"
     done
     echo "---"

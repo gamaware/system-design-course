@@ -7,7 +7,9 @@
 
 ## Overview
 
-This hands-on lab teaches DNS fundamentals through practical exercises using `dig` and BIND9. Students will learn how DNS works, explore different DNS record types, configure a DNS server, and understand DNS-based load balancing.
+This hands-on lab teaches DNS fundamentals through practical exercises using `dig` and BIND9.
+Students will learn how DNS works, explore different DNS record types, configure a DNS server,
+and understand DNS-based load balancing.
 
 ## Learning Objectives
 
@@ -29,13 +31,15 @@ This hands-on lab teaches DNS fundamentals through practical exercises using `di
 ## What is DNS?
 
 **DNS (Domain Name System)** is the "phone book" of the Internet:
+
 - Converts human-readable names (`www.google.com`) to IP addresses (`142.250.191.14`)
 - Eliminates the need to memorize IP addresses
 - Distributed and hierarchical for global scalability
 
 ## Lab Structure
 
-This lab is divided into exercises that build upon each other. Execute each command and observe the results to understand DNS behavior.
+This lab is divided into exercises that build upon each other. Execute each command and observe the
+results to understand DNS behavior.
 
 ---
 
@@ -43,7 +47,8 @@ This lab is divided into exercises that build upon each other. Execute each comm
 
 ### What is `dig`?
 
-`dig` (Domain Information Groper) is a command-line tool for querying DNS servers and obtaining detailed information about domains.
+`dig` (Domain Information Groper) is a command-line tool for querying DNS servers and obtaining
+detailed information about domains.
 
 ### Basic Syntax
 
@@ -69,6 +74,7 @@ dig google.com TXT       # Text records
 ```
 
 **Questions to consider:**
+
 - What IP address does `google.com` resolve to?
 - How many mail servers does Google have?
 - What are the authoritative name servers for `google.com`?
@@ -87,6 +93,7 @@ dig @208.67.222.222 amazon.com
 ```
 
 **Public DNS Servers:**
+
 - **8.8.8.8** - Google Public DNS (fast and reliable)
 - **1.1.1.1** - Cloudflare DNS (privacy-focused)
 - **208.67.222.222** - OpenDNS (security filtering)
@@ -108,7 +115,7 @@ dig -x 1.1.1.1
 ### Common DNS Record Types
 
 | Type | Purpose | Example |
-|------|---------|---------|
+| ---- | ------- | ------- |
 | **A** | IPv4 address | `www.example.com → 192.168.1.10` |
 | **AAAA** | IPv6 address | `www.example.com → 2001:db8::1` |
 | **CNAME** | Canonical name (alias) | `blog.example.com → www.example.com` |
@@ -147,6 +154,7 @@ dig github.com +trace
 ```
 
 **Observe:**
+
 - How DNS queries traverse from root servers to authoritative servers
 - The hierarchical nature of DNS resolution
 
@@ -168,6 +176,7 @@ done
 ```
 
 **Questions:**
+
 - Which DNS server responds fastest?
 - Does the response time vary between queries?
 
@@ -178,6 +187,7 @@ done
 ### What is BIND9?
 
 **BIND9** (Berkeley Internet Name Domain) is the most widely used DNS server software:
+
 - Open source, developed by ISC (Internet Systems Consortium)
 - Implements all DNS standards (RFC compliant)
 - Can act as authoritative and recursive DNS server
@@ -194,6 +204,7 @@ named -v
 ```
 
 **What did we install?**
+
 - `bind` - The BIND9 DNS server
 - `bind-utils` - Tools like `dig`, `nslookup`, `named-checkconf`
 
@@ -224,12 +235,14 @@ EOF
 **Configuration Explained:**
 
 **`options` section:**
+
 - `listen-on port 53 { any; }` - Listen on port 53 (DNS) on all interfaces
 - `directory "/var/named"` - Directory for zone files
 - `allow-query { any; }` - Allow queries from any IP
 - `recursion yes` - Enable recursive resolution
 
 **`zone` section:**
+
 - Defines a DNS zone this server manages
 - `type master` - This server is authoritative for this zone
 - `file` - Zone file containing DNS records
@@ -274,6 +287,7 @@ sudo chown named:named /var/named/test.local.db
 **Zone File Explained:**
 
 **SOA (Start of Authority):**
+
 - `$TTL 300` - Time to live (5 minutes)
 - `Serial 1` - Version number (increment on changes)
 - `Refresh 300` - How often secondary DNS checks for updates
@@ -281,6 +295,7 @@ sudo chown named:named /var/named/test.local.db
 - `Expire 604800` - When data expires without contact (7 days)
 
 **DNS Records:**
+
 - `NS` - Defines name server for the zone
 - `A` - Maps hostname to IPv4 address
 - `CNAME` - Creates an alias
@@ -305,11 +320,13 @@ echo "✅ Zone file validated"
 **What do these commands do?**
 
 **`named-checkconf`:**
+
 - Checks syntax of configuration file
 - Detects format errors before starting service
 - Validates zone file references
 
 **`named-checkzone`:**
+
 - Checks syntax of specific zone file
 - Validates DNS records (SOA, NS, A, etc.)
 - Detects common errors
@@ -358,6 +375,7 @@ done
 ```
 
 **Observe:**
+
 - How the order of IP addresses changes between queries
 - This is DNS Round Robin load balancing in action
 
@@ -368,11 +386,13 @@ done
 ### DNS Load Balancing Characteristics
 
 **How it works:**
+
 - DNS server returns multiple IP addresses for the same hostname
 - Client (browser) typically chooses the first IP
 - DNS rotates the order of IPs in subsequent queries
 
 **Algorithm:** Simple Round Robin
+
 - DNS server rotates IPs in each response
 - Does not consider current server load
 - No automatic session persistence
@@ -380,12 +400,14 @@ done
 ### HAProxy Load Balancing Characteristics
 
 **How it works:**
+
 - Single entry point (load balancer IP)
 - HAProxy intercepts all connections
 - Distributes traffic using intelligent algorithms
 - Monitors server health in real-time
 
 **Algorithms available:**
+
 - Round Robin, Least Connections, Weighted, Source Hash, etc.
 - Considers current server state
 - Automatic health checks
@@ -394,7 +416,7 @@ done
 ### Comparison Table
 
 | Aspect | DNS Load Balancing | HAProxy Load Balancing |
-|--------|-------------------|------------------------|
+| ------ | ----------------- | ---------------------- |
 | **Algorithm** | Simple Round Robin | Multiple intelligent algorithms |
 | **Health Checks** | ❌ Not automatic | ✅ Automatic and configurable |
 | **Session Persistence** | ❌ Limited (TTL-based) | ✅ Multiple options |
@@ -407,6 +429,7 @@ done
 ### When to Use Each
 
 **Use DNS Load Balancing when:**
+
 - You need maximum global scalability
 - Servers are relatively stable
 - Cost is a primary concern
@@ -414,6 +437,7 @@ done
 - You can tolerate slow failover (minutes)
 
 **Use HAProxy when:**
+
 - You need advanced balancing algorithms
 - You require automatic health checks
 - Application needs session persistence
@@ -421,6 +445,7 @@ done
 - You want granular traffic control
 
 **Use both (hybrid) when:**
+
 - You have multiple data centers
 - DNS for geographic distribution
 - HAProxy for local balancing in each DC
@@ -561,7 +586,7 @@ sudo mv /etc/named.conf.backup /etc/named.conf
 ## Additional Resources
 
 - [BIND9 Official Documentation](https://www.isc.org/bind/)
-- [ICANN Accredited Registrars](https://www.icann.org/en/contracted-parties/accredited-registrars/list-of-accredited-registrars)
+- [ICANN Accredited Registrars][icann-registrars]
 - [DNS RFC Standards](https://www.ietf.org/rfc/)
 - [AWS Route 53 Documentation](https://docs.aws.amazon.com/route53/)
 
@@ -575,3 +600,5 @@ Created by [Alex Garcia](https://github.com/gamaware)
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+
+[icann-registrars]: https://www.icann.org/en/contracted-parties/accredited-registrars/list-of-accredited-registrars

@@ -16,7 +16,7 @@ echo "  Backend 3: 20% (weight 20)"
 echo ""
 
 declare -A counter
-for i in {1..20}; do
+for _ in {1..20}; do
     result=$(curl -s http://localhost:8080 | grep -o "Backend [0-9]")
     counter[$result]=$((${counter[$result]} + 1))
 done

@@ -25,16 +25,16 @@ echo "Setting up URI-specific content..."
 mkdir -p ~/backend{1..3}/{api,static,admin}
 
 for i in {1..3}; do
-    echo "{\"service\": \"api\", \"server\": \"backend$i\"}" > ~/backend$i/api/index.html
-    echo "<h1>Static Content - Backend $i</h1>" > ~/backend$i/static/index.html
-    echo "<h1>Admin Panel - Backend $i</h1>" > ~/backend$i/admin/index.html
+    echo "{\"service\": \"api\", \"server\": \"backend$i\"}" > ~/backend"$i"/api/index.html
+    echo "<h1>Static Content - Backend $i</h1>" > ~/backend"$i"/static/index.html
+    echo "<h1>Admin Panel - Backend $i</h1>" > ~/backend"$i"/admin/index.html
 done
 
 # Start backend servers
 echo "Starting backend servers..."
 for port in {8001..8005}; do
     backend_num=$((port - 8000))
-    nohup python3 -m http.server $port --directory ~/backend$backend_num --bind 0.0.0.0 > ~/backend$backend_num.log 2>&1 &
+    nohup python3 -m http.server "$port" --directory ~/backend"$backend_num" --bind 0.0.0.0 > ~/backend"$backend_num".log 2>&1 &
     echo "  ✓ Backend $backend_num started on port $port"
 done
 
@@ -45,13 +45,16 @@ sleep 2
 echo "Verifying backend servers..."
 all_ok=true
 for port in {8001..8005}; do
-    if curl -s http://localhost:$port > /dev/null; then
+    if curl -s http://localhost:"$port" > /dev/null; then
         echo "  ✓ Backend on port $port is responding"
     else
         echo "  ✗ Backend on port $port is NOT responding"
         all_ok=false
     fi
 done
+if [ "$all_ok" = false ]; then
+    echo "Warning: some backends did not start correctly"
+fi
 
 # Backup original HAProxy config
 if [ -f /etc/haproxy/haproxy.cfg ]; then

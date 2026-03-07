@@ -1,6 +1,7 @@
 # ECS Workshop - Complete Step-by-Step Guide
 
-This guide walks you through the complete ECS workshop experience: setting up prerequisites, deploying platform infrastructure, deploying the frontend service, manual scaling, and implementing autoscaling.
+This guide walks you through the complete ECS workshop experience: setting up prerequisites, deploying
+platform infrastructure, deploying the frontend service, manual scaling, and implementing autoscaling.
 
 ## Phase 1: Prerequisites and Setup
 
@@ -22,7 +23,7 @@ aws configure
 
 # Enter when prompted:
 # AWS Access Key ID: [your-access-key]
-# AWS Secret Access Key: [your-secret-key]  
+# AWS Secret Access Key: [your-secret-key]
 # Default region name: us-east-1
 # Default output format: json
 ```
@@ -48,6 +49,7 @@ aws cloudformation describe-stacks --stack-name CDKToolkit
 ```
 
 **✅ Prerequisites Complete!** You should see:
+
 - AWS credentials configured
 - CDK bootstrapped
 - Virtual environment activated
@@ -87,6 +89,7 @@ cdk diff
 ```
 
 **Expected output:** Since this is the first deployment, you'll see all new resources being created:
+
 - VPC with subnets
 - ECS Cluster
 - Security Groups
@@ -100,7 +103,7 @@ cdk diff
 cdk deploy --require-approval never
 ```
 
-**⏱️ This takes about 3-5 minutes**
+> Note: This takes about 3-5 minutes.
 
 ### Step 2.6: Verify Platform Deployment
 
@@ -116,6 +119,7 @@ aws cloudformation describe-stacks --stack-name ecsworkshop-base --query 'Stacks
 ```
 
 **✅ Platform Complete!** You should see:
+
 - ECS Cluster: `container-demo`
 - VPC with public/private subnets
 - Service Discovery namespace: `service.local`
@@ -154,6 +158,7 @@ cdk diff
 ```
 
 **Expected output:** New resources for:
+
 - Application Load Balancer (ALB)
 - ECS Fargate Service
 - Task Definition
@@ -167,7 +172,7 @@ cdk diff
 cdk deploy --require-approval never
 ```
 
-**⏱️ This takes about 2-3 minutes**
+> Note: This takes about 2-3 minutes.
 
 ### Step 3.6: Get Application URL
 
@@ -192,6 +197,7 @@ echo "Open this URL in your browser: http://$alb_url"
 ```
 
 **✅ Frontend Complete!** You should see:
+
 - Working web application
 - Load balancer distributing traffic
 - ECS service running 1 task
@@ -236,7 +242,7 @@ watch -n 5 'aws ecs describe-services \
   --output table'
 ```
 
-**Press Ctrl+C to stop watching**
+Press `Ctrl+C` to stop watching.
 
 ### Step 4.4: Scale Up Manually (Method 2: CDK)
 
@@ -259,7 +265,8 @@ aws ecs list-tasks --cluster container-demo --service-name ecsdemo-frontend
 # Get detailed task information
 aws ecs describe-tasks \
   --cluster container-demo \
-  --tasks $(aws ecs list-tasks --cluster container-demo --service-name ecsdemo-frontend --query 'taskArns[0]' --output text) \
+  --tasks $(aws ecs list-tasks --cluster container-demo --service-name ecsdemo-frontend \
+    --query 'taskArns[0]' --output text) \
   --query 'tasks[0].{TaskArn:taskArn,LastStatus:lastStatus,HealthStatus:healthStatus,CreatedAt:createdAt}'
 ```
 
@@ -290,6 +297,7 @@ aws ecs describe-services \
 ```
 
 **✅ Manual Scaling Complete!** You've learned:
+
 - How to scale ECS services manually via CLI
 - How to scale via CDK code changes
 - How to monitor scaling operations
@@ -306,7 +314,7 @@ aws ecs describe-services \
 grep -n -A 8 "Enable Service Autoscaling" app.py
 ```
 
-**You should see commented lines around line 65-75**
+You should see commented lines around line 65-75.
 
 ### Step 5.2: Enable Autoscaling Code
 
@@ -320,6 +328,7 @@ sed -i '' 's/#    /    /g' app.py
 ```
 
 **Or manually edit the file:**
+
 ```bash
 # Open the file in your preferred editor
 nano app.py
@@ -330,13 +339,14 @@ code app.py
 ```
 
 Find these lines and remove the `#` symbols:
+
 ```python
         # Enable Service Autoscaling
         #self.autoscale = self.fargate_load_balanced_service.service.auto_scale_task_count(
         #    min_capacity=1,
         #    max_capacity=10
         #)
-        
+
         #self.autoscale.scale_on_cpu_utilization(
         #    "CPUAutoscaling",
         #    target_utilization_percent=50,
@@ -353,6 +363,7 @@ cdk diff
 ```
 
 **Expected output:** Two new resources:
+
 - `AWS::ApplicationAutoScaling::ScalableTarget`
 - `AWS::ApplicationAutoScaling::ScalingPolicy`
 
@@ -450,6 +461,7 @@ kill $LOG_PID $WATCH_PID 2>/dev/null || true
 ```
 
 **✅ Autoscaling Complete!** You've learned:
+
 - How to configure ECS autoscaling with CDK
 - How autoscaling responds to CPU utilization
 - How to monitor scaling activities
@@ -476,7 +488,9 @@ awslogs get /ecs/ecsdemo-frontend --watch
 
 ```bash
 # View ECS service metrics in AWS Console
-echo "🔗 CloudWatch Console: https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#metricsV2:graph=~();search=ECS;namespace=AWS/ECS"
+CW_URL="https://console.aws.amazon.com/cloudwatch/home"
+CW_URL+="?region=us-east-1#metricsV2:graph=~();search=ECS;namespace=AWS/ECS"
+echo "CloudWatch Console: $CW_URL"
 
 # Or get metrics via CLI
 aws cloudwatch list-metrics --namespace AWS/ECS --metric-name CPUUtilization
@@ -532,6 +546,7 @@ source deactivate.sh
 6. ✅ **Monitoring**: Used CloudWatch logs and metrics to observe behavior
 
 **Key Learning Points:**
+
 - Infrastructure as Code with AWS CDK
 - ECS Fargate for serverless containers
 - Application Load Balancer for traffic distribution
@@ -540,6 +555,7 @@ source deactivate.sh
 - Load testing with siege
 
 **Next Steps:**
+
 - Add backend services (Node.js, Crystal)
 - Implement blue/green deployments
 - Add database integration

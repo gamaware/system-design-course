@@ -1,6 +1,7 @@
 # Complete ECS Workshop Implementation Guide
 
-Based on the official ECS Workshop, this guide provides step-by-step instructions for implementing autoscaling and monitoring.
+Based on the official ECS Workshop, this guide provides step-by-step instructions for implementing
+autoscaling and monitoring.
 
 ## Part 1: Setup Autoscaling in CDK Code
 
@@ -14,7 +15,8 @@ cd ecsdemo-frontend/cdk
 
 ### Step 2: Add Autoscaling Configuration
 
-In your `app.py` file, find the section after the `fargate_load_balanced_service` is created and add this autoscaling code:
+In your `app.py` file, find the section after the `fargate_load_balanced_service` is created and
+add this autoscaling code:
 
 ```python
 # Enable Service Autoscaling
@@ -32,6 +34,7 @@ self.autoscale.scale_on_cpu_utilization(
 ```
 
 **Key Points from the Workshop:**
+
 - Search for `Enable Service Autoscaling` in the code
 - Remove the comments (#) from the autoscaling code
 - This creates a target tracking policy for CPU utilization
@@ -48,6 +51,7 @@ cdk diff
 ```
 
 **What you should see:**
+
 - Addition of two resources (as shown in the workshop image)
 - `AWS::ApplicationAutoScaling::ScalableTarget`
 - `AWS::ApplicationAutoScaling::ScalingPolicy`
@@ -80,6 +84,7 @@ siege -c 20 -t 1m $alb_url
 ```
 
 **Parameters:**
+
 - `-c 20`: 20 concurrent users
 - `-t 1m`: Run for 1 minute
 - This will generate load to trigger autoscaling
@@ -113,6 +118,7 @@ awslogs get -G -S --timestamp --start 1m --watch $log_group
 ```
 
 **Command Breakdown:**
+
 - `-G`: Don't group by log stream
 - `-S`: Don't show log stream names
 - `--timestamp`: Show timestamps
@@ -227,4 +233,5 @@ echo "✅ Workshop complete! Check the AWS Console for detailed metrics."
 3. **Load Testing**: `siege` is effective for generating load to trigger scaling
 4. **Metrics**: CloudWatch automatically tracks CPU utilization and scaling activities
 
-This implementation follows the exact workshop pattern shown in your images and provides a complete hands-on experience with ECS autoscaling.
+This implementation follows the exact workshop pattern shown in your images and provides a complete
+hands-on experience with ECS autoscaling.

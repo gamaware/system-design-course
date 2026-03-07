@@ -7,7 +7,9 @@
 
 ## Overview
 
-This hands-on lab demonstrates multiple load balancing algorithms using HAProxy on AWS EC2. Students will configure and test different balancing strategies, understand health checks, and observe failover behavior.
+This hands-on lab demonstrates multiple load balancing algorithms using HAProxy on AWS EC2. Students
+will configure and test different balancing strategies, understand health checks, and observe
+failover behavior.
 
 ## Learning Objectives
 
@@ -20,7 +22,7 @@ This hands-on lab demonstrates multiple load balancing algorithms using HAProxy 
 ## Algorithms Covered
 
 | Algorithm | Use Case | Behavior |
-|-----------|----------|----------|
+| --------- | -------- | -------- |
 | **Round Robin** | Equal capacity servers | Sequential distribution |
 | **Least Connections** | Variable workloads | Prefers servers with fewer connections |
 | **Random** | Simple uniform distribution | Random distribution |
@@ -37,7 +39,7 @@ This hands-on lab demonstrates multiple load balancing algorithms using HAProxy 
 
 ## Lab Structure
 
-```
+```text
 HAProxy Load Balancing Demo/
 ├── README.md                    # This file
 ├── setup.sh                     # Initial setup script
@@ -77,6 +79,7 @@ chmod +x setup.sh
 ```
 
 This will:
+
 - Install HAProxy and Python
 - Create 5 backend servers on ports 8001-8005
 - Start all backend services
@@ -109,13 +112,15 @@ Each algorithm has its own test script:
 ### 4. Monitor Statistics
 
 Access HAProxy statistics dashboard:
-```
+
+```text
 http://<your-ec2-public-ip>:8404/stats
 ```
 
 ### 5. Load Testing
 
 Run load test to observe behavior under stress:
+
 ```bash
 ./scripts/load-test.sh
 ```
@@ -150,7 +155,8 @@ Run load test to observe behavior under stress:
 ./scripts/test-weighted.sh
 ```
 
-**Expected Result**: 
+**Expected Result**:
+
 - Backend 1: ~50% of traffic (weight 50)
 - Backend 2: ~30% of traffic (weight 30)
 - Backend 3: ~20% of traffic (weight 20)
@@ -183,7 +189,8 @@ Run load test to observe behavior under stress:
 ./scripts/test-failover.sh
 ```
 
-**Expected Result**: 
+**Expected Result**:
+
 1. Traffic distributed across primary servers
 2. When a server fails, traffic automatically redirects
 3. Backup servers activate only when all primary servers are down
@@ -199,7 +206,7 @@ graph TD
     HAProxy --> Backend3[Backend 3<br/>Port 8003]
     HAProxy -.Backup.-> Backend4[Backend 4<br/>Port 8004<br/>Backup]
     HAProxy -.Backup.-> Backend5[Backend 5<br/>Port 8005<br/>Backup]
-    
+
     style HAProxy fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
     style Backend1 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
     style Backend2 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
@@ -213,6 +220,7 @@ graph TD
 ### Health Checks
 
 HAProxy continuously monitors backend health:
+
 - `inter 2s` - Check every 2 seconds
 - `rise 2` - 2 successful checks to mark as UP
 - `fall 3` - 3 failed checks to mark as DOWN
@@ -268,6 +276,7 @@ Remove all lab resources:
 ```
 
 This will:
+
 - Stop all backend servers
 - Stop HAProxy service
 - Remove temporary files and logs

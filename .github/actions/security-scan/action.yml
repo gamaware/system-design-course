@@ -12,7 +12,7 @@ runs:
       uses: semgrep/semgrep-action@v1
       with:
         config: auto
-        
+
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
@@ -20,7 +20,7 @@ runs:
         scan-ref: ${{ inputs.scan-path }}
         format: 'sarif'
         output: 'trivy-results.sarif'
-        
+
     - name: Upload Trivy results to GitHub Security
       uses: github/codeql-action/upload-sarif@v3
       if: always()
