@@ -1,26 +1,24 @@
-# Security scanning disabled for educational repository
-# The demo code contains intentional simplifications for learning purposes
+name: Security Scanning
 
-# name: Security Scanning
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
+permissions:
+  contents: read
+  security-events: write
+  actions: read
 
-# permissions:
-#   contents: read
-#   security-events: write
-#   actions: read
+jobs:
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-# jobs:
-#   security-scan:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-      
-#       - name: Run Security Scan
-#         uses: ./.github/actions/security-scan
-#         with:
-#           scan-path: '.'
+      - name: Run Security Scan
+        uses: ./.github/actions/security-scan
+        with:
+          scan-path: '.'
