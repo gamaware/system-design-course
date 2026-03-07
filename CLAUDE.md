@@ -24,6 +24,7 @@ docs/
   actions/              # Composite actions
   ISSUE_TEMPLATE/       # Issue templates
   PULL_REQUEST_TEMPLATE.md
+  copilot-instructions.md  # Copilot code review custom instructions
 ```
 
 ### Module Naming
@@ -46,7 +47,7 @@ technology (e.g., `03-load-balancing-haproxy`, `06-security-https-oauth2-keycloa
 
 - All changes go through PRs — no direct pushes to `main`.
 - Squash merge only (merge commits and rebase disabled).
-- CodeRabbit auto-reviews all PRs — address its comments before merging.
+- CodeRabbit and GitHub Copilot auto-review all PRs — address their comments before merging.
 - All required status checks must pass before merge.
 - At least 1 approving review required (CODEOWNERS enforced).
 - All review conversations must be resolved before merge.
@@ -129,13 +130,28 @@ Weekly auto-update of pre-commit hook versions via PR.
 
 Monitors GitHub Actions dependencies weekly.
 
+## Code Review
+
+- **CodeRabbit** — Auto-reviews via `.coderabbit.yaml`. Detailed suggestions with path-specific instructions.
+- **GitHub Copilot** — Auto-reviews via ruleset. Custom instructions in `.github/copilot-instructions.md`.
+- Both reviewers run on every PR. Address comments from both before merging.
+
 ## Security
 
 - Never commit secrets, credentials, private keys, or `.env` files.
 - `.gitignore` excludes: `.env`, `.env.local`, `*.pem`, `*.key`, `credentials.json`.
 - `detect-secrets` baseline must be updated for false positives:
   `detect-secrets scan --update .secrets.baseline`.
-- Lab instructions use placeholder values (`YOUR_CLIENT_SECRET`, `<your-instance-ip>`).
+- Lab instructions use placeholder values (`YOUR_CLIENT_SECRET`, `<your-instance-ip>`,
+  `YOUR_AWS_ACCOUNT_ID`).
+
+## Lab Content Rules
+
+- **Dateless** — No semester names, specific dates, or Canvas course links. Content must
+  be reusable across semesters.
+- **English only** — All lab content, code comments, and HTML output in English.
+- **Placeholders** — Never hardcode AWS account IDs, credentials, or instance IPs.
+- **Cross-references** — Directory paths in instructions must match actual directory names.
 
 ## ADRs
 
