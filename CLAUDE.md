@@ -56,6 +56,7 @@ technology (e.g., `03-load-balancing-haproxy`, `06-security-https-oauth2-keycloa
 
 - Required status checks: Markdown Linting, YAML Validation, Shell Script Validation,
   Validate Repository Structure, Security Scan.
+- Additional CI checks (not required but run on PRs): Check Links, README Quality Check.
 - Strict status checks — branch must be up to date with main.
 - Stale reviews dismissed on new pushes.
 - Required linear history (squash only).
@@ -105,9 +106,9 @@ All hooks must pass before committing. Install with `pre-commit install`.
 - Line length limit: 120 characters (MD013).
 - Tables are exempt from line length.
 - Every directory must have a `README.md`.
-- Table separator lines must have spaces around pipes: `| --- | --- |` not `|---|---|` (MD060).
-- Use ATX headings (`#`), not bold text as headings (MD036).
-- Fenced code blocks must specify a language (MD040).
+- Table separator lines must have spaces around pipes: `| --- | --- |` not `|---|---|`.
+- Use ATX headings (`#`), not bold text as headings.
+- Fenced code blocks must specify a language.
 
 ## CI/CD Pipelines
 
