@@ -15,7 +15,7 @@ reflect this pedagogical progression.
 
 The module order follows the syllabus progression:
 
-1. **Weeks 1-2**: Introduction and horizontal scalability (ECS demo with Kubernetes/Copilot).
+1. **Weeks 1-2**: Introduction and horizontal scalability (ECS demo with Kubernetes/AWS Copilot).
 2. **Week 3**: Compute fundamentals (EC2 basics).
 3. **Week 4**: Load balancing (HAProxy lab with multiple algorithms).
 4. **Week 5**: DNS (dig queries and BIND9 configuration).

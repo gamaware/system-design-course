@@ -42,6 +42,11 @@ cdk.context.json
 .env
 .env.local
 
+# Credentials and certificates
+*.pem
+*.key
+credentials.json
+
 # Logs
 *.log
 logs/
