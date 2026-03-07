@@ -100,8 +100,9 @@ All hooks must pass before committing. Install with `pre-commit install`.
 - Use `shellharden --replace` to auto-fix quoting issues.
 - Quote all variables. Prefer `"$var"` over `"${var}"` — only use braces when needed (e.g., `"${var}_suffix"`).
 - Use arrays properly for word splitting scenarios.
-- Scripts must have shebangs and executable permissions (`chmod +x`).
-- Editing tools may strip executable permissions — verify with `git diff --stat` and restore with `chmod +x` if needed.
+- Scripts must have shebangs and executable permissions (`chmod +x <script>`).
+- Editing tools may strip executable permissions — verify with `git diff --summary`
+  and restore with `chmod +x <script>` if needed.
 
 ## Markdown
 
