@@ -30,16 +30,14 @@ environment.
 
 ```mermaid
 graph TB
-    subgraph docker["Docker Compose Environment"]
-        subgraph frontend["Frontend Network — 172.16.238.0/24"]
-            BOB_FE["Bob's Laptop<br/>eth0: 172.16.238.10"]
-            SRV_FE["devapp01-web<br/>eth0: 172.16.238.20"]
-        end
+    subgraph frontend["Frontend Network - 172.16.238.0/24"]
+        BOB_FE["Bob's Laptop<br/>eth0: 172.16.238.10"]
+        SRV_FE["devapp01-web<br/>eth0: 172.16.238.20"]
+    end
 
-        subgraph backend["Backend Network — 172.16.239.0/24"]
-            BOB_BE["Bob's Laptop<br/>eth1: 172.16.239.10"]
-            SRV_BE["devapp01<br/>eth1: 172.16.239.20"]
-        end
+    subgraph backend["Backend Network - 172.16.239.0/24"]
+        BOB_BE["Bob's Laptop<br/>eth1: 172.16.239.10"]
+        SRV_BE["devapp01<br/>eth1: 172.16.239.20"]
     end
 
     BOB_FE -."BROKEN".-> SRV_FE
@@ -324,7 +322,7 @@ the same fundamentals (interfaces, IPs, routing) in a cloud environment.
 
 **Requirements:** AWS Academy Learner Lab or AWS account with EC2 access.
 
-![AWS VPC architecture showing a student connecting via SSH through an Internet Gateway to an EC2 instance in a public subnet, with an unused private subnet, all within a VPC using CIDR 172.16.0.0/16](aws-vpc-architecture.png)
+![AWS VPC with public and private subnets, Internet Gateway, and EC2 instance](aws-vpc-architecture.png)
 
 ### Task 7: Create a VPC
 
