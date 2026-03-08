@@ -1,0 +1,7 @@
+---
+# DL3008: Pin versions in apt-get install
+# Ignored because lab Dockerfiles use pinned base images (e.g., ubuntu:22.04)
+# where pinning apt package versions makes containers brittle across image
+# rebuilds and adds no educational value.
+ignored:
+  - DL3008

@@ -60,6 +60,18 @@ jobs:
           config_file: '.yamllint.yml'
           strict: false
 
+  dockerfile-lint:
+    name: Dockerfile Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run hadolint on Dockerfiles
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          recursive: true
+          ignore: DL3008
+
   file-structure:
     name: Validate Repository Structure
     runs-on: ubuntu-latest

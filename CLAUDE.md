@@ -75,6 +75,7 @@ All hooks must pass before committing. Install with `pre-commit install`.
 - **Secrets**: detect-secrets (with `.secrets.baseline`), gitleaks.
 - **Shell**: shellcheck (severity: warning), shellharden.
 - **Markdown**: markdownlint with `--fix`.
+- **Docker**: hadolint (Dockerfiles), docker-compose-check (docker-compose.yml).
 - **GitHub Actions**: actionlint.
 - **Commits**: conventional-pre-commit (commit-msg stage).
 

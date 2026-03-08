@@ -50,6 +50,27 @@ repos:
         language: system
         types: [shell]
 
+  - repo: local
+    hooks:
+      - id: hadolint
+        name: hadolint
+        entry: hadolint
+        language: system
+        files: Dockerfile
+        exclude: |
+          (?x)^(
+            01-introduction-horizontal-scalability/ecsdemo-.*
+          )$
+      - id: docker-compose-check
+        name: docker-compose-check
+        entry: bash -c 'for f; do docker compose -f "$f" config --quiet; done' --
+        language: system
+        files: docker-compose\.yml$
+        exclude: |
+          (?x)^(
+            01-introduction-horizontal-scalability/ecsdemo-.*
+          )$
+
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.47.0
     hooks:
