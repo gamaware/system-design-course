@@ -302,7 +302,101 @@ Expected output from curl:
 
 ---
 
-## Cleanup
+## Optional: AWS VPC Networking
+
+This section maps the Linux networking concepts you just practiced to their
+AWS equivalents. You will create a VPC, launch an EC2 instance, and observe
+the same fundamentals (interfaces, IPs, routing) in a cloud environment.
+
+**Requirements:** AWS Academy Learner Lab or AWS account with EC2 access.
+
+### Task 7: Create a VPC
+
+1. Open the **VPC Console** in AWS
+2. Click **Create VPC** and select **VPC and more**
+3. Configure:
+   - **Name:** `networking-lab`
+   - **IPv4 CIDR:** `172.16.0.0/16`
+   - **Number of Availability Zones:** 1
+   - **Number of public subnets:** 1
+   - **Number of private subnets:** 1
+   - **NAT gateways:** None
+   - **VPC endpoints:** None
+4. Click **Create VPC**
+
+The wizard automatically creates the VPC, subnets, route tables, and an
+internet gateway — no manual route table configuration needed.
+
+> **Question:** How does this VPC map to the Docker lab? What is the AWS
+> equivalent of the two Docker networks you worked with?
+>
+> **Hint:** The public and private subnets are analogous to the frontend
+> and backend networks. The internet gateway is like the default gateway
+> (`172.16.238.1`) you configured earlier.
+
+### Task 8: Launch an EC2 Instance
+
+1. Open the **EC2 Console** and click **Launch Instance**
+2. Configure:
+   - **Name:** `networking-lab-instance`
+   - **AMI:** Amazon Linux 2023
+   - **Instance type:** t2.micro
+   - **Key pair:** Create or select an existing key pair
+   - **Network settings:** Select `networking-lab` VPC, public subnet
+   - **Auto-assign Public IP:** Enable
+   - **Security group:** Allow SSH (port 22) from your IP
+3. Launch the instance and connect via SSH
+
+### Task 9: Explore Networking on EC2
+
+Once connected to your instance, run the same commands from Part 1:
+
+```bash
+# View network interfaces — compare to Docker lab
+ip a
+
+# View routing table — notice the default gateway
+ip r
+
+# Test external connectivity
+ping -c 3 google.com
+```
+
+> **Question:** How many interfaces does the EC2 instance have? What is
+> the default gateway, and who configured it?
+>
+> **Hint:** EC2 instances typically have one interface (`eth0`) with a
+> private IP from the subnet CIDR. The default gateway is automatically
+> set by AWS (first IP in the subnet, e.g., `172.16.0.1`). Unlike the
+> Docker lab, you did not need to configure this manually.
+
+### Task 10: Compare Linux vs AWS Networking
+
+| Linux Concept | AWS Equivalent |
+| --- | --- |
+| Network interface (`eth0`) | Elastic Network Interface (ENI) |
+| IP address (`ip a`) | Private/Public IP assigned to ENI |
+| Routing table (`ip r`) | VPC Route Table |
+| Default gateway | Internet Gateway / NAT Gateway |
+| Multiple interfaces | Multiple ENIs attached to an instance |
+| `ip link set up/down` | ENI attach/detach or Security Group rules |
+
+> **Key insight:** AWS automates what you did manually in the Docker lab.
+> The VPC wizard created route tables, attached an internet gateway, and
+> assigned IPs — all the steps that required manual `ip` commands in Linux.
+
+### AWS Cleanup
+
+Delete resources in this order to avoid dependency errors:
+
+1. **Terminate** the EC2 instance
+2. Wait for the instance to fully terminate
+3. Go to **VPC Console** and **Delete** the `networking-lab` VPC
+   (this removes subnets, route tables, and the internet gateway)
+
+---
+
+## Local Cleanup
 
 ```bash
 ./cleanup.sh
@@ -356,9 +450,11 @@ After completing this lab, you should take away these lessons:
    inspect the server, fix and verify — applies to real-world network
    debugging at any scale.
 
-5. **These fundamentals map directly to cloud networking.** AWS VPCs, subnets,
-   route tables, and security groups are abstractions of the same concepts
-   you practiced here: interfaces, IP addresses, routes, and firewalls.
+5. **These fundamentals map directly to cloud networking.** As the optional
+   AWS section demonstrates, VPCs, subnets, route tables, and security
+   groups are abstractions of the same concepts you practiced locally.
+   AWS automates what you did manually — but understanding the underlying
+   mechanics makes cloud networking far easier to debug.
 
 ## Next Steps
 
