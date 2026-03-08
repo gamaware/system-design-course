@@ -3,6 +3,7 @@
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Bash](https://img.shields.io/badge/Bash-%23121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![CDK](https://img.shields.io/badge/AWS_CDK-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![IaC](https://img.shields.io/badge/IaC-%23326CE5.svg?style=for-the-badge&logoColor=white)
 ![Scalability][badge-scalability]
@@ -96,7 +97,21 @@ Lab exploring OAuth 2.0 authentication with Keycloak as an Identity and Access M
 **Key Concepts**: OAuth 2.0, OpenID Connect, JWT tokens, token introspection, identity federation,
 multi-tenancy, distributed authentication, API security
 
-#### [07 — Networking](./07-networking) _(coming soon)_
+#### [07 — Networking](./07-networking)
+
+Lab teaching Linux networking fundamentals through a Docker-based troubleshooting scenario, with an
+optional AWS VPC extension. Students learn to:
+
+- Inspect network interfaces, IP addresses, and routing tables
+- Diagnose broken network configurations (downed interfaces, missing routes)
+- Fix network issues using `ip link` and `ip route` commands
+- Use SSH to access remote systems for troubleshooting
+- (Optional) Create an AWS VPC and compare Linux networking to cloud equivalents
+
+**Technologies**: Docker, Docker Compose, Linux networking tools (ip, ping, telnet, curl), SSH, AWS VPC
+
+**Key Concepts**: Network interfaces, routing tables, default gateways, subnets, DNS resolution,
+network troubleshooting, VPC networking
 
 #### [08 — Distributed File Systems](./08-distributed-file-systems) _(coming soon)_
 
