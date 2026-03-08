@@ -324,7 +324,7 @@ the same fundamentals (interfaces, IPs, routing) in a cloud environment.
 
 **Requirements:** AWS Academy Learner Lab or AWS account with EC2 access.
 
-![AWS VPC Architecture](aws-vpc-architecture.png)
+![AWS VPC architecture showing a student connecting via SSH through an Internet Gateway to an EC2 instance in a public subnet, with an unused private subnet, all within a VPC using CIDR 172.16.0.0/16](aws-vpc-architecture.png)
 
 ### Task 7: Create a VPC
 
