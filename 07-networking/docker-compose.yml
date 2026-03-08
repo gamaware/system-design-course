@@ -1,0 +1,48 @@
+services:
+  bob-laptop:
+    build:
+      context: .
+      dockerfile: Dockerfile.laptop
+    container_name: bob-laptop
+    hostname: bob-laptop
+    cap_add:
+      - NET_ADMIN
+    networks:
+      frontend-net:
+        ipv4_address: 172.16.238.10
+      backend-net:
+        ipv4_address: 172.16.239.10
+    stdin_open: true
+    tty: true
+
+  devapp01:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: devapp01
+    hostname: devapp01
+    cap_add:
+      - NET_ADMIN
+    networks:
+      frontend-net:
+        ipv4_address: 172.16.238.20
+        aliases:
+          - devapp01-web
+      backend-net:
+        ipv4_address: 172.16.239.20
+    stdin_open: true
+    tty: true
+
+networks:
+  frontend-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1
+  backend-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.239.0/24
+          gateway: 172.16.239.1
