@@ -38,7 +38,12 @@ and understand DNS-based load balancing.
 
 ## Lab Structure
 
-This lab is divided into exercises that build upon each other. Execute each command and observe the
+```text
+04-dns-dig-bind9/
+└── README.md              # This file (all exercises run on EC2)
+```
+
+This lab runs entirely on an AWS EC2 instance. Execute each command and observe the
 results to understand DNS behavior.
 
 ---

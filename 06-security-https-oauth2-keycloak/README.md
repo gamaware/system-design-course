@@ -33,6 +33,17 @@ OAuth clients and realms, and build a Flask API that validates JWT tokens for se
 - Basic understanding of REST APIs and HTTP
 - Familiarity with command line and SSH
 
+## Lab Structure
+
+```text
+06-security-https-oauth2-keycloak/
+├── README.md              # This file
+└── app.py                 # Flask API with OAuth 2.0 token validation
+```
+
+Most of this lab runs on an AWS EC2 instance. The `app.py` file is deployed
+to the instance during the lab.
+
 ## What is Keycloak?
 
 **Keycloak** is an open-source Identity and Access Management (IAM) solution developed by Red Hat that provides:
@@ -155,7 +166,7 @@ sequenceDiagram
 5. Keycloak confirms token validity and returns user information
 6. API returns protected data if token is valid
 
-## Lab Structure
+## Task Overview
 
 This lab is divided into tasks that build upon each other:
 

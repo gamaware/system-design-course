@@ -57,12 +57,13 @@ find and fix the issue.
 
 ```text
 07-networking/
-├── README.md              # This file
-├── docker-compose.yml     # Lab environment definition
-├── setup.sh               # Start lab and introduce network issues
-├── cleanup.sh             # Tear down the environment
-├── Dockerfile.laptop      # Bob's laptop image
-└── Dockerfile.server      # Web server image
+├── README.md                  # This file
+├── docker-compose.yml         # Lab environment definition
+├── setup.sh                   # Start lab and introduce network issues
+├── cleanup.sh                 # Tear down the environment
+├── Dockerfile.laptop          # Bob's laptop image
+├── Dockerfile.server          # Web server image
+└── aws-vpc-architecture.png   # Architecture diagram for optional AWS section
 ```
 
 ## Quick Start
