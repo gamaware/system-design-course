@@ -76,7 +76,8 @@ All hooks must pass before committing. Install with `pre-commit install`.
 - **Shell**: shellcheck (severity: warning), shellharden.
 - **Markdown**: markdownlint with `--fix`.
 - **Docker**: hadolint (Dockerfiles), docker-compose-check (docker-compose.yml).
-- **GitHub Actions**: actionlint.
+- **Prose**: Vale with write-good (passive voice, weasel words) and proselint (grammar, usage).
+- **GitHub Actions**: actionlint, zizmor (security analysis).
 - **Commits**: conventional-pre-commit (commit-msg stage).
 
 ## Linting Policy
@@ -118,8 +119,9 @@ All hooks must pass before committing. Install with `pre-commit install`.
 
 ### quality-checks.yml
 
-Markdown linting, link checking, ShellCheck, YAML linting, repository structure
-validation, README quality checks.
+Markdown linting, link checking, ShellCheck, YAML linting, Dockerfile linting,
+repository structure validation, README quality checks, zizmor (Actions security),
+Vale (prose linting).
 
 ### security.yml
 
@@ -141,8 +143,15 @@ Monitors GitHub Actions dependencies weekly.
 - Reviewers may comment on issues already fixed in subsequent commits.
   Verify current file state before acting — stale comments can be dismissed.
 
+## GitHub Actions Security
+
+- All `actions/checkout` steps must include `persist-credentials: false`.
+- Action references use tag pins (e.g., `@v6`); configured via `zizmor.yml` with `ref-pin` policy.
+- zizmor runs in CI and as a pre-commit hook to catch security issues in workflows.
+
 ## Security
 
+- GitHub secret scanning and push protection enabled at the repository level.
 - Never commit secrets, credentials, private keys, or `.env` files.
 - `.gitignore` excludes: `.env`, `.env.local`, `*.pem`, `*.key`, `credentials.json`.
 - `detect-secrets` baseline must be updated for false positives:
