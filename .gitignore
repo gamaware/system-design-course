@@ -47,6 +47,9 @@ cdk.context.json
 *.key
 credentials.json
 
+# Vale
+styles/
+
 # Logs
 *.log
 logs/

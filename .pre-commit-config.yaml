@@ -77,10 +77,27 @@ repos:
       - id: markdownlint
         args: ['--fix']
 
+  - repo: local
+    hooks:
+      - id: vale
+        name: vale
+        entry: bash -c 'vale sync --no-progress 2>/dev/null; vale "$@"' --
+        language: system
+        types: [markdown]
+
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.11
     hooks:
       - id: actionlint
+
+  - repo: local
+    hooks:
+      - id: zizmor
+        name: zizmor
+        entry: zizmor .github/workflows/
+        language: system
+        files: ^\.github/workflows/.*\.ya?ml$
+        pass_filenames: false
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.4.0
