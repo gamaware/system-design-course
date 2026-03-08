@@ -28,7 +28,28 @@ environment.
 
 ## Architecture
 
-![Networking Lab Architecture](networking-lab-architecture.png)
+```mermaid
+graph TB
+    subgraph docker["Docker Compose Environment"]
+        subgraph frontend["Frontend Network — 172.16.238.0/24"]
+            BOB_FE["Bob's Laptop<br/>eth0: 172.16.238.10"]
+            SRV_FE["devapp01-web<br/>eth0: 172.16.238.20"]
+        end
+
+        subgraph backend["Backend Network — 172.16.239.0/24"]
+            BOB_BE["Bob's Laptop<br/>eth1: 172.16.239.10"]
+            SRV_BE["devapp01<br/>eth1: 172.16.239.20"]
+        end
+    end
+
+    BOB_FE -."BROKEN".-> SRV_FE
+    BOB_BE --"OK"--> SRV_BE
+
+    style SRV_FE fill:#ff6b6b,stroke:#333,color:#fff
+    style SRV_BE fill:#51cf66,stroke:#333,color:#fff
+    style BOB_FE fill:#339af0,stroke:#333,color:#fff
+    style BOB_BE fill:#339af0,stroke:#333,color:#fff
+```
 
 **Scenario:** An Apache web server (`devapp01-web`) should be accessible from
 Bob's laptop on port 80, but something is wrong with the network. Students must
@@ -303,6 +324,8 @@ the same fundamentals (interfaces, IPs, routing) in a cloud environment.
 
 **Requirements:** AWS Academy Learner Lab or AWS account with EC2 access.
 
+![AWS VPC Architecture](aws-vpc-architecture.png)
+
 ### Task 7: Create a VPC
 
 1. Open the **VPC Console** in AWS
@@ -454,7 +477,5 @@ After completing this lab, you should take away these lessons:
 
 ## Next Steps
 
-- [Module 03 — Load Balancing with HAProxy](../03-load-balancing-haproxy/) —
-  see how traffic is distributed across multiple servers
-- [Module 04 — DNS with dig and BIND9](../04-dns-dig-bind9/) — understand how
-  hostnames resolve to IP addresses
+- [Module 08 — Distributed File Systems](../08-distributed-file-systems/) —
+  explore how networked storage works across multiple nodes
