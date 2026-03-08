@@ -1,0 +1,19 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    apache2 \
+    iproute2 \
+    iputils-ping \
+    net-tools \
+    openssh-server \
+    sudo \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -s /bin/bash bob \
+    && echo 'bob:caleston123' | chpasswd \
+    && echo 'bob ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && mkdir -p /run/sshd \
+    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config \
+    && echo '<html><body><h1>Welcome to devapp01 Web Server</h1></body></html>' \
+       > /var/www/html/index.html
+
+CMD ["/bin/bash", "-c", "/usr/sbin/sshd && apachectl -D FOREGROUND"]
