@@ -160,20 +160,21 @@ ping -c 3 devapp01-web
 
 ## Task 4: Find an Alternative Path
 
-The web server has two network interfaces. The hostname `devapp01` resolves
-to its backend network address.
+The web server has two network interfaces. Try reaching it via its
+backend IP address directly.
 
 ### Step 4.1: Ping the backend address
 
 ```bash
-ping -c 3 devapp01
+ping -c 3 172.16.239.20
 ```
 
 > **Question:** Does this ping succeed? Why does this work when
 > `devapp01-web` did not?
 >
-> **Hint:** `devapp01` resolves to `172.16.239.20` (backend network).
-> This interface is UP, unlike the frontend interface.
+> **Hint:** `172.16.239.20` is the server's backend interface, which is
+> UP. The frontend interface (`172.16.238.20`) is DOWN, which is why
+> `devapp01-web` was unreachable.
 
 ---
 
@@ -184,13 +185,14 @@ investigate.
 
 ### Step 5.1: Connect to the web server
 
-Option A — SSH from Bob's laptop:
+Option A — SSH from Bob's laptop (use the backend IP since the hostname
+may resolve to the unreachable frontend address):
 
 ```bash
-ssh bob@devapp01
+ssh bob@172.16.239.20
 ```
 
-When prompted, enter the lab credential: `caleston123`
+When prompted, enter the password printed by `setup.sh`
 
 Option B — Direct container access (from your host terminal):
 
@@ -206,8 +208,9 @@ ip link
 
 > **Question:** What is the state of `eth0` on the server?
 >
-> **Hint:** `eth0` should show `state DOWN`. This is why `devapp01-web`
-> (`172.16.238.20`) is unreachable.
+> **Hint:** The interface carrying `172.16.238.20` should show `state DOWN`.
+> This is why `devapp01-web` is unreachable. Note: the interface name may
+> be `eth0` or `eth1` depending on your environment — identify it by IP.
 
 ### Step 5.3: Check the routing table
 
@@ -218,19 +221,28 @@ ip r
 > **Question:** Is there a default route configured?
 >
 > **Hint:** There should be no `default` entry. The default route is
-> missing, which would prevent the server from reaching external networks
-> even after bringing eth0 back up.
+> missing, which prevents the server from reaching off-subnet destinations.
+> Traffic between Bob's laptop and `devapp01-web` on the same
+> `172.16.238.0/24` subnet uses the connected route, but external
+> connectivity requires a default route.
 
 ---
 
 ## Task 6: Fix the Network
 
-Now that you've identified both problems (interface down + missing route),
-fix them.
+Fix the downed interface first to restore connectivity from Bob's laptop.
+Then add a default route to restore the server's outbound connectivity.
 
 ### Step 6.1: Bring up the frontend interface
 
-From inside the `devapp01` container (use `sudo` if connected via SSH):
+First, identify which interface has `172.16.238.20` (it may not be `eth0`):
+
+```bash
+ip -o -4 addr show | grep 172.16.238.20
+```
+
+The second column shows the interface name. Bring it up (use `sudo` if
+connected via SSH). For example, if the interface is `eth0`:
 
 ```bash
 sudo ip link set dev eth0 up
@@ -312,8 +324,9 @@ internet gateway — no manual route table configuration needed.
 > equivalent of the two Docker networks you worked with?
 >
 > **Hint:** The public and private subnets are analogous to the frontend
-> and backend networks. The internet gateway is like the default gateway
-> (`172.16.238.1`) you configured earlier.
+> and backend networks. The instance's default gateway is the VPC router
+> (first IP in the subnet), while the Internet Gateway is a route-table
+> target that enables internet access.
 
 ### Task 8: Launch an EC2 Instance
 
@@ -358,9 +371,11 @@ ping -c 3 google.com
 | Network interface (`eth0`) | Elastic Network Interface (ENI) |
 | IP address (`ip a`) | Private/Public IP assigned to ENI |
 | Routing table (`ip r`) | VPC Route Table |
-| Default gateway | Internet Gateway / NAT Gateway |
+| Default gateway | VPC router (first IP in the subnet) |
+| Internet egress path | Internet Gateway / NAT Gateway via route table |
 | Multiple interfaces | Multiple ENIs attached to an instance |
-| `ip link set up/down` | ENI attach/detach or Security Group rules |
+| `ip link set up/down` | ENI attachment state at the instance layer |
+| Firewall rules | Security Groups / Network ACLs |
 
 > **Key insight:** AWS automates what you did manually in the Docker lab.
 > The VPC wizard created route tables, attached an internet gateway, and
