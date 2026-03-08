@@ -169,12 +169,11 @@ jobs:
 
       - name: Install zizmor
         run: |
-          curl -sL https://github.com/woodruffw/zizmor/releases/latest/download/zizmor-x86_64-unknown-linux-gnu \
-            -o zizmor
-          chmod +x zizmor
+          curl -sL https://github.com/woodruffw/zizmor/releases/latest/download/zizmor-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz -C /usr/local/bin zizmor
 
       - name: Run zizmor
-        run: ./zizmor .github/workflows/
+        run: zizmor .github/workflows/
 
   prose-lint:
     name: Prose Linting (Vale)
@@ -185,12 +184,16 @@ jobs:
           persist-credentials: false
 
       - name: Install Vale
+        env:
+          VALE_VERSION: "3.13.1"
         run: |
-          curl -sfL https://github.com/errata-ai/vale/releases/latest/download/vale_Linux_64-bit.tar.gz \
+          curl -sfL "https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz" \
             | tar xz -C /usr/local/bin vale
 
       - name: Sync Vale packages
         run: vale sync
 
       - name: Run Vale
-        run: vale --glob='*.md' .
+        run: |
+          find . -name '*.md' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' ! -path '*/styles/*' \
+            -exec vale {} +
