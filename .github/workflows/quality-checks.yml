@@ -66,20 +66,16 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Find Dockerfiles (excluding third-party)
-        id: find
+      - name: Install hadolint
         run: |
-          files=$(find . -name 'Dockerfile*' \
-            ! -path '*/ecsdemo-*' \
-            | tr '\n' ' ')
-          echo "files=$files" >> "$GITHUB_OUTPUT"
+          curl -sL -o hadolint \
+            "https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64"
+          chmod +x hadolint
 
-      - name: Run hadolint
-        if: steps.find.outputs.files != ''
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ${{ steps.find.outputs.files }}
-          ignore: DL3008
+      - name: Run hadolint (excluding third-party Dockerfiles)
+        run: |
+          find . -name 'Dockerfile*' ! -path '*/ecsdemo-*' \
+            -exec ./hadolint --ignore DL3008 {} +
 
   file-structure:
     name: Validate Repository Structure
