@@ -52,12 +52,7 @@ expected output.
 
 > **Question:** A question that reinforces understanding.
 >
-> <details>
-> <summary>Hint</summary>
->
-> Guidance without giving the full answer.
->
-> </details>
+> **Hint:** Guidance without giving the full answer.
 ```
 
 ### 9. Cleanup
