@@ -66,10 +66,19 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Run hadolint on Dockerfiles
+      - name: Find Dockerfiles (excluding third-party)
+        id: find
+        run: |
+          files=$(find . -name 'Dockerfile*' \
+            ! -path '*/ecsdemo-*' \
+            | tr '\n' ' ')
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+
+      - name: Run hadolint
+        if: steps.find.outputs.files != ''
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          recursive: true
+          dockerfile: ${{ steps.find.outputs.files }}
           ignore: DL3008
 
   file-structure:
