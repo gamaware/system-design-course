@@ -19,6 +19,11 @@ NN-topic-name/          # Module directories (01 through 16, kebab-case)
   configs/              # Configuration files
 docs/
   adr/                  # Architecture Decision Records (dateless)
+  lab-template.md       # Standard 13-section lab README template
+.claude/
+  settings.json         # Project-level Claude Code settings (hooks, permissions)
+  hooks/                # Automation hooks (post-edit formatters, file protection)
+  skills/               # Reusable skills (e.g., /new-lab to scaffold modules)
 .github/
   workflows/            # CI/CD pipelines
   actions/              # Composite actions
@@ -79,6 +84,23 @@ All hooks must pass before committing. Install with `pre-commit install`.
 - **Prose**: Vale with write-good (passive voice, weasel words) and proselint (grammar, usage).
 - **GitHub Actions**: actionlint, zizmor (security analysis).
 - **Commits**: conventional-pre-commit (commit-msg stage).
+
+## Claude Code Hooks
+
+Hooks in `.claude/settings.json` automate deterministic actions:
+
+- **Post-edit** (`post-edit.sh`): Auto-runs `shellharden --replace` and `chmod +x` on `.sh`
+  files, `markdownlint --fix` on `.md` files after every Edit/Write.
+- **Protect third-party** (`protect-third-party.sh`): Blocks edits to `ecsdemo-*` directories
+  (exit code 2 prevents the action).
+
+## Claude Code Skills
+
+Skills in `.claude/skills/` provide reusable workflows:
+
+- **`/new-lab [NN-topic-name]`** — Scaffolds a new lab module with README template,
+  setup/cleanup scripts, and updates root README. See `docs/lab-template.md` for the
+  13-section structure.
 
 ## Linting Policy
 
