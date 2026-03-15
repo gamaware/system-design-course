@@ -94,7 +94,7 @@ repos:
     hooks:
       - id: zizmor
         name: zizmor
-        entry: zizmor .github/workflows/
+        entry: zizmor --config zizmor.yml .github/workflows/
         language: system
         files: ^\.github/workflows/.*\.ya?ml$
         pass_filenames: false
