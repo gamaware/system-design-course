@@ -1,9 +1,14 @@
 ---
 name: ship
-description: Update docs, commit, create PR, monitor CI and reviews, address feedback, merge
+description: >-
+  End-to-end PR lifecycle: update docs, commit, create PR, monitor CI,
+  address CodeRabbit and Copilot reviews, and merge. Use this skill
+  whenever the user says "ship it", "send a PR", "commit and merge",
+  "push this", or wants to finalize and land their changes. Pass a PR
+  number to resume monitoring an existing PR.
+disable-model-invocation: true
 user-invocable: true
 argument-hint: "[optional PR number to resume monitoring]"
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent
 ---
 
 # Ship — Commit, Monitor, Fix, Merge
