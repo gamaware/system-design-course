@@ -56,7 +56,7 @@ repos:
         name: hadolint
         entry: hadolint
         language: system
-        files: Dockerfile
+        types: [dockerfile]
         exclude: |
           (?x)^(
             01-introduction-horizontal-scalability/ecsdemo-.*
