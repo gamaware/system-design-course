@@ -19,3 +19,4 @@ ignore: |
   .git/
   */node_modules/
   01-introduction-horizontal-scalability/ecsdemo-*/
+  08-cloud-networking-vpc/cloudformation/

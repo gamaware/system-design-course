@@ -1,0 +1,5 @@
+aws_region          = "us-east-1"
+cf_stack_name       = "vpc-lab-network"
+key_pair_name       = "vpc-lab-key"
+security_group_name = "vpc-lab-sg"
+instance_type       = "t2.micro"

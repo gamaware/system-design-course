@@ -8,7 +8,8 @@ repos:
         exclude: |
           (?x)^(
             01-introduction-horizontal-scalability/ecsdemo-.*/kubernetes/.*|
-            01-introduction-horizontal-scalability/ecsdemo-.*/copilot/.*
+            01-introduction-horizontal-scalability/ecsdemo-.*/copilot/.*|
+            08-cloud-networking-vpc/cloudformation/.*
           )$
       - id: check-json
       - id: check-added-large-files

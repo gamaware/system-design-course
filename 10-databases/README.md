@@ -1,10 +1,10 @@
-# Module 13 — Distributed Messaging
+# Module 10 — Databases
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- Message queues and event streaming
+- Databases in distributed systems
 - Lab content to be defined.
 
 ## Status

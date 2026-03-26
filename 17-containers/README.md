@@ -1,10 +1,10 @@
-# Module 08 — Distributed File Systems
+# Module 17 — Containers
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- Distributed file system concepts and architectures
+- Container fundamentals, Docker, orchestration
 - Lab content to be defined.
 
 ## Status

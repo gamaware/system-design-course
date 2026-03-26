@@ -1,10 +1,10 @@
-# Module 12 — Solutions Architecture
+# Module 14 — Distributed Messaging
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- System design and solutions architecture patterns
+- Message queues and event streaming
 - Lab content to be defined.
 
 ## Status

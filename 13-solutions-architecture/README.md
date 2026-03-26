@@ -1,10 +1,10 @@
-# Module 11 — Proxies
+# Module 13 — Solutions Architecture
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- Forward and reverse proxies
+- System design and solutions architecture patterns
 - Lab content to be defined.
 
 ## Status

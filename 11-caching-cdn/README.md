@@ -1,4 +1,4 @@
-# Module 10 — Caching and CDN
+# Module 11 — Caching and CDN
 
 > **Coming Soon**
 

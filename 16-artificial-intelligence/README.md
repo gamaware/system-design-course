@@ -1,10 +1,10 @@
-# Module 14 — Serverless
+# Module 16 — Artificial Intelligence
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- Serverless architecture and functions as a service
+- AI systems design and infrastructure
 - Lab content to be defined.
 
 ## Status

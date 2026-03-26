@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The 18-week semester includes 16 technical topics plus evaluation weeks. Topics build on
+The 18-week semester includes 17 technical topics plus evaluation weeks. Topics build on
 each other progressively: foundational concepts (compute, networking) precede advanced
 topics (distributed messaging, serverless, containers). The repository structure must
 reflect this pedagogical progression.
@@ -23,20 +23,21 @@ The module order follows the syllabus progression:
    partition tolerance).
 6. **Week 7**: Security (HTTPS, TLS certificates, OAuth 2.0, Keycloak OIDC).
 7. **Week 8**: Networking (TCP/IP, traffic capture, analysis).
-8. **Week 9**: Distributed file systems.
-9. **Weeks 10-11**: Databases (SQL, NoSQL, replication, sharding).
-10. **Week 12**: Caching and CDN.
-11. **Week 13**: Proxies (forward, reverse).
-12. **Week 14**: Solutions architecture (AWS Well-Architected).
-13. **Week 15**: Distributed messaging (queues, pub/sub).
-14. **Week 16**: Serverless (Lambda, API Gateway).
-15. **Week 17**: Artificial intelligence (LLMs, cloud AI services).
-16. **Week 18**: Containers (Docker, Kubernetes deep dive).
+8. **Week 9**: Cloud networking (AWS VPC, CloudFormation, Terraform, IaC).
+9. **Week 10**: Distributed file systems.
+10. **Weeks 11-12**: Databases (SQL, NoSQL, replication, sharding).
+11. **Week 13**: Caching and CDN.
+12. **Week 14**: Proxies (forward, reverse).
+13. **Week 15**: Solutions architecture (AWS Well-Architected).
+14. **Week 16**: Distributed messaging (queues, pub/sub).
+15. **Week 17**: Serverless (Lambda, API Gateway).
+16. **Week 18**: Artificial intelligence (LLMs, cloud AI services).
+17. **Week 18**: Containers (Docker, Kubernetes deep dive).
 
 Evaluation checkpoints:
 
 - Partial exam after module 06 (security).
-- Final exam after module 16 (containers).
+- Final exam after module 17 (containers).
 - Quizzes distributed throughout the semester.
 
 ## Consequences

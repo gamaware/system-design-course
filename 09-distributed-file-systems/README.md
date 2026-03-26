@@ -1,10 +1,10 @@
-# Module 09 — Databases
+# Module 09 — Distributed File Systems
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- Databases in distributed systems
+- Distributed file system concepts and architectures
 - Lab content to be defined.
 
 ## Status

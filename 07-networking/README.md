@@ -476,5 +476,5 @@ After completing this lab, you should take away these lessons:
 
 ## Next Steps
 
-- [Module 08 — Distributed File Systems](../08-distributed-file-systems/) —
-  explore how networked storage works across multiple nodes
+- [Module 08 — Cloud Networking: AWS VPC](../08-cloud-networking-vpc/) —
+  deploy the VPC architecture from this lab using CloudFormation and Terraform

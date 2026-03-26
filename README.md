@@ -113,23 +113,39 @@ optional AWS VPC extension. Students learn to:
 **Key Concepts**: Network interfaces, routing tables, default gateways, subnets, DNS resolution,
 network troubleshooting, VPC networking
 
-#### [08 — Distributed File Systems](./08-distributed-file-systems) _(coming soon)_
+#### [08 — Cloud Networking: AWS VPC](./08-cloud-networking-vpc)
 
-#### [09 — Databases](./09-databases) _(coming soon)_
+Lab adapting the AWS General Immersion Day VPC Hands-on Lab into an Infrastructure as Code experience.
+Students learn to:
 
-#### [10 — Caching and CDN](./10-caching-cdn) _(coming soon)_
+- Deploy a VPC with public subnets and an Internet Gateway using CloudFormation
+- Create security groups and key pairs using the AWS CLI
+- Launch EC2 instances across multiple Availability Zones using Terraform
+- Test cross-AZ connectivity with ping, curl, and SSH
+- Compare declarative IaC (CloudFormation, Terraform) with imperative CLI commands
 
-#### [11 — Proxies](./11-proxies) _(coming soon)_
+**Technologies**: AWS CloudFormation, Terraform, AWS CLI, VPC, EC2, Amazon Linux 2023
 
-#### [12 — Solutions Architecture](./12-solutions-architecture) _(coming soon)_
+**Key Concepts**: VPC, subnets, Internet Gateway, route tables, security groups, Infrastructure as Code,
+CloudFormation, Terraform, Availability Zones, cross-AZ communication
 
-#### [13 — Distributed Messaging](./13-distributed-messaging) _(coming soon)_
+#### [09 — Distributed File Systems](./09-distributed-file-systems) _(coming soon)_
 
-#### [14 — Serverless](./14-serverless) _(coming soon)_
+#### [10 — Databases](./10-databases) _(coming soon)_
 
-#### [15 — Artificial Intelligence](./15-artificial-intelligence) _(coming soon)_
+#### [11 — Caching and CDN](./11-caching-cdn) _(coming soon)_
 
-#### [16 — Containers](./16-containers) _(coming soon)_
+#### [12 — Proxies](./12-proxies) _(coming soon)_
+
+#### [13 — Solutions Architecture](./13-solutions-architecture) _(coming soon)_
+
+#### [14 — Distributed Messaging](./14-distributed-messaging) _(coming soon)_
+
+#### [15 — Serverless](./15-serverless) _(coming soon)_
+
+#### [16 — Artificial Intelligence](./16-artificial-intelligence) _(coming soon)_
+
+#### [17 — Containers](./17-containers) _(coming soon)_
 
 ### 👨🏫 Instructor
 

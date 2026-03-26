@@ -54,5 +54,12 @@ styles/
 *.log
 logs/
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+
 # AWS
 .aws-sam/

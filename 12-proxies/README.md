@@ -1,10 +1,10 @@
-# Module 16 — Containers
+# Module 12 — Proxies
 
 > **Coming Soon**
 
 ## Topics Covered
 
-- Container fundamentals, Docker, orchestration
+- Forward and reverse proxies
 - Lab content to be defined.
 
 ## Status
