@@ -2,7 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
   VPC Lab Network Foundation - Creates a VPC with two public subnets across
   two Availability Zones, an Internet Gateway, and associated route tables.
-  Adapted from the AWS General Immersion Day VPC Hands-on Lab.
 
 Resources:
   # -------------------------------------------------------

@@ -14,10 +14,6 @@ instances with Terraform. This builds directly on the Linux networking
 fundamentals from [Lab 07](../07-networking/) and introduces three
 complementary approaches to managing cloud infrastructure.
 
-Adapted from the
-[AWS General Immersion Day -- Network (Amazon VPC)](https://catalog.workshops.aws/general-immersionday/en-US/basic-modules/20-vpc)
-workshop.
-
 ## Choose Your Operating System
 
 Select the lab instructions for your operating system:
