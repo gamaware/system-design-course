@@ -15,6 +15,7 @@ INSTANCE_ID=$(ec2-metadata -i | cut -d' ' -f2)
 AZ=$(ec2-metadata -z | cut -d' ' -f2)
 HOSTNAME=$(hostname)
 
+# shellcheck disable=SC2154 # instance_name is injected by Terraform templatefile()
 cat > /var/www/html/index.html <<HTML
 <html>
 <body>

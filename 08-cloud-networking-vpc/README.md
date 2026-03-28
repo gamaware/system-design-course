@@ -1,7 +1,7 @@
 # Cloud Networking: AWS VPC with Infrastructure as Code
 
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![CloudFormation](https://img.shields.io/badge/CloudFormation-%23FF4F8B.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![CloudFormation](https://img.shields.io/badge/CloudFormation-%23FF4F8B.svg?style=for-the-badge&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 ![Networking](https://img.shields.io/badge/Networking-%23009688.svg?style=for-the-badge&logoColor=white)
 
@@ -38,6 +38,15 @@ local operating system.
 - Compare declarative IaC (CloudFormation, Terraform) with imperative CLI
   commands
 - Map AWS VPC concepts to the Linux networking fundamentals from Lab 07
+
+## Prerequisites
+
+- **AWS CLI v2** installed and configured with credentials
+- **Terraform** v1.0 or later installed
+- **SSH client** (built-in on macOS/Linux, OpenSSH on Windows)
+- **AWS Academy Learner Lab** or personal AWS account with EC2 permissions
+- Completed [Lab 07 -- Networking](../07-networking/) (recommended for
+  understanding Linux networking fundamentals)
 
 ## Architecture
 
@@ -140,6 +149,23 @@ Lab 07 to their AWS VPC equivalents in this lab:
 └── images/                            # Architecture and reference screenshots
 ```
 
+## Quick Start
+
+macOS / Linux:
+
+```bash
+./setup.sh
+```
+
+Windows (PowerShell):
+
+```powershell
+.\setup.ps1
+```
+
+The setup script deploys the CloudFormation stack and initializes Terraform.
+Follow the OS-specific lab instructions for the full 8-task walkthrough.
+
 ## Tasks Overview
 
 The lab consists of 8 tasks that build on each other:
@@ -154,6 +180,36 @@ The lab consists of 8 tasks that build on each other:
 | 6. Test Connectivity | SSH / ping / curl | Verify cross-AZ communication and internet access |
 | 7. IaC Comparison | -- | Reflect on CloudFormation vs CLI vs Terraform |
 | 8. Cleanup | All tools | Delete all AWS resources |
+
+## Cleanup
+
+macOS / Linux:
+
+```bash
+./cleanup.sh
+```
+
+Windows (PowerShell):
+
+```powershell
+.\cleanup.ps1
+```
+
+The cleanup script destroys all Terraform resources, deletes the
+CloudFormation stack, removes the SSH key pair, and cleans up local files.
+See Task 8 in [LAB-MACOS.md](LAB-MACOS.md) or
+[LAB-WINDOWS.md](LAB-WINDOWS.md) for detailed manual cleanup steps.
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+| --- | --- | --- |
+| `aws sts get-caller-identity` fails | AWS credentials not configured | Run `aws configure` or export environment variables |
+| CloudFormation stack fails to create | Insufficient IAM permissions | Verify your AWS Academy session is active |
+| `terraform init` fails | Missing AWS provider | Check internet connection and re-run `terraform init` |
+| SSH connection refused | Security group missing SSH rule | Verify security group allows port 22 from your IP |
+| Ping between instances fails | Security group missing ICMP rule | Verify security group allows ICMP from `10.0.0.0/16` |
+| `curl` to instance fails | httpd not running or SG missing HTTP | SSH into instance and check `systemctl status httpd` |
 
 ## Key Concepts
 
