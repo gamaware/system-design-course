@@ -3,7 +3,7 @@ description: 'Updates pre-commit hook versions and creates a PR'
 
 inputs:
   github_token:
-    description: 'GitHub token for creating PRs'
+    description: 'Fine-grained PAT for creating PRs that trigger CI'
     required: true
 
 runs:
