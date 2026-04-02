@@ -133,7 +133,22 @@ CloudFormation, Terraform, Availability Zones, cross-AZ communication
 
 #### [10 — Databases](./10-databases) _(coming soon)_
 
-#### [11 — Caching and CDN](./11-caching-cdn) _(coming soon)_
+#### [11 — Caching](./11-caching)
+
+Lab exploring caching as a system design pattern using Redis. Students
+implement four caching strategies in their choice of C++, C#, or Java and
+observe eviction policies in action. Students learn to:
+
+- Implement cache-aside, read-through, write-through, and write-back patterns
+- Configure and observe LRU, LFU, and TTL eviction policies under memory pressure
+- Measure cache hit vs miss performance quantitatively
+- Choose appropriate caching strategies for different system requirements
+
+**Technologies**: Redis, Docker, Docker Compose, C++ (hiredis), C# (StackExchange.Redis),
+Java (Jedis)
+
+**Key Concepts**: cache-aside, read-through, write-through, write-back, LRU eviction,
+LFU eviction, TTL expiration, cache invalidation, eviction policies
 
 #### [12 — Proxies](./12-proxies) _(coming soon)_
 

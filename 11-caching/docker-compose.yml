@@ -1,0 +1,71 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 10mb --maxmemory-policy noeviction
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: backend-db
+    ports:
+      - "5050:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  cpp:
+    build: ./cpp
+    container_name: cache-lab-cpp
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - BACKEND_HOST=backend
+    volumes:
+      - ./cpp:/app/src
+    profiles:
+      - cpp
+
+  csharp:
+    build: ./csharp
+    container_name: cache-lab-csharp
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - BACKEND_HOST=backend
+    volumes:
+      - ./csharp:/app/src
+    profiles:
+      - csharp
+
+  java:
+    build: ./java
+    container_name: cache-lab-java
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - BACKEND_HOST=backend
+    volumes:
+      - ./java:/app/src
+    profiles:
+      - java

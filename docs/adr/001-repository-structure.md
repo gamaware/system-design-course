@@ -36,7 +36,7 @@ consistent structure that maps directly to the syllabus while remaining navigabl
 | 08 | Cloud Networking | `08-cloud-networking-vpc` |
 | 09 | Distributed File Systems | `09-distributed-file-systems` |
 | 10 | Databases | `10-databases` |
-| 11 | Caching and CDN | `11-caching-cdn` |
+| 11 | Caching | `11-caching` |
 | 12 | Proxies | `12-proxies` |
 | 13 | Solutions Architecture | `13-solutions-architecture` |
 | 14 | Distributed Messaging | `14-distributed-messaging` |
