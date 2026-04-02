@@ -13,15 +13,16 @@ Brief description of what this PR changes and why.
 - [ ] `05-distributed-systems-high-availability`
 - [ ] `06-security-https-oauth2-keycloak`
 - [ ] `07-networking`
-- [ ] `08-distributed-file-systems`
-- [ ] `09-databases`
-- [ ] `10-caching-cdn`
-- [ ] `11-proxies`
-- [ ] `12-solutions-architecture`
-- [ ] `13-distributed-messaging`
-- [ ] `14-serverless`
-- [ ] `15-artificial-intelligence`
-- [ ] `16-containers`
+- [ ] `08-cloud-networking-vpc`
+- [ ] `09-distributed-file-systems`
+- [ ] `10-databases`
+- [ ] `11-caching`
+- [ ] `12-proxies`
+- [ ] `13-solutions-architecture`
+- [ ] `14-distributed-messaging`
+- [ ] `15-serverless`
+- [ ] `16-artificial-intelligence`
+- [ ] `17-containers`
 - [ ] Repository config / CI / docs
 
 ## Type of Change

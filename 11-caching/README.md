@@ -73,7 +73,7 @@ graph LR
             REDIS["Redis 7<br/>port 6379"]
         end
         subgraph Origin["Simulated Database"]
-            BACKEND["Python API<br/>port 5050<br/>(500ms delay)"]
+            BACKEND["Python API<br/>port 5000<br/>(500ms delay)"]
         end
     end
 

@@ -168,7 +168,7 @@ public class CacheLab {
         System.out.println("  [BACKEND] Response: " + backendResponse);
 
         String key = "product:" + id;
-        jedis.set(key, jsonData);
+        jedis.set(key, backendResponse);
         System.out.println("  [CACHE] Updated Redis key: " + key);
     }
 
