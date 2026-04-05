@@ -17,46 +17,68 @@ Software Composition Analysis (SCA) on every code change.
 ```mermaid
 flowchart TD
     %% Trigger
-    A[Code Push/PR to main] --> B[Trigger Security Workflow]
-    B --> C[Checkout Code]
+    A[/"Code Push/PR to main"/] --> B["Trigger Security Workflow"]
+    B --> C["Checkout Code"]
 
     %% Parallel scan tools
-    C --> D[Security Scan Composite Action]
-    D --> E[Semgrep SAST]
-    D --> F[Trivy SCA]
+    C --> D[["Security Scan Composite Action"]]
+    D --> E["Semgrep SAST"]
+    D --> F["Trivy SCA"]
 
     %% Analysis and reporting
-    E --> G[Analyze Code Patterns]
-    F --> H[Scan Dependencies & Containers]
-    G --> I[Generate SARIF Report]
-    H --> J[Generate SARIF Report]
+    E --> G["Analyze Code Patterns"]
+    F --> H["Scan Dependencies & Containers"]
+    G --> I["Generate SARIF Report"]
+    H --> J["Generate SARIF Report"]
 
     %% Results gate
-    I --> K[Upload to GitHub Security]
+    I --> K["Upload to GitHub Security"]
     J --> K
-    K --> L{Vulnerabilities Found?}
-    L -->|Yes| M[Block PR / Alert]
-    L -->|No| N[Pass Check]
+    K --> L{"Vulnerabilities Found?"}
+    L -->|"Yes"| M(("Block PR / Alert"))
+    L -->|"No"| N(("Pass Check"))
+
+    %% Class definitions
+    classDef trigger fill:#FFF3E0,stroke:#FF9800
+    classDef process fill:#E3F2FD,stroke:#2196F3
+    classDef decision fill:#E8F5E9,stroke:#4CAF50
+    classDef endpoint_fail fill:#e74c3c,stroke:#c0392b,color:#fff
+    classDef endpoint_pass fill:#68a063,stroke:#232f3e,color:#fff
+
+    class A trigger
+    class B,C,D,E,F,G,H,I,J,K process
+    class L decision
+    class M endpoint_fail
+    class N endpoint_pass
 ```
 
 ## Scan Coverage
 
 ```mermaid
 graph LR
-    A[Security Scanning] --> B[SAST - Semgrep]
-    A --> C[SCA - Trivy]
+    A[["Security Scanning"]] --> B["SAST - Semgrep"]
+    A --> C["SCA - Trivy"]
 
     %% SAST language coverage
-    B --> D[Python CDK]
-    B --> E[Ruby Rails]
-    B --> F[Node.js]
-    B --> G[Crystal]
+    B --> D["Python CDK"]
+    B --> E["Ruby Rails"]
+    B --> F["Node.js"]
+    B --> G["Crystal"]
 
     %% SCA dependency coverage
-    C --> H[Python Dependencies]
-    C --> I[Ruby Gems]
-    C --> J[npm Packages]
-    C --> K[Docker Images]
+    C --> H["Python Dependencies"]
+    C --> I["Ruby Gems"]
+    C --> J["npm Packages"]
+    C --> K{{"Docker Images"}}
+
+    %% Class definitions
+    classDef scanner fill:#E3F2FD,stroke:#2196F3
+    classDef lang fill:#f4f4f5,stroke:#a1a1aa
+    classDef container fill:#ff9900,stroke:#232f3e,color:#fff
+
+    class A,B,C scanner
+    class D,E,F,G,H,I,J lang
+    class K container
 ```
 
 ## Tools

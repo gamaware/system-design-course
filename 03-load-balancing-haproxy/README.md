@@ -216,24 +216,27 @@ but roughly even over many requests.
 ```mermaid
 graph TD
     %% Traffic entry
-    Client[Client/s] --> HAProxy[HAProxy<br>Port 8080]
+    Client("Client/s") ==> HAProxy(["HAProxy<br>Port 8080"])
 
     %% Primary backends
-    HAProxy --> Backend1[Backend 1<br>Port 8001]
-    HAProxy --> Backend2[Backend 2<br>Port 8002]
-    HAProxy --> Backend3[Backend 3<br>Port 8003]
+    HAProxy --> Backend1["Backend 1<br>Port 8001"]
+    HAProxy --> Backend2["Backend 2<br>Port 8002"]
+    HAProxy --> Backend3["Backend 3<br>Port 8003"]
 
     %% Backup backends (activated only when all primaries are down)
-    HAProxy -.Backup.-> Backend4[Backend 4<br>Port 8004<br>Backup]
-    HAProxy -.Backup.-> Backend5[Backend 5<br>Port 8005<br>Backup]
+    HAProxy -.->|"Backup"| Backend4["Backend 4<br>Port 8004<br>Backup"]
+    HAProxy -.->|"Backup"| Backend5["Backend 5<br>Port 8005<br>Backup"]
 
-    %% Styling
-    style HAProxy fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Backend1 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Backend2 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Backend3 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Backend4 fill:#666,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Backend5 fill:#666,stroke:#232f3e,stroke-width:2px,color:#fff
+    %% Class definitions
+    classDef lb fill:#ff9900,stroke:#232f3e,color:#fff
+    classDef service fill:#3b48cc,stroke:#232f3e,color:#fff
+    classDef backup fill:#666,stroke:#232f3e,color:#fff
+    classDef user fill:#f4f4f5,stroke:#a1a1aa
+
+    class HAProxy lb
+    class Backend1,Backend2,Backend3 service
+    class Backend4,Backend5 backup
+    class Client user
 ```
 
 ## Key Concepts

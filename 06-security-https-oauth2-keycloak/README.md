@@ -151,13 +151,13 @@ sequenceDiagram
 
     %% Authentication phase
     User ->> KC: 1. Authenticate (username/password)
-    KC ->> User: 2. Return JWT Access Token
+    KC -->> User: 2. Return JWT Access Token
 
     %% API request with token validation
     User ->> API: 3. Request /secure-data with Bearer Token
     API ->> KC: 4. Validate Token (Introspection)
-    KC ->> API: 5. Token Valid + User Info
-    API ->> User: 6. Return Protected Data
+    KC -->> API: 5. Token Valid + User Info
+    API -->> User: 6. Return Protected Data
 ```
 
 **Flow:**

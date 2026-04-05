@@ -65,31 +65,35 @@ student application implements caching patterns in their chosen language.
 
 ```mermaid
 graph LR
-    subgraph Docker["Docker Compose Network"]
-        subgraph Student["Student Application"]
+    subgraph Docker ["Docker Compose Network"]
+        subgraph Student ["Student Application"]
             APP["C++ / C# / Java<br>(cache logic)"]
         end
 
-        subgraph Cache["Cache Layer"]
-            REDIS["Redis 7<br>port 6379"]
+        subgraph Cache ["Cache Layer"]
+            REDIS[("Redis 7<br>port 6379")]
         end
 
-        subgraph Origin["Simulated Database"]
-            BACKEND["Python API<br>port 5000<br>(500ms delay)"]
+        subgraph Origin ["Simulated Database"]
+            BACKEND[("Python API<br>port 5000<br>(500ms delay)")]
         end
     end
 
     %% Cache-aside data flow
     APP -->|"1. Check cache"| REDIS
-    REDIS -->|"2a. Cache HIT<br>(&lt;5ms)"| APP
+    REDIS ==>|"2a. Cache HIT<br>(<5ms)"| APP
     APP -->|"2b. Cache MISS"| BACKEND
-    BACKEND -->|"3. Response<br>(~500ms)"| APP
+    BACKEND ==>|"3. Response<br>(~500ms)"| APP
     APP -->|"4. Store in cache"| REDIS
 
-    %% Styling
-    style REDIS fill:#DC382D,stroke:#B71C1C,color:#fff
-    style BACKEND fill:#FFF3E0,stroke:#FF9800
-    style APP fill:#E3F2FD,stroke:#2196F3
+    %% Class definitions
+    classDef cache fill:#DC382D,stroke:#B71C1C,color:#fff
+    classDef db fill:#3b48cc,stroke:#232f3e,color:#fff
+    classDef service fill:#E3F2FD,stroke:#2196F3
+
+    class REDIS cache
+    class BACKEND db
+    class APP service
 ```
 
 **Data flow (cache-aside pattern):**

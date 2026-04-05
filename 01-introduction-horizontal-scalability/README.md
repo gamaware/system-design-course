@@ -25,31 +25,40 @@ balancing, implement CPU-based autoscaling, and observe scaling behavior under l
 ```mermaid
 graph TB
     %% Traffic flow
-    User[Users] --> ALB[Application Load Balancer]
-    ALB --> Frontend[Frontend Service<br>Ruby on Rails]
-    Frontend --> NodeJS[NodeJS Service<br>Backend API]
-    Frontend --> Crystal[Crystal Service<br>Backend API]
+    User("Users") --> ALB(["Application Load Balancer"])
+    ALB --> Frontend["Frontend Service<br>Ruby on Rails"]
+    Frontend --> NodeJS["NodeJS Service<br>Backend API"]
+    Frontend --> Crystal["Crystal Service<br>Backend API"]
 
     %% ECS services
-    subgraph ECS Cluster
+    subgraph ecs_cluster ["ECS Cluster"]
+        direction TB
         Frontend
         NodeJS
         Crystal
     end
 
     %% Autoscaling feedback loop
-    subgraph Auto Scaling
-        ASG[Auto Scaling Group]
-        CW[CloudWatch Metrics]
-        ASG -.Monitors.-> Frontend
-        CW -.Triggers.-> ASG
+    subgraph auto_scaling ["Auto Scaling"]
+        direction TB
+        ASG{{"Auto Scaling Group"}}
+        CW[["CloudWatch Metrics"]]
+        ASG -.->|"Monitors"| Frontend
+        CW -.->|"Triggers"| ASG
     end
 
-    %% Styling
-    style ALB fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Frontend fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
-    style NodeJS fill:#68a063,stroke:#232f3e,stroke-width:2px,color:#fff
-    style Crystal fill:#000,stroke:#232f3e,stroke-width:2px,color:#fff
+    %% Class definitions
+    classDef aws fill:#ff9900,stroke:#232f3e,color:#fff
+    classDef service fill:#68a063,stroke:#232f3e,color:#fff
+    classDef user fill:#f4f4f5,stroke:#a1a1aa
+    classDef monitor fill:#e74c3c,stroke:#c0392b,color:#fff
+    classDef dark fill:#000,stroke:#232f3e,color:#fff
+
+    class ALB,ASG aws
+    class Frontend,NodeJS service
+    class User user
+    class CW monitor
+    class Crystal dark
 ```
 
 ## Prerequisites

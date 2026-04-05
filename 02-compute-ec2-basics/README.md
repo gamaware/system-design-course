@@ -139,12 +139,12 @@ Understanding the architecture helps visualize how components work together:
 
 ```mermaid
 graph TB
-    subgraph "AWS Cloud"
-        subgraph "VPC (Virtual Private Cloud)"
-            subgraph "Public Subnet"
-                EC2["EC2 Instance<br>Amazon Linux 2023<br>t3.micro<br>Public IP: x.x.x.x"]
-                SG["Security Group<br>Allow SSH (22)<br>from your IP"]
-                EBS["EBS Root Volume<br>8 GB gp3<br>Contains AMI"]
+    subgraph aws_cloud ["AWS Cloud"]
+        subgraph vpc ["VPC (Virtual Private Cloud)"]
+            subgraph public_subnet ["Public Subnet"]
+                EC2{{"EC2 Instance<br>Amazon Linux 2023<br>t3.micro<br>Public IP: x.x.x.x"}}
+                SG[["Security Group<br>Allow SSH (22)<br>from your IP"]]
+                EBS[("EBS Root Volume<br>8 GB gp3<br>Contains AMI")]
 
                 EC2 -.->|"protected by"| SG
                 EC2 -.->|"storage"| EBS
@@ -153,19 +153,25 @@ graph TB
     end
 
     %% External actors
-    User["Your Computer<br>SSH Client<br>Private Key"]
-    Internet["Internet Gateway"]
+    User("Your Computer<br>SSH Client<br>Private Key")
+    Internet(["Internet Gateway"])
 
     %% Connection flow
-    User -->|"SSH connection<br>port 22"| Internet
+    User ==>|"SSH connection<br>port 22"| Internet
     Internet --> SG
     SG -->|"allowed"| EC2
 
-    %% Styling
-    style EC2 fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
-    style SG fill:#DD344C,stroke:#232F3E,stroke-width:2px,color:#fff
-    style EBS fill:#527FFF,stroke:#232F3E,stroke-width:2px,color:#fff
-    style User fill:#3F8624,stroke:#232F3E,stroke-width:2px,color:#fff
+    %% Class definitions
+    classDef aws fill:#ff9900,stroke:#232f3e,color:#fff
+    classDef security fill:#DD344C,stroke:#232f3e,color:#fff
+    classDef db fill:#3b48cc,stroke:#232f3e,color:#fff
+    classDef user fill:#f4f4f5,stroke:#a1a1aa
+
+    class EC2 aws
+    class SG security
+    class EBS db
+    class User user
+    class Internet aws
 ```
 
 **Key points:**
