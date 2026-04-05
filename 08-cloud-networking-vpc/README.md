@@ -59,31 +59,42 @@ instances (blue).
 graph TB
     subgraph AWS["AWS Cloud"]
         subgraph VPC["VPC 10.0.0.0/16"]
+            %% Availability Zone A
             subgraph AZA["Availability Zone A"]
-                SUBA["Public Subnet A<br/>10.0.10.0/24"]
-                EC2_1["EC2-1<br/>Amazon Linux 2023"]
+                SUBA["Public Subnet A<br>10.0.10.0/24"]
+                EC2_1["EC2-1<br>Amazon Linux 2023"]
             end
+
+            %% Availability Zone C
             subgraph AZC["Availability Zone C"]
-                SUBC["Public Subnet C<br/>10.0.20.0/24"]
-                EC2_2["EC2-2<br/>Amazon Linux 2023"]
+                SUBC["Public Subnet C<br>10.0.20.0/24"]
+                EC2_2["EC2-2<br>Amazon Linux 2023"]
             end
-            RT["Public Route Table<br/>0.0.0.0/0 → IGW"]
-            SG["Security Group<br/>SSH + ICMP"]
+
+            RT["Public Route Table<br>0.0.0.0/0 → IGW"]
+            SG["Security Group<br>SSH + ICMP"]
         end
+
         IGW["Internet Gateway"]
     end
+
+    %% External access
     STUDENT["Student's Computer"]
 
+    %% Connections
     STUDENT -->|"SSH / ping"| IGW
     IGW --> EC2_1
     IGW --> EC2_2
     EC2_1 <-->|"ping (cross-AZ)"| EC2_2
+
+    %% Associations
     RT -.-> IGW
     SG -.-> EC2_1
     SG -.-> EC2_2
     SUBA --- EC2_1
     SUBC --- EC2_2
 
+    %% Styling
     style VPC fill:#f5f5f5,stroke:#232F3E,stroke-width:2px
     style SUBA fill:#E8F5E9,stroke:#4CAF50
     style SUBC fill:#E8F5E9,stroke:#4CAF50

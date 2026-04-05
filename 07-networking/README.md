@@ -30,19 +30,23 @@ environment.
 
 ```mermaid
 graph TB
+    %% Frontend network (broken path)
     subgraph frontend["Frontend Network - 172.16.238.0/24"]
-        BOB_FE["Bob's Laptop<br/>eth0: 172.16.238.10"]
-        SRV_FE["devapp01-web<br/>eth0: 172.16.238.20"]
+        BOB_FE["Bob's Laptop<br>eth0: 172.16.238.10"]
+        SRV_FE["devapp01-web<br>eth0: 172.16.238.20"]
     end
 
+    %% Backend network (working path)
     subgraph backend["Backend Network - 172.16.239.0/24"]
-        BOB_BE["Bob's Laptop<br/>eth1: 172.16.239.10"]
-        SRV_BE["devapp01<br/>eth1: 172.16.239.20"]
+        BOB_BE["Bob's Laptop<br>eth1: 172.16.239.10"]
+        SRV_BE["devapp01<br>eth1: 172.16.239.20"]
     end
 
+    %% Connectivity status
     BOB_FE -."BROKEN".-> SRV_FE
     BOB_BE --"OK"--> SRV_BE
 
+    %% Styling
     style SRV_FE fill:#ff6b6b,stroke:#333,color:#fff
     style SRV_BE fill:#51cf66,stroke:#333,color:#fff
     style BOB_FE fill:#339af0,stroke:#333,color:#fff

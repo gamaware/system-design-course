@@ -215,13 +215,19 @@ but roughly even over many requests.
 
 ```mermaid
 graph TD
-    Client[Client/s] --> HAProxy[HAProxy<br/>Port 8080]
-    HAProxy --> Backend1[Backend 1<br/>Port 8001]
-    HAProxy --> Backend2[Backend 2<br/>Port 8002]
-    HAProxy --> Backend3[Backend 3<br/>Port 8003]
-    HAProxy -.Backup.-> Backend4[Backend 4<br/>Port 8004<br/>Backup]
-    HAProxy -.Backup.-> Backend5[Backend 5<br/>Port 8005<br/>Backup]
+    %% Traffic entry
+    Client[Client/s] --> HAProxy[HAProxy<br>Port 8080]
 
+    %% Primary backends
+    HAProxy --> Backend1[Backend 1<br>Port 8001]
+    HAProxy --> Backend2[Backend 2<br>Port 8002]
+    HAProxy --> Backend3[Backend 3<br>Port 8003]
+
+    %% Backup backends (activated only when all primaries are down)
+    HAProxy -.Backup.-> Backend4[Backend 4<br>Port 8004<br>Backup]
+    HAProxy -.Backup.-> Backend5[Backend 5<br>Port 8005<br>Backup]
+
+    %% Styling
     style HAProxy fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
     style Backend1 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
     style Backend2 fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff

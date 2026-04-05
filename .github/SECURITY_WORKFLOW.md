@@ -16,15 +16,22 @@ Software Composition Analysis (SCA) on every code change.
 
 ```mermaid
 flowchart TD
+    %% Trigger
     A[Code Push/PR to main] --> B[Trigger Security Workflow]
     B --> C[Checkout Code]
+
+    %% Parallel scan tools
     C --> D[Security Scan Composite Action]
     D --> E[Semgrep SAST]
     D --> F[Trivy SCA]
+
+    %% Analysis and reporting
     E --> G[Analyze Code Patterns]
     F --> H[Scan Dependencies & Containers]
     G --> I[Generate SARIF Report]
     H --> J[Generate SARIF Report]
+
+    %% Results gate
     I --> K[Upload to GitHub Security]
     J --> K
     K --> L{Vulnerabilities Found?}
@@ -39,11 +46,13 @@ graph LR
     A[Security Scanning] --> B[SAST - Semgrep]
     A --> C[SCA - Trivy]
 
+    %% SAST language coverage
     B --> D[Python CDK]
     B --> E[Ruby Rails]
     B --> F[Node.js]
     B --> G[Crystal]
 
+    %% SCA dependency coverage
     C --> H[Python Dependencies]
     C --> I[Ruby Gems]
     C --> J[npm Packages]

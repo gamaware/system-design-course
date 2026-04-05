@@ -24,17 +24,20 @@ balancing, implement CPU-based autoscaling, and observe scaling behavior under l
 
 ```mermaid
 graph TB
+    %% Traffic flow
     User[Users] --> ALB[Application Load Balancer]
-    ALB --> Frontend[Frontend Service<br/>Ruby on Rails]
-    Frontend --> NodeJS[NodeJS Service<br/>Backend API]
-    Frontend --> Crystal[Crystal Service<br/>Backend API]
+    ALB --> Frontend[Frontend Service<br>Ruby on Rails]
+    Frontend --> NodeJS[NodeJS Service<br>Backend API]
+    Frontend --> Crystal[Crystal Service<br>Backend API]
 
+    %% ECS services
     subgraph ECS Cluster
         Frontend
         NodeJS
         Crystal
     end
 
+    %% Autoscaling feedback loop
     subgraph Auto Scaling
         ASG[Auto Scaling Group]
         CW[CloudWatch Metrics]
@@ -42,6 +45,7 @@ graph TB
         CW -.Triggers.-> ASG
     end
 
+    %% Styling
     style ALB fill:#ff9900,stroke:#232f3e,stroke-width:2px,color:#fff
     style Frontend fill:#3b48cc,stroke:#232f3e,stroke-width:2px,color:#fff
     style NodeJS fill:#68a063,stroke:#232f3e,stroke-width:2px,color:#fff
