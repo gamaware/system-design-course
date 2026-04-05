@@ -86,14 +86,6 @@ graph LR
     BACKEND ==>|"3. Response<br>(~500ms)"| APP
     APP -->|"4. Store in cache"| REDIS
 
-    %% Class definitions
-    classDef cache fill:#DC382D,stroke:#B71C1C,color:#fff
-    classDef db fill:#3b48cc,stroke:#232f3e,color:#fff
-    classDef service fill:#E3F2FD,stroke:#2196F3
-
-    class REDIS cache
-    class BACKEND db
-    class APP service
 ```
 
 **Data flow (cache-aside pattern):**

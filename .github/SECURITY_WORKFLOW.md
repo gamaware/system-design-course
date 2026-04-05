@@ -38,18 +38,6 @@ flowchart TD
     L -->|"Yes"| M(("Block PR / Alert"))
     L -->|"No"| N(("Pass Check"))
 
-    %% Class definitions
-    classDef trigger fill:#FFF3E0,stroke:#FF9800
-    classDef process fill:#E3F2FD,stroke:#2196F3
-    classDef decision fill:#E8F5E9,stroke:#4CAF50
-    classDef endpoint_fail fill:#e74c3c,stroke:#c0392b,color:#fff
-    classDef endpoint_pass fill:#68a063,stroke:#232f3e,color:#fff
-
-    class A trigger
-    class B,C,D,E,F,G,H,I,J,K process
-    class L decision
-    class M endpoint_fail
-    class N endpoint_pass
 ```
 
 ## Scan Coverage
@@ -71,14 +59,6 @@ graph LR
     C --> J["npm Packages"]
     C --> K{{"Docker Images"}}
 
-    %% Class definitions
-    classDef scanner fill:#E3F2FD,stroke:#2196F3
-    classDef lang fill:#f4f4f5,stroke:#a1a1aa
-    classDef container fill:#ff9900,stroke:#232f3e,color:#fff
-
-    class A,B,C scanner
-    class D,E,F,G,H,I,J lang
-    class K container
 ```
 
 ## Tools

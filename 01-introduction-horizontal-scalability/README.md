@@ -47,18 +47,6 @@ graph TB
         CW -.->|"Triggers"| ASG
     end
 
-    %% Class definitions
-    classDef aws fill:#ff9900,stroke:#232f3e,color:#fff
-    classDef service fill:#68a063,stroke:#232f3e,color:#fff
-    classDef user fill:#f4f4f5,stroke:#a1a1aa
-    classDef monitor fill:#e74c3c,stroke:#c0392b,color:#fff
-    classDef dark fill:#000,stroke:#232f3e,color:#fff
-
-    class ALB,ASG aws
-    class Frontend,NodeJS service
-    class User user
-    class CW monitor
-    class Crystal dark
 ```
 
 ## Prerequisites

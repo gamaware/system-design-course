@@ -227,16 +227,6 @@ graph TD
     HAProxy -.->|"Backup"| Backend4["Backend 4<br>Port 8004<br>Backup"]
     HAProxy -.->|"Backup"| Backend5["Backend 5<br>Port 8005<br>Backup"]
 
-    %% Class definitions
-    classDef lb fill:#ff9900,stroke:#232f3e,color:#fff
-    classDef service fill:#3b48cc,stroke:#232f3e,color:#fff
-    classDef backup fill:#666,stroke:#232f3e,color:#fff
-    classDef user fill:#f4f4f5,stroke:#a1a1aa
-
-    class HAProxy lb
-    class Backend1,Backend2,Backend3 service
-    class Backend4,Backend5 backup
-    class Client user
 ```
 
 ## Key Concepts

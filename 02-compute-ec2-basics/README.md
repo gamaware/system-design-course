@@ -161,17 +161,6 @@ graph TB
     Internet --> SG
     SG -->|"allowed"| EC2
 
-    %% Class definitions
-    classDef aws fill:#ff9900,stroke:#232f3e,color:#fff
-    classDef security fill:#DD344C,stroke:#232f3e,color:#fff
-    classDef db fill:#3b48cc,stroke:#232f3e,color:#fff
-    classDef user fill:#f4f4f5,stroke:#a1a1aa
-
-    class EC2 aws
-    class SG security
-    class EBS db
-    class User user
-    class Internet aws
 ```
 
 **Key points:**

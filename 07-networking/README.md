@@ -48,14 +48,6 @@ graph TB
     BOB_FE -.-x|"BROKEN"| SRV_FE
     BOB_BE -->|"OK"| SRV_BE
 
-    %% Class definitions
-    classDef broken fill:#ff6b6b,stroke:#333,color:#fff
-    classDef healthy fill:#51cf66,stroke:#333,color:#fff
-    classDef client fill:#339af0,stroke:#333,color:#fff
-
-    class SRV_FE broken
-    class SRV_BE healthy
-    class BOB_FE,BOB_BE client
 ```
 
 **Scenario:** An Apache web server (`devapp01-web`) should be accessible from

@@ -94,17 +94,6 @@ graph TB
     SUBA --- EC2_1
     SUBC --- EC2_2
 
-    %% Class definitions
-    classDef aws fill:#ff9900,stroke:#232f3e,color:#fff
-    classDef subnet fill:#E8F5E9,stroke:#4CAF50
-    classDef compute fill:#E3F2FD,stroke:#2196F3
-    classDef network fill:#FFF3E0,stroke:#FF9800
-    classDef user fill:#f4f4f5,stroke:#a1a1aa
-
-    class IGW,RT network
-    class SUBA,SUBC,SG subnet
-    class EC2_1,EC2_2 compute
-    class STUDENT user
 ```
 
 **Tool responsibilities:**
