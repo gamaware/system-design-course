@@ -139,30 +139,28 @@ Understanding the architecture helps visualize how components work together:
 
 ```mermaid
 graph TB
-    subgraph "AWS Cloud"
-        subgraph "VPC (Virtual Private Cloud)"
-            subgraph "Public Subnet"
-                EC2["EC2 Instance<br/>Amazon Linux 2023<br/>t3.micro<br/>Public IP: x.x.x.x"]
-                SG["Security Group<br/>Allow SSH (22)<br/>from your IP"]
-                EBS["EBS Root Volume<br/>8 GB gp3<br/>Contains AMI"]
+    subgraph aws_cloud ["AWS Cloud"]
+        subgraph vpc ["VPC (Virtual Private Cloud)"]
+            subgraph public_subnet ["Public Subnet"]
+                EC2{{"EC2 Instance<br>Amazon Linux 2023<br>t3.micro<br>Public IP: x.x.x.x"}}
+                SG[["Security Group<br>Allow SSH (22)<br>from your IP"]]
+                EBS[("EBS Root Volume<br>8 GB gp3<br>Contains AMI")]
 
-                EC2 -.->|protected by| SG
-                EC2 -.->|storage| EBS
+                EC2 -.->|"protected by"| SG
+                EC2 -.->|"storage"| EBS
             end
         end
     end
 
-    User["Your Computer<br/>SSH Client<br/>Private Key"]
-    Internet["Internet Gateway"]
+    %% External actors
+    User("Your Computer<br>SSH Client<br>Private Key")
+    Internet(["Internet Gateway"])
 
-    User -->|SSH connection<br/>port 22| Internet
+    %% Connection flow
+    User ==>|"SSH connection<br>port 22"| Internet
     Internet --> SG
-    SG -->|allowed| EC2
+    SG -->|"allowed"| EC2
 
-    style EC2 fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
-    style SG fill:#DD344C,stroke:#232F3E,stroke-width:2px,color:#fff
-    style EBS fill:#527FFF,stroke:#232F3E,stroke-width:2px,color:#fff
-    style User fill:#3F8624,stroke:#232F3E,stroke-width:2px,color:#fff
 ```
 
 **Key points:**
@@ -570,17 +568,18 @@ sequenceDiagram
     participant SG as Security Group
     participant EC2 as EC2 Instance
 
-    You->>SG: SSH connection request (port 22)
+    You ->> SG: SSH connection request (port 22)
     Note over SG: Check: Is source IP allowed?
+
     alt IP allowed
-        SG->>EC2: Forward connection
-        EC2->>You: Request authentication
-        You->>EC2: Send public key signature<br/>(signed with private key)
-        EC2->>EC2: Verify signature<br/>with stored public key
-        EC2->>You: Authentication successful
-        Note over You,EC2: Secure SSH session established
+        SG ->> EC2: Forward connection
+        EC2 ->> You: Request authentication
+        You ->> EC2: Send public key signature<br>(signed with private key)
+        EC2 ->> EC2: Verify signature<br>with stored public key
+        EC2 ->> You: Authentication successful
+        Note over You, EC2: Secure SSH session established
     else IP not allowed
-        SG->>You: Connection refused
+        SG ->> You: Connection refused
     end
 ```
 

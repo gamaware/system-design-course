@@ -65,27 +65,27 @@ student application implements caching patterns in their chosen language.
 
 ```mermaid
 graph LR
-    subgraph Docker["Docker Compose Network"]
-        subgraph Student["Student Application"]
-            APP["C++ / C# / Java<br/>(cache logic)"]
+    subgraph Docker ["Docker Compose Network"]
+        subgraph Student ["Student Application"]
+            APP["C++ / C# / Java<br>(cache logic)"]
         end
-        subgraph Cache["Cache Layer"]
-            REDIS["Redis 7<br/>port 6379"]
+
+        subgraph Cache ["Cache Layer"]
+            REDIS[("Redis 7<br>port 6379")]
         end
-        subgraph Origin["Simulated Database"]
-            BACKEND["Python API<br/>port 5000<br/>(500ms delay)"]
+
+        subgraph Origin ["Simulated Database"]
+            BACKEND[("Python API<br>port 5000<br>(500ms delay)")]
         end
     end
 
+    %% Cache-aside data flow
     APP -->|"1. Check cache"| REDIS
-    REDIS -->|"2a. Cache HIT<br/>(&lt;5ms)"| APP
+    REDIS ==>|"2a. Cache HIT<br>(<5ms)"| APP
     APP -->|"2b. Cache MISS"| BACKEND
-    BACKEND -->|"3. Response<br/>(~500ms)"| APP
+    BACKEND ==>|"3. Response<br>(~500ms)"| APP
     APP -->|"4. Store in cache"| REDIS
 
-    style REDIS fill:#DC382D,stroke:#B71C1C,color:#fff
-    style BACKEND fill:#FFF3E0,stroke:#FF9800
-    style APP fill:#E3F2FD,stroke:#2196F3
 ```
 
 **Data flow (cache-aside pattern):**
@@ -223,18 +223,20 @@ sequenceDiagram
     participant Cache as Redis
     participant DB as Backend DB
 
-    App->>Cache: GET product:1
-    Cache-->>App: (nil) — cache MISS
+    %% First request: cache miss
+    App ->> Cache: GET product:1
+    Cache -->> App: (nil) -- cache MISS
 
-    App->>DB: GET /products/1
-    DB-->>App: {product data} (500ms)
+    App ->> DB: GET /products/1
+    DB -->> App: {product data} (500ms)
 
-    App->>Cache: SET product:1
-    Cache-->>App: OK
+    App ->> Cache: SET product:1
+    Cache -->> App: OK
 
-    Note over App,Cache: Next request for product:1
-    App->>Cache: GET product:1
-    Cache-->>App: {product data} — cache HIT (1ms)
+    %% Second request: cache hit
+    Note over App, Cache: Next request for product:1
+    App ->> Cache: GET product:1
+    Cache -->> App: {product data} -- cache HIT (1ms)
 ```
 
 #### Read-Through with TTL
@@ -248,22 +250,24 @@ sequenceDiagram
     participant Cache as Redis
     participant DB as Backend DB
 
-    App->>Cache: GET product:2
-    Cache-->>App: (nil) — cache MISS
+    %% Initial fetch with TTL
+    App ->> Cache: GET product:2
+    Cache -->> App: (nil) -- cache MISS
 
-    App->>DB: GET /products/2
-    DB-->>App: {product data} (500ms)
+    App ->> DB: GET /products/2
+    DB -->> App: {product data} (500ms)
 
-    App->>Cache: SETEX product:2 30 {data}
-    Cache-->>App: OK
+    App ->> Cache: SETEX product:2 30 {data}
+    Cache -->> App: OK
 
     Note over Cache: TTL counting down: 30...29...28...
 
-    Note over App,Cache: After 30 seconds
-    App->>Cache: GET product:2
-    Cache-->>App: (nil) — key expired
-    App->>DB: GET /products/2
-    DB-->>App: {fresh data}
+    %% After TTL expires, key is gone
+    Note over App, Cache: After 30 seconds
+    App ->> Cache: GET product:2
+    Cache -->> App: (nil) -- key expired
+    App ->> DB: GET /products/2
+    DB -->> App: {fresh data}
 ```
 
 #### Write-Through
@@ -277,17 +281,19 @@ sequenceDiagram
     participant Cache as Redis
     participant DB as Backend DB
 
-    App->>DB: PUT /products/1 {price: 99.99}
-    DB-->>App: OK (500ms)
+    %% Synchronous write to both backend and cache
+    App ->> DB: PUT /products/1 {price: 99.99}
+    DB -->> App: OK (500ms)
 
-    App->>Cache: SET product:1 {price: 99.99}
-    Cache-->>App: OK (1ms)
+    App ->> Cache: SET product:1 {price: 99.99}
+    Cache -->> App: OK (1ms)
 
     Note over App: Total write time: ~501ms
 
-    Note over App,Cache: Subsequent read
-    App->>Cache: GET product:1
-    Cache-->>App: {price: 99.99} — always fresh
+    %% Read always returns fresh data
+    Note over App, Cache: Subsequent read
+    App ->> Cache: GET product:1
+    Cache -->> App: {price: 99.99} -- always fresh
 ```
 
 #### Write-Back (Write-Behind)
@@ -301,33 +307,35 @@ sequenceDiagram
     participant Cache as Redis
     participant DB as Backend DB
 
-    App->>Cache: SET product:3 {new data}
-    Cache-->>App: OK (1ms)
-    App->>Cache: SADD dirty_keys product:3
-    Cache-->>App: OK
+    %% Fast writes go to cache only
+    App ->> Cache: SET product:3 {new data}
+    Cache -->> App: OK (1ms)
+    App ->> Cache: SADD dirty_keys product:3
+    Cache -->> App: OK
 
-    App->>Cache: SET product:4 {new data}
-    Cache-->>App: OK (1ms)
-    App->>Cache: SADD dirty_keys product:4
-    Cache-->>App: OK
+    App ->> Cache: SET product:4 {new data}
+    Cache -->> App: OK (1ms)
+    App ->> Cache: SADD dirty_keys product:4
+    Cache -->> App: OK
 
     Note over App: Writes are instant (~1ms each)
 
-    Note over App,DB: Later: flush dirty keys
-    App->>Cache: SMEMBERS dirty_keys
-    Cache-->>App: [product:3, product:4]
+    %% Asynchronous flush to backend
+    Note over App, DB: Later: flush dirty keys
+    App ->> Cache: SMEMBERS dirty_keys
+    Cache -->> App: [product:3, product:4]
 
-    App->>Cache: GET product:3
-    Cache-->>App: {data}
-    App->>DB: PUT /products/3
-    DB-->>App: OK (500ms)
-    App->>Cache: SREM dirty_keys product:3
+    App ->> Cache: GET product:3
+    Cache -->> App: {data}
+    App ->> DB: PUT /products/3
+    DB -->> App: OK (500ms)
+    App ->> Cache: SREM dirty_keys product:3
 
-    App->>Cache: GET product:4
-    Cache-->>App: {data}
-    App->>DB: PUT /products/4
-    DB-->>App: OK (500ms)
-    App->>Cache: SREM dirty_keys product:4
+    App ->> Cache: GET product:4
+    Cache -->> App: {data}
+    App ->> DB: PUT /products/4
+    DB -->> App: OK (500ms)
+    App ->> Cache: SREM dirty_keys product:4
 ```
 
 ### Caching Pattern Decision Guide

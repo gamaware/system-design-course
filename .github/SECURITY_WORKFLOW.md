@@ -16,38 +16,49 @@ Software Composition Analysis (SCA) on every code change.
 
 ```mermaid
 flowchart TD
-    A[Code Push/PR to main] --> B[Trigger Security Workflow]
-    B --> C[Checkout Code]
-    C --> D[Security Scan Composite Action]
-    D --> E[Semgrep SAST]
-    D --> F[Trivy SCA]
-    E --> G[Analyze Code Patterns]
-    F --> H[Scan Dependencies & Containers]
-    G --> I[Generate SARIF Report]
-    H --> J[Generate SARIF Report]
-    I --> K[Upload to GitHub Security]
+    %% Trigger
+    A[/"Code Push/PR to main"/] --> B["Trigger Security Workflow"]
+    B --> C["Checkout Code"]
+
+    %% Parallel scan tools
+    C --> D[["Security Scan Composite Action"]]
+    D --> E["Semgrep SAST"]
+    D --> F["Trivy SCA"]
+
+    %% Analysis and reporting
+    E --> G["Analyze Code Patterns"]
+    F --> H["Scan Dependencies & Containers"]
+    G --> I["Generate SARIF Report"]
+    H --> J["Generate SARIF Report"]
+
+    %% Results gate
+    I --> K["Upload to GitHub Security"]
     J --> K
-    K --> L{Vulnerabilities Found?}
-    L -->|Yes| M[Block PR / Alert]
-    L -->|No| N[Pass Check]
+    K --> L{"Vulnerabilities Found?"}
+    L -->|"Yes"| M(("Block PR / Alert"))
+    L -->|"No"| N(("Pass Check"))
+
 ```
 
 ## Scan Coverage
 
 ```mermaid
 graph LR
-    A[Security Scanning] --> B[SAST - Semgrep]
-    A --> C[SCA - Trivy]
+    A[["Security Scanning"]] --> B["SAST - Semgrep"]
+    A --> C["SCA - Trivy"]
 
-    B --> D[Python CDK]
-    B --> E[Ruby Rails]
-    B --> F[Node.js]
-    B --> G[Crystal]
+    %% SAST language coverage
+    B --> D["Python CDK"]
+    B --> E["Ruby Rails"]
+    B --> F["Node.js"]
+    B --> G["Crystal"]
 
-    C --> H[Python Dependencies]
-    C --> I[Ruby Gems]
-    C --> J[npm Packages]
-    C --> K[Docker Images]
+    %% SCA dependency coverage
+    C --> H["Python Dependencies"]
+    C --> I["Ruby Gems"]
+    C --> J["npm Packages"]
+    C --> K{{"Docker Images"}}
+
 ```
 
 ## Tools
