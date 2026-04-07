@@ -1,0 +1,96 @@
+services:
+  nfs-server:
+    build: ./nfs-server
+    container_name: nfs-server
+    privileged: true
+    ports:
+      - "2049:2049"
+    volumes:
+      - nfs-shared:/nfs/shared
+      - nfs-data:/nfs/data
+      - nfs-backup:/nfs/backup
+    stop_grace_period: 5s
+    healthcheck:
+      test: ["CMD", "showmount", "-e", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  nfs-client-1:
+    build: ./nfs-client
+    container_name: nfs-client-1
+    privileged: true
+    depends_on:
+      nfs-server:
+        condition: service_healthy
+    environment:
+      - NFS_SERVER=nfs-server
+    volumes:
+      - ./scripts:/scripts:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mount | grep -q /mnt/shared && mount | grep -q /mnt/data && mount | grep -q /mnt/backup"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  nfs-client-2:
+    build: ./nfs-client
+    container_name: nfs-client-2
+    privileged: true
+    depends_on:
+      nfs-server:
+        condition: service_healthy
+    environment:
+      - NFS_SERVER=nfs-server
+    volumes:
+      - ./scripts:/scripts:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mount | grep -q /mnt/shared && mount | grep -q /mnt/data && mount | grep -q /mnt/backup"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  minio:
+    image: minio/minio:RELEASE.2025-02-28T09-55-16Z
+    container_name: minio-server
+    command: server /data1 /data2 /data3 /data4 --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin123
+    volumes:
+      - minio-data1:/data1
+      - minio-data2:/data2
+      - minio-data3:/data3
+      - minio-data4:/data4
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mc:
+    image: minio/mc:latest
+    container_name: minio-client
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ""
+    command: /bin/sh
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./scripts:/scripts:ro
+    profiles:
+      - tools
+
+volumes:
+  nfs-shared:
+  nfs-data:
+  nfs-backup:
+  minio-data1:
+  minio-data2:
+  minio-data3:
+  minio-data4:
