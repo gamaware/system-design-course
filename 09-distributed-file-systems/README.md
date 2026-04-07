@@ -170,6 +170,7 @@ locally built Docker images.
 | Erasure coding demo fails | MinIO needs 4 drives | Ensure all 4 volumes exist; restart MinIO |
 | AWS S3 comparison fails | Missing credentials | Configure AWS Academy credentials before Task 7 |
 | `fio` benchmark slow on macOS | Docker Desktop I/O overhead | Expected -- Docker file sharing adds latency on macOS |
+| Cleanup leaves containers running | Privileged NFS containers resist SIGTERM | Restart Docker Desktop to force-kill |
 
 ## Key Concepts
 

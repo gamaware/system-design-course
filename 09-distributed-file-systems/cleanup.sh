@@ -7,14 +7,14 @@ cd "$SCRIPT_DIR"
 echo "=== Lab 09: Cleanup ==="
 echo ""
 
-echo "Stopping containers..."
-# Force-remove all lab containers (privileged NFS containers may resist SIGTERM)
-docker rm -f nfs-server nfs-client-1 nfs-client-2 minio-server minio-client 2>/dev/null || true
-
-echo "Removing networks, volumes, and images..."
+echo "Stopping and removing all lab resources..."
+# First try compose down (handles network + volumes + images)
 docker compose --profile tools down -v --rmi local --remove-orphans 2>/dev/null || true
 
-# Remove any remaining lab volumes (in case compose down missed them)
+# Force-remove any remaining containers (privileged NFS containers may resist SIGTERM)
+docker rm -f nfs-server nfs-client-1 nfs-client-2 minio-server minio-client 2>/dev/null || true
+
+# Remove any remaining lab volumes
 docker volume ls -q --filter "name=09-distributed-file-systems" \
     | while read -r vol; do docker volume rm "$vol" 2>/dev/null || true; done
 

@@ -21,15 +21,19 @@ while [ "$i" -lt 30 ]; do
     sleep 1
 done
 
-# Mount NFS exports
+# Start rpcbind and rpc.statd for NFS file locking support (flock)
+rpcbind 2>/dev/null || true
+rpc.statd 2>/dev/null || true
+
+# Mount NFS exports (vers=3 for Docker compatibility, locking enabled)
 echo "Mounting /nfs/shared -> /mnt/shared"
-mount -t nfs -o nolock,vers=3 "$NFS_SERVER":/nfs/shared /mnt/shared
+mount -t nfs -o vers=3 "$NFS_SERVER":/nfs/shared /mnt/shared
 
 echo "Mounting /nfs/data -> /mnt/data"
-mount -t nfs -o nolock,vers=3 "$NFS_SERVER":/nfs/data /mnt/data
+mount -t nfs -o vers=3 "$NFS_SERVER":/nfs/data /mnt/data
 
 echo "Mounting /nfs/backup -> /mnt/backup"
-mount -t nfs -o nolock,vers=3 "$NFS_SERVER":/nfs/backup /mnt/backup
+mount -t nfs -o vers=3 "$NFS_SERVER":/nfs/backup /mnt/backup
 
 echo "=== NFS mounts ready ==="
 df -h | grep nfs

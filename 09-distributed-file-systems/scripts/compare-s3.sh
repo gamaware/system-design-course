@@ -4,20 +4,28 @@ set -euo pipefail
 # This script runs identical S3 operations against MinIO and AWS S3,
 # comparing behavior, latency, and API compatibility.
 #
-# Prerequisites:
-#   - MinIO running locally (docker compose up)
-#   - AWS credentials configured (~/.aws/credentials or environment variables)
+# Run inside nfs-client-1 (has aws-cli and GNU coreutils):
+#   docker exec -it nfs-client-1 bash /scripts/compare-s3.sh
 #
-# Usage:
+# Or from the host (requires aws-cli installed):
 #   bash scripts/compare-s3.sh
+#
+# Prerequisites:
+#   - MinIO running (docker compose up)
+#   - AWS credentials in environment variables
 
 echo "============================================="
 echo "  MinIO vs AWS S3: Side-by-Side Comparison"
 echo "============================================="
 echo ""
 
-MINIO_ENDPOINT="http://localhost:9000"
-MINIO_BUCKET="lab09-minio-test"
+# Detect whether running inside a container or on the host
+if [ -f /.dockerenv ]; then
+    MINIO_ENDPOINT="http://minio-server:9000"
+else
+    MINIO_ENDPOINT="http://localhost:9000"
+fi
+MINIO_BUCKET="lab09-minio-test-$(date +%s)"
 
 # Initialize timing variables (prevents unbound errors if a step fails)
 minio_create=0 s3_create=0

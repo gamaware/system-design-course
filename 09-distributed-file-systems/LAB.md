@@ -7,8 +7,8 @@
 
 - **Docker Desktop** installed and running (includes Docker Engine and
   Docker Compose)
-- **AWS CLI** installed locally (for Task 7 only -- AWS Academy
-  credentials required)
+- **AWS CLI** installed locally or use the containerized version
+  (Tasks 6-7 require it; AWS Academy credentials needed for Task 7)
 - A terminal that supports bash (macOS Terminal, Linux shell, Git Bash
   on Windows, or WSL)
 
@@ -699,19 +699,26 @@ This recreates the volume mount for `/data3`, restoring the drive.
 Run identical S3 API operations against local MinIO and AWS S3 to compare
 behavior and latency. This task requires AWS Academy credentials.
 
-### Step 7.1: Configure AWS credentials
+### Step 7.1: Configure AWS credentials inside the client container
+
+Pass your AWS Academy credentials when running the comparison script
+inside the `nfs-client-1` container:
 
 ```bash
-export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
-export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
-export AWS_SESSION_TOKEN=YOUR_SESSION_TOKEN
-export AWS_DEFAULT_REGION=us-east-1
+docker exec -it \
+    -e AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY \
+    -e AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY \
+    -e AWS_SESSION_TOKEN=YOUR_SESSION_TOKEN \
+    -e AWS_DEFAULT_REGION=us-east-1 \
+    nfs-client-1 bash
 ```
 
-Replace the placeholder values with your AWS Academy credentials from the
-Learner Lab.
+Replace the placeholder values with your AWS Academy credentials from
+the Learner Lab.
 
 ### Step 7.2: Verify AWS identity
+
+Inside the container:
 
 ```bash
 aws sts get-caller-identity
@@ -729,8 +736,10 @@ Expected output:
 
 ### Step 7.3: Run the comparison script
 
+Still inside the container:
+
 ```bash
-bash scripts/compare-s3.sh
+bash /scripts/compare-s3.sh
 ```
 
 The script creates a bucket, uploads a file, lists objects, and syncs a

@@ -43,7 +43,10 @@ while [ "$i" -lt 60 ]; do
     nfs_ok=false
     minio_ok=false
 
-    if docker exec nfs-server showmount -e localhost 2>/dev/null | grep -q "/nfs/shared"; then
+    nfs_exports=$(docker exec nfs-server showmount -e localhost 2>/dev/null || true)
+    if echo "$nfs_exports" | grep -q "/nfs/shared" \
+        && echo "$nfs_exports" | grep -q "/nfs/data" \
+        && echo "$nfs_exports" | grep -q "/nfs/backup"; then
         nfs_ok=true
     fi
 
