@@ -54,15 +54,16 @@ Log in to your AWS Academy Learner Lab course and start a session:
 
    ![AWS Academy Modules](screenshots/02-aws-academy-modules.png)
 
-2. Click **Start Lab** and wait for the AWS indicator to turn green
+2. Click **Start Lab** and wait for the AWS indicator to turn
+   **green** (takes about 30 seconds)
 
-   ![Learner Lab Started](screenshots/03-learner-lab-starting.png)
+   ![Learner Lab Toolbar](screenshots/03-learner-lab-toolbar.png)
 
-3. Click **AWS Details**, then click **Show** next to "AWS CLI"
+3. Click **AWS Details** to open the Cloud Access panel
 
-   ![AWS Details Panel](screenshots/04-aws-details-credentials.png)
+   ![AWS Details Panel](screenshots/04-aws-details-panel.png)
 
-4. Copy the credentials block shown
+4. Click **Show** next to "AWS CLI" and copy the credentials block
 
    ![AWS CLI Credentials](screenshots/05-aws-cli-credentials.png)
 
