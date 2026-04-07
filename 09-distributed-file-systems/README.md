@@ -18,8 +18,11 @@ CLI commands. Everything runs locally in Docker Compose.
 
 All lab work runs inside Docker containers, making the commands
 OS-agnostic. Follow the step-by-step instructions in **[LAB.md](LAB.md)**.
-You need a terminal that supports bash (macOS Terminal, Linux shell,
-Git Bash on Windows, or WSL).
+
+| Environment | Requirements | Setup Command |
+| --- | --- | --- |
+| Local (Docker Desktop) | Docker Desktop + bash terminal | `./setup.sh` |
+| EC2 (AWS Academy) | AWS CLI + Learner Lab credentials | `bash setup-ec2.sh` |
 
 ## Learning Objectives
 
@@ -101,8 +104,11 @@ graph TB
 ├── README.md                       # This file (lab overview)
 ├── LAB.md                          # Step-by-step instructions (8 tasks)
 ├── docker-compose.yml              # NFS + MinIO + clients
-├── setup.sh                        # Start environment
-├── cleanup.sh                      # Tear down environment
+├── setup.sh                        # Start environment (local Docker)
+├── cleanup.sh                      # Tear down environment (local Docker)
+├── setup-ec2.sh                    # Launch EC2 + install Docker + run lab
+├── cleanup-ec2.sh                  # Terminate EC2 + delete resources
+├── screenshots/                    # AWS Academy credential screenshots
 ├── nfs-server/
 │   ├── Dockerfile                  # Ubuntu + nfs-kernel-server
 │   ├── exports                     # NFS export configuration

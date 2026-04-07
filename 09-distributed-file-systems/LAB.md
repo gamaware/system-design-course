@@ -3,12 +3,27 @@
 > For the lab overview, architecture diagrams, and key concepts, see
 > [README.md](README.md).
 
-## Prerequisites
+## Choose Your Environment
 
-- **Docker Desktop** installed and running (includes Docker Engine and
-  Docker Compose)
-- **AWS CLI** installed locally or use the containerized version
-  (Tasks 6-7 require it; AWS Academy credentials needed for Task 7)
+This lab can run **locally** (Docker Desktop) or on an **EC2 instance**
+(AWS Academy). Choose one:
+
+| Environment | What You Need | Setup |
+| --- | --- | --- |
+| **Option A: Local** | Docker Desktop + bash terminal | `./setup.sh` |
+| **Option B: EC2** | AWS Academy credentials + AWS CLI | `bash setup-ec2.sh` |
+
+Both options run the same Docker containers and the same 8 tasks.
+Option B is useful if you do not have Docker Desktop or want to
+practice launching cloud infrastructure.
+
+## Option A: Local Setup (Docker Desktop)
+
+### Prerequisites
+
+- **Docker Desktop** installed and running
+- **AWS CLI** installed (Tasks 6-7 require it; AWS Academy credentials
+  needed for Task 7)
 - A terminal that supports bash (macOS Terminal, Linux shell, Git Bash
   on Windows, or WSL)
 
@@ -19,14 +34,7 @@ docker --version
 docker compose version
 ```
 
-Expected output (versions may differ):
-
-```text
-Docker version 27.x.x, build ...
-Docker Compose version v2.x.x
-```
-
-## Quick Start
+### Quick Start
 
 ```bash
 cd 09-distributed-file-systems
@@ -34,7 +42,77 @@ chmod +x setup.sh cleanup.sh scripts/*.sh
 ./setup.sh
 ```
 
-Then follow the task instructions below.
+Then skip to **Task 1** below.
+
+## Option B: EC2 Setup (AWS Academy)
+
+### Step 1: Get AWS Academy Credentials
+
+Log in to your AWS Academy Learner Lab course and start a session:
+
+1. Go to **Modules** and click **Launch AWS Academy Learner Lab**
+
+   ![AWS Academy Modules](screenshots/02-aws-academy-modules.png)
+
+2. Click **Start Lab** and wait for the AWS indicator to turn green
+
+   ![Learner Lab Started](screenshots/03-learner-lab-starting.png)
+
+3. Click **AWS Details**, then click **Show** next to "AWS CLI"
+
+   ![AWS Details Panel](screenshots/04-aws-details-credentials.png)
+
+4. Copy the credentials block shown
+
+   ![AWS CLI Credentials](screenshots/05-aws-cli-credentials.png)
+
+### Step 2: Export the Credentials
+
+Paste the credentials into your terminal:
+
+```bash
+export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
+export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
+export AWS_SESSION_TOKEN=YOUR_SESSION_TOKEN
+export AWS_DEFAULT_REGION=us-east-1
+```
+
+### Step 3: Launch the EC2 Instance
+
+```bash
+bash setup-ec2.sh
+```
+
+The script creates a t3.medium Amazon Linux 2023 instance, installs
+Docker and Docker Compose, clones the repository, and runs `setup.sh`
+automatically. It takes 2-3 minutes.
+
+### Step 4: SSH into the Instance
+
+```bash
+ssh -i lab09-key.pem ec2-user@YOUR_PUBLIC_IP
+```
+
+The public IP is printed by the setup script. Once inside:
+
+```bash
+cd ~/system-design-course/09-distributed-file-systems
+ls ~/LAB_READY   # confirms setup is complete
+```
+
+Then continue with **Task 1** below. All commands run the same way
+on EC2 as they do locally.
+
+### EC2 Cleanup
+
+When you are done with the lab:
+
+```bash
+bash cleanup-ec2.sh
+```
+
+This terminates the instance, deletes the key pair, and removes the
+security group.
 
 ---
 
