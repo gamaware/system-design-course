@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Lab 09 - Distributed File Systems.
+  Launches a t3.medium EC2 instance with Docker, Docker Compose, and
+  Docker Buildx pre-installed. Clones the course repository and runs
+  the lab setup automatically. SSH and MinIO Console access enabled.
+
+Parameters:
+  LatestAmiId:
+    Description: Amazon Linux 2023 AMI (auto-resolved via SSM)
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+
+Resources:
+  LabSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Lab 09 - SSH and MinIO Console access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 9001
+          ToPort: 9001
+          CidrIp: 0.0.0.0/0
+          Description: MinIO Console
+
+  LabKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: lab09-key
+
+  LabInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.medium
+      ImageId: !Ref LatestAmiId
+      KeyName: !Ref LabKeyPair
+      SecurityGroupIds:
+        - !GetAtt LabSecurityGroup.GroupId
+      Tags:
+        - Key: Name
+          Value: lab09-distributed-fs
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          set -ex
+
+          # Install Docker from Amazon Linux repos
+          dnf update -y
+          dnf install -y docker git
+          systemctl enable docker
+          systemctl start docker
+          usermod -aG docker ec2-user
+
+          # Install Docker Compose and Buildx plugins
+          ARCH=$(uname -m)
+          mkdir -p /usr/local/lib/docker/cli-plugins
+
+          curl -fsSL \
+            "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-${ARCH}" \
+            -o /usr/local/lib/docker/cli-plugins/docker-compose
+          chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+          if [ "${ARCH}" = "x86_64" ]; then BUILDX_ARCH="amd64"; else BUILDX_ARCH="arm64"; fi
+          BUILDX_VERSION=$(curl -fsSL https://api.github.com/repos/docker/buildx/releases/latest \
+            | grep '"tag_name"' | head -1 | cut -d'"' -f4)
+          curl -fsSL \
+            "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-${BUILDX_ARCH}" \
+            -o /usr/local/lib/docker/cli-plugins/docker-buildx
+          chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx
+
+          # Clone the repo and run the lab as ec2-user
+          su - ec2-user -c '
+            git clone https://github.com/gamaware/system-design-course.git
+            cd system-design-course/09-distributed-file-systems
+            chmod +x setup.sh cleanup.sh scripts/*.sh
+            ./setup.sh
+          '
+
+          # Signal that setup is complete
+          touch /home/ec2-user/LAB_READY
+
+Outputs:
+  InstanceId:
+    Description: EC2 instance ID
+    Value: !Ref LabInstance
+
+  PublicIP:
+    Description: Public IP address (use for SSH and MinIO Console)
+    Value: !GetAtt LabInstance.PublicIp
+
+  SSHCommand:
+    Description: SSH command to connect to the instance
+    Value: !Sub >-
+      ssh -i lab09-key.pem ec2-user@${LabInstance.PublicIp}
+
+  MinIOConsole:
+    Description: MinIO web console URL
+    Value: !Sub >-
+      http://${LabInstance.PublicIp}:9001
+
+  KeyPairNote:
+    Description: How to download your SSH key
+    Value: >-
+      Download the private key from EC2 > Key Pairs > lab09-key >
+      Actions > Download .pem file. Then chmod 400 lab09-key.pem.

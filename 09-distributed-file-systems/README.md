@@ -19,10 +19,10 @@ CLI commands. Everything runs locally in Docker Compose.
 All lab work runs inside Docker containers, making the commands
 OS-agnostic. Follow the step-by-step instructions in **[LAB.md](LAB.md)**.
 
-| Environment | Requirements | Setup Command |
+| Environment | Requirements | Setup |
 | --- | --- | --- |
 | Local (Docker Desktop) | Docker Desktop + bash terminal | `./setup.sh` |
-| EC2 (AWS Academy) | AWS CLI + Learner Lab credentials | `bash setup-ec2.sh` |
+| EC2 (AWS Academy) | Web browser + SSH client | Upload `cloudformation.yaml` via AWS Console |
 
 ## Learning Objectives
 
@@ -106,9 +106,10 @@ graph TB
 ├── docker-compose.yml              # NFS + MinIO + clients
 ├── setup.sh                        # Start environment (local Docker)
 ├── cleanup.sh                      # Tear down environment (local Docker)
-├── setup-ec2.sh                    # Launch EC2 + install Docker + run lab
-├── cleanup-ec2.sh                  # Terminate EC2 + delete resources
-├── screenshots/                    # AWS Academy credential screenshots
+├── cloudformation.yaml             # EC2 provisioning (AWS Academy)
+├── setup-ec2.sh                    # Alternative: CLI-based EC2 setup
+├── cleanup-ec2.sh                  # Alternative: CLI-based EC2 cleanup
+├── screenshots/                    # AWS Academy + CloudFormation screenshots
 ├── nfs-server/
 │   ├── Dockerfile                  # Ubuntu + nfs-kernel-server
 │   ├── exports                     # NFS export configuration

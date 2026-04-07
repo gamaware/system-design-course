@@ -44,11 +44,29 @@ chmod +x setup.sh cleanup.sh scripts/*.sh
 
 Then skip to **Task 1** below.
 
-## Option B: EC2 Setup (AWS Academy)
+## Option B: EC2 Setup (AWS Academy via CloudFormation)
 
-### Step 1: Get AWS Academy Credentials
+This option provisions an EC2 instance entirely through the AWS
+Console -- no local tools required beyond a web browser and an SSH
+client.
 
-Log in to your AWS Academy Learner Lab course and start a session:
+### What the template creates
+
+The `cloudformation.yaml` template deploys:
+
+| Resource | Details |
+| --- | --- |
+| EC2 Instance | t3.medium (2 vCPU, 4 GB RAM), Amazon Linux 2023 |
+| Security Group | Ports 22 (SSH) and 9001 (MinIO Console) open |
+| SSH Key Pair | `lab09-key` (download from EC2 Console) |
+| User Data | Installs Docker, Compose, Buildx; clones repo; runs lab |
+
+The instance costs approximately $0.04/hour. A full lab session
+(~2 hours) uses under $0.10 of your $50 budget.
+
+### Step 1: Start the Learner Lab
+
+Log in to your AWS Academy Learner Lab course:
 
 1. Go to **Modules** and click **Launch AWS Academy Learner Lab**
 
@@ -59,46 +77,74 @@ Log in to your AWS Academy Learner Lab course and start a session:
 
    ![Learner Lab Toolbar](screenshots/03-learner-lab-toolbar.png)
 
-3. Click **AWS Details** to open the Cloud Access panel
+3. Click the **AWS** link (green dot) to open the AWS Management
+   Console in a new tab
 
-   ![AWS Details Panel](screenshots/04-aws-details-panel.png)
+### Step 2: Download the CloudFormation template
 
-4. Click **Show** next to "AWS CLI" and copy the credentials block
+Download `cloudformation.yaml` from the course repository to your
+computer. You can download it directly from GitHub:
 
-   ![AWS CLI Credentials](screenshots/05-aws-cli-credentials.png)
-
-### Step 2: Export the Credentials
-
-Paste the credentials into your terminal:
-
-```bash
-export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
-export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
-export AWS_SESSION_TOKEN=YOUR_SESSION_TOKEN
-export AWS_DEFAULT_REGION=us-east-1
+```text
+https://raw.githubusercontent.com/gamaware/system-design-course/main/09-distributed-file-systems/cloudformation.yaml
 ```
 
-### Step 3: Launch the EC2 Instance
+### Step 3: Create the CloudFormation stack
+
+In the AWS Console:
+
+1. Navigate to **CloudFormation** (search for it in the top bar)
+2. Click **Create stack** > **With new resources (standard)**
+3. Select **Upload a template file**, click **Choose file**, and
+   upload `cloudformation.yaml`
+
+   ![Upload Template](screenshots/06-cfn-create-stack.png)
+
+4. Click **Next**
+5. Enter the stack name: `lab09-distributed-fs`
+
+   ![Stack Name](screenshots/08-cfn-stack-name.png)
+
+6. Click **Next** twice (skip Configure stack options)
+7. On the Review page, scroll down and click **Submit**
+
+### Step 4: Wait for the stack to complete
+
+The stack takes about 2-3 minutes to create. You can watch the
+progress in the **Events** tab:
+
+![Stack Creating](screenshots/10-cfn-creating.png)
+
+When complete, click the **Outputs** tab to find your instance
+details:
+
+![Stack Outputs](screenshots/11-cfn-outputs.png)
+
+The outputs show:
+
+- **PublicIP** -- use this for SSH and the MinIO Console
+- **SSHCommand** -- the exact SSH command to connect
+- **MinIOConsole** -- URL to open in your browser
+- **KeyPairNote** -- how to download your SSH key
+
+### Step 5: Download the SSH key and connect
+
+In the AWS Console, go to **EC2** > **Key Pairs**, select
+`lab09-key`, and click **Actions** > **Download .pem file**.
+
+Open a terminal and connect:
 
 ```bash
-bash setup-ec2.sh
-```
-
-The script creates a t3.medium Amazon Linux 2023 instance, installs
-Docker and Docker Compose, clones the repository, and runs `setup.sh`
-automatically. It takes 2-3 minutes.
-
-### Step 4: SSH into the Instance
-
-```bash
+chmod 400 lab09-key.pem
 ssh -i lab09-key.pem ec2-user@YOUR_PUBLIC_IP
 ```
 
-The public IP is printed by the setup script. Once inside:
+Wait for the lab setup to complete (2-3 minutes after instance
+launch):
 
 ```bash
+ls ~/LAB_READY   # exists when setup is complete
 cd ~/system-design-course/09-distributed-file-systems
-ls ~/LAB_READY   # confirms setup is complete
 ```
 
 Then continue with **Task 1** below. All commands run the same way
@@ -106,14 +152,15 @@ on EC2 as they do locally.
 
 ### EC2 Cleanup
 
-When you are done with the lab:
+When you are done with the lab, delete the CloudFormation stack:
 
-```bash
-bash cleanup-ec2.sh
-```
+1. Go to **CloudFormation** in the AWS Console
+2. Select the `lab09-distributed-fs` stack
+3. Click **Delete**
+4. Confirm deletion
 
-This terminates the instance, deletes the key pair, and removes the
-security group.
+This terminates the EC2 instance, deletes the key pair, and removes
+the security group automatically.
 
 ---
 
