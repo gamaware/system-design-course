@@ -107,18 +107,24 @@ USER_DATA=$(cat <<'USERDATA'
 #!/bin/bash
 set -ex
 
-# Install Docker
+# Install Docker from Amazon Linux repos + compose/buildx plugins
 dnf update -y
 dnf install -y docker git
 systemctl enable docker
 systemctl start docker
 usermod -aG docker ec2-user
 
-# Install Docker Compose plugin
+# Install Docker Compose and Buildx plugins
+ARCH=$(uname -m)
 mkdir -p /usr/local/lib/docker/cli-plugins
-curl -fsSL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-$(uname -m)" \
+curl -fsSL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-${ARCH}" \
     -o /usr/local/lib/docker/cli-plugins/docker-compose
 chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+if [ "${ARCH}" = "x86_64" ]; then BUILDX_ARCH="amd64"; else BUILDX_ARCH="arm64"; fi
+BUILDX_VERSION=$(curl -fsSL https://api.github.com/repos/docker/buildx/releases/latest | grep '"tag_name"' | head -1 | cut -d'"' -f4)
+curl -fsSL "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-${BUILDX_ARCH}" \
+    -o /usr/local/lib/docker/cli-plugins/docker-buildx
+chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx
 
 # Clone the repo and run the lab as ec2-user
 su - ec2-user -c '
