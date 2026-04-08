@@ -28,17 +28,12 @@ Resources:
           CidrIp: 0.0.0.0/0
           Description: MinIO Console
 
-  LabKeyPair:
-    Type: AWS::EC2::KeyPair
-    Properties:
-      KeyName: lab09-key
-
   LabInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t3.medium
       ImageId: !Ref LatestAmiId
-      KeyName: !Ref LabKeyPair
+      KeyName: vockey
       SecurityGroupIds:
         - !GetAtt LabSecurityGroup.GroupId
       Tags:
@@ -94,17 +89,11 @@ Outputs:
     Value: !GetAtt LabInstance.PublicIp
 
   SSHCommand:
-    Description: SSH command to connect to the instance
+    Description: SSH command (use the labsuser.pem key from AWS Details)
     Value: !Sub >-
-      ssh -i lab09-key.pem ec2-user@${LabInstance.PublicIp}
+      ssh -i labsuser.pem ec2-user@${LabInstance.PublicIp}
 
   MinIOConsole:
     Description: MinIO web console URL
     Value: !Sub >-
       http://${LabInstance.PublicIp}:9001
-
-  KeyPairNote:
-    Description: How to download your SSH key
-    Value: >-
-      Download the private key from EC2 > Key Pairs > lab09-key >
-      Actions > Download .pem file. Then chmod 400 lab09-key.pem.

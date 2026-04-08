@@ -125,18 +125,19 @@ The outputs show:
 - **PublicIP** -- use this for SSH and the MinIO Console
 - **SSHCommand** -- the exact SSH command to connect
 - **MinIOConsole** -- URL to open in your browser
-- **KeyPairNote** -- how to download your SSH key
 
 ### Step 5: Download the SSH key and connect
 
-In the AWS Console, go to **EC2** > **Key Pairs**, select
-`lab09-key`, and click **Actions** > **Download .pem file**.
+Go back to the **Learner Lab** tab. In the **AWS Details** panel,
+click **Download PEM** next to "SSH key" to download `labsuser.pem`.
+
+![AWS Details Panel](screenshots/04-aws-details-panel.png)
 
 Open a terminal and connect:
 
 ```bash
-chmod 400 lab09-key.pem
-ssh -i lab09-key.pem ec2-user@YOUR_PUBLIC_IP
+chmod 400 labsuser.pem
+ssh -i labsuser.pem ec2-user@YOUR_PUBLIC_IP
 ```
 
 Wait for the lab setup to complete (2-3 minutes after instance
