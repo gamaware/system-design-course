@@ -5650,382 +5650,85 @@
           </p>
           <div style="display: flex; gap: 16px; align-items: flex-start">
             <div style="flex: 1; display: flex; justify-content: center">
-              <svg width="700" height="450" viewBox="0 0 700 450">
+              <svg width="880" height="400" viewBox="0 0 880 400">
                 <defs>
-                  <marker
-                    id="arrowArch"
-                    markerWidth="8"
-                    markerHeight="6"
-                    refX="7"
-                    refY="3"
-                    orient="auto"
-                  >
+                  <marker id="arrowArch" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                     <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
                   </marker>
                 </defs>
-                <!-- Presentation Tier -->
-                <g
-                  class="arch-tier client-tier"
-                  opacity="1"
-                  style="cursor: pointer"
-                  onclick="highlightTier(this, 'client-tier')"
-                >
-                  <rect
-                    x="175"
-                    y="10"
-                    width="350"
-                    height="55"
-                    rx="8"
-                    fill="var(--surface)"
-                    stroke="var(--primary)"
-                    stroke-width="2"
-                  />
-                  <text
-                    x="350"
-                    y="34"
-                    text-anchor="middle"
-                    fill="var(--primary)"
-                    font-size="13"
-                    font-weight="700"
-                  >
-                    <tspan class="lang-en">Presentation Tier</tspan>
-                    <tspan class="lang-es">Capa de Presentaci&oacute;n</tspan>
+                <!-- Presentation Tier box -->
+                <g class="arch-tier pres-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'pres-tier')">
+                  <rect x="265" y="5" width="350" height="45" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2" />
+                  <text x="440" y="24" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+                    <tspan class="lang-en">Presentation Tier</tspan><tspan class="lang-es">Capa de Presentaci&oacute;n</tspan>
                   </text>
-                  <text x="350" y="52" text-anchor="middle" fill="var(--muted)" font-size="10">
-                    Browser / Mobile App / SPA
-                  </text>
+                  <text x="440" y="42" text-anchor="middle" fill="var(--muted)" font-size="10">Browser / Mobile App / SPA</text>
                 </g>
-                <!-- Arrow: Presentation to Load Balancer icon -->
-                <line
-                  x1="350"
-                  y1="65"
-                  x2="350"
-                  y2="100"
-                  stroke="var(--primary)"
-                  stroke-width="2"
-                  marker-end="url(#arrowArch)"
-                >
-                  <animate
-                    attributeName="stroke-dashoffset"
-                    values="0;-10"
-                    dur="1s"
-                    repeatCount="indefinite"
-                  />
-                </line>
-                <text x="372" y="88" fill="var(--muted)" font-size="8">HTTP/REST</text>
-                <!-- Load Balancer: icon ABOVE box -->
-                <g
-                  class="arch-tier app-tier"
-                  opacity="1"
-                  style="cursor: pointer"
-                  onclick="highlightTier(this, 'app-tier')"
-                >
-                  <!-- ELB icon above the LB rect -->
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg"
-                    x="318"
-                    y="88"
-                    width="64"
-                    height="64"
-                  />
-                  <!-- LB rect below icon -->
-                  <rect
-                    x="200"
-                    y="145"
-                    width="300"
-                    height="35"
-                    rx="6"
-                    fill="var(--surface)"
-                    stroke="var(--warning)"
-                    stroke-width="1.5"
-                  />
-                  <text
-                    x="350"
-                    y="168"
-                    text-anchor="middle"
-                    fill="var(--warning)"
-                    font-size="10"
-                    font-weight="600"
-                  >
-                    Load Balancer (ALB/NLB)
-                  </text>
-                  <!-- Arrows: LB to App Server icons (end at top of EC2 icons) -->
-                  <line
-                    x1="280"
-                    y1="180"
-                    x2="165"
-                    y2="222"
-                    stroke="var(--warning)"
-                    stroke-width="2"
-                    marker-end="url(#arrowArch)"
-                  />
-                  <line
-                    x1="350"
-                    y1="180"
-                    x2="350"
-                    y2="222"
-                    stroke="var(--warning)"
-                    stroke-width="2"
-                    marker-end="url(#arrowArch)"
-                  />
-                  <line
-                    x1="420"
-                    y1="180"
-                    x2="535"
-                    y2="222"
-                    stroke="var(--warning)"
-                    stroke-width="2"
-                    marker-end="url(#arrowArch)"
-                  />
-                  <!-- Application Tier label -->
-                  <text
-                    x="350"
-                    y="212"
-                    text-anchor="middle"
-                    fill="var(--mint)"
-                    font-size="13"
-                    font-weight="700"
-                  >
-                    <tspan class="lang-en">Application Tier</tspan>
-                    <tspan class="lang-es">Capa de Aplicaci&oacute;n</tspan>
-                  </text>
-                  <!-- App Server 1: EC2 icon above box -->
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="133"
-                    y="209"
-                    width="64"
-                    height="64"
-                  />
-                  <rect
-                    x="100"
-                    y="262"
-                    width="130"
-                    height="40"
-                    rx="6"
-                    fill="var(--surface)"
-                    stroke="var(--mint)"
-                    stroke-width="2"
-                  />
-                  <text
-                    x="165"
-                    y="280"
-                    text-anchor="middle"
-                    fill="var(--mint)"
-                    font-size="10"
-                    font-weight="600"
-                  >
-                    App Server 1
-                  </text>
-                  <text x="165" y="295" text-anchor="middle" fill="var(--muted)" font-size="8">
-                    EC2 / ECS
-                  </text>
-                  <!-- App Server 2: EC2 icon above box -->
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="318"
-                    y="209"
-                    width="64"
-                    height="64"
-                  />
-                  <rect
-                    x="285"
-                    y="262"
-                    width="130"
-                    height="40"
-                    rx="6"
-                    fill="var(--surface)"
-                    stroke="var(--mint)"
-                    stroke-width="2"
-                  />
-                  <text
-                    x="350"
-                    y="280"
-                    text-anchor="middle"
-                    fill="var(--mint)"
-                    font-size="10"
-                    font-weight="600"
-                  >
-                    App Server 2
-                  </text>
-                  <text x="350" y="295" text-anchor="middle" fill="var(--muted)" font-size="8">
-                    EC2 / ECS
-                  </text>
-                  <!-- App Server 3: EC2 icon above box -->
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="503"
-                    y="209"
-                    width="64"
-                    height="64"
-                  />
-                  <rect
-                    x="470"
-                    y="262"
-                    width="130"
-                    height="40"
-                    rx="6"
-                    fill="var(--surface)"
-                    stroke="var(--mint)"
-                    stroke-width="2"
-                  />
-                  <text
-                    x="535"
-                    y="280"
-                    text-anchor="middle"
-                    fill="var(--mint)"
-                    font-size="10"
-                    font-weight="600"
-                  >
-                    App Server 3
-                  </text>
-                  <text x="535" y="295" text-anchor="middle" fill="var(--muted)" font-size="8">
-                    EC2 / ECS
-                  </text>
+                <!-- Arrow: Presentation Tier to ELB (vertical) -->
+                <line x1="440" y1="50" x2="440" y2="65" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,50 L440,65" /></circle>
+                <!-- ELB icon -->
+                <g class="arch-tier elb-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'elb-tier')">
+                  <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg" x="408" y="65" width="64" height="64" />
+                  <rect x="390" y="133" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="440" y="148" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Load Balancer</text>
                 </g>
-                <!-- Arrow: App Servers to DB Tier -->
-                <line
-                  x1="350"
-                  y1="302"
-                  x2="350"
-                  y2="340"
-                  stroke="var(--primary)"
-                  stroke-width="2"
-                  marker-end="url(#arrowArch)"
-                >
-                  <animate
-                    attributeName="stroke-dashoffset"
-                    values="0;-10"
-                    dur="1s"
-                    repeatCount="indefinite"
-                  />
-                </line>
-                <text x="372" y="326" fill="var(--muted)" font-size="8">SQL/TCP</text>
-                <!-- Database Tier -->
-                <g
-                  class="arch-tier db-tier"
-                  opacity="1"
-                  style="cursor: pointer"
-                  onclick="highlightTier(this, 'db-tier')"
-                >
-                  <text
-                    x="350"
-                    y="352"
-                    text-anchor="middle"
-                    fill="var(--primary)"
-                    font-size="13"
-                    font-weight="700"
-                  >
-                    <tspan class="lang-en">Database Tier</tspan>
-                    <tspan class="lang-es">Capa de Base de Datos</tspan>
-                  </text>
-                  <!-- Primary DB: RDS icon above cylinder -->
-                  <g transform="translate(200,360)">
-                    <image
-                      href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                      x="23"
-                      y="-54"
-                      width="64"
-                      height="64"
-                    />
-                    <ellipse
-                      cx="55"
-                      cy="12"
-                      rx="45"
-                      ry="12"
-                      fill="none"
-                      stroke="var(--primary)"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M10,12 v45 c0,6.6 20.1,12 45,12s45,-5.4 45,-12v-45"
-                      fill="none"
-                      stroke="var(--primary)"
-                      stroke-width="2"
-                    />
-                    <ellipse
-                      cx="55"
-                      cy="35"
-                      rx="45"
-                      ry="12"
-                      fill="none"
-                      stroke="var(--primary)"
-                      stroke-width="0.8"
-                      opacity="0.3"
-                    />
-                    <text
-                      x="55"
-                      y="46"
-                      text-anchor="middle"
-                      fill="var(--heading)"
-                      font-size="10"
-                      font-weight="600"
-                    >
-                      Primary
-                    </text>
-                    <text x="55" y="60" text-anchor="middle" fill="var(--muted)" font-size="8">
-                      RDS
-                    </text>
-                  </g>
-                  <!-- Read Replica: RDS icon above cylinder -->
-                  <g transform="translate(430,368)">
-                    <image
-                      href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                      x="10"
-                      y="-54"
-                      width="64"
-                      height="64"
-                    />
-                    <ellipse
-                      cx="42"
-                      cy="10"
-                      rx="36"
-                      ry="10"
-                      fill="none"
-                      stroke="var(--secondary)"
-                      stroke-width="1.5"
-                    />
-                    <path
-                      d="M6,10 v35 c0,5.5 16.1,10 36,10s36,-4.5 36,-10v-35"
-                      fill="none"
-                      stroke="var(--secondary)"
-                      stroke-width="1.5"
-                    />
-                    <ellipse
-                      cx="42"
-                      cy="28"
-                      rx="36"
-                      ry="10"
-                      fill="none"
-                      stroke="var(--secondary)"
-                      stroke-width="0.6"
-                      opacity="0.3"
-                    />
-                    <text x="42" y="36" text-anchor="middle" fill="var(--text)" font-size="9">
-                      Replica
-                    </text>
-                  </g>
-                  <!-- Replication arrow: connects between cylinders, below icons -->
-                  <line
-                    x1="310"
-                    y1="392"
-                    x2="430"
-                    y2="392"
-                    stroke="var(--gold)"
-                    stroke-width="1.5"
-                    stroke-dasharray="4,3"
-                  >
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      values="0;-14"
-                      dur="1s"
-                      repeatCount="indefinite"
-                    />
-                  </line>
-                  <text x="370" y="407" text-anchor="middle" fill="var(--gold)" font-size="7">
-                    Replication
-                  </text>
+                <!-- Application Tier label -->
+                <text x="440" y="145" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="700" dy="20">
+                  <tspan class="lang-en">Application Tier</tspan><tspan class="lang-es">Capa de Aplicaci&oacute;n</tspan>
+                </text>
+                <!-- L-shaped arrows: ELB to App Servers (horizontal then vertical) -->
+                <!-- Left: ELB center -> horizontal left -> vertical down to App1 -->
+                <path d="M440,155 L112,155 L112,170" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,155 L112,155 L112,170" /></circle>
+                <!-- Center: ELB straight down to App2 -->
+                <line x1="440" y1="155" x2="440" y2="170" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,155 L440,170" /></circle>
+                <!-- Right: ELB center -> horizontal right -> vertical down to App3 -->
+                <path d="M440,155 L768,155 L768,170" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,155 L768,155 L768,170" /></circle>
+                <!-- App Server 1 -->
+                <g class="arch-tier app1-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'app1-tier')">
+                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="80" y="170" width="64" height="64" />
+                  <rect x="62" y="238" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="112" y="253" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 1</text>
                 </g>
+                <!-- App Server 2 -->
+                <g class="arch-tier app2-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'app2-tier')">
+                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="408" y="170" width="64" height="64" />
+                  <rect x="390" y="238" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="440" y="253" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 2</text>
+                </g>
+                <!-- App Server 3 -->
+                <g class="arch-tier app3-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'app3-tier')">
+                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="736" y="170" width="64" height="64" />
+                  <rect x="718" y="238" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="768" y="253" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 3</text>
+                </g>
+                <!-- Arrow: App Server 2 to Database Tier (vertical) -->
+                <line x1="440" y1="260" x2="440" y2="280" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,260 L440,280" /></circle>
+                <text x="460" y="274" fill="var(--muted)" font-size="7">SQL/TCP</text>
+                <!-- Database Tier label -->
+                <text x="440" y="296" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">
+                  <tspan class="lang-en">Database Tier</tspan><tspan class="lang-es">Capa de Base de Datos</tspan>
+                </text>
+                <!-- Primary RDS -->
+                <g class="arch-tier rds-primary-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'rds-primary-tier')">
+                  <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="268" y="305" width="64" height="64" />
+                  <rect x="250" y="373" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="300" y="388" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Primary</text>
+                </g>
+                <!-- Replica RDS -->
+                <g class="arch-tier rds-replica-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'rds-replica-tier')">
+                  <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="508" y="305" width="64" height="64" />
+                  <rect x="490" y="373" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="540" y="388" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Replica</text>
+                </g>
+                <!-- Replication arrow between Primary and Replica -->
+                <line x1="332" y1="337" x2="508" y2="337" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+                <text x="420" y="332" text-anchor="middle" fill="var(--muted)" font-size="8">Replication</text>
+                <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M332,337 L508,337" /></circle>
               </svg>
             </div>
             <div style="flex: 0 0 200px; font-size: 0.6em">
@@ -6033,51 +5736,26 @@
                 <span class="lang-en">Click each tier to highlight</span
                 ><span class="lang-es">Clic en cada capa para resaltar</span>
               </p>
-              <div
-                class="tier-desc card"
-                data-tier="client-tier"
-                style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px"
-              >
-                <b style="color: var(--primary)"
-                  ><span class="lang-en">Presentation:</span
-                  ><span class="lang-es">Presentaci&oacute;n:</span></b
-                ><br /><span class="lang-en"
-                  >User interface. Browser renders HTML/CSS/JS. Communicates via REST APIs.</span
-                ><span class="lang-es"
-                  >Interfaz de usuario. El navegador renderiza HTML/CSS/JS. Se comunica v&iacute;a
-                  APIs REST.</span
-                >
+              <div class="tier-desc card" data-tier="pres-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--primary)"><span class="lang-en">Presentation:</span><span class="lang-es">Presentaci&oacute;n:</span></b><br /><span class="lang-en">User interface. Browser renders HTML/CSS/JS. Communicates via REST APIs.</span><span class="lang-es">Interfaz de usuario. El navegador renderiza HTML/CSS/JS. Se comunica v&iacute;a APIs REST.</span>
               </div>
-              <div
-                class="tier-desc card"
-                data-tier="app-tier"
-                style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px"
-              >
-                <b style="color: var(--mint)"
-                  ><span class="lang-en">Application:</span
-                  ><span class="lang-es">Aplicaci&oacute;n:</span></b
-                ><br /><span class="lang-en"
-                  >Business logic. Multiple servers behind a load balancer for horizontal
-                  scaling.</span
-                ><span class="lang-es"
-                  >L&oacute;gica de negocio. M&uacute;ltiples servidores detr&aacute;s de un
-                  balanceador para escala horizontal.</span
-                >
+              <div class="tier-desc card" data-tier="elb-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--primary)"><span class="lang-en">Load Balancer:</span><span class="lang-es">Balanceador:</span></b><br /><span class="lang-en">Distributes traffic across application servers for horizontal scaling.</span><span class="lang-es">Distribuye tr&aacute;fico entre servidores de aplicaci&oacute;n para escala horizontal.</span>
               </div>
-              <div
-                class="tier-desc card"
-                data-tier="db-tier"
-                style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px"
-              >
-                <b style="color: var(--primary)"
-                  ><span class="lang-en">Database:</span
-                  ><span class="lang-es">Base de Datos:</span></b
-                ><br /><span class="lang-en"
-                  >Persistent storage. Primary for writes, read replicas for scaling reads.</span
-                ><span class="lang-es"
-                  >Almacenamiento persistente. Primario para escrituras, r&eacute;plicas para
-                  escalar lecturas.</span
-                >
+              <div class="tier-desc card" data-tier="app1-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--mint)"><span class="lang-en">Application:</span><span class="lang-es">Aplicaci&oacute;n:</span></b><br /><span class="lang-en">Business logic. Multiple servers behind a load balancer for horizontal scaling.</span><span class="lang-es">L&oacute;gica de negocio. M&uacute;ltiples servidores detr&aacute;s de un balanceador para escala horizontal.</span>
+              </div>
+              <div class="tier-desc card" data-tier="app2-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--mint)"><span class="lang-en">Application:</span><span class="lang-es">Aplicaci&oacute;n:</span></b><br /><span class="lang-en">Business logic. Multiple servers behind a load balancer for horizontal scaling.</span><span class="lang-es">L&oacute;gica de negocio. M&uacute;ltiples servidores detr&aacute;s de un balanceador para escala horizontal.</span>
+              </div>
+              <div class="tier-desc card" data-tier="app3-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--mint)"><span class="lang-en">Application:</span><span class="lang-es">Aplicaci&oacute;n:</span></b><br /><span class="lang-en">Business logic. Multiple servers behind a load balancer for horizontal scaling.</span><span class="lang-es">L&oacute;gica de negocio. M&uacute;ltiples servidores detr&aacute;s de un balanceador para escala horizontal.</span>
+              </div>
+              <div class="tier-desc card" data-tier="rds-primary-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--primary)"><span class="lang-en">Database:</span><span class="lang-es">Base de Datos:</span></b><br /><span class="lang-en">Persistent storage. Primary for writes, read replicas for scaling reads.</span><span class="lang-es">Almacenamiento persistente. Primario para escrituras, r&eacute;plicas para escalar lecturas.</span>
+              </div>
+              <div class="tier-desc card" data-tier="rds-replica-tier" style="display: none; color: var(--text); padding: 10px 12px; margin-bottom: 6px">
+                <b style="color: var(--primary)"><span class="lang-en">Database:</span><span class="lang-es">Base de Datos:</span></b><br /><span class="lang-en">Read replica scales read queries independently from the primary.</span><span class="lang-es">R&eacute;plica de lectura escala consultas independientemente del primario.</span>
               </div>
             </div>
           </div>
@@ -6110,450 +5788,99 @@
             <span class="lang-es">Arquitectura completamente administrada donde AWS maneja toda la infraestructura. Sin servidores, escalado autom&aacute;tico y pago por solicitud.</span>
           </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
-            <svg width="900" height="310" viewBox="0 0 900 310">
+            <svg width="880" height="300" viewBox="0 0 880 300">
               <defs>
-                <marker
-                  id="arrowSvl"
-                  markerWidth="8"
-                  markerHeight="6"
-                  refX="7"
-                  refY="3"
-                  orient="auto"
-                >
+                <marker id="arrowSvl" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                   <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
                 </marker>
               </defs>
+              <!-- Row 1: CloudFront at x=220, Cognito at x=410 -->
+              <!-- Row 2: Client box at x=10, API Gateway at x=300, Lambda at x=530, DynamoDB at x=760 -->
+              <!-- Row 3: S3 at x=220 -->
+
               <!-- Client -->
-              <g
-                class="arch-tier client-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'client-tier')"
-              >
-                <rect
-                  x="20"
-                  y="120"
-                  width="100"
-                  height="60"
-                  rx="8"
-                  fill="var(--surface)"
-                  stroke="var(--primary)"
-                  stroke-width="2"
-                />
-                <text
-                  x="70"
-                  y="148"
-                  text-anchor="middle"
-                  fill="var(--heading)"
-                  font-size="11"
-                  font-weight="600"
-                >
-                  Client
-                </text>
-                <text x="70" y="165" text-anchor="middle" fill="var(--muted)" font-size="8">
-                  Browser
-                </text>
+              <g class="arch-tier client-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'client-tier')">
+                <rect x="10" y="120" width="100" height="50" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2" />
+                <text x="60" y="143" text-anchor="middle" fill="var(--heading)" font-size="11" font-weight="600">Client</text>
+                <text x="60" y="159" text-anchor="middle" fill="var(--muted)" font-size="8">Browser</text>
               </g>
               <!-- CloudFront -->
-              <g
-                class="arch-tier cdn-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'cdn-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-CloudFront_48.svg"
-                  x="183"
-                  y="33"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="170"
-                  y="99"
-                  width="90"
-                  height="22"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="215"
-                  y="114"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  CloudFront
-                </text>
+              <g class="arch-tier cdn-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'cdn-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-CloudFront_48.svg" x="220" y="10" width="64" height="64" />
+                <rect x="202" y="78" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="252" y="93" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">CloudFront</text>
               </g>
               <!-- S3 -->
-              <g
-                class="arch-tier s3-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 's3-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/storage/Arch_Amazon-Simple-Storage-Service_48.svg"
-                  x="183"
-                  y="203"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="170"
-                  y="269"
-                  width="90"
-                  height="22"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="215"
-                  y="284"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  S3
-                </text>
+              <g class="arch-tier s3-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 's3-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/storage/Arch_Amazon-Simple-Storage-Service_48.svg" x="220" y="210" width="64" height="64" />
+                <rect x="202" y="278" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="252" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">S3</text>
               </g>
               <!-- Cognito -->
-              <g
-                class="arch-tier auth-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'auth-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/security/Arch_Amazon-Cognito_48.svg"
-                  x="333"
-                  y="33"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="320"
-                  y="99"
-                  width="90"
-                  height="20"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="365"
-                  y="113"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  Cognito
-                </text>
+              <g class="arch-tier auth-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'auth-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/security/Arch_Amazon-Cognito_48.svg" x="410" y="10" width="64" height="64" />
+                <rect x="392" y="78" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="442" y="93" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Cognito</text>
               </g>
               <!-- API Gateway -->
-              <g
-                class="arch-tier apigw-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'apigw-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg"
-                  x="333"
-                  y="128"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="320"
-                  y="194"
-                  width="90"
-                  height="22"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="365"
-                  y="209"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  API Gateway
-                </text>
+              <g class="arch-tier apigw-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'apigw-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg" x="300" y="113" width="64" height="64" />
+                <rect x="282" y="181" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="332" y="196" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">API Gateway</text>
               </g>
               <!-- Lambda -->
-              <g
-                class="arch-tier lambda-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'lambda-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="533"
-                  y="128"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="520"
-                  y="194"
-                  width="90"
-                  height="22"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="565"
-                  y="209"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  Lambda
-                </text>
+              <g class="arch-tier lambda-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'lambda-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="530" y="113" width="64" height="64" />
+                <rect x="512" y="181" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="562" y="196" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Lambda</text>
               </g>
               <!-- DynamoDB -->
-              <g
-                class="arch-tier dynamo-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'dynamo-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg"
-                  x="733"
-                  y="128"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="720"
-                  y="194"
-                  width="90"
-                  height="22"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="765"
-                  y="209"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  DynamoDB
-                </text>
+              <g class="arch-tier dynamo-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'dynamo-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="760" y="113" width="64" height="64" />
+                <rect x="742" y="181" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="792" y="196" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
               </g>
-              <!-- Arrow: Client to CloudFront (ends 8px before icon left edge) -->
-              <line
-                x1="120"
-                y1="135"
-                x2="175"
-                y2="60"
-                stroke="var(--primary)"
-                stroke-width="2"
-                marker-end="url(#arrowSvl)"
-              />
-              <!-- Arrow: Client to S3 (ends 8px before icon left edge) -->
-              <line
-                x1="120"
-                y1="165"
-                x2="175"
-                y2="230"
-                stroke="var(--primary)"
-                stroke-width="2"
-                marker-end="url(#arrowSvl)"
-              />
-              <!-- Arrow: Client to API Gateway (ends 8px before icon left edge) -->
-              <line
-                x1="120"
-                y1="150"
-                x2="325"
-                y2="156"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowSvl)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Arrow: API Gateway to Lambda (starts 8px after APIGW right edge, ends 8px before Lambda) -->
-              <line
-                x1="405"
-                y1="156"
-                x2="525"
-                y2="156"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowSvl)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Arrow: Lambda to DynamoDB (starts 8px after Lambda right edge, ends 8px before DynamoDB) -->
-              <line
-                x1="605"
-                y1="156"
-                x2="725"
-                y2="156"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowSvl)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Visual connector: Cognito label to API Gateway icon -->
-              <line
-                x1="365"
-                y1="119"
-                x2="365"
-                y2="128"
-                stroke="var(--card-border)"
-                stroke-width="1.5"
-                stroke-dasharray="3,3"
-              />
-              <!-- Bottom caption -->
-              <text x="450" y="290" text-anchor="middle" fill="var(--muted)" font-size="9">
-                <tspan class="lang-en">
-                  No servers to manage &mdash; scales automatically &mdash; pay per request
-                </tspan>
-                <tspan class="lang-es">
-                  Sin servidores que administrar &mdash; escala autom&aacute;ticamente &mdash; pago
-                  por solicitud
-                </tspan>
-              </text>
-              <text x="450" y="306" text-anchor="middle" fill="var(--muted)" font-size="8">
-                <tspan class="lang-en">Click each service to learn more</tspan>
-                <tspan class="lang-es">Clic en cada servicio para aprender m&aacute;s</tspan>
-              </text>
+              <!-- Arrow: Client to CloudFront (L-shape: up then right) -->
+              <path d="M60,120 L60,42 L220,42" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M60,120 L60,42 L220,42" /></circle>
+              <!-- Arrow: Client to S3 (L-shape: down then right) -->
+              <path d="M60,170 L60,242 L220,242" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M60,170 L60,242 L220,242" /></circle>
+              <!-- Arrow: Client to API Gateway (horizontal) -->
+              <line x1="110" y1="145" x2="300" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M110,145 L300,145" /></circle>
+              <!-- Arrow: API Gateway to Lambda (horizontal) -->
+              <line x1="364" y1="145" x2="530" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M364,145 L530,145" /></circle>
+              <!-- Arrow: Lambda to DynamoDB (horizontal) -->
+              <line x1="594" y1="145" x2="760" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M594,145 L760,145" /></circle>
+              <!-- Cognito to API Gateway (vertical dotted) -->
+              <line x1="442" y1="100" x2="442" y2="113" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M442,100 L442,113" /></circle>
             </svg>
           </div>
           <div style="min-height: 40px; margin-top: 4px">
-            <div
-              class="tier-desc"
-              data-tier="client-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>Client:</b> SPA or mobile app. Makes API calls to the backend via HTTPS.</span
-              ><span class="lang-es"
-                ><b>Cliente:</b> SPA o app m&oacute;vil. Hace llamadas API al backend v&iacute;a
-                HTTPS.</span
-              >
+            <div class="tier-desc" data-tier="client-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>Client:</b> SPA or mobile app. Makes API calls to the backend via HTTPS.</span><span class="lang-es"><b>Cliente:</b> SPA o app m&oacute;vil. Hace llamadas API al backend v&iacute;a HTTPS.</span>
             </div>
-            <div
-              class="tier-desc"
-              data-tier="cdn-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>CloudFront:</b> Global CDN. Caches static content at 400+ edge locations
-                worldwide.</span
-              ><span class="lang-es"
-                ><b>CloudFront:</b> CDN global. Cachea contenido est&aacute;tico en 400+ ubicaciones
-                de borde.</span
-              >
+            <div class="tier-desc" data-tier="cdn-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>CloudFront:</b> Global CDN. Caches static content at 400+ edge locations worldwide.</span><span class="lang-es"><b>CloudFront:</b> CDN global. Cachea contenido est&aacute;tico en 400+ ubicaciones de borde.</span>
             </div>
-            <div
-              class="tier-desc"
-              data-tier="s3-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>S3:</b> Object storage for static assets (HTML, CSS, JS, images). 11 nines
-                durability.</span
-              ><span class="lang-es"
-                ><b>S3:</b> Almacenamiento de objetos para archivos est&aacute;ticos. 11 nueves de
-                durabilidad.</span
-              >
+            <div class="tier-desc" data-tier="s3-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>S3:</b> Object storage for static assets (HTML, CSS, JS, images). 11 nines durability.</span><span class="lang-es"><b>S3:</b> Almacenamiento de objetos para archivos est&aacute;ticos. 11 nueves de durabilidad.</span>
             </div>
-            <div
-              class="tier-desc"
-              data-tier="auth-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>Cognito:</b> Managed authentication. User pools, social login, JWT tokens,
-                MFA.</span
-              ><span class="lang-es"
-                ><b>Cognito:</b> Autenticaci&oacute;n administrada. Pools de usuarios, login social,
-                tokens JWT, MFA.</span
-              >
+            <div class="tier-desc" data-tier="auth-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>Cognito:</b> Managed authentication. User pools, social login, JWT tokens, MFA.</span><span class="lang-es"><b>Cognito:</b> Autenticaci&oacute;n administrada. Pools de usuarios, login social, tokens JWT, MFA.</span>
             </div>
-            <div
-              class="tier-desc"
-              data-tier="apigw-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>API Gateway:</b> Managed REST/WebSocket APIs. Rate limiting, caching, request
-                validation.</span
-              ><span class="lang-es"
-                ><b>API Gateway:</b> APIs REST/WebSocket administradas. L&iacute;mites de tasa,
-                cach&eacute;, validaci&oacute;n.</span
-              >
+            <div class="tier-desc" data-tier="apigw-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>API Gateway:</b> Managed REST/WebSocket APIs. Rate limiting, caching, request validation.</span><span class="lang-es"><b>API Gateway:</b> APIs REST/WebSocket administradas. L&iacute;mites de tasa, cach&eacute;, validaci&oacute;n.</span>
             </div>
-            <div
-              class="tier-desc"
-              data-tier="lambda-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>Lambda:</b> Serverless compute. Runs code in response to events. Scales from 0
-                to thousands of concurrent executions.</span
-              ><span class="lang-es"
-                ><b>Lambda:</b> C&oacute;mputo serverless. Ejecuta c&oacute;digo en respuesta a
-                eventos. Escala de 0 a miles de ejecuciones concurrentes.</span
-              >
+            <div class="tier-desc" data-tier="lambda-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>Lambda:</b> Serverless compute. Runs code in response to events. Scales from 0 to thousands of concurrent executions.</span><span class="lang-es"><b>Lambda:</b> C&oacute;mputo serverless. Ejecuta c&oacute;digo en respuesta a eventos. Escala de 0 a miles de ejecuciones concurrentes.</span>
             </div>
-            <div
-              class="tier-desc"
-              data-tier="dynamo-tier"
-              style="display: none; font-size: 0.65em; color: var(--text)"
-            >
-              <span class="lang-en"
-                ><b>DynamoDB:</b> Serverless NoSQL. Single-digit ms latency at any scale. On-demand
-                capacity eliminates capacity planning.</span
-              ><span class="lang-es"
-                ><b>DynamoDB:</b> NoSQL serverless. Latencia de un d&iacute;gito (ms) a cualquier
-                escala. Capacidad bajo demanda elimina planificaci&oacute;n de capacidad.</span
-              >
+            <div class="tier-desc" data-tier="dynamo-tier" style="display: none; font-size: 0.65em; color: var(--text)">
+              <span class="lang-en"><b>DynamoDB:</b> Serverless NoSQL. Single-digit ms latency at any scale. On-demand capacity eliminates capacity planning.</span><span class="lang-es"><b>DynamoDB:</b> NoSQL serverless. Latencia de un d&iacute;gito (ms) a cualquier escala. Capacidad bajo demanda elimina planificaci&oacute;n de capacidad.</span>
             </div>
           </div>
           <div class="grid-2" style="margin-top:8px">
@@ -6585,330 +5912,64 @@
             <span class="lang-es">Pipeline asincr&oacute;nico donde los cambios en la base de datos activan procesamiento posterior. Los eventos fluyen sin acoplamiento entre servicios.</span>
           </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
-            <svg width="900" height="380" viewBox="0 0 900 380">
+            <svg width="880" height="300" viewBox="0 0 880 300">
               <defs>
-                <marker
-                  id="arrowEvt"
-                  markerWidth="8"
-                  markerHeight="6"
-                  refX="7"
-                  refY="3"
-                  orient="auto"
-                >
+                <marker id="arrowEvt" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                   <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
                 </marker>
               </defs>
+              <!-- Main flow at y=100: DynamoDB -> Streams -> Lambda -> SNS -->
               <!-- DynamoDB (source) -->
-              <g
-                class="arch-tier dynamo-src-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'dynamo-src-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg"
-                  x="30"
-                  y="80"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="12"
-                  y="146"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="62"
-                  y="162"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  DynamoDB
-                </text>
+              <g class="arch-tier dynamo-src-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'dynamo-src-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="30" y="68" width="64" height="64" />
+                <rect x="12" y="136" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="62" y="151" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
               </g>
-              <!-- Arrow: DynamoDB to Streams -->
-              <line
-                x1="102"
-                y1="112"
-                x2="177"
-                y2="112"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowEvt)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- DynamoDB Streams (EventBridge icon as proxy) -->
-              <g
-                class="arch-tier streams-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'streams-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/integration/Arch_Amazon-EventBridge_48.svg"
-                  x="185"
-                  y="80"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="167"
-                  y="146"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="217"
-                  y="162"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  DDB Streams
-                </text>
+              <!-- Arrow: DynamoDB to Streams (horizontal) -->
+              <line x1="102" y1="100" x2="195" y2="100" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowEvt)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M102,100 L195,100" /></circle>
+              <!-- DynamoDB Streams -->
+              <g class="arch-tier streams-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'streams-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/integration/Arch_Amazon-EventBridge_48.svg" x="195" y="68" width="64" height="64" />
+                <rect x="177" y="136" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="227" y="151" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DDB Streams</text>
               </g>
-              <!-- Arrow: Streams to Lambda -->
-              <line
-                x1="257"
-                y1="112"
-                x2="332"
-                y2="112"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowEvt)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
+              <!-- Arrow: Streams to Lambda (horizontal) -->
+              <line x1="267" y1="100" x2="360" y2="100" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowEvt)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M267,100 L360,100" /></circle>
               <!-- Lambda (processor) -->
-              <g
-                class="arch-tier lambda-proc-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'lambda-proc-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="340"
-                  y="80"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="322"
-                  y="146"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="372"
-                  y="162"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  Lambda
-                </text>
+              <g class="arch-tier lambda-proc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'lambda-proc-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="360" y="68" width="64" height="64" />
+                <rect x="342" y="136" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="392" y="151" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Lambda</text>
               </g>
-              <!-- Arrow: Lambda to SNS -->
-              <line
-                x1="412"
-                y1="112"
-                x2="487"
-                y2="112"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowEvt)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
+              <!-- Arrow: Lambda to SNS (horizontal) -->
+              <line x1="432" y1="100" x2="525" y2="100" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowEvt)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M432,100 L525,100" /></circle>
               <!-- SNS (fan-out) -->
-              <g
-                class="arch-tier sns-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'sns-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/integration/Arch_Amazon-Simple-Notification-Service_48.svg"
-                  x="495"
-                  y="80"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="477"
-                  y="146"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="527"
-                  y="162"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  SNS
-                </text>
+              <g class="arch-tier sns-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'sns-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/integration/Arch_Amazon-Simple-Notification-Service_48.svg" x="525" y="68" width="64" height="64" />
+                <rect x="507" y="136" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="557" y="151" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">SNS</text>
               </g>
-              <!-- Arrow: SNS to Lambda subscriber 1 -->
-              <line
-                x1="559"
-                y1="144"
-                x2="610"
-                y2="212"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowEvt)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Arrow: SNS to S3 archive -->
-              <line
-                x1="559"
-                y1="144"
-                x2="750"
-                y2="212"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowEvt)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Lambda subscriber 1 -->
-              <g
-                class="arch-tier lambda-sub-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'lambda-sub-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="610"
-                  y="220"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="592"
-                  y="286"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="642"
-                  y="302"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  Subscriber
-                </text>
+              <!-- Arrow: SNS to Lambda subscriber (L-shape: right then down) -->
+              <path d="M607,100 L682,100 L682,200" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowEvt)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M607,100 L682,100 L682,200" /></circle>
+              <!-- Arrow: SNS to S3 archive (L-shape: right then down) -->
+              <path d="M607,100 L812,100 L812,200" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowEvt)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M607,100 L812,100 L812,200" /></circle>
+              <!-- Lambda subscriber -->
+              <g class="arch-tier lambda-sub-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'lambda-sub-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="650" y="200" width="64" height="64" />
+                <rect x="632" y="268" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="682" y="283" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Subscriber</text>
               </g>
               <!-- S3 archive -->
-              <g
-                class="arch-tier s3-arch-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 's3-arch-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/storage/Arch_Amazon-Simple-Storage-Service_48.svg"
-                  x="750"
-                  y="220"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="732"
-                  y="286"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="782"
-                  y="302"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  S3 Archive
-                </text>
+              <g class="arch-tier s3-arch-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 's3-arch-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/storage/Arch_Amazon-Simple-Storage-Service_48.svg" x="780" y="200" width="64" height="64" />
+                <rect x="762" y="268" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="812" y="283" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">S3 Archive</text>
               </g>
-              <!-- Bottom caption -->
-              <text x="450" y="345" text-anchor="middle" fill="var(--muted)" font-size="9">
-                <tspan class="lang-en">
-                  Event-driven pipeline &mdash; DynamoDB changes trigger processing, fan-out,
-                  and archival
-                </tspan>
-                <tspan class="lang-es">
-                  Pipeline basado en eventos &mdash; cambios en DynamoDB disparan procesamiento
-                  y archivado
-                </tspan>
-              </text>
             </svg>
           </div>
           <div class="grid-2" style="margin-top: 8px">
@@ -6959,341 +6020,73 @@
             <span class="lang-es">Cada microservicio elige la base de datos que mejor se ajusta a sus patrones de acceso. Los servicios se comunican a trav&eacute;s de un API Gateway.</span>
           </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
-            <svg width="900" height="350" viewBox="0 0 900 350">
+            <svg width="880" height="300" viewBox="0 0 880 300">
               <defs>
-                <marker
-                  id="arrowMicro"
-                  markerWidth="8"
-                  markerHeight="6"
-                  refX="7"
-                  refY="3"
-                  orient="auto"
-                >
+                <marker id="arrowMicro" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                   <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
                 </marker>
               </defs>
               <!-- API Gateway (top center) -->
-              <g
-                class="arch-tier apigw-micro-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'apigw-micro-tier')"
-              >
-                <image
-                  href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg"
-                  x="400"
-                  y="10"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="382"
-                  y="76"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="432"
-                  y="92"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  API Gateway
-                </text>
+              <g class="arch-tier apigw-micro-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'apigw-micro-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg" x="408" y="5" width="64" height="64" />
+                <rect x="390" y="73" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="440" y="88" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">API Gateway</text>
               </g>
-              <!-- Arrow: API GW to User Service Lambda -->
-              <line
-                x1="400"
-                y1="74"
-                x2="174"
-                y2="122"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowMicro)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Arrow: API GW to Session Service Lambda -->
-              <line
-                x1="432"
-                y1="100"
-                x2="450"
-                y2="122"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowMicro)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
-              <!-- Arrow: API GW to Cache Service Lambda -->
-              <line
-                x1="464"
-                y1="74"
-                x2="750"
-                y2="122"
-                stroke="var(--primary)"
-                stroke-width="2"
-                stroke-dasharray="10,5"
-                marker-end="url(#arrowMicro)"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="0;-30"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
-              </line>
+              <!-- L-shaped arrows from API GW to each Lambda -->
+              <!-- Left lane: vertical down to y=142, then horizontal left to x=142 -->
+              <path d="M440,95 L440,142 L142,142" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,142 L142,142" /></circle>
+              <!-- Center lane: straight vertical down -->
+              <line x1="440" y1="95" x2="440" y2="110" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,110" /></circle>
+              <!-- Right lane: vertical down to y=142, then horizontal right to x=738 -->
+              <path d="M440,95 L440,142 L738,142" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,142 L738,142" /></circle>
               <!-- Lane 1: User Service -->
-              <g
-                class="arch-tier user-svc-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'user-svc-tier')"
-              >
-                <!-- Lambda icon -->
-                <image
-                  href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="118"
-                  y="122"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="100"
-                  y="188"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="150"
-                  y="204"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  User Service
-                </text>
-                <!-- Arrow down to DB -->
-                <line
-                  x1="150"
-                  y1="212"
-                  x2="150"
-                  y2="244"
-                  stroke="var(--mint)"
-                  stroke-width="2"
-                  marker-end="url(#arrowMicro)"
-                />
-                <!-- RDS icon -->
-                <image
-                  href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                  x="118"
-                  y="252"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="90"
-                  y="318"
-                  width="120"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="150"
-                  y="334"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  PostgreSQL (RDS)
-                </text>
+              <g class="arch-tier user-svc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'user-svc-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="110" y="110" width="64" height="64" />
+                <rect x="92" y="178" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="142" y="193" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">User Service</text>
+              </g>
+              <!-- Arrow: User Service Lambda to RDS (vertical) -->
+              <line x1="142" y1="200" x2="142" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M142,200 L142,210" /></circle>
+              <!-- RDS -->
+              <g class="arch-tier rds-user-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'rds-user-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="110" y="210" width="64" height="64" />
+                <rect x="82" y="278" width="120" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="142" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">PostgreSQL (RDS)</text>
               </g>
               <!-- Lane 2: Session Service -->
-              <g
-                class="arch-tier session-svc-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'session-svc-tier')"
-              >
-                <!-- Lambda icon -->
-                <image
-                  href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="418"
-                  y="122"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="400"
-                  y="188"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="450"
-                  y="204"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  Session Service
-                </text>
-                <!-- Arrow down to DB -->
-                <line
-                  x1="450"
-                  y1="212"
-                  x2="450"
-                  y2="244"
-                  stroke="var(--mint)"
-                  stroke-width="2"
-                  marker-end="url(#arrowMicro)"
-                />
-                <!-- DynamoDB icon -->
-                <image
-                  href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg"
-                  x="418"
-                  y="252"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="400"
-                  y="318"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="450"
-                  y="334"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  DynamoDB
-                </text>
+              <g class="arch-tier session-svc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'session-svc-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="408" y="110" width="64" height="64" />
+                <rect x="390" y="178" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="440" y="193" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Session Service</text>
+              </g>
+              <!-- Arrow: Session Service Lambda to DynamoDB (vertical) -->
+              <line x1="440" y1="200" x2="440" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M440,200 L440,210" /></circle>
+              <!-- DynamoDB -->
+              <g class="arch-tier dynamo-session-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'dynamo-session-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="408" y="210" width="64" height="64" />
+                <rect x="390" y="278" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="440" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
               </g>
               <!-- Lane 3: Cache Service -->
-              <g
-                class="arch-tier cache-svc-tier"
-                opacity="1"
-                style="cursor: pointer"
-                onclick="highlightTier(this, 'cache-svc-tier')"
-              >
-                <!-- Lambda icon -->
-                <image
-                  href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="718"
-                  y="122"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="700"
-                  y="188"
-                  width="100"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="750"
-                  y="204"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  Cache Service
-                </text>
-                <!-- Arrow down to DB -->
-                <line
-                  x1="750"
-                  y1="212"
-                  x2="750"
-                  y2="244"
-                  stroke="var(--mint)"
-                  stroke-width="2"
-                  marker-end="url(#arrowMicro)"
-                />
-                <!-- ElastiCache icon -->
-                <image
-                  href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-ElastiCache_48.svg"
-                  x="718"
-                  y="252"
-                  width="64"
-                  height="64"
-                />
-                <rect
-                  x="690"
-                  y="318"
-                  width="120"
-                  height="24"
-                  rx="4"
-                  fill="var(--surface)"
-                  stroke="var(--card-border)"
-                  stroke-width="1"
-                />
-                <text
-                  x="750"
-                  y="334"
-                  text-anchor="middle"
-                  fill="var(--text)"
-                  font-size="9"
-                  font-weight="600"
-                >
-                  ElastiCache (Redis)
-                </text>
+              <g class="arch-tier cache-svc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'cache-svc-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="706" y="110" width="64" height="64" />
+                <rect x="688" y="178" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="738" y="193" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Cache Service</text>
               </g>
-              <!-- Bottom caption -->
-              <text x="450" y="348" text-anchor="middle" fill="var(--muted)" font-size="9">
-                <tspan class="lang-en">
-                  Each microservice chooses the database that best fits its data model and
-                  access patterns
-                </tspan>
-                <tspan class="lang-es">
-                  Cada microservicio elige la base de datos que mejor se ajusta a su modelo
-                  de datos
-                </tspan>
-              </text>
+              <!-- Arrow: Cache Service Lambda to ElastiCache (vertical) -->
+              <line x1="738" y1="200" x2="738" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M738,200 L738,210" /></circle>
+              <!-- ElastiCache -->
+              <g class="arch-tier elasticache-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'elasticache-tier')">
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-ElastiCache_48.svg" x="706" y="210" width="64" height="64" />
+                <rect x="678" y="278" width="120" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="738" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">ElastiCache (Redis)</text>
+              </g>
             </svg>
           </div>
           <div class="grid-2" style="margin-top:8px">
