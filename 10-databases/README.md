@@ -16,7 +16,7 @@
 ## Presentation
 
 Interactive reveal.js presentation in `presentation/index.html`.
-See `presentation/HANDOFF.md` for full technical details.
+See `shared/presentation/README.md` for the template API reference.
 
 ### Quick Start
 
@@ -34,7 +34,7 @@ bash ~/.claude/skills/here-now/scripts/publish.sh presentation
 - Bilingual EN/ES with toggle
 - Dark/light mode with persistence
 - Interactive expandable cards on every slide
-- Official AWS 2026 architecture icons
+- Official AWS architecture icons
 - Click-to-highlight architecture diagrams
 - Particle canvas background
 

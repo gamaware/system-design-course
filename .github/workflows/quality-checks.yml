@@ -221,7 +221,7 @@ jobs:
       - name: Run ESLint
         run: |
           find . -name '*.js' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
-            -exec eslint {} + || true
+            -exec eslint {} +
 
       - name: Run Prettier check
         run: |
