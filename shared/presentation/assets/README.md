@@ -46,3 +46,24 @@ Visit icons8.com for additional technology logos for future presentations.
 <img src="../../shared/presentation/assets/db-logos/mysql.png"
      alt="MySQL" width="32" height="32">
 ```
+
+## Generic Technology Icons
+
+Downloaded from [icons8.com](https://icons8.com) at 96px resolution.
+Cloud-agnostic icons for architecture diagrams that are not tied to any specific vendor.
+
+### Available Icons
+
+- `api.png`, `cloud.png`, `database.png`, `server.png` --- generic infrastructure
+- `redis.png`, `memcached.png`, `mongodb.png` --- databases and caching
+- `nginx.png`, `cloudflare.png` --- proxies and CDN
+- `kafka.png`, `rabbitmq.png` --- messaging
+- `docker.png`, `kubernetes.png` --- containers
+- `globe.png`, `laptop.png`, `lock.png` --- clients and security
+
+### Generic Icon Usage
+
+```html
+<img src="../../shared/presentation/assets/generic-icons/redis.png"
+     alt="Redis" width="48" height="48">
+```
