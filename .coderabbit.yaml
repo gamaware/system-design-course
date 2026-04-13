@@ -21,6 +21,18 @@ reviews:
         Review lab content for technical accuracy, clear step-by-step
         instructions, and educational value. Flag any steps that may
         not work in a standard AWS Free Tier environment.
+    - path: "shared/presentation/**"
+      instructions: >
+        Shared presentation template. Changes affect ALL module presentations.
+        Review CSS for WCAG AA contrast compliance, review JS for browser
+        compatibility (no ES modules, must work on file://). Verify theme
+        variables are consistent between dark and light modes.
+    - path: "**/presentation/index.html"
+      instructions: >
+        Module presentation. Verify proper script loading order (slides.js,
+        then reveal.js CDN, then presenter.js). Check that all img src paths
+        use relative paths to shared/presentation/assets/. Ensure bilingual
+        content has both lang-en and lang-es spans.
   path_filters:
     - "!**/screenshots/**"
     - "!**/*.gif"

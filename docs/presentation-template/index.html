@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Module Title | Titulo del Modulo - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+      })();
+    </script>
+  </head>
+  <body>
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <h1>
+              <span class="lang-en">Module Title</span>
+              <span class="lang-es">Titulo del Modulo</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module NN &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo NN &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: EXAMPLE CONTENT ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Example Content</span>
+            <span class="lang-es">Contenido de Ejemplo</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>Card Title</h4>
+              <p>
+                <span class="lang-en">Click to expand this card.</span
+                ><span class="lang-es">Haz clic para expandir.</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en">Hidden content revealed on click.</span
+                  ><span class="lang-es">Contenido oculto revelado al hacer clic.</span>
+                </p>
+              </div>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num" data-counter="42" data-suffix="%">0</span>
+              <span class="stat-label">
+                <span class="lang-en">Example Stat</span>
+                <span class="lang-es">Estadistica de Ejemplo</span>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: Q&A ========== -->
+        <section>
+          <div class="qa-center">
+            <h1>Q&amp;A</h1>
+            <p class="subtitle">
+              <span class="lang-en">Questions?</span>
+              <span class="lang-es">&iquest;Preguntas?</span>
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+  </body>
+</html>

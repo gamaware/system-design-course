@@ -14,3 +14,4 @@ ADRs are dateless since the course structure is persistent across semesters.
 | [ADR-003](003-code-quality-automation.md) | Code Quality and Automation Pipeline | Accepted |
 | [ADR-004](004-module-progression.md) | Module Progression and Semester Mapping | Accepted |
 | [ADR-005](005-security-practices.md) | Security Practices for Lab Content | Accepted |
+| [ADR-006](006-presentation-template.md) | Shared Presentation Template Architecture | Accepted |

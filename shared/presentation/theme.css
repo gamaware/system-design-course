@@ -1,0 +1,530 @@
+/* shared/presentation/theme.css
+ * Shared presentation theme for ITESO system-design-course slides.
+ * Extracted from 10-databases/presentation/index.html and improved
+ * with web fonts, accessibility, reduced-motion, and print styles.
+ */
+
+/* ============ GOOGLE FONTS ============ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@600;700&display=swap');
+
+/* ============ THEME VARIABLES ============ */
+:root,
+html[data-theme='dark'] {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --card-border: #30363d;
+  --text: #e6edf3;
+  --heading: #fff;
+  --muted: #8b949e;
+  --primary: #58a6ff;
+  --secondary: #79c0ff;
+  --mint: #56d364;
+  --warning: #d29922;
+  --error: #f85149;
+  --purple: #bc8cff;
+  --gold: #e3b341;
+  --particle-color: rgb(88 166 255 / 30%);
+  --particle-line: rgb(88 166 255 / 8%);
+}
+
+html[data-theme='light'] {
+  --bg: #fff;
+  --surface: #f6f8fa;
+  --card-border: #d0d7de;
+  --text: #1f2328;
+  --heading: #1f2328;
+  --muted: #656d76;
+  --primary: #0969da;
+  --secondary: #0550ae;
+  --mint: #1a7f37;
+  --warning: #bf5500;
+  --error: #cf222e;
+  --purple: #8250df;
+  --gold: #9a6700;
+  --particle-color: rgb(9 105 218 / 18%);
+  --particle-line: rgb(9 105 218 / 6%);
+}
+
+/* ============ LANGUAGE TOGGLE ============ */
+html[data-lang='en'] .lang-es {
+  display: none !important;
+}
+
+html[data-lang='es'] .lang-en {
+  display: none !important;
+}
+
+/* ============ BASE STYLES ============ */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+}
+
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============ REVEAL OVERRIDES ============ */
+.reveal-viewport {
+  background: var(--bg) !important;
+}
+
+.reveal {
+  font-family:
+    'IBM Plex Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    sans-serif;
+  color: var(--text);
+  background: transparent !important;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  padding: 20px 30px;
+  box-sizing: border-box;
+}
+
+.reveal h1 {
+  font-family:
+    'JetBrains Mono',
+    'IBM Plex Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 2.2em;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--heading);
+  margin: 0 0 10px;
+}
+
+.reveal h2 {
+  font-family:
+    'JetBrains Mono',
+    'IBM Plex Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 1.6em;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--heading);
+  margin: 0 0 12px;
+}
+
+.reveal h3 {
+  font-family:
+    'JetBrains Mono',
+    'IBM Plex Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0 0 8px;
+}
+
+.reveal p,
+.reveal li {
+  font-size: 0.78em;
+  line-height: 1.45;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.reveal ul,
+.reveal ol {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.reveal a {
+  color: var(--primary);
+}
+
+.reveal table {
+  font-size: 0.72em;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.reveal th,
+.reveal td {
+  padding: 5px 8px;
+  border: 1px solid var(--card-border);
+  text-align: left;
+}
+
+.reveal th {
+  font-weight: 600;
+  color: var(--heading);
+  background: var(--surface);
+}
+
+/* ============ CARDS ============ */
+.card {
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+}
+
+.card h4 {
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--heading);
+  margin: 0 0 4px;
+}
+
+.card p,
+.card li {
+  font-size: 0.65em;
+  line-height: 1.4;
+  color: var(--text);
+  margin: 0;
+}
+
+.card ul {
+  padding-left: 1em;
+  margin: 2px 0 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid-6 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+/* ============ BADGES & STATS ============ */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.58em;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.badge-blue {
+  color: var(--primary);
+  background: rgb(88 166 255 / 15%);
+}
+
+.badge-green {
+  color: var(--mint);
+  background: rgb(86 211 100 / 15%);
+}
+
+.badge-orange {
+  color: var(--warning);
+  background: rgb(210 153 34 / 15%);
+}
+
+.badge-red {
+  color: var(--error);
+  background: rgb(248 81 73 / 15%);
+}
+
+.badge-purple {
+  color: var(--purple);
+  background: rgb(188 140 255 / 15%);
+}
+
+.stat-card {
+  padding: 14px 16px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+}
+
+.stat-num {
+  display: block;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.55em;
+  color: var(--muted);
+}
+
+/* ============ COLORED BORDERS ============ */
+.border-green {
+  border-left: 4px solid var(--mint);
+}
+
+.border-blue {
+  border-left: 4px solid var(--primary);
+}
+
+.border-red {
+  border-left: 4px solid var(--error);
+}
+
+.border-orange {
+  border-left: 4px solid var(--warning);
+}
+
+.border-purple {
+  border-left: 4px solid var(--purple);
+}
+
+.border-gold {
+  border-left: 4px solid var(--gold);
+}
+
+/* ============ SVG DIAGRAM CONTAINER ============ */
+.diagram-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto;
+}
+
+.diagram-container svg {
+  max-width: 700px;
+  max-height: 380px;
+}
+
+/* ============ SIDE BY SIDE ============ */
+.side-by-side {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ============ TOGGLE BUTTONS ============ */
+.toggle-bar {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 999;
+  display: flex;
+  gap: 6px;
+}
+
+.toggle-btn {
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.toggle-btn:hover {
+  color: #fff;
+  background: var(--primary);
+}
+
+/* ============ ANIMATIONS ============ */
+.float-in {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.float-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-in {
+  opacity: 0;
+  transform: translateX(-16px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.slide-in.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ============ EXPANDABLE CARDS ============ */
+.expandable {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.expandable:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--card-border));
+  box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
+}
+
+.expandable.expanded {
+  border-color: var(--primary);
+  box-shadow:
+    0 0 0 1px var(--primary),
+    0 8px 24px rgb(0 0 0 / 20%);
+}
+
+.expandable .expand-content {
+  max-height: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.3s ease,
+    padding 0.3s ease;
+}
+
+.expandable.expanded .expand-content {
+  max-height: 300px;
+  padding: 8px 0 0;
+  opacity: 1;
+}
+
+.expandable::after {
+  content: '\25B8 click';
+  display: inline-block;
+  padding: 1px 6px;
+  margin-top: 4px;
+  font-size: 0.42em;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.expandable.expanded::after {
+  content: '\25BE collapse';
+}
+
+/* ============ ITESO BRANDING ============ */
+.iteso-footer {
+  position: absolute;
+  bottom: 8px;
+  left: 30px;
+  font-size: 0.5em;
+  color: var(--muted);
+}
+
+.iteso-tag {
+  font-size: 0.58em;
+  color: var(--muted);
+}
+
+/* ============ UTILITIES ============ */
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 0.82em;
+  color: var(--muted);
+}
+
+.aws-icon {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.qa-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+/* ============ ACCESSIBILITY ============ */
+.toggle-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.expandable:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce) {
+  .float-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .slide-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  #particle-canvas {
+    display: none;
+  }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+  #particle-canvas,
+  .toggle-bar {
+    display: none;
+  }
+
+  :root {
+    --bg: #fff;
+    --surface: #f6f8fa;
+    --card-border: #d0d7de;
+    --text: #1f2328;
+    --heading: #1f2328;
+    --muted: #656d76;
+    --primary: #0969da;
+    --secondary: #0550ae;
+    --mint: #1a7f37;
+    --warning: #bf5500;
+    --error: #cf222e;
+    --purple: #8250df;
+    --gold: #9a6700;
+  }
+}

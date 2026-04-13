@@ -17,9 +17,16 @@ NN-topic-name/          # Module directories (01 through 16, kebab-case)
   setup.sh              # Lab setup script (when applicable)
   scripts/              # Additional scripts
   configs/              # Configuration files
+  presentation/         # Module slide deck (index.html + slides.js)
+shared/
+  presentation/           # Shared presentation theme, JS, and assets
+    theme.css             # Design tokens, reveal.js overrides, component styles
+    presenter.js          # Particle canvas, animations, theme/lang toggle, Reveal init
+    assets/               # AWS icons (SVG) and DB engine logos (PNG)
 docs/
   adr/                  # Architecture Decision Records (dateless)
   lab-template.md       # Standard 13-section lab README template
+  presentation-template/  # Starter template for new module presentations
 .claude/
   settings.json         # Project-level Claude Code settings (hooks, permissions)
   hooks/                # Automation hooks (post-edit formatters, file protection)
@@ -101,9 +108,10 @@ Skills in `.claude/skills/` provide reusable workflows:
 - **`/new-lab [NN-topic-name]`** — Scaffolds a new lab module with README template,
   setup/cleanup scripts, and updates root README. See `docs/lab-template.md` for the
   13-section structure.
-- **`/ship [PR-number]`** — End-to-end PR lifecycle: updates docs (CLAUDE.md, README,
+- **`/ship-it [PR-number]`** — End-to-end PR lifecycle: updates docs (CLAUDE.md, README,
   ADRs, MEMORY.md), commits, creates PR, monitors CI, addresses CodeRabbit and Copilot
-  review comments, and merges with `--admin`. Pass a PR number to resume monitoring.
+  review comments, merges with `--admin`, and cleans up stale local branches.
+  Pass a PR number to resume monitoring. Uses global skill.
 
 ## Linting Policy
 

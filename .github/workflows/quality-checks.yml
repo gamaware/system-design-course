@@ -177,6 +177,68 @@ jobs:
       - name: Run zizmor
         run: zizmor .github/workflows/
 
+  python-lint:
+    name: Python Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install linters
+        run: pip install ruff bandit
+
+      - name: Run Ruff
+        run: |
+          ruff check --exclude '01-introduction-horizontal-scalability/ecsdemo-*' .
+
+      - name: Run Bandit
+        run: |
+          bandit -r . -c pyproject.toml \
+            --exclude '01-introduction-horizontal-scalability/ecsdemo-*'
+
+  frontend-lint:
+    name: Frontend Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install linters
+        run: npm install -g eslint prettier htmlhint stylelint stylelint-config-standard
+
+      - name: Run ESLint
+        run: |
+          find . -name '*.js' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
+            -exec eslint {} + || true
+
+      - name: Run Prettier check
+        run: |
+          find . \( -name '*.js' -o -name '*.html' -o -name '*.css' \) \
+            ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
+            -exec prettier --check {} +
+
+      - name: Run HTMLHint
+        run: |
+          find . -name '*.html' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
+            -exec htmlhint {} +
+
+      - name: Run Stylelint
+        run: |
+          find . -name '*.css' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
+            -exec stylelint {} +
+
   prose-lint:
     name: Prose Linting (Vale)
     runs-on: ubuntu-latest
