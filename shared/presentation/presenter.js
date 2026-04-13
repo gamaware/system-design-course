@@ -220,12 +220,7 @@ Reveal.initialize(config).then(() => {
   restartSVGAnimations(firstSlide);
 });
 
-Reveal.on('ready', () => {
-  applyTheme(localStorage.getItem('pres-theme') || 'dark');
-});
-
 Reveal.on('slidechanged', (event) => {
-  applyTheme(localStorage.getItem('pres-theme') || 'dark');
   animateSlideElements(event.currentSlide);
   triggerCounters(event.currentSlide);
   restartSVGAnimations(event.currentSlide);
