@@ -5706,29 +5706,29 @@
                   <text x="768" y="278" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 3</text>
                 </g>
                 <!-- Arrow: App Server 2 to Database Tier (vertical) -->
-                <line x1="440" y1="260" x2="440" y2="280" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
-                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,260 L440,280" /></circle>
-                <text x="460" y="274" fill="var(--muted)" font-size="7">SQL/TCP</text>
+                <line x1="440" y1="285" x2="440" y2="320" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,285 L440,320" /></circle>
+                <text x="460" y="307" fill="var(--muted)" font-size="7">SQL/TCP</text>
                 <!-- Database Tier label -->
-                <text x="440" y="296" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">
+                <text x="440" y="336" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">
                   <tspan class="lang-en">Database Tier</tspan><tspan class="lang-es">Capa de Base de Datos</tspan>
                 </text>
                 <!-- Primary RDS -->
                 <g class="arch-tier rds-primary-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'rds-primary-tier')">
-                  <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="268" y="305" width="64" height="64" />
-                  <rect x="250" y="373" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                  <text x="300" y="388" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Primary</text>
+                  <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="268" y="345" width="64" height="64" />
+                  <rect x="250" y="413" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="300" y="428" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Primary</text>
                 </g>
                 <!-- Replica RDS -->
                 <g class="arch-tier rds-replica-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'rds-replica-tier')">
-                  <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="508" y="305" width="64" height="64" />
-                  <rect x="490" y="373" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                  <text x="540" y="388" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Replica</text>
+                  <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="508" y="345" width="64" height="64" />
+                  <rect x="490" y="413" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="540" y="428" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Replica</text>
                 </g>
                 <!-- Replication arrow between Primary and Replica -->
-                <line x1="332" y1="337" x2="508" y2="337" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
-                <text x="420" y="332" text-anchor="middle" fill="var(--muted)" font-size="8">Replication</text>
-                <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M332,337 L508,337" /></circle>
+                <line x1="332" y1="377" x2="508" y2="377" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+                <text x="420" y="372" text-anchor="middle" fill="var(--muted)" font-size="8">Replication</text>
+                <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M332,377 L508,377" /></circle>
               </svg>
             </div>
             <div style="flex: 0 0 200px; font-size: 0.6em">
@@ -5800,9 +5800,9 @@
 
               <!-- Client -->
               <g class="arch-tier client-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'client-tier')">
-                <rect x="10" y="120" width="100" height="50" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2" />
-                <text x="60" y="143" text-anchor="middle" fill="var(--heading)" font-size="11" font-weight="600">Client</text>
-                <text x="60" y="159" text-anchor="middle" fill="var(--muted)" font-size="8">Browser</text>
+                <rect x="10" y="127" width="100" height="50" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2" />
+                <text x="60" y="150" text-anchor="middle" fill="var(--heading)" font-size="11" font-weight="600">Client</text>
+                <text x="60" y="166" text-anchor="middle" fill="var(--muted)" font-size="8">Browser</text>
               </g>
               <!-- CloudFront -->
               <g class="arch-tier cdn-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'cdn-tier')">
@@ -5824,40 +5824,40 @@
               </g>
               <!-- API Gateway -->
               <g class="arch-tier apigw-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'apigw-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg" x="300" y="113" width="64" height="64" />
-                <rect x="282" y="181" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="332" y="196" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">API Gateway</text>
+                <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg" x="300" y="120" width="64" height="64" />
+                <rect x="282" y="188" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="332" y="203" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">API Gateway</text>
               </g>
               <!-- Lambda -->
               <g class="arch-tier lambda-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'lambda-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="530" y="113" width="64" height="64" />
-                <rect x="512" y="181" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="562" y="196" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Lambda</text>
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="530" y="120" width="64" height="64" />
+                <rect x="512" y="188" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="562" y="203" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Lambda</text>
               </g>
               <!-- DynamoDB -->
               <g class="arch-tier dynamo-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'dynamo-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="760" y="113" width="64" height="64" />
-                <rect x="742" y="181" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="792" y="196" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="760" y="120" width="64" height="64" />
+                <rect x="742" y="188" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="792" y="203" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
               </g>
               <!-- Arrow: Client to CloudFront (L-shape: up then right) -->
-              <path d="M60,120 L60,42 L220,42" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M60,120 L60,42 L220,42" /></circle>
+              <path d="M60,127 L60,42 L220,42" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M60,127 L60,42 L220,42" /></circle>
               <!-- Arrow: Client to S3 (L-shape: down then right) -->
-              <path d="M60,170 L60,242 L220,242" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M60,170 L60,242 L220,242" /></circle>
+              <path d="M60,177 L60,242 L220,242" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M60,177 L60,242 L220,242" /></circle>
               <!-- Arrow: Client to API Gateway (horizontal) -->
-              <line x1="110" y1="145" x2="300" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M110,145 L300,145" /></circle>
+              <line x1="110" y1="152" x2="300" y2="152" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M110,152 L300,152" /></circle>
               <!-- Arrow: API Gateway to Lambda (horizontal) -->
-              <line x1="364" y1="145" x2="530" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M364,145 L530,145" /></circle>
+              <line x1="364" y1="152" x2="530" y2="152" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M364,152 L530,152" /></circle>
               <!-- Arrow: Lambda to DynamoDB (horizontal) -->
-              <line x1="594" y1="145" x2="760" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M594,145 L760,145" /></circle>
+              <line x1="594" y1="152" x2="760" y2="152" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowSvl)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M594,152 L760,152" /></circle>
               <!-- Cognito to API Gateway (vertical dotted) -->
-              <line x1="442" y1="100" x2="442" y2="113" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M442,100 L442,113" /></circle>
+              <line x1="442" y1="100" x2="442" y2="120" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M442,100 L442,120" /></circle>
             </svg>
           </div>
           <div style="min-height: 40px; margin-top: 4px">
@@ -6020,7 +6020,7 @@
             <span class="lang-es">Cada microservicio elige la base de datos que mejor se ajusta a sus patrones de acceso. Los servicios se comunican a trav&eacute;s de un API Gateway.</span>
           </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
-            <svg width="880" height="300" viewBox="0 0 880 300">
+            <svg width="880" height="370" viewBox="0 0 880 370">
               <defs>
                 <marker id="arrowMicro" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                   <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
@@ -6034,58 +6034,58 @@
               </g>
               <!-- L-shaped arrows from API GW to each Lambda -->
               <!-- Left lane: vertical down to y=142, then horizontal left to x=142 -->
-              <path d="M440,95 L440,142 L142,142" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,142 L142,142" /></circle>
+              <path d="M440,95 L440,167 L142,167" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,167 L142,167" /></circle>
               <!-- Center lane: straight vertical down -->
-              <line x1="440" y1="95" x2="440" y2="110" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,110" /></circle>
+              <line x1="440" y1="95" x2="440" y2="135" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,135" /></circle>
               <!-- Right lane: vertical down to y=142, then horizontal right to x=738 -->
-              <path d="M440,95 L440,142 L738,142" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,142 L738,142" /></circle>
+              <path d="M440,95 L440,167 L738,167" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,95 L440,167 L738,167" /></circle>
               <!-- Lane 1: User Service -->
               <g class="arch-tier user-svc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'user-svc-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="110" y="110" width="64" height="64" />
-                <rect x="92" y="178" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="142" y="193" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">User Service</text>
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="110" y="135" width="64" height="64" />
+                <rect x="92" y="203" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="142" y="218" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">User Service</text>
               </g>
               <!-- Arrow: User Service Lambda to RDS (vertical) -->
-              <line x1="142" y1="200" x2="142" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M142,200 L142,210" /></circle>
+              <line x1="142" y1="225" x2="142" y2="265" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M142,225 L142,265" /></circle>
               <!-- RDS -->
               <g class="arch-tier rds-user-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'rds-user-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="110" y="210" width="64" height="64" />
-                <rect x="82" y="278" width="120" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="142" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">PostgreSQL (RDS)</text>
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg" x="110" y="265" width="64" height="64" />
+                <rect x="82" y="333" width="120" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="142" y="348" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">PostgreSQL (RDS)</text>
               </g>
               <!-- Lane 2: Session Service -->
               <g class="arch-tier session-svc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'session-svc-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="408" y="110" width="64" height="64" />
-                <rect x="390" y="178" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="440" y="193" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Session Service</text>
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="408" y="135" width="64" height="64" />
+                <rect x="390" y="203" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="440" y="218" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Session Service</text>
               </g>
               <!-- Arrow: Session Service Lambda to DynamoDB (vertical) -->
-              <line x1="440" y1="200" x2="440" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M440,200 L440,210" /></circle>
+              <line x1="440" y1="225" x2="440" y2="265" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M440,225 L440,265" /></circle>
               <!-- DynamoDB -->
               <g class="arch-tier dynamo-session-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'dynamo-session-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="408" y="210" width="64" height="64" />
-                <rect x="390" y="278" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="440" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg" x="408" y="265" width="64" height="64" />
+                <rect x="390" y="333" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="440" y="348" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">DynamoDB</text>
               </g>
               <!-- Lane 3: Cache Service -->
               <g class="arch-tier cache-svc-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'cache-svc-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="706" y="110" width="64" height="64" />
-                <rect x="688" y="178" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="738" y="193" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Cache Service</text>
+                <image href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg" x="706" y="135" width="64" height="64" />
+                <rect x="688" y="203" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="738" y="218" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Cache Service</text>
               </g>
               <!-- Arrow: Cache Service Lambda to ElastiCache (vertical) -->
-              <line x1="738" y1="200" x2="738" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
-              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M738,200 L738,210" /></circle>
+              <line x1="738" y1="225" x2="738" y2="265" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowMicro)" />
+              <circle r="3" fill="var(--primary)"><animateMotion dur="1.5s" repeatCount="indefinite" path="M738,225 L738,265" /></circle>
               <!-- ElastiCache -->
               <g class="arch-tier elasticache-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'elasticache-tier')">
-                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-ElastiCache_48.svg" x="706" y="210" width="64" height="64" />
-                <rect x="678" y="278" width="120" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                <text x="738" y="293" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">ElastiCache (Redis)</text>
+                <image href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-ElastiCache_48.svg" x="706" y="265" width="64" height="64" />
+                <rect x="678" y="333" width="120" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                <text x="738" y="348" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">ElastiCache (Redis)</text>
               </g>
             </svg>
           </div>
