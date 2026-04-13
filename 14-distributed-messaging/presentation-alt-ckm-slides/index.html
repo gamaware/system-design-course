@@ -1,0 +1,2296 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed Messaging | Mensajer&iacute;a Distribuida - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <style>
+      /* ============ CKM DESIGN ENHANCEMENTS ============ */
+      :root {
+        --color-primary: #00D4FF;
+        --color-secondary: #FF00AA;
+        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+      }
+      .reveal h1, .reveal h2 {
+        background: var(--primitive-gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .card { transition: all 0.3s ease; }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
+      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+    </style>
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress-bar-top" id="progressBarTop"></div>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="160" height="100" viewBox="0 0 160 100">
+                <!-- Queue body -->
+                <rect
+                  x="20"
+                  y="30"
+                  width="120"
+                  height="40"
+                  rx="6"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </rect>
+                <!-- Message blocks flowing through -->
+                <rect x="30" y="40" width="16" height="20" rx="3" fill="var(--mint)" opacity="0.85">
+                  <animate
+                    attributeName="x"
+                    values="30;110;30"
+                    dur="3s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.85;0.4;0.85"
+                    dur="3s"
+                    repeatCount="indefinite"
+                  />
+                </rect>
+                <rect
+                  x="55"
+                  y="40"
+                  width="16"
+                  height="20"
+                  rx="3"
+                  fill="var(--purple)"
+                  opacity="0.75"
+                >
+                  <animate
+                    attributeName="x"
+                    values="55;110;55"
+                    dur="2.4s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.75;0.4;0.75"
+                    dur="2.4s"
+                    repeatCount="indefinite"
+                  />
+                </rect>
+                <rect
+                  x="80"
+                  y="40"
+                  width="16"
+                  height="20"
+                  rx="3"
+                  fill="var(--gold)"
+                  opacity="0.8"
+                >
+                  <animate
+                    attributeName="x"
+                    values="80;110;80"
+                    dur="2.8s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.8;0.4;0.8"
+                    dur="2.8s"
+                    repeatCount="indefinite"
+                  />
+                </rect>
+                <!-- Entry arrow -->
+                <line
+                  x1="2"
+                  y1="50"
+                  x2="18"
+                  y2="50"
+                  stroke="var(--muted)"
+                  stroke-width="1.5"
+                  stroke-dasharray="4,3"
+                />
+                <!-- Exit arrow -->
+                <line
+                  x1="142"
+                  y1="50"
+                  x2="158"
+                  y2="50"
+                  stroke="var(--muted)"
+                  stroke-width="1.5"
+                  stroke-dasharray="4,3"
+                />
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Distributed Messaging</span>
+              <span class="lang-es">Mensajer&iacute;a Distribuida</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 14 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 14 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Why Queues</span
+                ><span class="lang-es">1. &iquest;Por qu&eacute; Colas?</span>
+              </h4>
+              <p>
+                <span class="lang-en">Motivation, sync vs async, real-world analogy</span
+                ><span class="lang-es"
+                  >Motivaci&oacute;n, s&iacute;ncrono vs as&iacute;ncrono, analog&iacute;a</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Benefits &amp; Patterns</span
+                ><span class="lang-es">2. Beneficios y Patrones</span>
+              </h4>
+              <p>
+                <span class="lang-en">Fan-out, decoupling, persistence, async processing</span
+                ><span class="lang-es"
+                  >Fan-out, desacoplamiento, persistencia, procesamiento as&iacute;ncrono</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. Technologies</span
+                ><span class="lang-es">3. Tecnolog&iacute;as</span>
+              </h4>
+              <p>
+                <span class="lang-en">RabbitMQ, Kafka, SQS, Redis Streams</span
+                ><span class="lang-es">RabbitMQ, Kafka, SQS, Redis Streams</span>
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Architecture</span
+                ><span class="lang-es">4. Arquitectura</span>
+              </h4>
+              <p>
+                <span class="lang-en">eCommerce system with message queues</span
+                ><span class="lang-es">Sistema eCommerce con colas de mensajes</span>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHY MESSAGE QUEUES? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Why Message Queues?</span
+            ><span class="lang-es">&iquest;Por qu&eacute; Colas de Mensajes?</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Think of a coffee shop: orders are placed, queued, and fulfilled
+              independently.</span
+            ><span class="lang-es"
+              >Piensa en una cafeter&iacute;a: los pedidos se toman, se encolan y se
+              preparan de forma independiente.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="160" viewBox="0 0 880 160">
+              <defs>
+                <marker
+                  id="arrow-sb"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 Z" fill="var(--muted)" />
+                </marker>
+              </defs>
+              <!-- Cashier -->
+              <rect
+                x="30"
+                y="50"
+                width="120"
+                height="50"
+                rx="8"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="90" y="72" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Cashier</tspan>
+                <tspan class="lang-es">Cajero</tspan>
+              </text>
+              <text x="90" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Takes order</tspan>
+                <tspan class="lang-es">Toma pedido</tspan>
+              </text>
+              <!-- Arrow: Cashier -> Queue 1 -->
+              <line
+                x1="152"
+                y1="75"
+                x2="228"
+                y2="75"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-sb)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite" path="M152,75 L228,75" />
+              </circle>
+              <!-- Queue 1 -->
+              <rect
+                x="230"
+                y="45"
+                width="130"
+                height="60"
+                rx="6"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="295" y="40" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">
+                <tspan class="lang-en">Order Queue</tspan>
+                <tspan class="lang-es">Cola de Pedidos</tspan>
+              </text>
+              <!-- Message blocks in Queue 1 -->
+              <rect x="240" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.6" />
+              <rect x="264" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.45" />
+              <rect x="288" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.3" />
+              <rect x="312" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.2" />
+              <!-- Arrow: Queue 1 -> Barista -->
+              <line
+                x1="362"
+                y1="75"
+                x2="438"
+                y2="75"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-sb)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2s" repeatCount="indefinite" path="M362,75 L438,75" />
+              </circle>
+              <!-- Barista -->
+              <rect
+                x="440"
+                y="50"
+                width="120"
+                height="50"
+                rx="8"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text x="500" y="72" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="600">
+                Barista
+              </text>
+              <text x="500" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Makes drink</tspan>
+                <tspan class="lang-es">Prepara bebida</tspan>
+              </text>
+              <!-- Arrow: Barista -> Queue 2 -->
+              <line
+                x1="562"
+                y1="75"
+                x2="638"
+                y2="75"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-sb)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2s" repeatCount="indefinite" path="M562,75 L638,75" />
+              </circle>
+              <!-- Queue 2 -->
+              <rect
+                x="640"
+                y="45"
+                width="100"
+                height="60"
+                rx="6"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="690" y="40" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">
+                <tspan class="lang-en">Pickup</tspan>
+                <tspan class="lang-es">Entrega</tspan>
+              </text>
+              <!-- Message blocks in Queue 2 -->
+              <rect x="650" y="58" width="18" height="22" rx="3" fill="var(--gold)" opacity="0.5" />
+              <rect x="674" y="58" width="18" height="22" rx="3" fill="var(--gold)" opacity="0.35" />
+              <!-- Arrow: Queue 2 -> Customer -->
+              <line
+                x1="742"
+                y1="75"
+                x2="770"
+                y2="75"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-sb)"
+              />
+              <!-- Customer -->
+              <rect
+                x="772"
+                y="50"
+                width="90"
+                height="50"
+                rx="8"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="817" y="72" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Customer</tspan>
+                <tspan class="lang-es">Cliente</tspan>
+              </text>
+              <text x="817" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Picks up</tspan>
+                <tspan class="lang-es">Recoge</tspan>
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">The Starbucks Analogy</span
+                ><span class="lang-es">La Analog&iacute;a de Starbucks</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Like Starbucks, each step operates independently.</span
+                ><span class="lang-es"
+                  >Como en Starbucks, cada paso opera de forma independiente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The cashier does not wait for the barista to finish before taking the
+                    next order. The barista does not wait for the customer to pick up. Each
+                    stage works at its own pace, buffered by queues. This is exactly how
+                    message queues decouple producers and consumers in distributed
+                    systems.</span
+                  ><span class="lang-es"
+                    >El cajero no espera a que el barista termine para tomar el siguiente
+                    pedido. El barista no espera a que el cliente recoja. Cada etapa trabaja
+                    a su propio ritmo, amortiguada por colas. As&iacute; es exactamente como
+                    las colas de mensajes desacoplan productores y consumidores en sistemas
+                    distribuidos.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: SYNC VS ASYNC ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Sync vs Async Communication</span
+            ><span class="lang-es">Comunicaci&oacute;n S&iacute;ncrona vs As&iacute;ncrona</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="180" viewBox="0 0 880 180">
+              <defs>
+                <marker
+                  id="arrow-sync"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 Z" fill="var(--muted)" />
+                </marker>
+              </defs>
+              <!-- Left: Synchronous -->
+              <text x="200" y="20" text-anchor="middle" fill="var(--error)" font-size="14" font-weight="600">
+                <tspan class="lang-en">Synchronous</tspan>
+                <tspan class="lang-es">S&iacute;ncrono</tspan>
+              </text>
+              <!-- Service A -->
+              <rect
+                x="40"
+                y="40"
+                width="100"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="90" y="65" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Service A</tspan>
+                <tspan class="lang-es">Servicio A</tspan>
+              </text>
+              <!-- Blocking arrow A -> B -->
+              <line
+                x1="142"
+                y1="55"
+                x2="228"
+                y2="55"
+                stroke="var(--error)"
+                stroke-width="2"
+                marker-end="url(#arrow-sync)"
+              />
+              <text x="185" y="50" text-anchor="middle" fill="var(--error)" font-size="8">
+                <tspan class="lang-en">blocked</tspan>
+                <tspan class="lang-es">bloqueado</tspan>
+              </text>
+              <!-- Service B -->
+              <rect
+                x="230"
+                y="40"
+                width="100"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="280" y="65" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Service B</tspan>
+                <tspan class="lang-es">Servicio B</tspan>
+              </text>
+              <!-- Blocking arrow B -> C -->
+              <line
+                x1="332"
+                y1="55"
+                x2="370"
+                y2="55"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <line
+                x1="370"
+                y1="55"
+                x2="370"
+                y2="110"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <line
+                x1="370"
+                y1="110"
+                x2="230"
+                y2="110"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <line
+                x1="230"
+                y1="110"
+                x2="230"
+                y2="140"
+                stroke="var(--error)"
+                stroke-width="2"
+                marker-end="url(#arrow-sync)"
+              />
+              <!-- Waiting label -->
+              <rect
+                x="120"
+                y="120"
+                width="100"
+                height="30"
+                rx="6"
+                fill="none"
+                stroke="var(--error)"
+                stroke-width="1.5"
+                stroke-dasharray="4,3"
+              />
+              <text x="170" y="140" text-anchor="middle" fill="var(--error)" font-size="10">
+                <tspan class="lang-en">Waiting...</tspan>
+                <tspan class="lang-es">Esperando...</tspan>
+              </text>
+
+              <!-- Right: Asynchronous -->
+              <text x="670" y="20" text-anchor="middle" fill="var(--mint)" font-size="14" font-weight="600">
+                <tspan class="lang-en">Asynchronous</tspan>
+                <tspan class="lang-es">As&iacute;ncrono</tspan>
+              </text>
+              <!-- Producer -->
+              <rect
+                x="490"
+                y="40"
+                width="100"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="540" y="65" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Producer</tspan>
+                <tspan class="lang-es">Productor</tspan>
+              </text>
+              <!-- Arrow Producer -> Queue -->
+              <line
+                x1="592"
+                y1="60"
+                x2="638"
+                y2="60"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-sync)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M592,60 L638,60" />
+              </circle>
+              <!-- Queue -->
+              <rect
+                x="640"
+                y="35"
+                width="110"
+                height="50"
+                rx="6"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="695" y="55" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">
+                <tspan class="lang-en">Queue</tspan>
+                <tspan class="lang-es">Cola</tspan>
+              </text>
+              <!-- Message blocks -->
+              <rect x="650" y="60" width="14" height="16" rx="2" fill="var(--mint)" opacity="0.5" />
+              <rect x="668" y="60" width="14" height="16" rx="2" fill="var(--mint)" opacity="0.4" />
+              <rect x="686" y="60" width="14" height="16" rx="2" fill="var(--mint)" opacity="0.3" />
+              <!-- Arrow Queue -> Consumer -->
+              <line
+                x1="752"
+                y1="60"
+                x2="788"
+                y2="60"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-sync)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="1.8s" repeatCount="indefinite" path="M752,60 L788,60" />
+              </circle>
+              <!-- Consumer -->
+              <rect
+                x="790"
+                y="40"
+                width="80"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text x="830" y="65" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Consumer</tspan>
+                <tspan class="lang-es">Consumidor</tspan>
+              </text>
+              <!-- Free label under Producer -->
+              <rect
+                x="500"
+                y="110"
+                width="80"
+                height="28"
+                rx="6"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text x="540" y="129" text-anchor="middle" fill="var(--mint)" font-size="10">
+                <tspan class="lang-en">Free!</tspan>
+                <tspan class="lang-es">&iexcl;Libre!</tspan>
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Why Async Wins at Scale</span
+                ><span class="lang-es">Por qu&eacute; Async Gana a Escala</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Synchronous calls create tight coupling and cascading failures.</span
+                ><span class="lang-es"
+                  >Las llamadas s&iacute;ncronas crean acoplamiento fuerte y fallos en
+                  cascada.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >In synchronous communication, if Service B is slow or down, Service A
+                    is blocked. With a message queue, the producer publishes and moves on.
+                    The consumer processes at its own pace. This improves resilience,
+                    throughput, and allows independent scaling of each component.</span
+                  ><span class="lang-es"
+                    >En comunicaci&oacute;n s&iacute;ncrona, si el Servicio B est&aacute;
+                    lento o ca&iacute;do, el Servicio A se bloquea. Con una cola de mensajes,
+                    el productor publica y contin&uacute;a. El consumidor procesa a su propio
+                    ritmo. Esto mejora la resiliencia, el rendimiento y permite escalar cada
+                    componente de forma independiente.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: BENEFITS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Benefits of Message Queues</span
+            ><span class="lang-es">Beneficios de las Colas de Mensajes</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Fan-Out</span
+                ><span class="lang-es">Fan-Out</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >One message triggers multiple consumers simultaneously.</span
+                ><span class="lang-es"
+                  >Un mensaje activa m&uacute;ltiples consumidores simult&aacute;neamente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >A single event like &ldquo;order placed&rdquo; can fan out to
+                    notifications, analytics, inventory, and billing services. Each consumer
+                    receives a copy of the message and processes it independently.</span
+                  ><span class="lang-es"
+                    >Un solo evento como &ldquo;pedido realizado&rdquo; puede distribuirse a
+                    servicios de notificaciones, anal&iacute;tica, inventario y
+                    facturaci&oacute;n. Cada consumidor recibe una copia del mensaje y lo
+                    procesa de forma independiente.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Async Processing</span
+                ><span class="lang-es">Procesamiento As&iacute;ncrono</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Producers do not wait for consumers to finish.</span
+                ><span class="lang-es"
+                  >Los productores no esperan a que los consumidores terminen.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Heavy tasks like image processing, email sending, or report generation
+                    are offloaded to background workers. The API responds immediately while
+                    the work happens asynchronously, improving user experience and
+                    throughput.</span
+                  ><span class="lang-es"
+                    >Tareas pesadas como procesamiento de im&aacute;genes, env&iacute;o de
+                    correos o generaci&oacute;n de reportes se delegan a workers en segundo
+                    plano. La API responde de inmediato mientras el trabajo ocurre de forma
+                    as&iacute;ncrona, mejorando la experiencia y el rendimiento.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Decoupling</span
+                ><span class="lang-es">Desacoplamiento</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Services evolve independently without breaking each other.</span
+                ><span class="lang-es"
+                  >Los servicios evolucionan independientemente sin romperse entre
+                  s&iacute;.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Producers and consumers only need to agree on the message format. They
+                    can be written in different languages, deployed on different schedules,
+                    and scaled independently. Adding a new consumer requires zero changes to
+                    the producer.</span
+                  ><span class="lang-es"
+                    >Productores y consumidores solo necesitan acordar el formato del mensaje.
+                    Pueden estar escritos en diferentes lenguajes, desplegados en diferentes
+                    calendarios y escalados independientemente. Agregar un nuevo consumidor
+                    no requiere cambios en el productor.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Message Persistence</span
+                ><span class="lang-es">Persistencia de Mensajes</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Messages survive crashes and restarts.</span
+                ><span class="lang-es"
+                  >Los mensajes sobreviven a ca&iacute;das y reinicios.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Durable queues store messages on disk. If a consumer crashes, messages
+                    remain in the queue and are redelivered when it recovers. This guarantees
+                    at-least-once delivery and prevents data loss during outages.</span
+                  ><span class="lang-es"
+                    >Las colas durables almacenan mensajes en disco. Si un consumidor falla,
+                    los mensajes permanecen en la cola y se reenv&iacute;an cuando se
+                    recupera. Esto garantiza entrega al-menos-una-vez y previene
+                    p&eacute;rdida de datos durante interrupciones.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: FAN-OUT PATTERN ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Fan-Out Pattern</span
+            ><span class="lang-es">Patr&oacute;n Fan-Out</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-fan"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 Z" fill="var(--muted)" />
+                </marker>
+              </defs>
+              <!-- Producer -->
+              <rect
+                x="40"
+                y="80"
+                width="130"
+                height="50"
+                rx="8"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="105" y="102" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Producer</tspan>
+                <tspan class="lang-es">Productor</tspan>
+              </text>
+              <text x="105" y="118" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Order Service</tspan>
+                <tspan class="lang-es">Servicio de Pedidos</tspan>
+              </text>
+              <!-- Arrow Producer -> Queue -->
+              <line
+                x1="172"
+                y1="105"
+                x2="278"
+                y2="105"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-fan)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.8s" repeatCount="indefinite" path="M172,105 L278,105" />
+              </circle>
+              <!-- Queue -->
+              <rect
+                x="280"
+                y="70"
+                width="140"
+                height="70"
+                rx="6"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="350" y="100" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Message Queue</tspan>
+                <tspan class="lang-es">Cola de Mensajes</tspan>
+              </text>
+              <text x="350" y="116" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Fan-Out Exchange
+              </text>
+              <!-- Message blocks in queue -->
+              <rect x="295" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.5" />
+              <rect x="314" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.4" />
+              <rect x="333" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.3" />
+              <rect x="352" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.25" />
+              <!-- Arrow Queue -> Consumer 1 (top) -->
+              <line
+                x1="422"
+                y1="90"
+                x2="530"
+                y2="90"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="530"
+                y1="90"
+                x2="530"
+                y2="40"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="530"
+                y1="40"
+                x2="598"
+                y2="40"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-fan)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion
+                  dur="2s"
+                  repeatCount="indefinite"
+                  path="M422,90 L530,90 L530,40 L598,40"
+                />
+              </circle>
+              <!-- Arrow Queue -> Consumer 2 (middle) -->
+              <line
+                x1="422"
+                y1="105"
+                x2="598"
+                y2="105"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-fan)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.6s" repeatCount="indefinite" path="M422,105 L598,105" />
+              </circle>
+              <!-- Arrow Queue -> Consumer 3 (bottom) -->
+              <line
+                x1="422"
+                y1="120"
+                x2="530"
+                y2="120"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="530"
+                y1="120"
+                x2="530"
+                y2="175"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="530"
+                y1="175"
+                x2="598"
+                y2="175"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-fan)"
+              />
+              <circle r="3" fill="var(--error)">
+                <animateMotion
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                  path="M422,120 L530,120 L530,175 L598,175"
+                />
+              </circle>
+              <!-- Consumer 1: Notifications -->
+              <rect
+                x="600"
+                y="18"
+                width="160"
+                height="44"
+                rx="6"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text x="680" y="45" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Notifications</tspan>
+                <tspan class="lang-es">Notificaciones</tspan>
+              </text>
+              <!-- Consumer 2: Analytics -->
+              <rect
+                x="600"
+                y="83"
+                width="160"
+                height="44"
+                rx="6"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="680" y="110" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Analytics</tspan>
+                <tspan class="lang-es">Anal&iacute;tica</tspan>
+              </text>
+              <!-- Consumer 3: Logging -->
+              <rect
+                x="600"
+                y="153"
+                width="160"
+                height="44"
+                rx="6"
+                fill="none"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <text x="680" y="180" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="500">
+                Logging
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">One Event, Many Reactions</span
+                ><span class="lang-es">Un Evento, Muchas Reacciones</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Fan-out distributes a single message to all subscribed consumers.</span
+                ><span class="lang-es"
+                  >Fan-out distribuye un solo mensaje a todos los consumidores
+                  suscritos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >When an order is placed, the notification service sends an email, the
+                    analytics service records the event, and the logging service stores an
+                    audit trail. The producer only sends one message. Adding a new consumer
+                    (e.g., fraud detection) requires no changes to the producer or existing
+                    consumers.</span
+                  ><span class="lang-es"
+                    >Cuando se realiza un pedido, el servicio de notificaciones env&iacute;a
+                    un correo, el servicio de anal&iacute;tica registra el evento y el
+                    servicio de logging almacena una traza de auditor&iacute;a. El productor
+                    solo env&iacute;a un mensaje. Agregar un nuevo consumidor (ej.,
+                    detecci&oacute;n de fraude) no requiere cambios en el productor ni en los
+                    consumidores existentes.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: TECHNOLOGIES COMPARISON ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Technologies Comparison</span
+            ><span class="lang-es">Comparaci&oacute;n de Tecnolog&iacute;as</span>
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Technology</span
+                  ><span class="lang-es">Tecnolog&iacute;a</span>
+                </th>
+                <th>
+                  <span class="lang-en">Type</span
+                  ><span class="lang-es">Tipo</span>
+                </th>
+                <th>Throughput</th>
+                <th>
+                  <span class="lang-en">Ordering</span
+                  ><span class="lang-es">Orden</span>
+                </th>
+                <th>Replay</th>
+                <th>
+                  <span class="lang-en">Best For</span
+                  ><span class="lang-es">Ideal Para</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>RabbitMQ</td>
+                <td>
+                  <span class="lang-en">Message Broker</span
+                  ><span class="lang-es">Broker de Mensajes</span>
+                </td>
+                <td><span class="badge badge-orange">Medium</span></td>
+                <td><span class="badge badge-green">Per Queue</span></td>
+                <td><span class="badge badge-red">No</span></td>
+                <td>
+                  <span class="lang-en">Task queues, routing</span
+                  ><span class="lang-es">Colas de tareas, enrutamiento</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Kafka</td>
+                <td>
+                  <span class="lang-en">Event Log</span
+                  ><span class="lang-es">Log de Eventos</span>
+                </td>
+                <td><span class="badge badge-green">Very High</span></td>
+                <td><span class="badge badge-green">Per Partition</span></td>
+                <td><span class="badge badge-green">Yes</span></td>
+                <td>
+                  <span class="lang-en">Event streaming, analytics</span
+                  ><span class="lang-es">Streaming de eventos, anal&iacute;tica</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Amazon SQS</td>
+                <td>
+                  <span class="lang-en">Managed Queue</span
+                  ><span class="lang-es">Cola Gestionada</span>
+                </td>
+                <td><span class="badge badge-green">High</span></td>
+                <td><span class="badge badge-orange">FIFO optional</span></td>
+                <td><span class="badge badge-red">No</span></td>
+                <td>
+                  <span class="lang-en">Serverless, AWS integration</span
+                  ><span class="lang-es">Serverless, integraci&oacute;n AWS</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Redis Streams</td>
+                <td>
+                  <span class="lang-en">In-Memory Log</span
+                  ><span class="lang-es">Log en Memoria</span>
+                </td>
+                <td><span class="badge badge-green">Very High</span></td>
+                <td><span class="badge badge-green">Per Stream</span></td>
+                <td><span class="badge badge-green">Yes</span></td>
+                <td>
+                  <span class="lang-en">Real-time, lightweight</span
+                  ><span class="lang-es">Tiempo real, ligero</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ========== SLIDE 7: RABBITMQ ARCHITECTURE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">RabbitMQ Architecture</span
+            ><span class="lang-es">Arquitectura de RabbitMQ</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-rmq"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 Z" fill="var(--muted)" />
+                </marker>
+              </defs>
+              <!-- Producer -->
+              <rect
+                x="20"
+                y="80"
+                width="110"
+                height="50"
+                rx="8"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="75" y="102" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Producer</tspan>
+                <tspan class="lang-es">Productor</tspan>
+              </text>
+              <text x="75" y="118" text-anchor="middle" fill="var(--muted)" font-size="9">
+                publish()
+              </text>
+              <!-- Arrow Producer -> Exchange -->
+              <line
+                x1="132"
+                y1="105"
+                x2="228"
+                y2="105"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M132,105 L228,105" />
+              </circle>
+              <!-- Exchange -->
+              <rect
+                x="230"
+                y="60"
+                width="140"
+                height="90"
+                rx="8"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="300" y="85" text-anchor="middle" fill="var(--gold)" font-size="13" font-weight="600">
+                Exchange
+              </text>
+              <text x="300" y="105" text-anchor="middle" fill="var(--muted)" font-size="9">
+                direct | topic | fanout
+              </text>
+              <!-- Routing key labels -->
+              <rect x="252" y="115" width="96" height="20" rx="4" fill="none" stroke="var(--gold)" stroke-width="1" opacity="0.5" />
+              <text x="300" y="129" text-anchor="middle" fill="var(--gold)" font-size="8" opacity="0.7">
+                routing-key
+              </text>
+              <!-- Arrow Exchange -> Queue 1 (top) -->
+              <line
+                x1="372"
+                y1="85"
+                x2="460"
+                y2="85"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="460"
+                y1="85"
+                x2="460"
+                y2="40"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="460"
+                y1="40"
+                x2="508"
+                y2="40"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion
+                  dur="2s"
+                  repeatCount="indefinite"
+                  path="M372,85 L460,85 L460,40 L508,40"
+                />
+              </circle>
+              <!-- Arrow Exchange -> Queue 2 (middle) -->
+              <line
+                x1="372"
+                y1="105"
+                x2="508"
+                y2="105"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.6s" repeatCount="indefinite" path="M372,105 L508,105" />
+              </circle>
+              <!-- Arrow Exchange -> Queue 3 (bottom) -->
+              <line
+                x1="372"
+                y1="125"
+                x2="460"
+                y2="125"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="460"
+                y1="125"
+                x2="460"
+                y2="175"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="460"
+                y1="175"
+                x2="508"
+                y2="175"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <circle r="3" fill="var(--error)">
+                <animateMotion
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                  path="M372,125 L460,125 L460,175 L508,175"
+                />
+              </circle>
+              <!-- Queue 1 -->
+              <rect
+                x="510"
+                y="20"
+                width="100"
+                height="40"
+                rx="5"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+              />
+              <text x="560" y="44" text-anchor="middle" fill="var(--purple)" font-size="10">
+                Queue 1
+              </text>
+              <rect x="518" y="28" width="10" height="10" rx="2" fill="var(--purple)" opacity="0.4" />
+              <rect x="531" y="28" width="10" height="10" rx="2" fill="var(--purple)" opacity="0.3" />
+              <!-- Queue 2 -->
+              <rect
+                x="510"
+                y="85"
+                width="100"
+                height="40"
+                rx="5"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+              />
+              <text x="560" y="109" text-anchor="middle" fill="var(--gold)" font-size="10">
+                Queue 2
+              </text>
+              <rect x="518" y="93" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.4" />
+              <rect x="531" y="93" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.3" />
+              <!-- Queue 3 -->
+              <rect
+                x="510"
+                y="155"
+                width="100"
+                height="40"
+                rx="5"
+                fill="none"
+                stroke="var(--error)"
+                stroke-width="1.5"
+              />
+              <text x="560" y="179" text-anchor="middle" fill="var(--error)" font-size="10">
+                Queue 3
+              </text>
+              <rect x="518" y="163" width="10" height="10" rx="2" fill="var(--error)" opacity="0.4" />
+              <rect x="531" y="163" width="10" height="10" rx="2" fill="var(--error)" opacity="0.3" />
+              <!-- Arrow Queue 1 -> Consumer 1 -->
+              <line
+                x1="612"
+                y1="40"
+                x2="698"
+                y2="40"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <!-- Arrow Queue 2 -> Consumer 2 -->
+              <line
+                x1="612"
+                y1="105"
+                x2="698"
+                y2="105"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <!-- Arrow Queue 3 -> Consumer 3 -->
+              <line
+                x1="612"
+                y1="175"
+                x2="698"
+                y2="175"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-rmq)"
+              />
+              <!-- Consumer 1 -->
+              <rect
+                x="700"
+                y="20"
+                width="110"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+              />
+              <text x="755" y="44" text-anchor="middle" fill="var(--purple)" font-size="10">
+                Consumer 1
+              </text>
+              <!-- Consumer 2 -->
+              <rect
+                x="700"
+                y="85"
+                width="110"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+              />
+              <text x="755" y="109" text-anchor="middle" fill="var(--gold)" font-size="10">
+                Consumer 2
+              </text>
+              <!-- Consumer 3 -->
+              <rect
+                x="700"
+                y="155"
+                width="110"
+                height="40"
+                rx="6"
+                fill="none"
+                stroke="var(--error)"
+                stroke-width="1.5"
+              />
+              <text x="755" y="179" text-anchor="middle" fill="var(--error)" font-size="10">
+                Consumer 3
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-gold expandable">
+              <h4>
+                <span class="lang-en">Exchange Types</span
+                ><span class="lang-es">Tipos de Exchange</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Exchanges route messages to queues based on rules.</span
+                ><span class="lang-es"
+                  >Los exchanges enrutan mensajes a colas seg&uacute;n reglas.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    ><strong>Direct:</strong> routes to queues whose binding key exactly
+                    matches the routing key. <strong>Topic:</strong> routes based on wildcard
+                    pattern matching (e.g., <code>order.*</code>).
+                    <strong>Fanout:</strong> broadcasts to all bound queues regardless of
+                    routing key. Choose based on whether you need selective or broadcast
+                    delivery.</span
+                  ><span class="lang-es"
+                    ><strong>Direct:</strong> enruta a colas cuya clave de enlace coincide
+                    exactamente con la clave de enrutamiento. <strong>Topic:</strong> enruta
+                    basado en coincidencia de patrones con comodines (ej.,
+                    <code>order.*</code>). <strong>Fanout:</strong> transmite a todas las
+                    colas enlazadas sin importar la clave de enrutamiento. Elige seg&uacute;n
+                    si necesitas entrega selectiva o broadcast.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: KAFKA ARCHITECTURE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Kafka Architecture</span
+            ><span class="lang-es">Arquitectura de Kafka</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="240" viewBox="0 0 880 240">
+              <defs>
+                <marker
+                  id="arrow-kafka"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 Z" fill="var(--muted)" />
+                </marker>
+              </defs>
+              <!-- Producer -->
+              <rect
+                x="20"
+                y="90"
+                width="120"
+                height="50"
+                rx="8"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="80" y="112" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Producer</tspan>
+                <tspan class="lang-es">Productor</tspan>
+              </text>
+              <text x="80" y="128" text-anchor="middle" fill="var(--muted)" font-size="9">
+                send()
+              </text>
+              <!-- Arrow Producer -> Broker -->
+              <line
+                x1="142"
+                y1="115"
+                x2="228"
+                y2="115"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-kafka)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M142,115 L228,115" />
+              </circle>
+              <!-- Broker boundary -->
+              <rect
+                x="230"
+                y="15"
+                width="280"
+                height="215"
+                rx="10"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+                opacity="0.4"
+              />
+              <text x="370" y="36" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600" opacity="0.7">
+                Kafka Broker
+              </text>
+              <!-- Topic label -->
+              <text x="370" y="55" text-anchor="middle" fill="var(--muted)" font-size="10">
+                Topic: orders
+              </text>
+              <!-- Partition 0 -->
+              <rect
+                x="260"
+                y="65"
+                width="220"
+                height="35"
+                rx="4"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text x="280" y="87" fill="var(--mint)" font-size="9" font-weight="500">P0</text>
+              <!-- Offset blocks -->
+              <rect x="300" y="72" width="20" height="20" rx="3" fill="var(--mint)" opacity="0.6" />
+              <rect x="325" y="72" width="20" height="20" rx="3" fill="var(--mint)" opacity="0.5" />
+              <rect x="350" y="72" width="20" height="20" rx="3" fill="var(--mint)" opacity="0.4" />
+              <rect x="375" y="72" width="20" height="20" rx="3" fill="var(--mint)" opacity="0.3" />
+              <rect x="400" y="72" width="20" height="20" rx="3" fill="var(--mint)" opacity="0.2" />
+              <text x="310" y="86" text-anchor="middle" fill="var(--bg)" font-size="7">0</text>
+              <text x="335" y="86" text-anchor="middle" fill="var(--bg)" font-size="7">1</text>
+              <text x="360" y="86" text-anchor="middle" fill="var(--bg)" font-size="7">2</text>
+              <text x="385" y="86" text-anchor="middle" fill="var(--bg)" font-size="7">3</text>
+              <text x="410" y="86" text-anchor="middle" fill="var(--bg)" font-size="7">4</text>
+              <!-- Partition 1 -->
+              <rect
+                x="260"
+                y="110"
+                width="220"
+                height="35"
+                rx="4"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+              />
+              <text x="280" y="132" fill="var(--purple)" font-size="9" font-weight="500">P1</text>
+              <rect x="300" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.6" />
+              <rect x="325" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.5" />
+              <rect x="350" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.4" />
+              <rect x="375" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.3" />
+              <text x="310" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">0</text>
+              <text x="335" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">1</text>
+              <text x="360" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">2</text>
+              <text x="385" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">3</text>
+              <!-- Partition 2 -->
+              <rect
+                x="260"
+                y="155"
+                width="220"
+                height="35"
+                rx="4"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+              />
+              <text x="280" y="177" fill="var(--gold)" font-size="9" font-weight="500">P2</text>
+              <rect x="300" y="162" width="20" height="20" rx="3" fill="var(--gold)" opacity="0.6" />
+              <rect x="325" y="162" width="20" height="20" rx="3" fill="var(--gold)" opacity="0.5" />
+              <rect x="350" y="162" width="20" height="20" rx="3" fill="var(--gold)" opacity="0.4" />
+              <text x="310" y="176" text-anchor="middle" fill="var(--bg)" font-size="7">0</text>
+              <text x="335" y="176" text-anchor="middle" fill="var(--bg)" font-size="7">1</text>
+              <text x="360" y="176" text-anchor="middle" fill="var(--bg)" font-size="7">2</text>
+              <!-- Consumer Group boundary -->
+              <rect
+                x="600"
+                y="15"
+                width="250"
+                height="215"
+                rx="10"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+                opacity="0.4"
+              />
+              <text x="725" y="36" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600" opacity="0.7">
+                Consumer Group
+              </text>
+              <!-- Arrow P0 -> Consumer 1 -->
+              <line
+                x1="512"
+                y1="82"
+                x2="618"
+                y2="82"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-kafka)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.8s" repeatCount="indefinite" path="M512,82 L618,82" />
+              </circle>
+              <!-- Arrow P1 -> Consumer 2 -->
+              <line
+                x1="512"
+                y1="127"
+                x2="618"
+                y2="127"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-kafka)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2s" repeatCount="indefinite" path="M512,127 L618,127" />
+              </circle>
+              <!-- Arrow P2 -> Consumer 3 -->
+              <line
+                x1="512"
+                y1="172"
+                x2="618"
+                y2="172"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-kafka)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.6s" repeatCount="indefinite" path="M512,172 L618,172" />
+              </circle>
+              <!-- Consumer 1 -->
+              <rect
+                x="620"
+                y="60"
+                width="140"
+                height="42"
+                rx="6"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text x="690" y="85" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">
+                Consumer 1 (P0)
+              </text>
+              <!-- Consumer 2 -->
+              <rect
+                x="620"
+                y="107"
+                width="140"
+                height="42"
+                rx="6"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+              />
+              <text x="690" y="132" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="500">
+                Consumer 2 (P1)
+              </text>
+              <!-- Consumer 3 -->
+              <rect
+                x="620"
+                y="152"
+                width="140"
+                height="42"
+                rx="6"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+              />
+              <text x="690" y="177" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">
+                Consumer 3 (P2)
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Partitions &amp; Consumer Groups</span
+                ><span class="lang-es">Particiones y Grupos de Consumidores</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Kafka achieves parallelism through partitioned topics.</span
+                ><span class="lang-es"
+                  >Kafka logra paralelismo a trav&eacute;s de t&oacute;picos
+                  particionados.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Each topic is split into partitions, which are ordered, immutable
+                    sequences of records. Within a consumer group, each partition is consumed
+                    by exactly one consumer, enabling parallel processing. Messages are
+                    retained even after consumption, allowing replay from any offset. The
+                    number of partitions determines maximum parallelism.</span
+                  ><span class="lang-es"
+                    >Cada t&oacute;pico se divide en particiones, que son secuencias
+                    ordenadas e inmutables de registros. Dentro de un grupo de consumidores,
+                    cada partici&oacute;n es consumida por exactamente un consumidor,
+                    permitiendo procesamiento paralelo. Los mensajes se retienen incluso
+                    despu&eacute;s del consumo, permitiendo repetici&oacute;n desde cualquier
+                    offset. El n&uacute;mero de particiones determina el paralelismo
+                    m&aacute;ximo.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: KAFKA VS RABBITMQ ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Kafka vs RabbitMQ</span
+            ><span class="lang-es">Kafka vs RabbitMQ</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>Apache Kafka</h4>
+              <p>
+                <span class="lang-en"
+                  >Distributed event log optimized for high-throughput streaming.</span
+                ><span class="lang-es"
+                  >Log de eventos distribuido optimizado para streaming de alto
+                  rendimiento.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    ><strong>Model:</strong> Append-only log with consumer offsets.
+                    <strong>Retention:</strong> Messages persist for configurable time
+                    (days/weeks). <strong>Ordering:</strong> Guaranteed per partition.
+                    <strong>Replay:</strong> Consumers can re-read from any offset.
+                    <strong>Scaling:</strong> Add partitions for parallelism. Best for event
+                    sourcing, analytics pipelines, and high-volume stream processing.</span
+                  ><span class="lang-es"
+                    ><strong>Modelo:</strong> Log de solo adici&oacute;n con offsets de
+                    consumidor. <strong>Retenci&oacute;n:</strong> Los mensajes persisten por
+                    tiempo configurable (d&iacute;as/semanas).
+                    <strong>Orden:</strong> Garantizado por partici&oacute;n.
+                    <strong>Replay:</strong> Los consumidores pueden releer desde cualquier
+                    offset. <strong>Escalado:</strong> Agregar particiones para paralelismo.
+                    Ideal para event sourcing, pipelines de anal&iacute;tica y procesamiento
+                    de flujos de alto volumen.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>RabbitMQ</h4>
+              <p>
+                <span class="lang-en"
+                  >Traditional message broker with smart routing and flexible delivery.</span
+                ><span class="lang-es"
+                  >Broker de mensajes tradicional con enrutamiento inteligente y entrega
+                  flexible.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    ><strong>Model:</strong> Queue with message acknowledgment.
+                    <strong>Retention:</strong> Messages deleted after consumption.
+                    <strong>Ordering:</strong> FIFO per queue.
+                    <strong>Routing:</strong> Flexible exchange types (direct, topic, fanout,
+                    headers). <strong>Scaling:</strong> Add consumers to a queue for
+                    competing consumers pattern. Best for task distribution, RPC-style
+                    communication, and complex routing scenarios.</span
+                  ><span class="lang-es"
+                    ><strong>Modelo:</strong> Cola con confirmaci&oacute;n de mensajes.
+                    <strong>Retenci&oacute;n:</strong> Mensajes eliminados tras consumo.
+                    <strong>Orden:</strong> FIFO por cola.
+                    <strong>Enrutamiento:</strong> Tipos flexibles de exchange (direct, topic,
+                    fanout, headers). <strong>Escalado:</strong> Agregar consumidores a una
+                    cola para el patr&oacute;n de consumidores competidores. Ideal para
+                    distribuci&oacute;n de tareas, comunicaci&oacute;n estilo RPC y
+                    escenarios de enrutamiento complejos.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: eCOMMERCE ARCHITECTURE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Architecture: eCommerce with Queues</span
+            ><span class="lang-es">Arquitectura: eCommerce con Colas</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="280" viewBox="0 0 880 280">
+              <defs>
+                <marker
+                  id="arrow-arch"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 Z" fill="var(--muted)" />
+                </marker>
+              </defs>
+              <!-- Client -->
+              <rect
+                x="20"
+                y="30"
+                width="100"
+                height="45"
+                rx="8"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="70" y="52" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Client</tspan>
+                <tspan class="lang-es">Cliente</tspan>
+              </text>
+              <text x="70" y="66" text-anchor="middle" fill="var(--muted)" font-size="8">
+                Web / Mobile
+              </text>
+              <!-- Arrow Client -> API GW -->
+              <line
+                x1="122"
+                y1="52"
+                x2="188"
+                y2="52"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-arch)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M122,52 L188,52" />
+              </circle>
+              <!-- API Gateway -->
+              <rect
+                x="190"
+                y="25"
+                width="110"
+                height="55"
+                rx="8"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="245" y="50" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                API Gateway
+              </text>
+              <text x="245" y="66" text-anchor="middle" fill="var(--muted)" font-size="8">
+                auth, rate limit
+              </text>
+              <!-- Arrow API GW -> Order Service -->
+              <line
+                x1="302"
+                y1="52"
+                x2="368"
+                y2="52"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-arch)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M302,52 L368,52" />
+              </circle>
+              <!-- Order Service -->
+              <rect
+                x="370"
+                y="20"
+                width="140"
+                height="60"
+                rx="8"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="440" y="47" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Order Service</tspan>
+                <tspan class="lang-es">Servicio de Pedidos</tspan>
+              </text>
+              <text x="440" y="65" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Creates order</tspan>
+                <tspan class="lang-es">Crea pedido</tspan>
+              </text>
+              <!-- Arrow Order Service -> Queue (downward L-shape) -->
+              <line
+                x1="440"
+                y1="82"
+                x2="440"
+                y2="120"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-arch)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.3s" repeatCount="indefinite" path="M440,82 L440,120" />
+              </circle>
+              <!-- Message Queue -->
+              <rect
+                x="355"
+                y="122"
+                width="170"
+                height="55"
+                rx="6"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="440" y="145" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Message Queue</tspan>
+                <tspan class="lang-es">Cola de Mensajes</tspan>
+              </text>
+              <text x="440" y="162" text-anchor="middle" fill="var(--muted)" font-size="8">
+                order.placed
+              </text>
+              <!-- Message blocks -->
+              <rect x="365" y="150" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.4" />
+              <rect x="379" y="150" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.3" />
+              <rect x="393" y="150" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.2" />
+              <!-- Arrow Queue -> Payment (left L-shape downward) -->
+              <line
+                x1="370"
+                y1="179"
+                x2="370"
+                y2="210"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="370"
+                y1="210"
+                x2="160"
+                y2="210"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="160"
+                y1="210"
+                x2="160"
+                y2="228"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-arch)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                  path="M370,179 L370,210 L160,210 L160,228"
+                />
+              </circle>
+              <!-- Arrow Queue -> Inventory (center downward) -->
+              <line
+                x1="440"
+                y1="179"
+                x2="440"
+                y2="228"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-arch)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.8s" repeatCount="indefinite" path="M440,179 L440,228" />
+              </circle>
+              <!-- Arrow Queue -> Notification (right L-shape downward) -->
+              <line
+                x1="510"
+                y1="179"
+                x2="510"
+                y2="210"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="510"
+                y1="210"
+                x2="720"
+                y2="210"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+              />
+              <line
+                x1="720"
+                y1="210"
+                x2="720"
+                y2="228"
+                stroke="var(--muted)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-arch)"
+              />
+              <circle r="3" fill="var(--error)">
+                <animateMotion
+                  dur="2s"
+                  repeatCount="indefinite"
+                  path="M510,179 L510,210 L720,210 L720,228"
+                />
+              </circle>
+              <!-- Payment Service -->
+              <rect
+                x="90"
+                y="230"
+                width="140"
+                height="42"
+                rx="6"
+                fill="none"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text x="160" y="256" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Payment</tspan>
+                <tspan class="lang-es">Pagos</tspan>
+              </text>
+              <!-- Inventory Service -->
+              <rect
+                x="370"
+                y="230"
+                width="140"
+                height="42"
+                rx="6"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="440" y="256" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Inventory</tspan>
+                <tspan class="lang-es">Inventario</tspan>
+              </text>
+              <!-- Notification Service -->
+              <rect
+                x="650"
+                y="230"
+                width="140"
+                height="42"
+                rx="6"
+                fill="none"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <text x="720" y="256" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="500">
+                <tspan class="lang-en">Notification</tspan>
+                <tspan class="lang-es">Notificaci&oacute;n</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 8px">
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">When to Use Queues</span
+                ><span class="lang-es">Cu&aacute;ndo Usar Colas</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Not every service interaction needs a queue.</span
+                ><span class="lang-es"
+                  >No toda interacci&oacute;n entre servicios necesita una cola.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Use queues when: the consumer can process later (async), multiple
+                    consumers need the same event (fan-out), you need to survive consumer
+                    downtime (durability), or you want to smooth traffic spikes (buffering).
+                    Avoid queues for real-time request/response flows where the client needs
+                    an immediate answer.</span
+                  ><span class="lang-es"
+                    >Usa colas cuando: el consumidor puede procesar despu&eacute;s (async),
+                    m&uacute;ltiples consumidores necesitan el mismo evento (fan-out),
+                    necesitas sobrevivir a ca&iacute;das del consumidor (durabilidad), o
+                    quieres suavizar picos de tr&aacute;fico (buffering). Evita colas para
+                    flujos de solicitud/respuesta en tiempo real donde el cliente necesita una
+                    respuesta inmediata.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Technology Choice</span
+                ><span class="lang-es">Elecci&oacute;n de Tecnolog&iacute;a</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Choose based on your specific requirements.</span
+                ><span class="lang-es"
+                  >Elige seg&uacute;n tus requisitos espec&iacute;ficos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Need complex routing? RabbitMQ. Need event replay and high throughput?
+                    Kafka. Want zero ops on AWS? SQS. Need lightweight real-time processing
+                    with an existing Redis setup? Redis Streams. Most eCommerce systems start
+                    with SQS or RabbitMQ and move to Kafka as event streaming needs
+                    grow.</span
+                  ><span class="lang-es"
+                    >&iquest;Necesitas enrutamiento complejo? RabbitMQ. &iquest;Necesitas
+                    replay de eventos y alto rendimiento? Kafka. &iquest;Quieres cero
+                    operaci&oacute;n en AWS? SQS. &iquest;Necesitas procesamiento ligero en
+                    tiempo real con un Redis existente? Redis Streams. La mayor&iacute;a de
+                    sistemas eCommerce empiezan con SQS o RabbitMQ y migran a Kafka conforme
+                    crecen las necesidades de streaming de eventos.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Decoupling &amp; Resilience</span
+                ><span class="lang-es">Desacoplamiento y Resiliencia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Message queues decouple producers from consumers, enabling independent
+                  scaling, deployment, and failure recovery. Services communicate through
+                  durable messages instead of direct calls.</span
+                ><span class="lang-es"
+                  >Las colas de mensajes desacoplan productores de consumidores, permitiendo
+                  escalado, despliegue y recuperaci&oacute;n de fallos independientes. Los
+                  servicios se comunican a trav&eacute;s de mensajes durables en lugar de
+                  llamadas directas.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Patterns Matter</span
+                ><span class="lang-es">Los Patrones Importan</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Fan-out, competing consumers, and event sourcing solve different problems.
+                  Choose the right pattern based on whether you need broadcast delivery, work
+                  distribution, or event replay.</span
+                ><span class="lang-es"
+                  >Fan-out, consumidores competidores y event sourcing resuelven problemas
+                  diferentes. Elige el patr&oacute;n correcto seg&uacute;n si necesitas
+                  entrega broadcast, distribuci&oacute;n de trabajo o replay de
+                  eventos.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Right Tool, Right Job</span
+                ><span class="lang-es">Herramienta Correcta, Trabajo Correcto</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >RabbitMQ excels at routing, Kafka at streaming, SQS at managed simplicity,
+                  and Redis Streams at lightweight real-time processing. Start simple, evolve
+                  as needed.</span
+                ><span class="lang-es"
+                  >RabbitMQ destaca en enrutamiento, Kafka en streaming, SQS en simplicidad
+                  gestionada y Redis Streams en procesamiento ligero en tiempo real. Empieza
+                  simple, evoluciona seg&uacute;n sea necesario.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: Q&A ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 60px">
+            <h1 style="font-size: 2.2em; margin-bottom: 10px">
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h1>
+            <div class="diagram-container" style="margin: 10px 0">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 14</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 14</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+      <script>
+    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
+    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
+    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
+    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
+    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
+    setTimeout(updateProgressBar,500);
+    </script>
+
+</body>
+</html>

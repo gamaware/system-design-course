@@ -1,0 +1,1757 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed Systems &amp; High Availability | Sistemas Distribuidos - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <style>
+      /* ============ CKM DESIGN ENHANCEMENTS ============ */
+      :root {
+        --color-primary: #00D4FF;
+        --color-secondary: #FF00AA;
+        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+      }
+      .reveal h1, .reveal h2 {
+        background: var(--primitive-gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .card { transition: all 0.3s ease; }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
+      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+    </style>
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress-bar-top" id="progressBarTop"></div>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="140" height="130" viewBox="0 0 140 130">
+                <!-- Node 1 (top) -->
+                <circle cx="70" cy="20" r="12" fill="none" stroke="var(--primary)" stroke-width="2">
+                  <animate
+                    attributeName="r"
+                    values="11;14;11"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="70" cy="20" r="4" fill="var(--primary)" opacity="0.6" />
+
+                <!-- Node 2 (bottom-left) -->
+                <circle cx="25" cy="100" r="12" fill="none" stroke="var(--mint)" stroke-width="2">
+                  <animate
+                    attributeName="r"
+                    values="11;14;11"
+                    dur="2.3s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="25" cy="100" r="4" fill="var(--mint)" opacity="0.6" />
+
+                <!-- Node 3 (bottom-right) -->
+                <circle cx="115" cy="100" r="12" fill="none" stroke="var(--purple)" stroke-width="2">
+                  <animate
+                    attributeName="r"
+                    values="11;14;11"
+                    dur="1.8s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="115" cy="100" r="4" fill="var(--purple)" opacity="0.6" />
+
+                <!-- Node 4 (center) -->
+                <circle cx="70" cy="75" r="10" fill="none" stroke="var(--gold)" stroke-width="2">
+                  <animate
+                    attributeName="r"
+                    values="9;12;9"
+                    dur="2.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="70" cy="75" r="3.5" fill="var(--gold)" opacity="0.6" />
+
+                <!-- Links between nodes -->
+                <line x1="70" y1="32" x2="70" y2="63" stroke="var(--muted)" stroke-width="1.5"
+                  stroke-dasharray="4,3" opacity="0.5" />
+                <line x1="37" y1="95" x2="58" y2="80" stroke="var(--muted)" stroke-width="1.5"
+                  stroke-dasharray="4,3" opacity="0.5" />
+                <line x1="103" y1="95" x2="82" y2="80" stroke="var(--muted)" stroke-width="1.5"
+                  stroke-dasharray="4,3" opacity="0.5" />
+                <line x1="37" y1="93" x2="60" y2="27" stroke="var(--muted)" stroke-width="1.5"
+                  stroke-dasharray="4,3" opacity="0.4" />
+                <line x1="103" y1="93" x2="80" y2="27" stroke="var(--muted)" stroke-width="1.5"
+                  stroke-dasharray="4,3" opacity="0.4" />
+
+                <!-- Animated data dots along edges -->
+                <circle r="2.5" fill="var(--primary)">
+                  <animateMotion dur="2s" repeatCount="indefinite">
+                    <mpath href="#path-t-c" />
+                  </animateMotion>
+                </circle>
+                <path id="path-t-c" d="M70,32 L70,63" fill="none" stroke="none" />
+
+                <circle r="2.5" fill="var(--mint)">
+                  <animateMotion dur="2.5s" repeatCount="indefinite">
+                    <mpath href="#path-bl-c" />
+                  </animateMotion>
+                </circle>
+                <path id="path-bl-c" d="M37,95 L58,80" fill="none" stroke="none" />
+
+                <circle r="2.5" fill="var(--purple)">
+                  <animateMotion dur="1.8s" repeatCount="indefinite">
+                    <mpath href="#path-br-c" />
+                  </animateMotion>
+                </circle>
+                <path id="path-br-c" d="M103,95 L82,80" fill="none" stroke="none" />
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Distributed Systems &amp; High Availability</span>
+              <span class="lang-es">Sistemas Distribuidos y Alta Disponibilidad</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 05 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 05 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Fundamentals</span
+                ><span class="lang-es">1. Fundamentos</span>
+              </h4>
+              <p>
+                <span class="lang-en">What are distributed systems, key characteristics</span
+                ><span class="lang-es"
+                  >Qu&eacute; son los sistemas distribuidos, caracter&iacute;sticas clave</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Benefits &amp; Challenges</span
+                ><span class="lang-es">2. Beneficios y Desaf&iacute;os</span>
+              </h4>
+              <p>
+                <span class="lang-en">Scalability, reliability, network failures, consistency</span
+                ><span class="lang-es"
+                  >Escalabilidad, confiabilidad, fallos de red, consistencia</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. High Availability</span
+                ><span class="lang-es">3. Alta Disponibilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en">The nines, MTBF, MTTR, uptime targets</span
+                ><span class="lang-es"
+                  >Los nueves, MTBF, MTTR, objetivos de uptime</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Redundancy &amp; Resiliency</span
+                ><span class="lang-es">4. Redundancia y Resiliencia</span>
+              </h4>
+              <p>
+                <span class="lang-en">Hot-cold, hot-warm, hot-hot, resilience patterns</span
+                ><span class="lang-es"
+                  >Hot-cold, hot-warm, hot-hot, patrones de resiliencia</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHAT ARE DISTRIBUTED SYSTEMS? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">What Are Distributed Systems?</span
+            ><span class="lang-es">&iquest;Qu&eacute; Son los Sistemas Distribuidos?</span>
+          </h2>
+          <p style="font-size: 0.75em; color: var(--muted); margin-bottom: 10px">
+            <span class="lang-en"
+              >A collection of independent computers that appear as a single system to users.</span
+            ><span class="lang-es"
+              >Una colecci&oacute;n de computadoras independientes que aparecen como un solo
+              sistema para los usuarios.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 220" width="880" height="220">
+              <defs>
+                <marker id="arrow-ds" markerWidth="8" markerHeight="6" refX="8" refY="3"
+                  orient="auto">
+                  <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Data Center A -->
+              <rect x="40" y="30" width="240" height="160" rx="12" fill="var(--surface)"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="6,4" />
+              <text x="160" y="55" text-anchor="middle" fill="var(--primary)" font-size="13"
+                font-weight="600">
+                <tspan class="lang-en">Data Center A</tspan>
+                <tspan class="lang-es">Centro de Datos A</tspan>
+              </text>
+              <!-- Servers in DC A -->
+              <rect x="60" y="70" width="60" height="45" rx="6" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="90" y="97" text-anchor="middle" fill="var(--mint)" font-size="10">Server 1</text>
+              <rect x="140" y="70" width="60" height="45" rx="6" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="170" y="97" text-anchor="middle" fill="var(--mint)" font-size="10">Server 2</text>
+              <rect x="100" y="130" width="60" height="45" rx="6" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="130" y="157" text-anchor="middle" fill="var(--mint)" font-size="10">Server 3</text>
+
+              <!-- Network (globe) -->
+              <circle cx="440" cy="110" r="50" fill="none" stroke="var(--gold)" stroke-width="2" />
+              <ellipse cx="440" cy="110" rx="50" ry="20" fill="none" stroke="var(--gold)"
+                stroke-width="1" opacity="0.5" />
+              <ellipse cx="440" cy="110" rx="20" ry="50" fill="none" stroke="var(--gold)"
+                stroke-width="1" opacity="0.5" />
+              <line x1="390" y1="110" x2="490" y2="110" stroke="var(--gold)" stroke-width="1"
+                opacity="0.4" />
+              <text x="440" y="175" text-anchor="middle" fill="var(--gold)" font-size="12"
+                font-weight="600">
+                <tspan class="lang-en">Network</tspan>
+                <tspan class="lang-es">Red</tspan>
+              </text>
+
+              <!-- Data Center B -->
+              <rect x="600" y="30" width="240" height="160" rx="12" fill="var(--surface)"
+                stroke="var(--purple)" stroke-width="2" stroke-dasharray="6,4" />
+              <text x="720" y="55" text-anchor="middle" fill="var(--purple)" font-size="13"
+                font-weight="600">
+                <tspan class="lang-en">Data Center B</tspan>
+                <tspan class="lang-es">Centro de Datos B</tspan>
+              </text>
+              <!-- Servers in DC B -->
+              <rect x="620" y="70" width="60" height="45" rx="6" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="650" y="97" text-anchor="middle" fill="var(--mint)" font-size="10">Server 4</text>
+              <rect x="700" y="70" width="60" height="45" rx="6" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="730" y="97" text-anchor="middle" fill="var(--mint)" font-size="10">Server 5</text>
+              <rect x="660" y="130" width="60" height="45" rx="6" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="690" y="157" text-anchor="middle" fill="var(--mint)" font-size="10">Server 6</text>
+
+              <!-- Arrow: DC A -> Network -->
+              <line x1="280" y1="100" x2="388" y2="100" stroke="var(--primary)" stroke-width="2"
+                stroke-dasharray="8,4" marker-end="url(#arrow-ds)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-a-net" />
+                </animateMotion>
+              </circle>
+              <path id="path-a-net" d="M280,100 L388,100" fill="none" stroke="none" />
+
+              <!-- Arrow: Network -> DC A -->
+              <line x1="388" y1="120" x2="280" y2="120" stroke="var(--mint)" stroke-width="2"
+                stroke-dasharray="8,4" marker-end="url(#arrow-ds)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-net-a" />
+                </animateMotion>
+              </circle>
+              <path id="path-net-a" d="M388,120 L280,120" fill="none" stroke="none" />
+
+              <!-- Arrow: Network -> DC B -->
+              <line x1="492" y1="100" x2="598" y2="100" stroke="var(--primary)" stroke-width="2"
+                stroke-dasharray="8,4" marker-end="url(#arrow-ds)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-net-b" />
+                </animateMotion>
+              </circle>
+              <path id="path-net-b" d="M492,100 L598,100" fill="none" stroke="none" />
+
+              <!-- Arrow: DC B -> Network -->
+              <line x1="598" y1="120" x2="492" y2="120" stroke="var(--purple)" stroke-width="2"
+                stroke-dasharray="8,4" marker-end="url(#arrow-ds)" />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-b-net" />
+                </animateMotion>
+              </circle>
+              <path id="path-b-net" d="M598,120 L492,120" fill="none" stroke="none" />
+            </svg>
+          </div>
+          <div style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Key Insight</span
+                ><span class="lang-es">Punto Clave</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Nodes communicate over a network, each with its own local memory and
+                  clock.</span
+                ><span class="lang-es"
+                  >Los nodos se comunican a trav&eacute;s de la red, cada uno con su propia
+                  memoria y reloj local.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Unlike a single machine where components share memory and a system clock,
+                    distributed systems must handle message passing, network latency, and the
+                    absence of a global time reference. This fundamental difference drives most
+                    of the complexity in distributed computing.</span
+                  ><span class="lang-es"
+                    >A diferencia de una sola m&aacute;quina donde los componentes comparten
+                    memoria y un reloj de sistema, los sistemas distribuidos deben manejar
+                    paso de mensajes, latencia de red y la ausencia de una referencia temporal
+                    global. Esta diferencia fundamental impulsa la mayor&iacute;a de la
+                    complejidad en la computaci&oacute;n distribuida.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: KEY CHARACTERISTICS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Key Characteristics</span
+            ><span class="lang-es">Caracter&iacute;sticas Clave</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Scalability</span
+                ><span class="lang-es">Escalabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Add more nodes to handle growing workloads without redesigning the
+                  system.</span
+                ><span class="lang-es"
+                  >Agrega m&aacute;s nodos para manejar cargas de trabajo crecientes sin
+                  redise&ntilde;ar el sistema.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Horizontal scaling distributes load across machines. Vertical scaling has
+                    hardware limits, but horizontal scaling can grow almost indefinitely. This
+                    is why services like Netflix and Google rely on distributed architectures.</span
+                  ><span class="lang-es"
+                    >El escalado horizontal distribuye la carga entre m&aacute;quinas. El
+                    escalado vertical tiene l&iacute;mites de hardware, pero el horizontal puede
+                    crecer casi indefinidamente. Por eso servicios como Netflix y Google
+                    dependen de arquitecturas distribuidas.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Reliability</span
+                ><span class="lang-es">Confiabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >No single point of failure &mdash; if one node fails, others continue
+                  serving.</span
+                ><span class="lang-es"
+                  >Sin punto &uacute;nico de falla &mdash; si un nodo falla, los dem&aacute;s
+                  contin&uacute;an sirviendo.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Redundancy across nodes means the system can tolerate individual failures.
+                    Data replication ensures no data loss. However, reliability requires careful
+                    design of failure detection and recovery mechanisms.</span
+                  ><span class="lang-es"
+                    >La redundancia entre nodos significa que el sistema puede tolerar fallos
+                    individuales. La replicaci&oacute;n de datos asegura que no haya
+                    p&eacute;rdida. Sin embargo, la confiabilidad requiere un dise&ntilde;o
+                    cuidadoso de detecci&oacute;n y recuperaci&oacute;n de fallos.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Autonomy</span
+                ><span class="lang-es">Autonom&iacute;a</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Each node operates independently, making local decisions without a central
+                  coordinator.</span
+                ><span class="lang-es"
+                  >Cada nodo opera de manera independiente, tomando decisiones locales sin un
+                  coordinador central.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Autonomous nodes can process requests even when disconnected from other
+                    parts of the system. This enables geographic distribution and resilience to
+                    network partitions, but introduces consistency challenges.</span
+                  ><span class="lang-es"
+                    >Los nodos aut&oacute;nomos pueden procesar solicitudes incluso cuando
+                    est&aacute;n desconectados de otras partes del sistema. Esto permite la
+                    distribuci&oacute;n geogr&aacute;fica y resiliencia a particiones de red,
+                    pero introduce desaf&iacute;os de consistencia.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">No Shared Memory/Clock</span
+                ><span class="lang-es">Sin Memoria/Reloj Compartido</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Nodes have separate address spaces and unsynchronized clocks.</span
+                ><span class="lang-es"
+                  >Los nodos tienen espacios de memoria separados y relojes no
+                  sincronizados.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >This means you cannot assume operations on different nodes happen in a
+                    particular order. Techniques like vector clocks, Lamport timestamps, and
+                    consensus algorithms (Paxos, Raft) address ordering and agreement
+                    challenges.</span
+                  ><span class="lang-es"
+                    >Esto significa que no puedes asumir que las operaciones en diferentes nodos
+                    ocurren en un orden particular. T&eacute;cnicas como relojes vectoriales,
+                    timestamps de Lamport y algoritmos de consenso (Paxos, Raft) abordan los
+                    desaf&iacute;os de ordenamiento y acuerdo.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: DECENTRALIZED VS PARALLEL ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Decentralized vs Parallel</span
+            ><span class="lang-es">Descentralizado vs Paralelo</span>
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Aspect</span
+                  ><span class="lang-es">Aspecto</span>
+                </th>
+                <th>
+                  <span class="lang-en">Distributed</span
+                  ><span class="lang-es">Distribuido</span>
+                </th>
+                <th>
+                  <span class="lang-en">Parallel</span
+                  ><span class="lang-es">Paralelo</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="lang-en">Memory</span
+                  ><span class="lang-es">Memoria</span>
+                </td>
+                <td>
+                  <span class="lang-en">Separate per node</span
+                  ><span class="lang-es">Separada por nodo</span>
+                </td>
+                <td>
+                  <span class="lang-en">Shared (single machine)</span
+                  ><span class="lang-es">Compartida (una m&aacute;quina)</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Communication</span
+                  ><span class="lang-es">Comunicaci&oacute;n</span>
+                </td>
+                <td>
+                  <span class="lang-en">Message passing over network</span
+                  ><span class="lang-es">Paso de mensajes por red</span>
+                </td>
+                <td>
+                  <span class="lang-en">Shared memory / bus</span
+                  ><span class="lang-es">Memoria compartida / bus</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Failures</span
+                  ><span class="lang-es">Fallos</span>
+                </td>
+                <td>
+                  <span class="lang-en">Partial (independent nodes)</span
+                  ><span class="lang-es">Parciales (nodos independientes)</span>
+                </td>
+                <td>
+                  <span class="lang-en">Correlated (shared hardware)</span
+                  ><span class="lang-es">Correlacionados (hardware compartido)</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Clock</span
+                  ><span class="lang-es">Reloj</span>
+                </td>
+                <td>
+                  <span class="lang-en">No global clock</span
+                  ><span class="lang-es">Sin reloj global</span>
+                </td>
+                <td>
+                  <span class="lang-en">Single system clock</span
+                  ><span class="lang-es">Un reloj de sistema</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Goal</span
+                  ><span class="lang-es">Objetivo</span>
+                </td>
+                <td>
+                  <span class="lang-en">Fault tolerance + scale</span
+                  ><span class="lang-es">Tolerancia a fallos + escala</span>
+                </td>
+                <td>
+                  <span class="lang-en">Speed (single problem)</span
+                  ><span class="lang-es">Velocidad (un solo problema)</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top: 10px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">When to use which?</span
+                ><span class="lang-es">&iquest;Cu&aacute;ndo usar cu&aacute;l?</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Choose distributed for availability and geographic reach; parallel for
+                  compute-intensive tasks on a single dataset.</span
+                ><span class="lang-es"
+                  >Elige distribuido para disponibilidad y alcance geogr&aacute;fico; paralelo
+                  para tareas de c&oacute;mputo intensivo sobre un solo dataset.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >In practice, modern systems combine both: a distributed cluster of machines
+                    where each machine uses parallel processing (multi-core CPUs, GPUs).
+                    Understanding the distinction helps you reason about failure modes and
+                    consistency guarantees.</span
+                  ><span class="lang-es"
+                    >En la pr&aacute;ctica, los sistemas modernos combinan ambos: un cluster
+                    distribuido de m&aacute;quinas donde cada m&aacute;quina usa procesamiento
+                    paralelo (CPUs multi-core, GPUs). Entender la distinci&oacute;n ayuda a
+                    razonar sobre modos de fallo y garant&iacute;as de consistencia.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: BENEFITS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Benefits</span
+            ><span class="lang-es">Beneficios</span>
+          </h2>
+          <div class="grid-3">
+            <div class="stat-card float-in">
+              <span class="stat-num">&infin;</span>
+              <span class="stat-label">
+                <span class="lang-en">Horizontal scalability</span>
+                <span class="lang-es">Escalabilidad horizontal</span>
+              </span>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num">N+1</span>
+              <span class="stat-label">
+                <span class="lang-en">Data replication for reliability</span>
+                <span class="lang-es">Replicaci&oacute;n de datos para confiabilidad</span>
+              </span>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num">&divide;N</span>
+              <span class="stat-label">
+                <span class="lang-en">Workload split across nodes</span>
+                <span class="lang-es">Carga de trabajo dividida entre nodos</span>
+              </span>
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top: 10px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Scalability</span
+                ><span class="lang-es">Escalabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en">Add nodes to grow capacity linearly.</span
+                ><span class="lang-es">Agrega nodos para crecer la capacidad linealmente.</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Unlike vertical scaling (bigger machines), horizontal scaling has no
+                    theoretical upper limit. Cloud providers make it easy to add instances on
+                    demand, paying only for what you use.</span
+                  ><span class="lang-es"
+                    >A diferencia del escalado vertical (m&aacute;quinas m&aacute;s grandes),
+                    el escalado horizontal no tiene l&iacute;mite te&oacute;rico superior. Los
+                    proveedores cloud facilitan agregar instancias bajo demanda, pagando solo
+                    por lo que usas.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Reliability</span
+                ><span class="lang-es">Confiabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en">Replicate data across nodes for fault tolerance.</span
+                ><span class="lang-es"
+                  >Replica datos entre nodos para tolerancia a fallos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >If one replica fails, others serve the data. Techniques like quorum reads
+                    and writes ensure consistency even during failures. The key trade-off is
+                    between consistency and availability (CAP theorem).</span
+                  ><span class="lang-es"
+                    >Si una r&eacute;plica falla, las dem&aacute;s sirven los datos.
+                    T&eacute;cnicas como lecturas y escrituras de qu&oacute;rum aseguran
+                    consistencia durante fallos. La compensaci&oacute;n clave es entre
+                    consistencia y disponibilidad (teorema CAP).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Performance</span
+                ><span class="lang-es">Rendimiento</span>
+              </h4>
+              <p>
+                <span class="lang-en">Distribute work to reduce latency and increase
+                  throughput.</span
+                ><span class="lang-es"
+                  >Distribuye trabajo para reducir latencia y aumentar el throughput.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Geographic distribution places data closer to users, reducing round-trip
+                    times. Partitioning (sharding) allows parallel processing of queries across
+                    different subsets of data.</span
+                  ><span class="lang-es"
+                    >La distribuci&oacute;n geogr&aacute;fica coloca datos cerca de los
+                    usuarios, reduciendo tiempos de ida y vuelta. El particionamiento (sharding)
+                    permite procesamiento paralelo de consultas en diferentes subconjuntos de
+                    datos.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: CHALLENGES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Challenges</span
+            ><span class="lang-es">Desaf&iacute;os</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Network Failures</span
+                ><span class="lang-es">Fallos de Red</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Messages can be lost, delayed, duplicated, or delivered out of order.</span
+                ><span class="lang-es"
+                  >Los mensajes pueden perderse, retrasarse, duplicarse o entregarse fuera de
+                  orden.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The &ldquo;Two Generals Problem&rdquo; proves that reliable communication
+                    over unreliable networks is impossible to guarantee. Real systems use
+                    timeouts, retries with idempotency, and acknowledgments to mitigate
+                    this.</span
+                  ><span class="lang-es"
+                    >El &ldquo;Problema de los Dos Generales&rdquo; demuestra que la
+                    comunicaci&oacute;n confiable sobre redes no confiables es imposible de
+                    garantizar. Los sistemas reales usan timeouts, reintentos con idempotencia y
+                    acknowledgments para mitigar esto.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Consistency</span
+                ><span class="lang-es">Consistencia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Keeping all replicas in sync is expensive and sometimes impossible
+                  (CAP theorem).</span
+                ><span class="lang-es"
+                  >Mantener todas las r&eacute;plicas sincronizadas es costoso y a veces
+                  imposible (teorema CAP).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Strong consistency requires coordination (two-phase commit, consensus),
+                    which increases latency. Eventual consistency is faster but allows temporary
+                    stale reads. Choose based on your application&rsquo;s tolerance for stale
+                    data.</span
+                  ><span class="lang-es"
+                    >La consistencia fuerte requiere coordinaci&oacute;n (two-phase commit,
+                    consenso), lo que aumenta la latencia. La consistencia eventual es
+                    m&aacute;s r&aacute;pida pero permite lecturas temporalmente
+                    desactualizadas. Elige seg&uacute;n la tolerancia de tu aplicaci&oacute;n
+                    a datos desactualizados.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Partial Failures</span
+                ><span class="lang-es">Fallos Parciales</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Some nodes may fail while others continue &mdash; hard to detect and
+                  handle.</span
+                ><span class="lang-es"
+                  >Algunos nodos pueden fallar mientras otros contin&uacute;an &mdash;
+                  dif&iacute;cil de detectar y manejar.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >A slow node is harder to handle than a dead node &mdash; is it processing
+                    or has it crashed? Heartbeats, timeouts, and failure detectors (phi accrual)
+                    help distinguish between slow and dead nodes.</span
+                  ><span class="lang-es"
+                    >Un nodo lento es m&aacute;s dif&iacute;cil de manejar que uno muerto
+                    &mdash; &iquest;est&aacute; procesando o se cay&oacute;? Heartbeats,
+                    timeouts y detectores de fallos (phi accrual) ayudan a distinguir entre
+                    nodos lentos y muertos.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Clock Synchronization</span
+                ><span class="lang-es">Sincronizaci&oacute;n de Relojes</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Different machines have different clock drift, making ordering events
+                  difficult.</span
+                ><span class="lang-es"
+                  >Diferentes m&aacute;quinas tienen diferente desviaci&oacute;n de reloj,
+                  dificultando el ordenamiento de eventos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >NTP can synchronize clocks to within milliseconds, but that&rsquo;s often
+                    not enough. Google Spanner uses GPS and atomic clocks (TrueTime API) to
+                    bound clock uncertainty. Most systems use logical clocks instead of wall
+                    clocks for ordering.</span
+                  ><span class="lang-es"
+                    >NTP puede sincronizar relojes con precisi&oacute;n de milisegundos, pero
+                    frecuentemente no es suficiente. Google Spanner usa GPS y relojes
+                    at&oacute;micos (TrueTime API) para acotar la incertidumbre del reloj.
+                    La mayor&iacute;a de los sistemas usan relojes l&oacute;gicos en lugar de
+                    relojes de pared para ordenamiento.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: WHAT IS HIGH AVAILABILITY? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">What Is High Availability?</span
+            ><span class="lang-es">&iquest;Qu&eacute; Es Alta Disponibilidad?</span>
+          </h2>
+          <p style="font-size: 0.8em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >A system&rsquo;s ability to remain operational and accessible for a very high
+              percentage of time.</span
+            ><span class="lang-es"
+              >La capacidad de un sistema para permanecer operativo y accesible durante un
+              porcentaje muy alto del tiempo.</span
+            >
+          </p>
+          <div class="grid-3">
+            <div class="stat-card float-in">
+              <span class="stat-num">99.999%</span>
+              <span class="stat-label">
+                <span class="lang-en">&ldquo;Five nines&rdquo; uptime target</span>
+                <span class="lang-es">Objetivo de uptime &ldquo;cinco nueves&rdquo;</span>
+              </span>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num">5m 15s</span>
+              <span class="stat-label">
+                <span class="lang-en">Max downtime per year (5 nines)</span>
+                <span class="lang-es">Tiempo de inactividad m&aacute;x/a&ntilde;o (5 nueves)</span>
+              </span>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num">$$$</span>
+              <span class="stat-label">
+                <span class="lang-en">Each additional nine costs more</span>
+                <span class="lang-es">Cada nueve adicional cuesta m&aacute;s</span>
+              </span>
+            </div>
+          </div>
+          <div style="margin-top: 10px">
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Why does it matter?</span
+                ><span class="lang-es">&iquest;Por qu&eacute; importa?</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Downtime costs money, trust, and users. SLAs define availability
+                  commitments.</span
+                ><span class="lang-es"
+                  >El tiempo de inactividad cuesta dinero, confianza y usuarios. Los SLAs
+                  definen compromisos de disponibilidad.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Amazon estimated that every 100ms of added latency costs 1% in sales.
+                    Google found an extra 500ms in search results caused 20% traffic drop.
+                    Availability is measured as: Availability = Uptime / (Uptime + Downtime).
+                    SLAs often include financial penalties for breaches.</span
+                  ><span class="lang-es"
+                    >Amazon estim&oacute; que cada 100ms de latencia adicional cuesta 1% en
+                    ventas. Google encontr&oacute; que 500ms extra en resultados de
+                    b&uacute;squeda caus&oacute; 20% de ca&iacute;da en tr&aacute;fico.
+                    La disponibilidad se mide como: Disponibilidad = Uptime / (Uptime +
+                    Downtime). Los SLAs frecuentemente incluyen penalizaciones financieras
+                    por incumplimiento.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: THE NINES TABLE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">The Nines Table</span
+            ><span class="lang-es">La Tabla de los Nueves</span>
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Availability</span
+                  ><span class="lang-es">Disponibilidad</span>
+                </th>
+                <th>
+                  <span class="lang-en">Downtime/Year</span
+                  ><span class="lang-es">Inactividad/A&ntilde;o</span>
+                </th>
+                <th>
+                  <span class="lang-en">Downtime/Day</span
+                  ><span class="lang-es">Inactividad/D&iacute;a</span>
+                </th>
+                <th>
+                  <span class="lang-en">Name</span
+                  ><span class="lang-es">Nombre</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>90%</td>
+                <td>36.5 days</td>
+                <td>2h 24m</td>
+                <td>
+                  <span class="lang-en">One nine</span
+                  ><span class="lang-es">Un nueve</span>
+                </td>
+              </tr>
+              <tr>
+                <td>99%</td>
+                <td>3.65 days</td>
+                <td>14m 24s</td>
+                <td>
+                  <span class="lang-en">Two nines</span
+                  ><span class="lang-es">Dos nueves</span>
+                </td>
+              </tr>
+              <tr>
+                <td>99.9%</td>
+                <td>8h 45m</td>
+                <td>1m 26s</td>
+                <td>
+                  <span class="lang-en">Three nines</span
+                  ><span class="lang-es">Tres nueves</span>
+                </td>
+              </tr>
+              <tr>
+                <td>99.99%</td>
+                <td>52m 36s</td>
+                <td>8.6s</td>
+                <td>
+                  <span class="lang-en">Four nines</span
+                  ><span class="lang-es">Cuatro nueves</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-green">99.999%</span></td>
+                <td>5m 15s</td>
+                <td>864ms</td>
+                <td>
+                  <span class="lang-en">Five nines</span
+                  ><span class="lang-es">Cinco nueves</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-blue">99.9999%</span></td>
+                <td>32s</td>
+                <td>86ms</td>
+                <td>
+                  <span class="lang-en">Six nines</span
+                  ><span class="lang-es">Seis nueves</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ========== SLIDE 9: MTBF & MTTR ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">MTBF &amp; MTTR</span
+            ><span class="lang-es">MTBF y MTTR</span>
+          </h2>
+          <p style="font-size: 0.72em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Availability = MTBF / (MTBF + MTTR)</span
+            ><span class="lang-es"
+              >Disponibilidad = MTBF / (MTBF + MTTR)</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 180" width="880" height="180">
+              <defs>
+                <marker id="arrow-mt" markerWidth="8" markerHeight="6" refX="8" refY="3"
+                  orient="auto">
+                  <path d="M0,0 L8,3 L0,6" fill="var(--muted)" />
+                </marker>
+              </defs>
+
+              <!-- Timeline base -->
+              <line x1="40" y1="90" x2="840" y2="90" stroke="var(--muted)" stroke-width="2" />
+
+              <!-- UP segment 1 -->
+              <rect x="40" y="55" width="200" height="35" rx="4" fill="var(--mint)" opacity="0.2" />
+              <line x1="40" y1="55" x2="40" y2="90" stroke="var(--mint)" stroke-width="2" />
+              <line x1="240" y1="55" x2="240" y2="90" stroke="var(--error)" stroke-width="2" />
+              <text x="140" y="78" text-anchor="middle" fill="var(--mint)" font-size="12"
+                font-weight="600">
+                <tspan class="lang-en">UP (MTTF)</tspan>
+                <tspan class="lang-es">ACTIVO (MTTF)</tspan>
+              </text>
+
+              <!-- Failure marker -->
+              <circle cx="240" cy="90" r="6" fill="var(--error)" />
+              <text x="240" y="115" text-anchor="middle" fill="var(--error)" font-size="10"
+                font-weight="600">
+                <tspan class="lang-en">Failure</tspan>
+                <tspan class="lang-es">Fallo</tspan>
+              </text>
+
+              <!-- MTTD segment -->
+              <rect x="240" y="95" width="100" height="25" rx="4" fill="var(--gold)" opacity="0.2" />
+              <text x="290" y="113" text-anchor="middle" fill="var(--gold)" font-size="10"
+                font-weight="600">MTTD</text>
+              <text x="290" y="140" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Detect</tspan>
+                <tspan class="lang-es">Detectar</tspan>
+              </text>
+
+              <!-- MTTR segment -->
+              <rect x="340" y="95" width="140" height="25" rx="4" fill="var(--orange)" opacity="0.2" />
+              <text x="410" y="113" text-anchor="middle" fill="var(--orange)" font-size="10"
+                font-weight="600">MTTR</text>
+              <text x="410" y="140" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Repair</tspan>
+                <tspan class="lang-es">Reparar</tspan>
+              </text>
+
+              <!-- Recovery marker -->
+              <circle cx="480" cy="90" r="6" fill="var(--mint)" />
+              <text x="480" y="115" text-anchor="middle" fill="var(--mint)" font-size="10"
+                font-weight="600">
+                <tspan class="lang-en">Recovery</tspan>
+                <tspan class="lang-es">Recuperaci&oacute;n</tspan>
+              </text>
+
+              <!-- UP segment 2 -->
+              <rect x="480" y="55" width="200" height="35" rx="4" fill="var(--mint)" opacity="0.2" />
+              <text x="580" y="78" text-anchor="middle" fill="var(--mint)" font-size="12"
+                font-weight="600">
+                <tspan class="lang-en">UP (MTTF)</tspan>
+                <tspan class="lang-es">ACTIVO (MTTF)</tspan>
+              </text>
+
+              <!-- Failure marker 2 -->
+              <circle cx="680" cy="90" r="6" fill="var(--error)" />
+              <line x1="680" y1="55" x2="680" y2="90" stroke="var(--error)" stroke-width="2" />
+
+              <!-- MTBF brace -->
+              <line x1="40" y1="35" x2="480" y2="35" stroke="var(--primary)" stroke-width="2"
+                stroke-dasharray="6,3" />
+              <line x1="40" y1="30" x2="40" y2="40" stroke="var(--primary)" stroke-width="2" />
+              <line x1="480" y1="30" x2="480" y2="40" stroke="var(--primary)" stroke-width="2" />
+              <text x="260" y="28" text-anchor="middle" fill="var(--primary)" font-size="13"
+                font-weight="700">MTBF</text>
+
+              <!-- Remaining timeline after second failure -->
+              <rect x="680" y="95" width="80" height="25" rx="4" fill="var(--orange)" opacity="0.15" />
+              <text x="720" y="113" text-anchor="middle" fill="var(--muted)" font-size="9">...</text>
+
+              <!-- Animated dot along timeline -->
+              <circle r="4" fill="var(--primary)">
+                <animateMotion dur="5s" repeatCount="indefinite">
+                  <mpath href="#path-timeline" />
+                </animateMotion>
+              </circle>
+              <path id="path-timeline" d="M40,90 L840,90" fill="none" stroke="none" />
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 6px">
+            <div class="card float-in border-blue">
+              <h4>MTBF</h4>
+              <p>
+                <span class="lang-en">Mean Time Between Failures &mdash; how long the system
+                  runs before failing again.</span
+                ><span class="lang-es">Tiempo Medio Entre Fallos &mdash; cu&aacute;nto
+                  funciona el sistema antes de fallar de nuevo.</span>
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>MTTR</h4>
+              <p>
+                <span class="lang-en">Mean Time To Repair &mdash; how long it takes to restore
+                  the system after a failure.</span
+                ><span class="lang-es">Tiempo Medio de Reparaci&oacute;n &mdash; cu&aacute;nto
+                  tarda en restaurar el sistema despu&eacute;s de un fallo.</span>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: REDUNDANCY HOT-COLD ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Redundancy: Hot-Cold</span
+            ><span class="lang-es">Redundancia: Hot-Cold</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200" width="880" height="200">
+              <defs>
+                <marker id="arrow-hc" markerWidth="8" markerHeight="6" refX="8" refY="3"
+                  orient="auto">
+                  <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client -->
+              <rect x="40" y="60" width="120" height="60" rx="8" fill="var(--surface)"
+                stroke="var(--primary)" stroke-width="2" />
+              <text x="100" y="95" text-anchor="middle" fill="var(--primary)" font-size="13"
+                font-weight="600">Client</text>
+
+              <!-- Arrow: Client -> Primary -->
+              <line x1="160" y1="90" x2="298" y2="90" stroke="var(--primary)" stroke-width="2"
+                stroke-dasharray="8,4" marker-end="url(#arrow-hc)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-c-p" />
+                </animateMotion>
+              </circle>
+              <path id="path-c-p" d="M160,90 L298,90" fill="none" stroke="none" />
+
+              <!-- Primary -->
+              <rect x="300" y="40" width="160" height="80" rx="8" fill="var(--surface)"
+                stroke="var(--mint)" stroke-width="2.5" />
+              <text x="380" y="72" text-anchor="middle" fill="var(--mint)" font-size="13"
+                font-weight="700">Primary</text>
+              <text x="380" y="100" text-anchor="middle" fill="var(--mint)" font-size="10">
+                <tspan class="lang-en">(active)</tspan>
+                <tspan class="lang-es">(activo)</tspan>
+              </text>
+
+              <!-- Arrow: Primary -> Backup (replication) -->
+              <line x1="460" y1="80" x2="598" y2="80" stroke="var(--gold)" stroke-width="2"
+                stroke-dasharray="8,4" marker-end="url(#arrow-hc)" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-p-b" />
+                </animateMotion>
+              </circle>
+              <path id="path-p-b" d="M460,80 L598,80" fill="none" stroke="none" />
+              <text x="530" y="70" text-anchor="middle" fill="var(--gold)" font-size="10">
+                <tspan class="lang-en">replicate</tspan>
+                <tspan class="lang-es">replicar</tspan>
+              </text>
+
+              <!-- Backup -->
+              <rect x="600" y="40" width="160" height="80" rx="8" fill="var(--surface)"
+                stroke="var(--muted)" stroke-width="2" stroke-dasharray="6,4" />
+              <text x="680" y="72" text-anchor="middle" fill="var(--muted)" font-size="13"
+                font-weight="700">Backup</text>
+              <text x="680" y="100" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">(standby)</tspan>
+                <tspan class="lang-es">(en espera)</tspan>
+              </text>
+
+              <!-- Step labels -->
+              <text x="100" y="150" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">1. Normal operation</tspan>
+                <tspan class="lang-es">1. Operaci&oacute;n normal</tspan>
+              </text>
+              <text x="380" y="150" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">2. Data replication</tspan>
+                <tspan class="lang-es">2. Replicaci&oacute;n de datos</tspan>
+              </text>
+              <text x="680" y="150" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">3. Failover on crash</tspan>
+                <tspan class="lang-es">3. Failover ante ca&iacute;da</tspan>
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Hot-Cold Trade-offs</span
+                ><span class="lang-es">Compensaciones Hot-Cold</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Cheapest redundancy model, but slowest failover (minutes).</span
+                ><span class="lang-es"
+                  >Modelo de redundancia m&aacute;s econ&oacute;mico, pero failover
+                  m&aacute;s lento (minutos).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The backup is not running &mdash; it must boot up, load state, and warm
+                    caches before serving traffic. This can take minutes. Suitable for systems
+                    that can tolerate brief outages (e.g., batch processing, internal tools).
+                    Data loss depends on replication lag (RPO).</span
+                  ><span class="lang-es"
+                    >El respaldo no est&aacute; ejecut&aacute;ndose &mdash; debe arrancar,
+                    cargar estado y calentar cach&eacute;s antes de servir tr&aacute;fico.
+                    Esto puede tomar minutos. Adecuado para sistemas que toleran interrupciones
+                    breves (ej., procesamiento por lotes, herramientas internas). La
+                    p&eacute;rdida de datos depende del retraso de replicaci&oacute;n
+                    (RPO).</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: REDUNDANCY HOT-WARM & HOT-HOT ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Redundancy: Hot-Warm &amp; Hot-Hot</span
+            ><span class="lang-es">Redundancia: Hot-Warm y Hot-Hot</span>
+          </h2>
+          <div class="grid-2">
+            <div style="text-align: center">
+              <h4 style="color: var(--gold); margin-bottom: 6px">Hot-Warm</h4>
+              <div class="diagram-container">
+                <svg viewBox="0 0 400 180" width="400" height="180">
+                  <defs>
+                    <marker id="arrow-hw" markerWidth="8" markerHeight="6" refX="8" refY="3"
+                      orient="auto">
+                      <path d="M0,0 L8,3 L0,6" fill="var(--gold)" />
+                    </marker>
+                  </defs>
+
+                  <!-- Primary -->
+                  <rect x="20" y="20" width="140" height="60" rx="8" fill="var(--surface)"
+                    stroke="var(--mint)" stroke-width="2" />
+                  <text x="90" y="45" text-anchor="middle" fill="var(--mint)" font-size="12"
+                    font-weight="600">Primary</text>
+                  <text x="90" y="65" text-anchor="middle" fill="var(--mint)" font-size="9">
+                    <tspan class="lang-en">Read + Write</tspan>
+                    <tspan class="lang-es">Lectura + Escritura</tspan>
+                  </text>
+
+                  <!-- Warm standby -->
+                  <rect x="230" y="20" width="140" height="60" rx="8" fill="var(--surface)"
+                    stroke="var(--gold)" stroke-width="2" />
+                  <text x="300" y="45" text-anchor="middle" fill="var(--gold)" font-size="12"
+                    font-weight="600">Warm</text>
+                  <text x="300" y="65" text-anchor="middle" fill="var(--gold)" font-size="9">
+                    <tspan class="lang-en">Read only</tspan>
+                    <tspan class="lang-es">Solo lectura</tspan>
+                  </text>
+
+                  <!-- Arrow: replicate -->
+                  <line x1="160" y1="50" x2="228" y2="50" stroke="var(--gold)" stroke-width="1.5"
+                    stroke-dasharray="6,3" marker-end="url(#arrow-hw)" />
+                  <circle r="2.5" fill="var(--gold)">
+                    <animateMotion dur="2s" repeatCount="indefinite">
+                      <mpath href="#path-hw-rep" />
+                    </animateMotion>
+                  </circle>
+                  <path id="path-hw-rep" d="M160,50 L228,50" fill="none" stroke="none" />
+
+                  <!-- Description -->
+                  <text x="200" y="120" text-anchor="middle" fill="var(--muted)" font-size="10">
+                    <tspan class="lang-en">Backup receives data + handles reads</tspan>
+                    <tspan class="lang-es">Respaldo recibe datos + sirve lecturas</tspan>
+                  </text>
+                  <text x="200" y="140" text-anchor="middle" fill="var(--muted)" font-size="10">
+                    <tspan class="lang-en">Faster failover (~seconds)</tspan>
+                    <tspan class="lang-es">Failover m&aacute;s r&aacute;pido (~segundos)</tspan>
+                  </text>
+                </svg>
+              </div>
+            </div>
+            <div style="text-align: center">
+              <h4 style="color: var(--primary); margin-bottom: 6px">Hot-Hot</h4>
+              <div class="diagram-container">
+                <svg viewBox="0 0 400 180" width="400" height="180">
+                  <defs>
+                    <marker id="arrow-hh" markerWidth="8" markerHeight="6" refX="8" refY="3"
+                      orient="auto">
+                      <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
+                    </marker>
+                  </defs>
+
+                  <!-- Active 1 -->
+                  <rect x="20" y="20" width="140" height="60" rx="8" fill="var(--surface)"
+                    stroke="var(--mint)" stroke-width="2" />
+                  <text x="90" y="45" text-anchor="middle" fill="var(--mint)" font-size="12"
+                    font-weight="600">Active 1</text>
+                  <text x="90" y="65" text-anchor="middle" fill="var(--mint)" font-size="9">
+                    <tspan class="lang-en">Read + Write</tspan>
+                    <tspan class="lang-es">Lectura + Escritura</tspan>
+                  </text>
+
+                  <!-- Active 2 -->
+                  <rect x="230" y="20" width="140" height="60" rx="8" fill="var(--surface)"
+                    stroke="var(--primary)" stroke-width="2" />
+                  <text x="300" y="45" text-anchor="middle" fill="var(--primary)" font-size="12"
+                    font-weight="600">Active 2</text>
+                  <text x="300" y="65" text-anchor="middle" fill="var(--primary)" font-size="9">
+                    <tspan class="lang-en">Read + Write</tspan>
+                    <tspan class="lang-es">Lectura + Escritura</tspan>
+                  </text>
+
+                  <!-- Bidirectional arrows -->
+                  <line x1="160" y1="40" x2="228" y2="40" stroke="var(--primary)" stroke-width="1.5"
+                    stroke-dasharray="6,3" marker-end="url(#arrow-hh)" />
+                  <circle r="2.5" fill="var(--primary)">
+                    <animateMotion dur="2s" repeatCount="indefinite">
+                      <mpath href="#path-hh-1" />
+                    </animateMotion>
+                  </circle>
+                  <path id="path-hh-1" d="M160,40 L228,40" fill="none" stroke="none" />
+
+                  <line x1="228" y1="60" x2="160" y2="60" stroke="var(--mint)" stroke-width="1.5"
+                    stroke-dasharray="6,3" marker-end="url(#arrow-hh)" />
+                  <circle r="2.5" fill="var(--mint)">
+                    <animateMotion dur="2.5s" repeatCount="indefinite">
+                      <mpath href="#path-hh-2" />
+                    </animateMotion>
+                  </circle>
+                  <path id="path-hh-2" d="M228,60 L160,60" fill="none" stroke="none" />
+
+                  <!-- Description -->
+                  <text x="200" y="120" text-anchor="middle" fill="var(--muted)" font-size="10">
+                    <tspan class="lang-en">Both nodes active, serve traffic</tspan>
+                    <tspan class="lang-es">Ambos nodos activos, sirven tr&aacute;fico</tspan>
+                  </text>
+                  <text x="200" y="140" text-anchor="middle" fill="var(--muted)" font-size="10">
+                    <tspan class="lang-en">Zero downtime failover</tspan>
+                    <tspan class="lang-es">Failover sin tiempo de inactividad</tspan>
+                  </text>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 6px">
+            <div class="card float-in border-gold expandable">
+              <h4>
+                <span class="lang-en">Hot-Warm</span
+                ><span class="lang-es">Hot-Warm</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Backup is running and receiving data but only handles reads.</span
+                ><span class="lang-es"
+                  >El respaldo est&aacute; activo y recibe datos pero solo maneja lecturas.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Failover is faster because the warm standby already has state loaded and
+                    connections established. It only needs to be promoted to primary (accept
+                    writes). Common in database replicas: read replicas offload read traffic
+                    and can be promoted on failure.</span
+                  ><span class="lang-es"
+                    >El failover es m&aacute;s r&aacute;pido porque el standby ya tiene el
+                    estado cargado y las conexiones establecidas. Solo necesita promoverse a
+                    primario (aceptar escrituras). Com&uacute;n en r&eacute;plicas de BD:
+                    las r&eacute;plicas de lectura descargan tr&aacute;fico de lectura y
+                    pueden promoverse ante un fallo.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Hot-Hot (Active-Active)</span
+                ><span class="lang-es">Hot-Hot (Activo-Activo)</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Both nodes fully active, sharing the load. No failover delay.</span
+                ><span class="lang-es"
+                  >Ambos nodos completamente activos, compartiendo la carga. Sin retraso de
+                  failover.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Provides the highest availability but is the most complex and expensive.
+                    Requires conflict resolution for concurrent writes (last-writer-wins, CRDTs,
+                    or application-level merge). Used by global services that need zero-downtime
+                    deployments and geographic load balancing.</span
+                  ><span class="lang-es"
+                    >Proporciona la mayor disponibilidad pero es el m&aacute;s complejo y
+                    costoso. Requiere resoluci&oacute;n de conflictos para escrituras
+                    concurrentes (last-writer-wins, CRDTs, o merge a nivel de
+                    aplicaci&oacute;n). Usado por servicios globales que necesitan despliegues
+                    sin tiempo de inactividad y balanceo de carga geogr&aacute;fico.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: RESILIENCY TECHNIQUES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Resiliency Techniques</span
+            ><span class="lang-es">T&eacute;cnicas de Resiliencia</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Timeouts</span
+                ><span class="lang-es">Timeouts</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Set deadlines for operations to avoid waiting indefinitely.</span
+                ><span class="lang-es"
+                  >Establece plazos para operaciones y evita esperar indefinidamente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Without timeouts, a slow downstream service can exhaust your thread pool
+                    and cascade failures. Set aggressive timeouts and handle them gracefully
+                    (return cached data, degrade functionality).</span
+                  ><span class="lang-es"
+                    >Sin timeouts, un servicio lento puede agotar tu pool de hilos y provocar
+                    fallos en cascada. Establece timeouts agresivos y man&eacute;jalos
+                    adecuadamente (retorna datos en cach&eacute;, degrada funcionalidad).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Retries</span
+                ><span class="lang-es">Reintentos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Automatically retry failed requests with exponential backoff.</span
+                ><span class="lang-es"
+                  >Reintenta autom&aacute;ticamente solicitudes fallidas con backoff
+                  exponencial.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Use exponential backoff with jitter to avoid thundering herd. Ensure
+                    operations are idempotent before retrying. Limit maximum retries to prevent
+                    infinite loops. Add retry budgets to limit total retry traffic.</span
+                  ><span class="lang-es"
+                    >Usa backoff exponencial con jitter para evitar avalanchas. Asegura que las
+                    operaciones sean idempotentes antes de reintentar. Limita los reintentos
+                    m&aacute;ximos para prevenir loops infinitos. Agrega presupuestos de
+                    reintento para limitar el tr&aacute;fico total.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Circuit Breakers</span
+                ><span class="lang-es">Circuit Breakers</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Stop calling a failing service to let it recover.</span
+                ><span class="lang-es"
+                  >Deja de llamar a un servicio fallando para permitir su
+                  recuperaci&oacute;n.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Three states: Closed (normal), Open (failing &mdash; reject immediately),
+                    Half-Open (test with limited requests). Prevents cascading failures by
+                    failing fast. Netflix Hystrix popularized this pattern; now built into
+                    service meshes like Istio.</span
+                  ><span class="lang-es"
+                    >Tres estados: Cerrado (normal), Abierto (fallando &mdash; rechaza
+                    inmediatamente), Semi-Abierto (prueba con peticiones limitadas). Previene
+                    fallos en cascada al fallar r&aacute;pidamente. Netflix Hystrix
+                    populariz&oacute; este patr&oacute;n; ahora integrado en service meshes
+                    como Istio.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Bulkhead</span
+                ><span class="lang-es">Bulkhead</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Isolate components so one failure does not sink the whole system.</span
+                ><span class="lang-es"
+                  >A&iacute;sla componentes para que un fallo no hunda todo el sistema.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Named after ship bulkheads that contain flooding. Implement with separate
+                    thread pools, connection pools, or processes per dependency. If one
+                    dependency is slow, it only exhausts its own pool, not the shared
+                    resources.</span
+                  ><span class="lang-es"
+                    >Nombrado por los mamparos de barcos que contienen inundaciones. Implementa
+                    con pools de hilos, pools de conexiones o procesos separados por
+                    dependencia. Si una dependencia es lenta, solo agota su propio pool, no los
+                    recursos compartidos.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-gold expandable">
+              <h4>
+                <span class="lang-en">Load Shedding</span
+                ><span class="lang-es">Descarga de Carga</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Reject excess requests to protect the system under heavy load.</span
+                ><span class="lang-es"
+                  >Rechaza solicitudes excesivas para proteger el sistema bajo carga
+                  pesada.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Better to serve some requests well than all requests poorly. Prioritize
+                    critical traffic (e.g., payments over analytics). Return HTTP 503 with
+                    Retry-After header. Cloud load balancers can shed traffic automatically
+                    based on backend health.</span
+                  ><span class="lang-es"
+                    >Es mejor servir algunas solicitudes bien que todas mal. Prioriza
+                    tr&aacute;fico cr&iacute;tico (ej., pagos sobre anal&iacute;tica). Retorna
+                    HTTP 503 con header Retry-After. Los balanceadores cloud pueden descargar
+                    tr&aacute;fico autom&aacute;ticamente basado en la salud del
+                    backend.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Health Checks</span
+                ><span class="lang-es">Health Checks</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Periodically verify that each component is healthy and responsive.</span
+                ><span class="lang-es"
+                  >Verifica peri&oacute;dicamente que cada componente est&eacute; saludable y
+                  respondiendo.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Liveness checks (is it running?) vs readiness checks (can it serve
+                    traffic?). Shallow checks ping the process; deep checks verify database
+                    connections, disk space, and dependent services. Kubernetes uses both
+                    for pod lifecycle management.</span
+                  ><span class="lang-es"
+                    >Checks de vida (est&aacute; corriendo?) vs checks de preparaci&oacute;n
+                    (puede servir tr&aacute;fico?). Checks superficiales hacen ping al proceso;
+                    checks profundos verifican conexiones a BD, espacio en disco y servicios
+                    dependientes. Kubernetes usa ambos para gesti&oacute;n del ciclo de vida
+                    de pods.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 13: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Distributed Systems</span
+                ><span class="lang-es">Sistemas Distribuidos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Independent nodes communicating over a network, providing scalability and
+                  reliability at the cost of complexity.</span
+                ><span class="lang-es"
+                  >Nodos independientes comunicados por red, proporcionando escalabilidad y
+                  confiabilidad al costo de complejidad.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">High Availability</span
+                ><span class="lang-es">Alta Disponibilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Measured in nines (99.9% to 99.9999%). Each additional nine requires
+                  exponentially more investment in redundancy and automation.</span
+                ><span class="lang-es"
+                  >Medida en nueves (99.9% a 99.9999%). Cada nueve adicional requiere
+                  inversi&oacute;n exponencialmente mayor en redundancia y
+                  automatizaci&oacute;n.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Resiliency</span
+                ><span class="lang-es">Resiliencia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Combine redundancy (hot-cold, hot-warm, hot-hot) with resilience patterns
+                  (timeouts, retries, circuit breakers) to build robust systems.</span
+                ><span class="lang-es"
+                  >Combina redundancia (hot-cold, hot-warm, hot-hot) con patrones de
+                  resiliencia (timeouts, reintentos, circuit breakers) para construir sistemas
+                  robustos.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 14: Q&A ========== -->
+        <section>
+          <div class="qa-center">
+            <h1 style="font-size: 2.2em; margin-bottom: 10px">
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h1>
+            <div class="diagram-container" style="margin: 10px 0">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 05</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 05</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+      <script>
+    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
+    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
+    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
+    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
+    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
+    setTimeout(updateProgressBar,500);
+    </script>
+
+</body>
+</html>

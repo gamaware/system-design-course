@@ -1,0 +1,2083 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Load Balancing | Balanceo de Carga - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <style>
+      /* ============ CKM DESIGN ENHANCEMENTS ============ */
+      :root {
+        --color-primary: #00D4FF;
+        --color-secondary: #FF00AA;
+        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+      }
+      .reveal h1, .reveal h2 {
+        background: var(--primitive-gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .card { transition: all 0.3s ease; }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
+      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+    </style>
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress-bar-top" id="progressBarTop"></div>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="120" height="130" viewBox="0 0 120 130">
+                <!-- Balance/scale base -->
+                <line
+                  x1="60"
+                  y1="95"
+                  x2="60"
+                  y2="45"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                />
+                <rect
+                  x="35"
+                  y="95"
+                  width="50"
+                  height="8"
+                  rx="4"
+                  fill="var(--primary)"
+                  opacity="0.6"
+                />
+                <!-- Balance beam -->
+                <line
+                  x1="20"
+                  y1="45"
+                  x2="100"
+                  y2="45"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="transform"
+                    type="rotate"
+                    values="-3 60 45;3 60 45;-3 60 45"
+                    dur="3s"
+                    repeatCount="indefinite"
+                  />
+                </line>
+                <!-- Fulcrum triangle -->
+                <polygon points="54,40 66,40 60,30" fill="var(--mint)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.6;1;0.6"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </polygon>
+                <!-- Left pan -->
+                <line x1="20" y1="45" x2="15" y2="65" stroke="var(--primary)" stroke-width="1.5" />
+                <line x1="20" y1="45" x2="35" y2="65" stroke="var(--primary)" stroke-width="1.5" />
+                <rect
+                  x="10"
+                  y="65"
+                  width="30"
+                  height="5"
+                  rx="2"
+                  fill="var(--purple)"
+                  opacity="0.8"
+                />
+                <!-- Right pan -->
+                <line
+                  x1="100"
+                  y1="45"
+                  x2="85"
+                  y2="65"
+                  stroke="var(--primary)"
+                  stroke-width="1.5"
+                />
+                <line
+                  x1="100"
+                  y1="45"
+                  x2="110"
+                  y2="65"
+                  stroke="var(--primary)"
+                  stroke-width="1.5"
+                />
+                <rect
+                  x="80"
+                  y="65"
+                  width="30"
+                  height="5"
+                  rx="2"
+                  fill="var(--gold)"
+                  opacity="0.8"
+                />
+                <!-- Animated data dots -->
+                <circle cx="25" cy="62" r="3" fill="var(--purple)">
+                  <animate
+                    attributeName="cy"
+                    values="55;62;55"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="95" cy="62" r="3" fill="var(--gold)">
+                  <animate
+                    attributeName="cy"
+                    values="62;55;62"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <!-- Arrows indicating distribution -->
+                <circle cx="60" cy="18" r="2.5" fill="var(--mint)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Load Balancing</span>
+              <span class="lang-es">Balanceo de Carga</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 03 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 03 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Why Load Balancing?</span
+                ><span class="lang-es">1. &iquest;Por qu&eacute; balancear carga?</span>
+              </h4>
+              <p>
+                <span class="lang-en">Motivation, benefits, and real-world impact</span
+                ><span class="lang-es"
+                  >Motivaci&oacute;n, beneficios e impacto en el mundo real</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Types of Load Balancers</span
+                ><span class="lang-es">2. Tipos de balanceadores</span>
+              </h4>
+              <p>
+                <span class="lang-en">Layer 4 vs Layer 7, trade-offs</span
+                ><span class="lang-es">Capa 4 vs Capa 7, compromisos</span>
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. Algorithms</span
+                ><span class="lang-es">3. Algoritmos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Round Robin, Weighted, Least Connections, Hash-based</span
+                ><span class="lang-es"
+                  >Round Robin, Ponderado, Menor conexiones, Basado en hash</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Scaling the Load Balancer</span
+                ><span class="lang-es">4. Escalando el balanceador</span>
+              </h4>
+              <p>
+                <span class="lang-en">Health checks, HA, active-passive</span
+                ><span class="lang-es"
+                  >Verificaciones de salud, HA, activo-pasivo</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHY LOAD BALANCING? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Why Load Balancing?</span
+            ><span class="lang-es">&iquest;Por qu&eacute; balancear carga?</span>
+          </h2>
+          <p>
+            <span class="lang-en"
+              >A load balancer distributes incoming traffic across multiple servers,
+              preventing any single server from becoming a bottleneck.</span
+            ><span class="lang-es"
+              >Un balanceador de carga distribuye el tr&aacute;fico entrante entre
+              m&uacute;ltiples servidores, evitando que uno solo se convierta en
+              cuello de botella.</span
+            >
+          </p>
+          <div class="grid-3" style="margin-top: 14px">
+            <div class="stat-card float-in">
+              <span class="stat-num" style="color: var(--mint)">-60%</span>
+              <span class="stat-label">
+                <span class="lang-en">Latency reduction</span
+                ><span class="lang-es">Reducci&oacute;n de latencia</span>
+              </span>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num" style="color: var(--primary)">99.99%</span>
+              <span class="stat-label">
+                <span class="lang-en">Uptime achievable</span
+                ><span class="lang-es">Disponibilidad alcanzable</span>
+              </span>
+            </div>
+            <div class="stat-card float-in">
+              <span class="stat-num" style="color: var(--gold)">10x</span>
+              <span class="stat-label">
+                <span class="lang-en">Throughput increase</span
+                ><span class="lang-es">Aumento de rendimiento</span>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: HOW LBs WORK ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">How Load Balancers Work</span
+            ><span class="lang-es">C&oacute;mo funcionan los balanceadores</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-lb"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Clients -->
+              <rect
+                x="30"
+                y="40"
+                width="120"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text
+                x="90"
+                y="63"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="12"
+                font-weight="600"
+              >
+                <tspan class="lang-en">Clients</tspan>
+                <tspan class="lang-es">Clientes</tspan>
+              </text>
+              <text x="90" y="80" text-anchor="middle" fill="var(--muted)" font-size="9">
+                HTTP / TCP
+              </text>
+              <rect
+                x="30"
+                y="115"
+                width="120"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text
+                x="90"
+                y="138"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="12"
+                font-weight="600"
+              >
+                <tspan class="lang-en">Clients</tspan>
+                <tspan class="lang-es">Clientes</tspan>
+              </text>
+              <text x="90" y="155" text-anchor="middle" fill="var(--muted)" font-size="9">
+                HTTP / TCP
+              </text>
+
+              <!-- Arrows: Clients -> LB -->
+              <line
+                x1="150"
+                y1="65"
+                x2="310"
+                y2="100"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-lb)"
+              />
+              <path id="path-c1-lb" d="M150,65 L310,100" fill="none" stroke="none" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-c1-lb" />
+                </animateMotion>
+              </circle>
+
+              <line
+                x1="150"
+                y1="140"
+                x2="310"
+                y2="105"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-lb)"
+              />
+              <path id="path-c2-lb" d="M150,140 L310,105" fill="none" stroke="none" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-c2-lb" />
+                </animateMotion>
+              </circle>
+
+              <!-- Load Balancer -->
+              <rect
+                x="310"
+                y="65"
+                width="200"
+                height="75"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text
+                x="410"
+                y="95"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="14"
+                font-weight="700"
+              >
+                Load Balancer
+              </text>
+              <text x="410" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Distribute &amp; Route</tspan>
+                <tspan class="lang-es">Distribuir y Enrutar</tspan>
+              </text>
+
+              <!-- Arrows: LB -> Servers -->
+              <line
+                x1="510"
+                y1="85"
+                x2="640"
+                y2="40"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-lb)"
+              />
+              <path id="path-lb-s1" d="M510,85 L640,40" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.6s" repeatCount="indefinite">
+                  <mpath href="#path-lb-s1" />
+                </animateMotion>
+              </circle>
+
+              <line
+                x1="510"
+                y1="100"
+                x2="640"
+                y2="100"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-lb)"
+              />
+              <path id="path-lb-s2" d="M510,100 L640,100" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-lb-s2" />
+                </animateMotion>
+              </circle>
+
+              <line
+                x1="510"
+                y1="115"
+                x2="640"
+                y2="160"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-lb)"
+              />
+              <path id="path-lb-s3" d="M510,115 L640,160" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-lb-s3" />
+                </animateMotion>
+              </circle>
+
+              <!-- Backend Servers -->
+              <rect
+                x="640"
+                y="15"
+                width="140"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="710"
+                y="38"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="11"
+                font-weight="600"
+              >
+                Server 1
+              </text>
+              <text x="710" y="53" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Backend
+              </text>
+
+              <rect
+                x="640"
+                y="75"
+                width="140"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="710"
+                y="98"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="11"
+                font-weight="600"
+              >
+                Server 2
+              </text>
+              <text x="710" y="113" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Backend
+              </text>
+
+              <rect
+                x="640"
+                y="135"
+                width="140"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="710"
+                y="158"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="11"
+                font-weight="600"
+              >
+                Server 3
+              </text>
+              <text x="710" y="173" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Backend
+              </text>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: LAYER 4 vs LAYER 7 ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Layer 4 vs Layer 7</span
+            ><span class="lang-es">Capa 4 vs Capa 7</span>
+          </h2>
+          <div class="side-by-side">
+            <div>
+              <div class="diagram-container">
+                <svg viewBox="0 0 400 160">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="380"
+                    height="140"
+                    rx="8"
+                    fill="var(--surface)"
+                    stroke="var(--primary)"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="200"
+                    y="40"
+                    text-anchor="middle"
+                    fill="var(--primary)"
+                    font-size="14"
+                    font-weight="700"
+                  >
+                    Layer 4 (Transport)
+                  </text>
+                  <text
+                    x="200"
+                    y="65"
+                    text-anchor="middle"
+                    fill="var(--text)"
+                    font-size="11"
+                  >
+                    TCP / UDP
+                  </text>
+                  <text
+                    x="200"
+                    y="88"
+                    text-anchor="middle"
+                    fill="var(--muted)"
+                    font-size="10"
+                  >
+                    <tspan class="lang-en">Routes by IP &amp; port</tspan>
+                    <tspan class="lang-es">Enruta por IP y puerto</tspan>
+                  </text>
+                  <text
+                    x="200"
+                    y="108"
+                    text-anchor="middle"
+                    fill="var(--muted)"
+                    font-size="10"
+                  >
+                    <tspan class="lang-en">No payload inspection</tspan>
+                    <tspan class="lang-es">Sin inspecci&oacute;n de contenido</tspan>
+                  </text>
+                  <text
+                    x="200"
+                    y="128"
+                    text-anchor="middle"
+                    fill="var(--mint)"
+                    font-size="10"
+                    font-weight="600"
+                  >
+                    <tspan class="lang-en">Faster, less CPU</tspan>
+                    <tspan class="lang-es">M&aacute;s r&aacute;pido, menos CPU</tspan>
+                  </text>
+                </svg>
+              </div>
+              <div class="card float-in border-blue expandable" style="margin-top: 8px">
+                <h4>
+                  <span class="lang-en">L4 Use Cases</span
+                  ><span class="lang-es">Casos de uso L4</span>
+                </h4>
+                <p>
+                  <span class="lang-en"
+                    >High-throughput TCP proxying, database connections, gaming
+                    servers.</span
+                  ><span class="lang-es"
+                    >Proxy TCP de alto rendimiento, conexiones a bases de datos,
+                    servidores de juegos.</span
+                  >
+                </p>
+                <div class="expand-content">
+                  <p style="color: var(--muted)">
+                    <span class="lang-en"
+                      >L4 load balancers operate at the transport layer. They make routing
+                      decisions based on IP address and TCP/UDP port without reading the
+                      application payload. This makes them extremely fast but unable to
+                      make content-aware routing decisions.</span
+                    ><span class="lang-es"
+                      >Los balanceadores L4 operan en la capa de transporte. Toman decisiones
+                      de enrutamiento basadas en direcci&oacute;n IP y puerto TCP/UDP sin leer
+                      el contenido de la aplicaci&oacute;n. Esto los hace extremadamente
+                      r&aacute;pidos pero incapaces de tomar decisiones basadas en
+                      contenido.</span
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="diagram-container">
+                <svg viewBox="0 0 400 160">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="380"
+                    height="140"
+                    rx="8"
+                    fill="var(--surface)"
+                    stroke="var(--gold)"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="200"
+                    y="40"
+                    text-anchor="middle"
+                    fill="var(--gold)"
+                    font-size="14"
+                    font-weight="700"
+                  >
+                    Layer 7 (Application)
+                  </text>
+                  <text
+                    x="200"
+                    y="65"
+                    text-anchor="middle"
+                    fill="var(--text)"
+                    font-size="11"
+                  >
+                    HTTP / HTTPS / gRPC
+                  </text>
+                  <text
+                    x="200"
+                    y="88"
+                    text-anchor="middle"
+                    fill="var(--muted)"
+                    font-size="10"
+                  >
+                    <tspan class="lang-en">Routes by URL, headers, cookies</tspan>
+                    <tspan class="lang-es">Enruta por URL, headers, cookies</tspan>
+                  </text>
+                  <text
+                    x="200"
+                    y="108"
+                    text-anchor="middle"
+                    fill="var(--muted)"
+                    font-size="10"
+                  >
+                    <tspan class="lang-en">Full payload inspection</tspan>
+                    <tspan class="lang-es">Inspecci&oacute;n completa del contenido</tspan>
+                  </text>
+                  <text
+                    x="200"
+                    y="128"
+                    text-anchor="middle"
+                    fill="var(--warning)"
+                    font-size="10"
+                    font-weight="600"
+                  >
+                    <tspan class="lang-en">Smarter, more CPU</tspan>
+                    <tspan class="lang-es">M&aacute;s inteligente, m&aacute;s CPU</tspan>
+                  </text>
+                </svg>
+              </div>
+              <div class="card float-in border-orange expandable" style="margin-top: 8px">
+                <h4>
+                  <span class="lang-en">L7 Use Cases</span
+                  ><span class="lang-es">Casos de uso L7</span>
+                </h4>
+                <p>
+                  <span class="lang-en"
+                    >URL-based routing, A/B testing, SSL termination, API
+                    gateways.</span
+                  ><span class="lang-es"
+                    >Enrutamiento por URL, pruebas A/B, terminaci&oacute;n SSL, API
+                    gateways.</span
+                  >
+                </p>
+                <div class="expand-content">
+                  <p style="color: var(--muted)">
+                    <span class="lang-en"
+                      >L7 load balancers read the full HTTP request including URL path,
+                      headers, and cookies. This enables content-based routing (e.g.,
+                      /api to backend A, /images to backend B), SSL termination, request
+                      transformation, and Web Application Firewall (WAF) integration.</span
+                    ><span class="lang-es"
+                      >Los balanceadores L7 leen la solicitud HTTP completa incluyendo ruta
+                      URL, headers y cookies. Esto permite enrutamiento basado en contenido
+                      (ej., /api al backend A, /images al backend B), terminaci&oacute;n
+                      SSL, transformaci&oacute;n de solicitudes e integraci&oacute;n con
+                      WAF.</span
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: ROUND ROBIN ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Round Robin</span
+            ><span class="lang-es">Round Robin</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-rr"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Requests -->
+              <rect
+                x="30"
+                y="20"
+                width="100"
+                height="35"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text x="80" y="42" text-anchor="middle" fill="var(--mint)" font-size="10">
+                Req 1
+              </text>
+
+              <rect
+                x="30"
+                y="65"
+                width="100"
+                height="35"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+              />
+              <text x="80" y="87" text-anchor="middle" fill="var(--purple)" font-size="10">
+                Req 2
+              </text>
+
+              <rect
+                x="30"
+                y="110"
+                width="100"
+                height="35"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+              />
+              <text x="80" y="132" text-anchor="middle" fill="var(--gold)" font-size="10">
+                Req 3
+              </text>
+
+              <rect
+                x="30"
+                y="155"
+                width="100"
+                height="35"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text x="80" y="177" text-anchor="middle" fill="var(--mint)" font-size="10">
+                Req 4
+              </text>
+
+              <!-- LB box -->
+              <rect
+                x="280"
+                y="60"
+                width="160"
+                height="80"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text
+                x="360"
+                y="95"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="700"
+              >
+                Load Balancer
+              </text>
+              <text x="360" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Round Robin
+              </text>
+
+              <!-- Arrows to LB -->
+              <line x1="130" y1="37" x2="278" y2="85" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+              <line x1="130" y1="82" x2="278" y2="95" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+              <line x1="130" y1="127" x2="278" y2="105" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+              <line x1="130" y1="172" x2="278" y2="115" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+
+              <!-- Servers -->
+              <rect
+                x="620"
+                y="15"
+                width="130"
+                height="45"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="685" y="42" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                Server 1
+              </text>
+
+              <rect
+                x="620"
+                y="75"
+                width="130"
+                height="45"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text x="685" y="102" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="600">
+                Server 2
+              </text>
+
+              <rect
+                x="620"
+                y="135"
+                width="130"
+                height="45"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="685" y="162" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                Server 3
+              </text>
+
+              <!-- Arrows from LB to Servers (1->S1, 2->S2, 3->S3, 4->S1) -->
+              <line x1="440" y1="85" x2="618" y2="37" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+              <path id="path-rr1" d="M440,85 L618,37" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.6s" repeatCount="indefinite">
+                  <mpath href="#path-rr1" />
+                </animateMotion>
+              </circle>
+
+              <line x1="440" y1="95" x2="618" y2="97" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+              <path id="path-rr2" d="M440,95 L618,97" fill="none" stroke="none" />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-rr2" />
+                </animateMotion>
+              </circle>
+
+              <line x1="440" y1="105" x2="618" y2="157" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-rr)" />
+              <path id="path-rr3" d="M440,105 L618,157" fill="none" stroke="none" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-rr3" />
+                </animateMotion>
+              </circle>
+
+              <!-- Labels: Req 1,4 -> S1 -->
+              <text x="530" y="48" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Req 1, 4
+              </text>
+              <text x="530" y="92" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Req 2
+              </text>
+              <text x="530" y="148" text-anchor="middle" fill="var(--muted)" font-size="9">
+                Req 3
+              </text>
+            </svg>
+          </div>
+          <div class="card float-in border-blue expandable" style="margin-top: 6px">
+            <h4>
+              <span class="lang-en">How it works</span
+              ><span class="lang-es">C&oacute;mo funciona</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Each request is assigned to the next server in a circular sequence:
+                1 &rarr; 2 &rarr; 3 &rarr; 1 &rarr; ...</span
+              ><span class="lang-es"
+                >Cada solicitud se asigna al siguiente servidor en secuencia circular:
+                1 &rarr; 2 &rarr; 3 &rarr; 1 &rarr; ...</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Round Robin is the simplest algorithm. It works best when all servers
+                  have equal capacity and requests have similar processing costs. It does
+                  not account for server load or connection count, which can lead to
+                  uneven distribution with heterogeneous workloads.</span
+                ><span class="lang-es"
+                  >Round Robin es el algoritmo m&aacute;s simple. Funciona mejor cuando
+                  todos los servidores tienen la misma capacidad y las solicitudes tienen
+                  costos de procesamiento similares. No considera la carga del servidor
+                  ni el n&uacute;mero de conexiones, lo que puede generar distribuci&oacute;n
+                  desigual con cargas heterog&eacute;neas.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: WEIGHTED ROUND ROBIN ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Weighted Round Robin</span
+            ><span class="lang-es">Round Robin Ponderado</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 180">
+              <defs>
+                <marker
+                  id="arrow-wrr"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- LB -->
+              <rect
+                x="50"
+                y="55"
+                width="160"
+                height="70"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text
+                x="130"
+                y="85"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="13"
+                font-weight="700"
+              >
+                Load Balancer
+              </text>
+              <text x="130" y="105" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Weighted Distribution</tspan>
+                <tspan class="lang-es">Distribuci&oacute;n ponderada</tspan>
+              </text>
+
+              <!-- Server A (weight 0.75) -->
+              <rect
+                x="490"
+                y="15"
+                width="180"
+                height="65"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="580" y="40" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">
+                Server A
+              </text>
+              <text x="580" y="60" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Weight: 0.75 (75% traffic)</tspan>
+                <tspan class="lang-es">Peso: 0.75 (75% tr&aacute;fico)</tspan>
+              </text>
+              <!-- Weight bar A -->
+              <rect x="500" y="68" width="160" height="5" rx="2" fill="var(--card-border)" />
+              <rect x="500" y="68" width="120" height="5" rx="2" fill="var(--mint)" opacity="0.8" />
+
+              <!-- Server B (weight 0.25) -->
+              <rect
+                x="490"
+                y="100"
+                width="180"
+                height="65"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="580" y="125" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                Server B
+              </text>
+              <text x="580" y="145" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Weight: 0.25 (25% traffic)</tspan>
+                <tspan class="lang-es">Peso: 0.25 (25% tr&aacute;fico)</tspan>
+              </text>
+              <!-- Weight bar B -->
+              <rect x="500" y="153" width="160" height="5" rx="2" fill="var(--card-border)" />
+              <rect x="500" y="153" width="40" height="5" rx="2" fill="var(--gold)" opacity="0.8" />
+
+              <!-- Thick arrow to A -->
+              <line
+                x1="210"
+                y1="80"
+                x2="488"
+                y2="47"
+                stroke="var(--mint)"
+                stroke-width="3"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-wrr)"
+              />
+              <path id="path-wrr-a" d="M210,80 L488,47" fill="none" stroke="none" />
+              <circle r="4" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-wrr-a" />
+                </animateMotion>
+              </circle>
+
+              <!-- Thin arrow to B -->
+              <line
+                x1="210"
+                y1="100"
+                x2="488"
+                y2="132"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-wrr)"
+              />
+              <path id="path-wrr-b" d="M210,100 L488,132" fill="none" stroke="none" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-wrr-b" />
+                </animateMotion>
+              </circle>
+
+              <!-- Labels -->
+              <text x="350" y="52" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                75%
+              </text>
+              <text x="350" y="130" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                25%
+              </text>
+            </svg>
+          </div>
+          <div class="card float-in border-green expandable" style="margin-top: 6px">
+            <h4>
+              <span class="lang-en">When to use weights</span
+              ><span class="lang-es">Cu&aacute;ndo usar pesos</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Assign proportional weights when servers have different CPU, memory,
+                or network capacity.</span
+              ><span class="lang-es"
+                >Asigna pesos proporcionales cuando los servidores tienen diferente
+                CPU, memoria o capacidad de red.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Weighted Round Robin is ideal during rolling upgrades (send less traffic
+                  to new instances), mixed hardware environments, or canary deployments
+                  where a small percentage of traffic goes to a new version. Weights can
+                  be adjusted dynamically in most load balancers.</span
+                ><span class="lang-es"
+                  >El Round Robin ponderado es ideal durante actualizaciones progresivas
+                  (enviar menos tr&aacute;fico a nuevas instancias), entornos con hardware
+                  mixto, o despliegues canary donde un peque&ntilde;o porcentaje del
+                  tr&aacute;fico va a una nueva versi&oacute;n. Los pesos se pueden ajustar
+                  din&aacute;micamente en la mayor&iacute;a de los balanceadores.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: LEAST CONNECTIONS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Least Connections</span
+            ><span class="lang-es">Menor N&uacute;mero de Conexiones</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-lc"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- New request -->
+              <rect
+                x="30"
+                y="70"
+                width="120"
+                height="60"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2"
+              />
+              <text x="90" y="95" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                <tspan class="lang-en">New Request</tspan>
+                <tspan class="lang-es">Nueva solicitud</tspan>
+              </text>
+              <text x="90" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Where to send?</tspan>
+                <tspan class="lang-es">&iquest;A d&oacute;nde enviar?</tspan>
+              </text>
+
+              <!-- LB -->
+              <rect
+                x="250"
+                y="60"
+                width="160"
+                height="80"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text x="330" y="93" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">
+                Load Balancer
+              </text>
+              <text x="330" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Pick least busy</tspan>
+                <tspan class="lang-es">Elige el menos ocupado</tspan>
+              </text>
+
+              <!-- Arrow to LB -->
+              <line x1="150" y1="100" x2="248" y2="100" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-lc)" />
+
+              <!-- Server A: 12 connections (busy) -->
+              <rect
+                x="560"
+                y="10"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <text x="640" y="32" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="600">
+                Server A
+              </text>
+              <text x="640" y="48" text-anchor="middle" fill="var(--muted)" font-size="10">
+                12 connections
+              </text>
+
+              <!-- Server B: 3 connections (least!) -->
+              <rect
+                x="560"
+                y="75"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2.5"
+              />
+              <text x="640" y="97" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                Server B
+              </text>
+              <text x="640" y="113" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                3 connections
+              </text>
+
+              <!-- Server C: 8 connections -->
+              <rect
+                x="560"
+                y="140"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--warning)"
+                stroke-width="2"
+              />
+              <text x="640" y="162" text-anchor="middle" fill="var(--warning)" font-size="11" font-weight="600">
+                Server C
+              </text>
+              <text x="640" y="178" text-anchor="middle" fill="var(--muted)" font-size="10">
+                8 connections
+              </text>
+
+              <!-- Arrow to Server B (chosen) -->
+              <line x1="410" y1="100" x2="558" y2="100" stroke="var(--mint)" stroke-width="2.5" stroke-dasharray="8,4" marker-end="url(#arrow-lc)" />
+              <path id="path-lc-b" d="M410,100 L558,100" fill="none" stroke="none" />
+              <circle r="4" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-lc-b" />
+                </animateMotion>
+              </circle>
+
+              <!-- Faded arrows to A and C -->
+              <line x1="410" y1="85" x2="558" y2="35" stroke="var(--card-border)" stroke-width="1" stroke-dasharray="4,4" marker-end="url(#arrow-lc)" />
+              <line x1="410" y1="115" x2="558" y2="165" stroke="var(--card-border)" stroke-width="1" stroke-dasharray="4,4" marker-end="url(#arrow-lc)" />
+
+              <!-- Chosen label -->
+              <text x="490" y="93" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Chosen!</tspan>
+                <tspan class="lang-es">&iexcl;Elegido!</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card float-in border-green expandable" style="margin-top: 6px">
+            <h4>
+              <span class="lang-en">Best for variable workloads</span
+              ><span class="lang-es">Mejor para cargas variables</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Routes new requests to the server with the fewest active
+                connections.</span
+              ><span class="lang-es"
+                >Enruta nuevas solicitudes al servidor con menos conexiones
+                activas.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Least Connections excels when requests have varying processing times
+                  (e.g., some queries take 10ms, others 5s). Unlike Round Robin, it
+                  naturally adapts to server capacity differences and prevents slow
+                  servers from accumulating a backlog of requests.</span
+                ><span class="lang-es"
+                  >Least Connections sobresale cuando las solicitudes tienen tiempos de
+                  procesamiento variables (ej., algunas consultas toman 10ms, otras 5s).
+                  A diferencia de Round Robin, se adapta naturalmente a las diferencias
+                  de capacidad y evita que los servidores lentos acumulen solicitudes
+                  pendientes.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: HASH-BASED ROUTING ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Hash-Based Routing</span
+            ><span class="lang-es">Enrutamiento Basado en Hash</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-hash"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client IP -->
+              <rect
+                x="30"
+                y="60"
+                width="130"
+                height="80"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="95" y="85" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                Client
+              </text>
+              <text x="95" y="105" text-anchor="middle" fill="var(--text)" font-size="10">
+                IP: 10.0.1.42
+              </text>
+              <text x="95" y="125" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Source address</tspan>
+                <tspan class="lang-es">Direcci&oacute;n origen</tspan>
+              </text>
+
+              <!-- Hash function -->
+              <rect
+                x="260"
+                y="55"
+                width="170"
+                height="90"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2.5"
+              />
+              <text x="345" y="82" text-anchor="middle" fill="var(--purple)" font-size="13" font-weight="700">
+                hash(IP)
+              </text>
+              <text x="345" y="100" text-anchor="middle" fill="var(--text)" font-size="10">
+                hash(10.0.1.42)
+              </text>
+              <text x="345" y="118" text-anchor="middle" fill="var(--muted)" font-size="10">
+                = 7A3F mod 3 = <tspan fill="var(--mint)" font-weight="600">1</tspan>
+              </text>
+              <text x="345" y="136" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Deterministic mapping</tspan>
+                <tspan class="lang-es">Mapeo determin&iacute;stico</tspan>
+              </text>
+
+              <!-- Arrow to hash -->
+              <line x1="160" y1="100" x2="258" y2="100" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-hash)" />
+              <path id="path-ip-hash" d="M160,100 L258,100" fill="none" stroke="none" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-ip-hash" />
+                </animateMotion>
+              </circle>
+
+              <!-- Servers -->
+              <rect
+                x="580"
+                y="10"
+                width="140"
+                height="45"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2.5"
+              />
+              <text x="650" y="37" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                Server 1
+              </text>
+
+              <rect
+                x="580"
+                y="70"
+                width="140"
+                height="45"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--card-border)"
+                stroke-width="1.5"
+              />
+              <text x="650" y="97" text-anchor="middle" fill="var(--muted)" font-size="11">
+                Server 2
+              </text>
+
+              <rect
+                x="580"
+                y="130"
+                width="140"
+                height="45"
+                rx="6"
+                fill="var(--surface)"
+                stroke="var(--card-border)"
+                stroke-width="1.5"
+              />
+              <text x="650" y="157" text-anchor="middle" fill="var(--muted)" font-size="11">
+                Server 3
+              </text>
+
+              <!-- Arrow to chosen server -->
+              <line x1="430" y1="90" x2="578" y2="32" stroke="var(--mint)" stroke-width="2.5" stroke-dasharray="8,4" marker-end="url(#arrow-hash)" />
+              <path id="path-hash-s1" d="M430,90 L578,32" fill="none" stroke="none" />
+              <circle r="4" fill="var(--mint)">
+                <animateMotion dur="1.6s" repeatCount="indefinite">
+                  <mpath href="#path-hash-s1" />
+                </animateMotion>
+              </circle>
+
+              <!-- Always label -->
+              <text x="510" y="48" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Always here</tspan>
+                <tspan class="lang-es">Siempre aqu&iacute;</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card float-in border-purple expandable" style="margin-top: 6px">
+            <h4>
+              <span class="lang-en">Session affinity via hashing</span
+              ><span class="lang-es">Afinidad de sesi&oacute;n v&iacute;a hashing</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >The same client IP always maps to the same server, enabling sticky
+                sessions without cookies.</span
+              ><span class="lang-es"
+                >La misma IP de cliente siempre se mapea al mismo servidor, habilitando
+                sesiones fijas sin cookies.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Hash-based routing is essential for stateful applications (shopping carts,
+                  WebSocket connections) and caching layers where cache locality matters.
+                  Consistent hashing minimizes disruption when servers are added or removed
+                  by only reassigning a fraction of the keys.</span
+                ><span class="lang-es"
+                  >El enrutamiento basado en hash es esencial para aplicaciones con estado
+                  (carritos de compra, conexiones WebSocket) y capas de cach&eacute; donde
+                  la localidad importa. El hashing consistente minimiza la interrupci&oacute;n
+                  cuando se agregan o eliminan servidores, reasignando solo una fracci&oacute;n
+                  de las claves.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: HEALTH CHECKS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Health Checks</span
+            ><span class="lang-es">Verificaciones de Salud</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-hc"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- LB -->
+              <rect
+                x="100"
+                y="55"
+                width="180"
+                height="90"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text x="190" y="85" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+                Load Balancer
+              </text>
+              <text x="190" y="105" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Health Monitor</tspan>
+                <tspan class="lang-es">Monitor de Salud</tspan>
+              </text>
+              <text x="190" y="125" text-anchor="middle" fill="var(--muted)" font-size="9">
+                GET /health (10s)
+              </text>
+
+              <!-- Server 1: healthy -->
+              <rect
+                x="480"
+                y="10"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="560" y="32" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                Server 1
+              </text>
+              <text x="560" y="48" text-anchor="middle" fill="var(--mint)" font-size="10">
+                200 OK
+              </text>
+
+              <!-- Server 2: unhealthy -->
+              <rect
+                x="480"
+                y="75"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--error)"
+                stroke-width="2.5"
+                stroke-dasharray="6,3"
+              />
+              <text x="560" y="97" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="600">
+                Server 2
+              </text>
+              <text x="560" y="113" text-anchor="middle" fill="var(--error)" font-size="10">
+                503 / Timeout
+              </text>
+              <!-- X mark -->
+              <line x1="655" y1="82" x2="675" y2="102" stroke="var(--error)" stroke-width="3" />
+              <line x1="675" y1="82" x2="655" y2="102" stroke="var(--error)" stroke-width="3" />
+
+              <!-- Server 3: healthy -->
+              <rect
+                x="480"
+                y="140"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="560" y="162" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                Server 3
+              </text>
+              <text x="560" y="178" text-anchor="middle" fill="var(--mint)" font-size="10">
+                200 OK
+              </text>
+
+              <!-- Health check arrows -->
+              <line x1="280" y1="85" x2="478" y2="35" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-hc)" />
+              <path id="path-hc1" d="M280,85 L478,35" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-hc1" />
+                </animateMotion>
+              </circle>
+
+              <line x1="280" y1="100" x2="478" y2="100" stroke="var(--error)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-hc)" />
+              <path id="path-hc2" d="M280,100 L478,100" fill="none" stroke="none" />
+              <circle r="3" fill="var(--error)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-hc2" />
+                </animateMotion>
+              </circle>
+
+              <line x1="280" y1="115" x2="478" y2="165" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-hc)" />
+              <path id="path-hc3" d="M280,115 L478,165" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-hc3" />
+                </animateMotion>
+              </circle>
+
+              <!-- Labels -->
+              <text x="750" y="40" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Healthy</tspan>
+                <tspan class="lang-es">Saludable</tspan>
+              </text>
+              <text x="750" y="100" fill="var(--error)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Removed</tspan>
+                <tspan class="lang-es">Removido</tspan>
+              </text>
+              <text x="750" y="170" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Healthy</tspan>
+                <tspan class="lang-es">Saludable</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card float-in border-orange expandable" style="margin-top: 6px">
+            <h4>
+              <span class="lang-en">Automatic failure detection</span
+              ><span class="lang-es">Detecci&oacute;n autom&aacute;tica de fallos</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >The LB periodically pings each server. Unhealthy servers are
+                removed from the pool until they recover.</span
+              ><span class="lang-es"
+                >El LB hace ping peri&oacute;dicamente a cada servidor. Los servidores
+                no saludables se eliminan del pool hasta que se recuperan.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Health checks can be passive (monitoring response codes from real traffic)
+                  or active (dedicated HTTP/TCP probes). Configure thresholds: unhealthy
+                  after N consecutive failures, healthy after M consecutive successes.
+                  Common endpoints: /health, /ready, /live for Kubernetes readiness and
+                  liveness probes.</span
+                ><span class="lang-es"
+                  >Las verificaciones pueden ser pasivas (monitoreando c&oacute;digos de
+                  respuesta del tr&aacute;fico real) o activas (sondas HTTP/TCP dedicadas).
+                  Configura umbrales: no saludable despu&eacute;s de N fallos consecutivos,
+                  saludable despu&eacute;s de M &eacute;xitos consecutivos. Endpoints
+                  comunes: /health, /ready, /live para sondas de Kubernetes.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: SCALING THE LB ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Scaling the Load Balancer</span
+            ><span class="lang-es">Escalando el Balanceador</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-ha"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,3 L0,6 Z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Floating VIP -->
+              <rect
+                x="30"
+                y="70"
+                width="140"
+                height="60"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text x="100" y="93" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                Floating IP (VIP)
+              </text>
+              <text x="100" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                203.0.113.10
+              </text>
+
+              <!-- Arrow to Active -->
+              <line x1="170" y1="100" x2="268" y2="55" stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ha)" />
+              <path id="path-vip-active" d="M170,100 L268,55" fill="none" stroke="none" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-vip-active" />
+                </animateMotion>
+              </circle>
+
+              <!-- Active LB -->
+              <rect
+                x="270"
+                y="20"
+                width="170"
+                height="70"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2.5"
+              />
+              <text x="355" y="48" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="700">
+                Active LB
+              </text>
+              <text x="355" y="68" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Serving traffic</tspan>
+                <tspan class="lang-es">Sirviendo tr&aacute;fico</tspan>
+              </text>
+
+              <!-- Passive LB -->
+              <rect
+                x="270"
+                y="110"
+                width="170"
+                height="70"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--warning)"
+                stroke-width="2"
+                stroke-dasharray="6,3"
+              />
+              <text x="355" y="138" text-anchor="middle" fill="var(--warning)" font-size="12" font-weight="700">
+                Passive LB
+              </text>
+              <text x="355" y="158" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Standby / Heartbeat</tspan>
+                <tspan class="lang-es">En espera / Heartbeat</tspan>
+              </text>
+
+              <!-- Heartbeat arrow between LBs -->
+              <line x1="355" y1="92" x2="355" y2="108" stroke="var(--warning)" stroke-width="1.5" stroke-dasharray="4,3" />
+              <text x="398" y="104" fill="var(--warning)" font-size="8">
+                heartbeat
+              </text>
+
+              <!-- Arrow: Active -> Servers -->
+              <line x1="440" y1="55" x2="568" y2="40" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-ha)" />
+              <line x1="440" y1="55" x2="568" y2="100" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-ha)" />
+              <line x1="440" y1="55" x2="568" y2="160" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-ha)" />
+
+              <!-- Servers -->
+              <rect x="570" y="15" width="130" height="50" rx="6" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="635" y="44" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                Server 1
+              </text>
+              <rect x="570" y="75" width="130" height="50" rx="6" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="635" y="104" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                Server 2
+              </text>
+              <rect x="570" y="135" width="130" height="50" rx="6" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="635" y="164" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                Server 3
+              </text>
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 6px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Active-Passive</span
+                ><span class="lang-es">Activo-Pasivo</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >One LB handles traffic; the standby takes over on failure via a
+                  floating IP (VIP).</span
+                ><span class="lang-es"
+                  >Un LB maneja el tr&aacute;fico; el respaldo toma el control ante
+                  una falla mediante una IP flotante (VIP).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Active-Passive (also called Primary-Standby) uses protocols like
+                    VRRP or keepalived to detect failures and reassign the floating IP
+                    within seconds. Simple but underutilizes the passive node.</span
+                  ><span class="lang-es"
+                    >Activo-Pasivo (tambi&eacute;n llamado Primario-Espera) usa protocolos
+                    como VRRP o keepalived para detectar fallos y reasignar la IP flotante
+                    en segundos. Simple pero subutiliza el nodo pasivo.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Active-Active</span
+                ><span class="lang-es">Activo-Activo</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Both LBs serve traffic simultaneously using DNS round robin or
+                  Anycast.</span
+                ><span class="lang-es"
+                  >Ambos LBs sirven tr&aacute;fico simult&aacute;neamente usando
+                  DNS round robin o Anycast.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Active-Active maximizes utilization and provides higher throughput.
+                    DNS-based approaches distribute clients across LBs. Anycast assigns
+                    the same IP to multiple LBs and relies on BGP routing to direct
+                    traffic to the nearest one. More complex but no wasted capacity.</span
+                  ><span class="lang-es"
+                    >Activo-Activo maximiza la utilizaci&oacute;n y proporciona mayor
+                    rendimiento. Los enfoques basados en DNS distribuyen clientes entre LBs.
+                    Anycast asigna la misma IP a m&uacute;ltiples LBs y usa enrutamiento
+                    BGP para dirigir tr&aacute;fico al m&aacute;s cercano. M&aacute;s
+                    complejo pero sin capacidad desperdiciada.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: LB PLATFORMS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Load Balancing Platforms</span
+            ><span class="lang-es">Plataformas de Balanceo</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>AWS ALB / NLB</h4>
+              <p>
+                <span class="lang-en"
+                  >ALB (L7) for HTTP/HTTPS routing; NLB (L4) for ultra-low latency
+                  TCP/UDP.</span
+                ><span class="lang-es"
+                  >ALB (L7) para enrutamiento HTTP/HTTPS; NLB (L4) para TCP/UDP
+                  de latencia ultra baja.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >ALB supports path-based and host-based routing, WebSocket, gRPC,
+                    and integrates with WAF and Cognito. NLB handles millions of
+                    requests per second with static IPs. Both integrate with Auto
+                    Scaling and ECS/EKS.</span
+                  ><span class="lang-es"
+                    >ALB soporta enrutamiento por ruta y host, WebSocket, gRPC, e integra
+                    con WAF y Cognito. NLB maneja millones de solicitudes por segundo con
+                    IPs est&aacute;ticas. Ambos integran con Auto Scaling y ECS/EKS.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>Azure Load Balancer</h4>
+              <p>
+                <span class="lang-en"
+                  >L4 load balancer with zone-redundant frontends and Application
+                  Gateway for L7.</span
+                ><span class="lang-es"
+                  >Balanceador L4 con frontends redundantes por zona y Application
+                  Gateway para L7.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Azure Load Balancer provides high availability with availability
+                    zones. Application Gateway adds URL routing, SSL offloading, and
+                    WAF. Traffic Manager provides DNS-based global load balancing across
+                    regions.</span
+                  ><span class="lang-es"
+                    >Azure Load Balancer proporciona alta disponibilidad con zonas de
+                    disponibilidad. Application Gateway agrega enrutamiento por URL,
+                    descarga SSL y WAF. Traffic Manager ofrece balanceo global basado
+                    en DNS entre regiones.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>GCP Cloud Load Balancing</h4>
+              <p>
+                <span class="lang-en"
+                  >Global, Anycast-based LB with automatic multi-region
+                  failover.</span
+                ><span class="lang-es"
+                  >LB global basado en Anycast con failover multiregi&oacute;n
+                  autom&aacute;tico.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >GCP offers a single global IP that routes to the nearest healthy
+                    backend using Google's backbone network. Supports HTTP(S), TCP/SSL
+                    proxy, and network load balancing. Cloud Armor provides DDoS
+                    protection and WAF capabilities.</span
+                  ><span class="lang-es"
+                    >GCP ofrece una IP global &uacute;nica que enruta al backend
+                    saludable m&aacute;s cercano usando la red troncal de Google.
+                    Soporta HTTP(S), proxy TCP/SSL y balanceo de red. Cloud Armor
+                    proporciona protecci&oacute;n DDoS y capacidades WAF.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>HAProxy / Nginx</h4>
+              <p>
+                <span class="lang-en"
+                  >Open-source L4/L7 load balancers with full configuration
+                  control.</span
+                ><span class="lang-es"
+                  >Balanceadores L4/L7 de c&oacute;digo abierto con control total
+                  de configuraci&oacute;n.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >HAProxy is the industry standard for high-performance TCP/HTTP
+                    load balancing. Nginx provides reverse proxy, caching, and LB in
+                    one package. Both offer health checks, sticky sessions, SSL
+                    termination, and support millions of concurrent connections. Ideal
+                    for on-premise or hybrid cloud deployments.</span
+                  ><span class="lang-es"
+                    >HAProxy es el est&aacute;ndar de la industria para balanceo TCP/HTTP
+                    de alto rendimiento. Nginx proporciona proxy inverso, cach&eacute; y
+                    LB en un paquete. Ambos ofrecen health checks, sesiones fijas,
+                    terminaci&oacute;n SSL y soportan millones de conexiones
+                    concurrentes. Ideales para despliegues on-premise o nube
+                    h&iacute;brida.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Types &amp; Layers</span
+                ><span class="lang-es">Tipos y Capas</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >L4 balancers route by IP/port for speed; L7 balancers inspect
+                  HTTP content for smarter routing. Choose based on your
+                  requirements.</span
+                ><span class="lang-es"
+                  >Los balanceadores L4 enrutan por IP/puerto para velocidad; los L7
+                  inspeccionan contenido HTTP para enrutamiento inteligente. Elige
+                  seg&uacute;n tus requisitos.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Algorithms</span
+                ><span class="lang-es">Algoritmos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Round Robin for simplicity, Weighted for heterogeneous servers,
+                  Least Connections for variable workloads, Hash-based for session
+                  affinity.</span
+                ><span class="lang-es"
+                  >Round Robin por simplicidad, Ponderado para servidores
+                  heterog&eacute;neos, Least Connections para cargas variables,
+                  Hash para afinidad de sesi&oacute;n.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">High Availability</span
+                ><span class="lang-es">Alta Disponibilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Health checks remove failed servers. Active-Passive or
+                  Active-Active setups prevent the LB itself from becoming a single
+                  point of failure.</span
+                ><span class="lang-es"
+                  >Las verificaciones de salud eliminan servidores fallidos.
+                  Configuraciones Activo-Pasivo o Activo-Activo evitan que el LB
+                  se convierta en un punto &uacute;nico de falla.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 13: Q&A ========== -->
+        <section>
+          <div class="qa-center">
+            <h1 style="font-size: 2.2em; margin-bottom: 10px">
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h1>
+            <div class="diagram-container" style="margin: 10px 0">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 03</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 03</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+      <script>
+    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
+    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
+    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
+    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
+    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
+    setTimeout(updateProgressBar,500);
+    </script>
+
+</body>
+</html>

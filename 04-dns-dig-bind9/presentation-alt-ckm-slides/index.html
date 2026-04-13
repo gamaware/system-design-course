@@ -1,0 +1,1849 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Domain Name System | Sistema de Nombres de Dominio - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <style>
+      /* ============ CKM DESIGN ENHANCEMENTS ============ */
+      :root {
+        --color-primary: #00D4FF;
+        --color-secondary: #FF00AA;
+        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+      }
+      .reveal h1, .reveal h2 {
+        background: var(--primitive-gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .card { transition: all 0.3s ease; }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
+      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+    </style>
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress-bar-top" id="progressBarTop"></div>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="120" height="130" viewBox="0 0 120 130">
+                <!-- Globe outline -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="42"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <!-- Globe horizontal lines -->
+                <ellipse
+                  cx="60"
+                  cy="60"
+                  rx="42"
+                  ry="16"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="1"
+                  opacity="0.5"
+                />
+                <ellipse
+                  cx="60"
+                  cy="60"
+                  rx="42"
+                  ry="32"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="1"
+                  opacity="0.4"
+                />
+                <!-- Globe vertical meridian -->
+                <ellipse
+                  cx="60"
+                  cy="60"
+                  rx="16"
+                  ry="42"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="1"
+                  opacity="0.5"
+                />
+                <!-- DNS text inside globe -->
+                <text
+                  x="60"
+                  y="67"
+                  text-anchor="middle"
+                  fill="var(--mint)"
+                  font-size="18"
+                  font-weight="700"
+                  opacity="0.9"
+                >
+                  DNS
+                </text>
+                <!-- Animated dots around globe -->
+                <circle cx="30" cy="35" r="2.5" fill="var(--purple)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.8s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="90" cy="45" r="2.5" fill="var(--gold)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="45" cy="95" r="2.5" fill="var(--error)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <!-- Connection line -->
+                <text
+                  x="60"
+                  y="118"
+                  text-anchor="middle"
+                  fill="var(--muted)"
+                  font-size="9"
+                  opacity="0.7"
+                >
+                  name &rarr; IP
+                </text>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Domain Name System (DNS)</span>
+              <span class="lang-es">Sistema de Nombres de Dominio (DNS)</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 04 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 04 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. What is DNS?</span
+                ><span class="lang-es">1. &iquest;Qu&eacute; es DNS?</span>
+              </h4>
+              <p>
+                <span class="lang-en">The internet&rsquo;s address book and key services</span
+                ><span class="lang-es"
+                  >La gu&iacute;a telef&oacute;nica de internet y servicios clave</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. DNS Hierarchy</span
+                ><span class="lang-es">2. Jerarqu&iacute;a DNS</span>
+              </h4>
+              <p>
+                <span class="lang-en">Root, TLD, and authoritative servers</span
+                ><span class="lang-es"
+                  >Servidores ra&iacute;z, TLD y autoritativos</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. DNS Resolution</span
+                ><span class="lang-es">3. Resoluci&oacute;n DNS</span>
+              </h4>
+              <p>
+                <span class="lang-en">How names become IP addresses step by step</span
+                ><span class="lang-es"
+                  >C&oacute;mo los nombres se convierten en IPs paso a paso</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. DNS Security</span
+                ><span class="lang-es">4. Seguridad DNS</span>
+              </h4>
+              <p>
+                <span class="lang-en">DNSSEC, attacks, and protection strategies</span
+                ><span class="lang-es"
+                  >DNSSEC, ataques y estrategias de protecci&oacute;n</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHAT IS DNS? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">What is DNS?</span
+            ><span class="lang-es">&iquest;Qu&eacute; es DNS?</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >The Domain Name System (DNS) is the internet&rsquo;s address book. It
+              translates human-readable domain names like
+              <code>www.example.com</code> into machine-readable IP addresses like
+              <code>93.184.216.34</code>.</span
+            ><span class="lang-es"
+              >El Sistema de Nombres de Dominio (DNS) es la gu&iacute;a
+              telef&oacute;nica de internet. Traduce nombres de dominio legibles como
+              <code>www.example.com</code> a direcciones IP como
+              <code>93.184.216.34</code>.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="120" viewBox="0 0 880 120">
+              <defs>
+                <marker
+                  id="arrow-dns"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- User typing domain -->
+              <rect
+                x="40"
+                y="30"
+                width="200"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text
+                x="140"
+                y="55"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="12"
+                font-weight="600"
+              >
+                www.example.com
+              </text>
+              <text x="140" y="73" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Human-readable</tspan>
+                <tspan class="lang-es">Legible</tspan>
+              </text>
+
+              <!-- Arrow -->
+              <line
+                x1="240"
+                y1="57"
+                x2="400"
+                y2="57"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-dns)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-dns-resolve" />
+                </animateMotion>
+              </circle>
+              <path id="path-dns-resolve" d="M240,57 L400,57" fill="none" stroke="none" />
+              <text
+                x="320"
+                y="48"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="600"
+              >
+                DNS
+              </text>
+
+              <!-- IP address result -->
+              <rect
+                x="400"
+                y="30"
+                width="200"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="500"
+                y="55"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="12"
+                font-weight="600"
+              >
+                93.184.216.34
+              </text>
+              <text x="500" y="73" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Machine-readable</tspan>
+                <tspan class="lang-es">Legible por m&aacute;quina</tspan>
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Why DNS Matters</span
+                ><span class="lang-es">Por qu&eacute; DNS es importante</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Without DNS, users would have to memorize numeric IP addresses for every
+                  website they visit.</span
+                ><span class="lang-es"
+                  >Sin DNS, los usuarios tendr&iacute;an que memorizar direcciones IP
+                  num&eacute;ricas para cada sitio web.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >DNS is a distributed, hierarchical database that handles billions of
+                    queries daily. It is one of the most critical pieces of internet
+                    infrastructure &mdash; a single point of failure in DNS can make entire
+                    regions of the internet unreachable.</span
+                  ><span class="lang-es"
+                    >DNS es una base de datos distribuida y jer&aacute;rquica que maneja miles
+                    de millones de consultas diariamente. Es una de las piezas m&aacute;s
+                    cr&iacute;ticas de la infraestructura de internet &mdash; un fallo en DNS
+                    puede hacer que regiones enteras de internet sean inaccesibles.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: KEY DNS SERVICES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Key DNS Services</span
+            ><span class="lang-es">Servicios Clave de DNS</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Host-to-IP Mapping</span
+                ><span class="lang-es">Mapeo Host a IP</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Translates domain names to IPv4 (A record) or IPv6 (AAAA record)
+                  addresses.</span
+                ><span class="lang-es"
+                  >Traduce nombres de dominio a direcciones IPv4 (registro A) o IPv6
+                  (registro AAAA).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >This is the primary function of DNS. When you type a URL in your browser,
+                    DNS resolves it to the server&rsquo;s IP address so the connection can be
+                    established.</span
+                  ><span class="lang-es"
+                    >Esta es la funci&oacute;n principal de DNS. Cuando escribes una URL en tu
+                    navegador, DNS la resuelve a la direcci&oacute;n IP del servidor para
+                    establecer la conexi&oacute;n.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Host Aliasing (CNAME)</span
+                ><span class="lang-es">Alias de Host (CNAME)</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Allows one domain name to point to another, enabling canonical name
+                  mappings.</span
+                ><span class="lang-es"
+                  >Permite que un nombre de dominio apunte a otro, habilitando mapeos de
+                  nombres can&oacute;nicos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Example: <code>www.example.com</code> &rarr;
+                    <code>example.com</code>. CNAME records are commonly used for subdomains,
+                    CDN integration, and service migration without changing public-facing
+                    URLs.</span
+                  ><span class="lang-es"
+                    >Ejemplo: <code>www.example.com</code> &rarr;
+                    <code>example.com</code>. Los registros CNAME se usan com&uacute;nmente
+                    para subdominios, integraci&oacute;n CDN y migraci&oacute;n de servicios
+                    sin cambiar URLs p&uacute;blicas.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Email Routing (MX)</span
+                ><span class="lang-es">Enrutamiento de Email (MX)</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >MX records direct email to the correct mail servers for a domain.</span
+                ><span class="lang-es"
+                  >Los registros MX dirigen el correo a los servidores correctos de un
+                  dominio.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >MX records include a priority value, allowing failover: if the primary
+                    mail server is down, email is routed to a backup server with a higher
+                    priority number.</span
+                  ><span class="lang-es"
+                    >Los registros MX incluyen un valor de prioridad, permitiendo failover: si
+                    el servidor principal est&aacute; ca&iacute;do, el correo se
+                    env&iacute;a al servidor de respaldo con mayor n&uacute;mero de
+                    prioridad.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Load Balancing</span
+                ><span class="lang-es">Balanceo de Carga</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >DNS can return multiple IP addresses for a single domain, distributing
+                  traffic via round-robin.</span
+                ><span class="lang-es"
+                  >DNS puede devolver m&uacute;ltiples IPs para un dominio, distribuyendo
+                  tr&aacute;fico mediante round-robin.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Large-scale services like Google and Amazon use DNS-based load balancing
+                    to distribute users across multiple data centers worldwide. This is the
+                    simplest form of global load distribution.</span
+                  ><span class="lang-es"
+                    >Servicios a gran escala como Google y Amazon usan balanceo de carga
+                    basado en DNS para distribuir usuarios entre m&uacute;ltiples centros de
+                    datos. Esta es la forma m&aacute;s simple de distribuci&oacute;n global de
+                    carga.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: DNS HIERARCHY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">DNS Hierarchy</span
+            ><span class="lang-es">Jerarqu&iacute;a DNS</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >DNS is organized as a hierarchical tree with three main levels, from the
+              root down to individual domains.</span
+            ><span class="lang-es"
+              >DNS est&aacute; organizado como un &aacute;rbol jer&aacute;rquico con tres
+              niveles principales, desde la ra&iacute;z hasta dominios individuales.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="280" viewBox="0 0 880 280">
+              <defs>
+                <marker
+                  id="arrow-hier"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Level labels -->
+              <text x="30" y="40" fill="var(--muted)" font-size="9" font-weight="600">
+                <tspan class="lang-en">LEVEL 1</tspan>
+                <tspan class="lang-es">NIVEL 1</tspan>
+              </text>
+              <text x="30" y="130" fill="var(--muted)" font-size="9" font-weight="600">
+                <tspan class="lang-en">LEVEL 2</tspan>
+                <tspan class="lang-es">NIVEL 2</tspan>
+              </text>
+              <text x="30" y="230" fill="var(--muted)" font-size="9" font-weight="600">
+                <tspan class="lang-en">LEVEL 3</tspan>
+                <tspan class="lang-es">NIVEL 3</tspan>
+              </text>
+
+              <!-- Root DNS Server -->
+              <rect
+                x="340"
+                y="15"
+                width="200"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text
+                x="440"
+                y="38"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="13"
+                font-weight="700"
+              >
+                Root DNS (".")
+              </text>
+              <text x="440" y="53" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">13 logical root servers</tspan>
+                <tspan class="lang-es">13 servidores ra&iacute;z l&oacute;gicos</tspan>
+              </text>
+
+              <!-- Lines from Root to TLDs -->
+              <line
+                x1="340"
+                y1="65"
+                x2="180"
+                y2="105"
+                stroke="var(--primary)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+              <line
+                x1="440"
+                y1="65"
+                x2="440"
+                y2="105"
+                stroke="var(--primary)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+              <line
+                x1="540"
+                y1="65"
+                x2="700"
+                y2="105"
+                stroke="var(--primary)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+
+              <!-- TLD: .com -->
+              <rect
+                x="100"
+                y="105"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text
+                x="180"
+                y="128"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="13"
+                font-weight="600"
+              >
+                .com TLD
+              </text>
+              <text x="180" y="145" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Commercial</tspan>
+                <tspan class="lang-es">Comercial</tspan>
+              </text>
+
+              <!-- TLD: .edu -->
+              <rect
+                x="360"
+                y="105"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="440"
+                y="128"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="13"
+                font-weight="600"
+              >
+                .edu TLD
+              </text>
+              <text x="440" y="145" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Education</tspan>
+                <tspan class="lang-es">Educaci&oacute;n</tspan>
+              </text>
+
+              <!-- TLD: .org -->
+              <rect
+                x="620"
+                y="105"
+                width="160"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text
+                x="700"
+                y="128"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="13"
+                font-weight="600"
+              >
+                .org TLD
+              </text>
+              <text x="700" y="145" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Organization</tspan>
+                <tspan class="lang-es">Organizaci&oacute;n</tspan>
+              </text>
+
+              <!-- Lines from TLDs to Authoritative -->
+              <line
+                x1="140"
+                y1="155"
+                x2="140"
+                y2="205"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+              <line
+                x1="220"
+                y1="155"
+                x2="360"
+                y2="205"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+              <line
+                x1="440"
+                y1="155"
+                x2="580"
+                y2="205"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+              <line
+                x1="700"
+                y1="155"
+                x2="760"
+                y2="205"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+                stroke-dasharray="6,3"
+              />
+
+              <!-- Authoritative: bytebytego.com -->
+              <rect
+                x="50"
+                y="205"
+                width="180"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text
+                x="140"
+                y="232"
+                text-anchor="middle"
+                fill="var(--foreground)"
+                font-size="11"
+                font-weight="500"
+              >
+                bytebytego.com
+              </text>
+
+              <!-- Authoritative: amazon.com -->
+              <rect
+                x="270"
+                y="205"
+                width="180"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+              />
+              <text
+                x="360"
+                y="232"
+                text-anchor="middle"
+                fill="var(--foreground)"
+                font-size="11"
+                font-weight="500"
+              >
+                amazon.com
+              </text>
+
+              <!-- Authoritative: iteso.mx (under .edu) -->
+              <rect
+                x="490"
+                y="205"
+                width="180"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="1.5"
+              />
+              <text
+                x="580"
+                y="232"
+                text-anchor="middle"
+                fill="var(--foreground)"
+                font-size="11"
+                font-weight="500"
+              >
+                mit.edu
+              </text>
+
+              <!-- Authoritative: wikipedia.org -->
+              <rect
+                x="690"
+                y="205"
+                width="160"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="1.5"
+              />
+              <text
+                x="770"
+                y="232"
+                text-anchor="middle"
+                fill="var(--foreground)"
+                font-size="11"
+                font-weight="500"
+              >
+                wikipedia.org
+              </text>
+
+              <!-- Animated dots flowing down the tree -->
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="3s" repeatCount="indefinite">
+                  <mpath href="#path-root-com" />
+                </animateMotion>
+              </circle>
+              <path id="path-root-com" d="M440,65 L180,105" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="3s" repeatCount="indefinite" begin="1s">
+                  <mpath href="#path-com-amazon" />
+                </animateMotion>
+              </circle>
+              <path id="path-com-amazon" d="M220,155 L360,205" fill="none" stroke="none" />
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: DNS SERVER TYPES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">DNS Server Types</span
+            ><span class="lang-es">Tipos de Servidores DNS</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Root Servers</span
+                ><span class="lang-es">Servidores Ra&iacute;z</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >13 logical servers (A through M), distributed across ~1,000 physical
+                  instances worldwide via anycast.</span
+                ><span class="lang-es"
+                  >13 servidores l&oacute;gicos (A a M), distribuidos en ~1,000 instancias
+                  f&iacute;sicas en todo el mundo mediante anycast.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Root servers are managed by 12 independent organizations (ICANN, NASA,
+                    U.S. Army, etc.). They don&rsquo;t know the final IP &mdash; they only
+                    point to the correct TLD server. They are critical infrastructure protected
+                    by massive DDoS mitigation.</span
+                  ><span class="lang-es"
+                    >Los servidores ra&iacute;z son administrados por 12 organizaciones
+                    independientes (ICANN, NASA, Ej&eacute;rcito de EE.UU., etc.). No conocen
+                    la IP final &mdash; solo apuntan al servidor TLD correcto. Son
+                    infraestructura cr&iacute;tica protegida con mitigaci&oacute;n masiva de
+                    DDoS.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">TLD Servers</span
+                ><span class="lang-es">Servidores TLD</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Manage top-level domains: .com, .org, .net, .edu, country codes (.mx,
+                  .uk, .jp).</span
+                ><span class="lang-es"
+                  >Administran dominios de nivel superior: .com, .org, .net, .edu,
+                  c&oacute;digos de pa&iacute;s (.mx, .uk, .jp).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Verisign manages .com and .net TLDs, handling over 170 billion queries
+                    daily. Each TLD server knows which authoritative name servers are
+                    responsible for domains under that TLD.</span
+                  ><span class="lang-es"
+                    >Verisign administra los TLDs .com y .net, manejando m&aacute;s de 170 mil
+                    millones de consultas diarias. Cada servidor TLD sabe qu&eacute; servidores
+                    autoritativos son responsables de los dominios bajo ese TLD.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Authoritative Servers</span
+                ><span class="lang-es">Servidores Autoritativos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Hold the actual DNS records for a domain. They provide the definitive
+                  answer to DNS queries.</span
+                ><span class="lang-es"
+                  >Contienen los registros DNS reales de un dominio. Proporcionan la respuesta
+                  definitiva a consultas DNS.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Organizations either run their own authoritative DNS (BIND9, PowerDNS) or
+                    use managed services (Route 53, Cloudflare DNS). These servers are the
+                    source of truth for a domain&rsquo;s records.</span
+                  ><span class="lang-es"
+                    >Las organizaciones ejecutan su propio DNS autoritativo (BIND9, PowerDNS) o
+                    usan servicios administrados (Route 53, Cloudflare DNS). Estos servidores
+                    son la fuente de verdad para los registros de un dominio.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Recursive Resolvers</span
+                ><span class="lang-es">Resolvers Recursivos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Act as intermediaries that perform the full DNS lookup on behalf of
+                  clients (e.g., 8.8.8.8, 1.1.1.1).</span
+                ><span class="lang-es"
+                  >Act&uacute;an como intermediarios que realizan la b&uacute;squeda DNS
+                  completa en nombre de los clientes (ej., 8.8.8.8, 1.1.1.1).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Recursive resolvers cache responses to reduce latency and load on
+                    authoritative servers. Your ISP provides one by default, but public
+                    resolvers like Google (8.8.8.8) and Cloudflare (1.1.1.1) are popular
+                    alternatives.</span
+                  ><span class="lang-es"
+                    >Los resolvers recursivos almacenan respuestas en cach&eacute; para reducir
+                    latencia y carga en servidores autoritativos. Tu ISP proporciona uno por
+                    defecto, pero resolvers p&uacute;blicos como Google (8.8.8.8) y Cloudflare
+                    (1.1.1.1) son alternativas populares.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: DNS RESOLUTION FLOW ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">DNS Resolution Flow</span
+            ><span class="lang-es">Flujo de Resoluci&oacute;n DNS</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >When a client queries a domain name, the recursive resolver walks the DNS
+              hierarchy to find the IP address.</span
+            ><span class="lang-es"
+              >Cuando un cliente consulta un nombre de dominio, el resolver recursivo
+              recorre la jerarqu&iacute;a DNS para encontrar la direcci&oacute;n IP.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="200" viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-flow"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Step numbers -->
+              <text x="190" y="55" text-anchor="middle" fill="var(--primary)" font-size="10"
+                font-weight="700">
+                <tspan class="lang-en">1. Query</tspan>
+                <tspan class="lang-es">1. Consulta</tspan>
+              </text>
+              <text x="375" y="55" text-anchor="middle" fill="var(--primary)" font-size="10"
+                font-weight="700">
+                <tspan class="lang-en">2. Ask Root</tspan>
+                <tspan class="lang-es">2. Preguntar Ra&iacute;z</tspan>
+              </text>
+              <text x="560" y="55" text-anchor="middle" fill="var(--primary)" font-size="10"
+                font-weight="700">
+                <tspan class="lang-en">3. Ask TLD</tspan>
+                <tspan class="lang-es">3. Preguntar TLD</tspan>
+              </text>
+              <text x="740" y="55" text-anchor="middle" fill="var(--primary)" font-size="10"
+                font-weight="700">
+                <tspan class="lang-en">4. Ask Auth</tspan>
+                <tspan class="lang-es">4. Preguntar Auth</tspan>
+              </text>
+
+              <!-- Client -->
+              <rect
+                x="30"
+                y="70"
+                width="130"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text
+                x="95"
+                y="93"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
+                <tspan class="lang-en">Client</tspan>
+                <tspan class="lang-es">Cliente</tspan>
+              </text>
+              <text x="95" y="112" text-anchor="middle" fill="var(--muted)" font-size="8">
+                www.example.com
+              </text>
+
+              <!-- Arrow 1: Client -> Resolver -->
+              <line
+                x1="160"
+                y1="97"
+                x2="218"
+                y2="97"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-flow)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-f1" />
+                </animateMotion>
+              </circle>
+              <path id="path-f1" d="M160,97 L218,97" fill="none" stroke="none" />
+
+              <!-- Recursive Resolver -->
+              <rect
+                x="220"
+                y="70"
+                width="130"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text
+                x="285"
+                y="90"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="700"
+              >
+                <tspan class="lang-en">Recursive</tspan>
+                <tspan class="lang-es">Resolver</tspan>
+              </text>
+              <text x="285" y="105" text-anchor="middle" fill="var(--primary)" font-size="11"
+                font-weight="700">
+                <tspan class="lang-en">Resolver</tspan>
+                <tspan class="lang-es">Recursivo</tspan>
+              </text>
+              <text x="285" y="118" text-anchor="middle" fill="var(--muted)" font-size="8">
+                8.8.8.8
+              </text>
+
+              <!-- Arrow 2: Resolver -> Root -->
+              <line
+                x1="350"
+                y1="97"
+                x2="408"
+                y2="97"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-flow)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite" begin="0.5s">
+                  <mpath href="#path-f2" />
+                </animateMotion>
+              </circle>
+              <path id="path-f2" d="M350,97 L408,97" fill="none" stroke="none" />
+
+              <!-- Root DNS -->
+              <rect
+                x="410"
+                y="70"
+                width="120"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="470"
+                y="95"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="11"
+                font-weight="600"
+              >
+                Root DNS
+              </text>
+              <text x="470" y="112" text-anchor="middle" fill="var(--muted)" font-size="8">
+                "."
+              </text>
+
+              <!-- Arrow 3: Resolver -> TLD -->
+              <line
+                x1="530"
+                y1="97"
+                x2="588"
+                y2="97"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-flow)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite" begin="1s">
+                  <mpath href="#path-f3" />
+                </animateMotion>
+              </circle>
+              <path id="path-f3" d="M530,97 L588,97" fill="none" stroke="none" />
+
+              <!-- TLD DNS -->
+              <rect
+                x="590"
+                y="70"
+                width="120"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text
+                x="650"
+                y="95"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="11"
+                font-weight="600"
+              >
+                TLD DNS
+              </text>
+              <text x="650" y="112" text-anchor="middle" fill="var(--muted)" font-size="8">
+                .com
+              </text>
+
+              <!-- Arrow 4: Resolver -> Authoritative -->
+              <line
+                x1="710"
+                y1="97"
+                x2="768"
+                y2="97"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-flow)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite" begin="1.5s">
+                  <mpath href="#path-f4" />
+                </animateMotion>
+              </circle>
+              <path id="path-f4" d="M710,97 L768,97" fill="none" stroke="none" />
+
+              <!-- Authoritative -->
+              <rect
+                x="770"
+                y="70"
+                width="100"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--error)"
+                stroke-width="2"
+              />
+              <text
+                x="820"
+                y="90"
+                text-anchor="middle"
+                fill="var(--error)"
+                font-size="10"
+                font-weight="600"
+              >
+                <tspan class="lang-en">Authoritative</tspan>
+                <tspan class="lang-es">Autoritativo</tspan>
+              </text>
+              <text x="820" y="105" text-anchor="middle" fill="var(--error)" font-size="10"
+                font-weight="600">
+                Server
+              </text>
+              <text x="820" y="118" text-anchor="middle" fill="var(--muted)" font-size="8">
+                example.com
+              </text>
+
+              <!-- Return path (dashed, below) -->
+              <line
+                x1="820"
+                y1="140"
+                x2="95"
+                y2="140"
+                stroke="var(--mint)"
+                stroke-width="1.5"
+                stroke-dasharray="4,4"
+              />
+              <text
+                x="440"
+                y="160"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="10"
+                font-weight="600"
+              >
+                <tspan class="lang-en">5. Response: 93.184.216.34</tspan>
+                <tspan class="lang-es">5. Respuesta: 93.184.216.34</tspan>
+              </text>
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="3s" repeatCount="indefinite" begin="2s">
+                  <mpath href="#path-return" />
+                </animateMotion>
+              </circle>
+              <path id="path-return" d="M820,140 L95,140" fill="none" stroke="none" />
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: DNS RECORD TYPES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">DNS Record Types</span
+            ><span class="lang-es">Tipos de Registros DNS</span>
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Type</span><span class="lang-es">Tipo</span>
+                </th>
+                <th>
+                  <span class="lang-en">Value</span><span class="lang-es">Valor</span>
+                </th>
+                <th>
+                  <span class="lang-en">Purpose</span
+                  ><span class="lang-es">Prop&oacute;sito</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-blue">A</span></td>
+                <td>IPv4 address</td>
+                <td>
+                  <span class="lang-en">Maps hostname to IPv4 address</span
+                  ><span class="lang-es">Mapea hostname a direcci&oacute;n IPv4</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-blue">AAAA</span></td>
+                <td>IPv6 address</td>
+                <td>
+                  <span class="lang-en">Maps hostname to IPv6 address</span
+                  ><span class="lang-es">Mapea hostname a direcci&oacute;n IPv6</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-green">CNAME</span></td>
+                <td>
+                  <span class="lang-en">Canonical name</span
+                  ><span class="lang-es">Nombre can&oacute;nico</span>
+                </td>
+                <td>
+                  <span class="lang-en">Alias one domain to another</span
+                  ><span class="lang-es">Alias de un dominio a otro</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-orange">MX</span></td>
+                <td>
+                  <span class="lang-en">Mail server + priority</span
+                  ><span class="lang-es">Servidor de correo + prioridad</span>
+                </td>
+                <td>
+                  <span class="lang-en">Routes email to mail servers</span
+                  ><span class="lang-es">Dirige correo a servidores de mail</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-purple">NS</span></td>
+                <td>
+                  <span class="lang-en">Name server</span
+                  ><span class="lang-es">Servidor de nombres</span>
+                </td>
+                <td>
+                  <span class="lang-en">Delegates a DNS zone to authoritative servers</span
+                  ><span class="lang-es"
+                    >Delega una zona DNS a servidores autoritativos</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-blue">TXT</span></td>
+                <td>
+                  <span class="lang-en">Arbitrary text</span
+                  ><span class="lang-es">Texto arbitrario</span>
+                </td>
+                <td>
+                  <span class="lang-en">SPF, DKIM, domain verification</span
+                  ><span class="lang-es">SPF, DKIM, verificaci&oacute;n de dominio</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-orange">SOA</span></td>
+                <td>
+                  <span class="lang-en">Start of Authority</span
+                  ><span class="lang-es">Inicio de Autoridad</span>
+                </td>
+                <td>
+                  <span class="lang-en">Zone metadata: primary NS, admin email, serial</span
+                  ><span class="lang-es"
+                    >Metadatos de zona: NS primario, email admin, serial</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ========== SLIDE 8: DNS CACHING & TTL ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">DNS Caching &amp; TTL</span
+            ><span class="lang-es">Cach&eacute; DNS y TTL</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >DNS responses are cached at multiple levels to reduce lookup latency.
+              Each record has a Time-To-Live (TTL) that controls how long it stays
+              cached.</span
+            ><span class="lang-es"
+              >Las respuestas DNS se almacenan en cach&eacute; en m&uacute;ltiples niveles
+              para reducir la latencia. Cada registro tiene un Time-To-Live (TTL) que
+              controla cu&aacute;nto tiempo permanece en cach&eacute;.</span
+            >
+          </p>
+          <div class="grid-2" style="margin-top: 10px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Browser Cache</span
+                ><span class="lang-es">Cach&eacute; del Navegador</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >First layer checked. Chrome caches DNS for up to 60 seconds by
+                  default.</span
+                ><span class="lang-es"
+                  >Primera capa verificada. Chrome almacena DNS en cach&eacute; hasta 60
+                  segundos por defecto.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >View Chrome&rsquo;s DNS cache at
+                    <code>chrome://net-internals/#dns</code>. Browsers respect the TTL from
+                    DNS responses, but may apply their own minimum cache duration.</span
+                  ><span class="lang-es"
+                    >Ver la cach&eacute; DNS de Chrome en
+                    <code>chrome://net-internals/#dns</code>. Los navegadores respetan el TTL
+                    de las respuestas DNS, pero pueden aplicar su propia duraci&oacute;n
+                    m&iacute;nima de cach&eacute;.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">OS Cache</span
+                ><span class="lang-es">Cach&eacute; del SO</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Operating system resolver cache (e.g., <code>systemd-resolved</code>,
+                  <code>dnsmasq</code>).</span
+                ><span class="lang-es"
+                  >Cach&eacute; del resolver del sistema operativo (ej.,
+                  <code>systemd-resolved</code>, <code>dnsmasq</code>).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The OS also checks <code>/etc/hosts</code> before querying DNS.
+                    On macOS, use <code>sudo dscacheutil -flushcache</code> to clear. On
+                    Windows, use <code>ipconfig /flushdns</code>.</span
+                  ><span class="lang-es"
+                    >El SO tambi&eacute;n revisa <code>/etc/hosts</code> antes de consultar
+                    DNS. En macOS, usa <code>sudo dscacheutil -flushcache</code> para limpiar.
+                    En Windows, usa <code>ipconfig /flushdns</code>.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Resolver Cache</span
+                ><span class="lang-es">Cach&eacute; del Resolver</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Recursive resolvers (ISP, 8.8.8.8) cache responses per TTL, serving
+                  millions of users.</span
+                ><span class="lang-es"
+                  >Los resolvers recursivos (ISP, 8.8.8.8) almacenan respuestas seg&uacute;n
+                  el TTL, sirviendo a millones de usuarios.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >A popular domain cached at a major resolver can save billions of queries
+                    to authoritative servers. Low TTLs (e.g., 60s) enable fast failover but
+                    increase query volume. High TTLs (e.g., 86400s) reduce load but delay
+                    propagation of changes.</span
+                  ><span class="lang-es"
+                    >Un dominio popular en cach&eacute; de un resolver importante puede ahorrar
+                    miles de millones de consultas. TTLs bajos (ej., 60s) permiten failover
+                    r&aacute;pido pero aumentan el volumen de consultas. TTLs altos (ej.,
+                    86400s) reducen carga pero retrasan la propagaci&oacute;n de
+                    cambios.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">TTL Strategy</span
+                ><span class="lang-es">Estrategia de TTL</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Choosing the right TTL is a trade-off between performance and
+                  flexibility.</span
+                ><span class="lang-es"
+                  >Elegir el TTL correcto es un balance entre rendimiento y
+                  flexibilidad.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Before a migration, lower TTL to 60s a few days in advance. After the
+                    migration is stable, raise TTL back to 3600s or higher. This pattern
+                    minimizes downtime during DNS record changes.</span
+                  ><span class="lang-es"
+                    >Antes de una migraci&oacute;n, reduce el TTL a 60s unos d&iacute;as
+                    antes. Despu&eacute;s de que la migraci&oacute;n es estable, sube el TTL a
+                    3600s o m&aacute;s. Este patr&oacute;n minimiza el tiempo de
+                    inactividad durante cambios de registros DNS.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: DNS SECURITY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">DNS Security</span
+            ><span class="lang-es">Seguridad DNS</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >DNS was designed without security in mind. Several threats and defenses
+              have emerged over time.</span
+            ><span class="lang-es"
+              >DNS fue dise&ntilde;ado sin seguridad en mente. Han surgido varias amenazas
+              y defensas con el tiempo.</span
+            >
+          </p>
+          <div style="margin-top: 10px">
+            <div class="card float-in border-green expandable" style="margin-bottom: 10px">
+              <h4>
+                <span class="lang-en">DNSSEC (DNS Security Extensions)</span
+                ><span class="lang-es">DNSSEC (Extensiones de Seguridad DNS)</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Adds cryptographic signatures to DNS responses, allowing resolvers to
+                  verify that records have not been tampered with.</span
+                ><span class="lang-es"
+                  >Agrega firmas criptogr&aacute;ficas a las respuestas DNS, permitiendo a
+                  los resolvers verificar que los registros no han sido alterados.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >DNSSEC uses a chain of trust from the root zone down to individual
+                    records. It adds RRSIG, DNSKEY, DS, and NSEC record types. It does NOT
+                    encrypt queries &mdash; for that, use DNS-over-HTTPS (DoH) or
+                    DNS-over-TLS (DoT).</span
+                  ><span class="lang-es"
+                    >DNSSEC usa una cadena de confianza desde la zona ra&iacute;z hasta
+                    registros individuales. Agrega tipos de registro RRSIG, DNSKEY, DS y NSEC.
+                    NO cifra las consultas &mdash; para eso, usa DNS-over-HTTPS (DoH) o
+                    DNS-over-TLS (DoT).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable" style="margin-bottom: 10px">
+              <h4>
+                <span class="lang-en">DDoS Attacks on DNS</span
+                ><span class="lang-es">Ataques DDoS a DNS</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Attackers overwhelm DNS servers with traffic, making domains unreachable
+                  (e.g., 2016 Dyn attack took down Twitter, Reddit, Netflix).</span
+                ><span class="lang-es"
+                  >Los atacantes saturan servidores DNS con tr&aacute;fico, haciendo dominios
+                  inaccesibles (ej., ataque a Dyn en 2016 afect&oacute; Twitter, Reddit,
+                  Netflix).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >DNS amplification attacks exploit open resolvers to multiply traffic
+                    volume. Mitigations include rate limiting, anycast distribution, using
+                    multiple DNS providers, and response rate limiting (RRL).</span
+                  ><span class="lang-es"
+                    >Los ataques de amplificaci&oacute;n DNS explotan resolvers abiertos para
+                    multiplicar el volumen de tr&aacute;fico. Las mitigaciones incluyen
+                    limitaci&oacute;n de tasa, distribuci&oacute;n anycast, usar
+                    m&uacute;ltiples proveedores DNS y limitaci&oacute;n de tasa de
+                    respuesta (RRL).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">DNS Hijacking &amp; Spoofing</span
+                ><span class="lang-es">Secuestro y Suplantaci&oacute;n DNS</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Attackers redirect DNS queries to malicious servers, intercepting traffic
+                  or serving fake websites.</span
+                ><span class="lang-es"
+                  >Los atacantes redirigen consultas DNS a servidores maliciosos,
+                  interceptando tr&aacute;fico o sirviendo sitios falsos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Cache poisoning (Kaminsky attack) injects false records into resolver
+                    caches. DNS hijacking can occur at the registrar level (compromised
+                    accounts) or network level (BGP hijacking). DNSSEC and DNS-over-HTTPS
+                    help mitigate these threats.</span
+                  ><span class="lang-es"
+                    >El envenenamiento de cach&eacute; (ataque Kaminsky) inyecta registros
+                    falsos en cach&eacute;s de resolvers. El secuestro DNS puede ocurrir a
+                    nivel de registrador (cuentas comprometidas) o red (secuestro BGP). DNSSEC
+                    y DNS-over-HTTPS ayudan a mitigar estas amenazas.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: CLOUD DNS SERVICES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Cloud DNS Services</span
+            ><span class="lang-es">Servicios DNS en la Nube</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-orange expandable">
+              <h4>AWS Route 53</h4>
+              <p>
+                <span class="lang-en"
+                  >Highly available DNS with health checks, routing policies (latency,
+                  geolocation, failover), and domain registration.</span
+                ><span class="lang-es"
+                  >DNS de alta disponibilidad con health checks, pol&iacute;ticas de
+                  enrutamiento (latencia, geolocalizaci&oacute;n, failover) y registro de
+                  dominios.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Supports alias records for AWS resources (ELB, CloudFront, S3). 100% SLA
+                    uptime guarantee. Integrates with AWS Certificate Manager for SSL/TLS.
+                    Named after TCP/UDP port 53 used by DNS.</span
+                  ><span class="lang-es"
+                    >Soporta registros alias para recursos AWS (ELB, CloudFront, S3). 100% de
+                    garant&iacute;a de SLA. Se integra con AWS Certificate Manager para
+                    SSL/TLS. Nombrado por el puerto TCP/UDP 53 usado por DNS.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4>Azure DNS</h4>
+              <p>
+                <span class="lang-en"
+                  >Hosted DNS with Azure Traffic Manager integration, private DNS zones,
+                  and RBAC support.</span
+                ><span class="lang-es"
+                  >DNS hospedado con integraci&oacute;n de Azure Traffic Manager, zonas DNS
+                  privadas y soporte RBAC.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Azure DNS supports alias record sets for Azure resources and private DNS
+                    zones for name resolution within VNets. Integrates with Azure Front Door
+                    and Application Gateway.</span
+                  ><span class="lang-es"
+                    >Azure DNS soporta conjuntos de registros alias para recursos Azure y zonas
+                    DNS privadas para resoluci&oacute;n de nombres dentro de VNets. Se integra
+                    con Azure Front Door y Application Gateway.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>GCP Cloud DNS</h4>
+              <p>
+                <span class="lang-en"
+                  >Managed DNS with 100% SLA, DNSSEC support, and integration with GCP
+                  load balancers.</span
+                ><span class="lang-es"
+                  >DNS administrado con 100% SLA, soporte DNSSEC e integraci&oacute;n con
+                  balanceadores de carga de GCP.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Cloud DNS supports private zones for VPC name resolution and
+                    cross-project DNS peering. It uses Google&rsquo;s global anycast network
+                    for low-latency responses worldwide.</span
+                  ><span class="lang-es"
+                    >Cloud DNS soporta zonas privadas para resoluci&oacute;n de nombres en VPC
+                    y peering DNS entre proyectos. Usa la red anycast global de Google para
+                    respuestas de baja latencia en todo el mundo.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>Cloudflare DNS</h4>
+              <p>
+                <span class="lang-en"
+                  >Fast authoritative DNS with built-in DDoS protection, DNSSEC one-click
+                  setup, and 1.1.1.1 resolver.</span
+                ><span class="lang-es"
+                  >DNS autoritativo r&aacute;pido con protecci&oacute;n DDoS integrada,
+                  configuraci&oacute;n DNSSEC con un clic y resolver 1.1.1.1.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Cloudflare operates one of the largest CDN and DNS networks globally.
+                    Their 1.1.1.1 resolver emphasizes privacy (no logging of client IPs).
+                    Free tier available for authoritative DNS hosting.</span
+                  ><span class="lang-es"
+                    >Cloudflare opera una de las redes CDN y DNS m&aacute;s grandes del mundo.
+                    Su resolver 1.1.1.1 enfatiza la privacidad (sin registro de IPs de
+                    clientes). Nivel gratuito disponible para hosting DNS
+                    autoritativo.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span><span class="lang-es">Resumen</span>
+          </h2>
+          <div style="margin-top: 10px">
+            <div class="card float-in border-blue" style="margin-bottom: 10px">
+              <h4>
+                <span class="lang-en">DNS is Critical Infrastructure</span
+                ><span class="lang-es">DNS es Infraestructura Cr&iacute;tica</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >DNS translates domain names to IP addresses through a distributed
+                  hierarchical system of root, TLD, and authoritative servers. It handles
+                  billions of queries daily and is essential for every internet
+                  interaction.</span
+                ><span class="lang-es"
+                  >DNS traduce nombres de dominio a direcciones IP a trav&eacute;s de un
+                  sistema jer&aacute;rquico distribuido de servidores ra&iacute;z, TLD y
+                  autoritativos. Maneja miles de millones de consultas diarias y es esencial
+                  para cada interacci&oacute;n en internet.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green" style="margin-bottom: 10px">
+              <h4>
+                <span class="lang-en">Caching Reduces Latency</span
+                ><span class="lang-es">El Cach&eacute; Reduce Latencia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Multiple caching layers (browser, OS, resolver) minimize DNS lookup
+                  times. TTL values control cache duration and must be tuned for your use
+                  case &mdash; lower for fast failover, higher for reduced query
+                  volume.</span
+                ><span class="lang-es"
+                  >M&uacute;ltiples capas de cach&eacute; (navegador, SO, resolver)
+                  minimizan tiempos de b&uacute;squeda DNS. Los valores TTL controlan la
+                  duraci&oacute;n del cach&eacute; y deben ajustarse seg&uacute;n el caso
+                  &mdash; menores para failover r&aacute;pido, mayores para reducir
+                  consultas.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Security is Non-Negotiable</span
+                ><span class="lang-es">La Seguridad No Es Negociable</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >DNSSEC, DNS-over-HTTPS, and multi-provider redundancy protect against
+                  spoofing, hijacking, and DDoS attacks. Cloud DNS services provide
+                  enterprise-grade security and availability out of the box.</span
+                ><span class="lang-es"
+                  >DNSSEC, DNS-over-HTTPS y redundancia multi-proveedor protegen contra
+                  suplantaci&oacute;n, secuestro y ataques DDoS. Los servicios DNS en la nube
+                  proporcionan seguridad y disponibilidad de nivel empresarial de forma
+                  inmediata.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: Q&A ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 60px">
+            <div class="diagram-container">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <h1 style="margin-top: 20px">
+              <span class="lang-en">Questions &amp; Answers</span>
+              <span class="lang-es">Preguntas y Respuestas</span>
+            </h1>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 04</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 04</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+      <script>
+    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
+    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
+    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
+    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
+    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
+    setTimeout(updateProgressBar,500);
+    </script>
+
+</body>
+</html>

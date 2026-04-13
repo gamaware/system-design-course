@@ -1,0 +1,2033 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proxies &amp; API Gateways | Proxies y API Gateways - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <style>
+      /* ============ CKM DESIGN ENHANCEMENTS ============ */
+      :root {
+        --color-primary: #00D4FF;
+        --color-secondary: #FF00AA;
+        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+      }
+      .reveal h1, .reveal h2 {
+        background: var(--primitive-gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .card { transition: all 0.3s ease; }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
+      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+    </style>
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress-bar-top" id="progressBarTop"></div>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="120" height="130" viewBox="0 0 120 130">
+                <!-- Proxy shield shape -->
+                <path
+                  d="M60,10 L100,30 L100,70 C100,95 60,120 60,120 C60,120 20,95 20,70 L20,30 Z"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+                <!-- Arrow inside shield (routing symbol) -->
+                <path
+                  d="M40,55 L60,55 L60,42 L80,60 L60,78 L60,65 L40,65 Z"
+                  fill="var(--mint)"
+                  opacity="0.8"
+                >
+                  <animate
+                    attributeName="opacity"
+                    values="0.5;1;0.5"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+                <!-- Animated data dots -->
+                <circle cx="35" cy="40" r="2.5" fill="var(--purple)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.8s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="85" cy="45" r="2.5" fill="var(--gold)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="50" cy="95" r="2.5" fill="var(--error)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Proxies &amp; API Gateways</span>
+              <span class="lang-es">Proxies y API Gateways</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 12 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 12 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Proxy Fundamentals</span
+                ><span class="lang-es">1. Fundamentos de Proxies</span>
+              </h4>
+              <p>
+                <span class="lang-en">Forward proxy, reverse proxy, use cases</span
+                ><span class="lang-es"
+                  >Proxy directo, proxy inverso, casos de uso</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. API Gateway Features</span
+                ><span class="lang-es">2. Funciones del API Gateway</span>
+              </h4>
+              <p>
+                <span class="lang-en">Routing, auth, rate limiting, transformation</span
+                ><span class="lang-es"
+                  >Enrutamiento, autenticaci&oacute;n, l&iacute;mites, transformaci&oacute;n</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. Security &amp; Performance</span
+                ><span class="lang-es">3. Seguridad y Rendimiento</span>
+              </h4>
+              <p>
+                <span class="lang-en">Authentication flows, rate limiting, circuit breaker</span
+                ><span class="lang-es"
+                  >Flujos de autenticaci&oacute;n, limitaci&oacute;n de tasa, circuit breaker</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Architecture Patterns</span
+                ><span class="lang-es">4. Patrones de Arquitectura</span>
+              </h4>
+              <p>
+                <span class="lang-en">Gateway + microservices, platform comparison</span
+                ><span class="lang-es"
+                  >Gateway + microservicios, comparaci&oacute;n de plataformas</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHAT IS A PROXY? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">What is a Proxy?</span
+            ><span class="lang-es">&iquest;Qu&eacute; es un Proxy?</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >A proxy is an intermediary server that sits between clients and backend
+              servers. It intercepts requests and can modify, filter, or route them.</span
+            ><span class="lang-es"
+              >Un proxy es un servidor intermediario entre los clientes y los servidores
+              backend. Intercepta solicitudes y puede modificarlas, filtrarlas o
+              enrutarlas.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="160" viewBox="0 0 880 160">
+              <defs>
+                <marker
+                  id="arrow-proxy"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client -->
+              <rect
+                x="40"
+                y="45"
+                width="140"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text
+                x="110"
+                y="70"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="12"
+                font-weight="600"
+              >
+                <tspan class="lang-en">Client</tspan>
+                <tspan class="lang-es">Cliente</tspan>
+              </text>
+              <text x="110" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">
+                HTTP requests
+              </text>
+
+              <!-- Arrow: Client -> Proxy -->
+              <line
+                x1="180"
+                y1="72"
+                x2="320"
+                y2="72"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-proxy)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-client-proxy" />
+                </animateMotion>
+              </circle>
+              <path id="path-client-proxy" d="M180,72 L320,72" fill="none" stroke="none" />
+
+              <!-- Proxy -->
+              <rect
+                x="320"
+                y="35"
+                width="200"
+                height="75"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text
+                x="420"
+                y="65"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="14"
+                font-weight="700"
+              >
+                Proxy
+              </text>
+              <text x="420" y="85" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Intercept &amp; Route</tspan>
+                <tspan class="lang-es">Interceptar y Enrutar</tspan>
+              </text>
+
+              <!-- Arrow: Proxy -> Server -->
+              <line
+                x1="520"
+                y1="72"
+                x2="660"
+                y2="72"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-proxy)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-proxy-server" />
+                </animateMotion>
+              </circle>
+              <path id="path-proxy-server" d="M520,72 L660,72" fill="none" stroke="none" />
+
+              <!-- Server -->
+              <rect
+                x="660"
+                y="45"
+                width="140"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
+              />
+              <text
+                x="730"
+                y="70"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="12"
+                font-weight="600"
+              >
+                <tspan class="lang-en">Server</tspan>
+                <tspan class="lang-es">Servidor</tspan>
+              </text>
+              <text x="730" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Backend</tspan>
+                <tspan class="lang-es">Backend</tspan>
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 12px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Forward vs Reverse Proxy</span
+                ><span class="lang-es">Proxy Directo vs Proxy Inverso</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >A forward proxy acts on behalf of clients; a reverse proxy acts on
+                  behalf of servers.</span
+                ><span class="lang-es"
+                  >Un proxy directo act&uacute;a en nombre de los clientes; un proxy
+                  inverso act&uacute;a en nombre de los servidores.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Forward proxies hide client identity from the server (e.g., VPN,
+                    corporate firewalls). Reverse proxies hide server identity from the
+                    client (e.g., load balancers, CDNs). Both improve security, performance,
+                    and control over network traffic.</span
+                  ><span class="lang-es"
+                    >Los proxies directos ocultan la identidad del cliente al servidor
+                    (ej., VPN, firewalls corporativos). Los proxies inversos ocultan la
+                    identidad del servidor al cliente (ej., balanceadores de carga, CDNs).
+                    Ambos mejoran la seguridad, rendimiento y control del tr&aacute;fico
+                    de red.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: FORWARD PROXY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Forward Proxy</span
+            ><span class="lang-es">Proxy Directo</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >A forward proxy sits in front of clients and forwards their requests
+              to the internet. The server only sees the proxy, not the client.</span
+            ><span class="lang-es"
+              >Un proxy directo se coloca frente a los clientes y reenv&iacute;a sus
+              solicitudes a internet. El servidor solo ve al proxy, no al cliente.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-fwd"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client A -->
+              <rect
+                x="30"
+                y="15"
+                width="120"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="90" y="43" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Client A</tspan><tspan class="lang-es">Cliente A</tspan>
+              </text>
+
+              <!-- Client B -->
+              <rect
+                x="30"
+                y="80"
+                width="120"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="90" y="108" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Client B</tspan><tspan class="lang-es">Cliente B</tspan>
+              </text>
+
+              <!-- Client C -->
+              <rect
+                x="30"
+                y="145"
+                width="120"
+                height="45"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="90" y="173" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Client C</tspan><tspan class="lang-es">Cliente C</tspan>
+              </text>
+
+              <!-- Arrows: Clients -> Proxy (horizontal to a junction, then vertical to proxy) -->
+              <line x1="150" y1="37" x2="250" y2="37" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="250" y1="37" x2="250" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="150" y1="102" x2="250" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="150" y1="167" x2="250" y2="167" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="250" y1="167" x2="250" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="250" y1="102" x2="330" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-fwd)" />
+
+              <!-- Animated dots on each client path -->
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-fwd-a" />
+                </animateMotion>
+              </circle>
+              <path id="path-fwd-a" d="M150,37 L250,37 L250,102 L330,102" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-fwd-b" />
+                </animateMotion>
+              </circle>
+              <path id="path-fwd-b" d="M150,102 L330,102" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-fwd-c" />
+                </animateMotion>
+              </circle>
+              <path id="path-fwd-c" d="M150,167 L250,167 L250,102 L330,102" fill="none" stroke="none" />
+
+              <!-- Forward Proxy -->
+              <rect
+                x="330"
+                y="65"
+                width="180"
+                height="75"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text x="420" y="95" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Forward Proxy</tspan><tspan class="lang-es">Proxy Directo</tspan>
+              </text>
+              <text x="420" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Hides client identity</tspan><tspan class="lang-es">Oculta identidad del cliente</tspan>
+              </text>
+
+              <!-- Arrow: Proxy -> Internet -->
+              <line x1="510" y1="102" x2="630" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-fwd)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-fwd-internet" />
+                </animateMotion>
+              </circle>
+              <path id="path-fwd-internet" d="M510,102 L630,102" fill="none" stroke="none" />
+
+              <!-- Internet / Servers -->
+              <rect
+                x="630"
+                y="55"
+                width="200"
+                height="95"
+                rx="12"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="2"
+                stroke-dasharray="10,5"
+              />
+              <text x="730" y="82" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                Internet
+              </text>
+              <rect x="660" y="98" width="60" height="30" rx="6" fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="690" y="118" text-anchor="middle" fill="var(--gold)" font-size="9">Server 1</text>
+              <rect x="740" y="98" width="60" height="30" rx="6" fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="770" y="118" text-anchor="middle" fill="var(--gold)" font-size="9">Server 2</text>
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">When to Use</span
+                ><span class="lang-es">Cu&aacute;ndo Usar</span>
+              </h4>
+              <p>
+                <span class="lang-en">VPN access, content filtering, caching</span
+                ><span class="lang-es">Acceso VPN, filtrado de contenido, cach&eacute;</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Forward proxies let organizations enforce browsing policies, cache
+                    frequently accessed content to save bandwidth, and provide anonymity
+                    by masking client IP addresses from destination servers.</span
+                  ><span class="lang-es"
+                    >Los proxies directos permiten a las organizaciones aplicar
+                    pol&iacute;ticas de navegaci&oacute;n, almacenar en cach&eacute;
+                    contenido frecuente para ahorrar ancho de banda y proporcionar
+                    anonimato al enmascarar las IPs de los clientes.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Examples</span
+                ><span class="lang-es">Ejemplos</span>
+              </h4>
+              <p>
+                <span class="lang-en">Corporate networks, schools, Squid proxy</span
+                ><span class="lang-es">Redes corporativas, escuelas, Squid proxy</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Corporate firewalls use forward proxies to control which websites
+                    employees can access. Schools filter inappropriate content. Squid is
+                    a popular open-source forward proxy with caching capabilities.</span
+                  ><span class="lang-es"
+                    >Los firewalls corporativos usan proxies directos para controlar
+                    qu&eacute; sitios web pueden acceder los empleados. Las escuelas
+                    filtran contenido inapropiado. Squid es un proxy directo de
+                    c&oacute;digo abierto con capacidades de cach&eacute;.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: REVERSE PROXY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Reverse Proxy</span
+            ><span class="lang-es">Proxy Inverso</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >A reverse proxy sits in front of backend servers and forwards client
+              requests to the appropriate server. The client only sees the proxy.</span
+            ><span class="lang-es"
+              >Un proxy inverso se coloca frente a los servidores backend y reenv&iacute;a
+              las solicitudes de los clientes al servidor apropiado. El cliente solo ve
+              al proxy.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-rev"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Internet / Clients -->
+              <rect
+                x="30"
+                y="55"
+                width="180"
+                height="95"
+                rx="12"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="10,5"
+              />
+              <text x="120" y="82" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Internet Clients</tspan><tspan class="lang-es">Clientes de Internet</tspan>
+              </text>
+              <rect x="50" y="98" width="60" height="30" rx="6" fill="var(--surface)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="80" y="118" text-anchor="middle" fill="var(--mint)" font-size="9">
+                <tspan class="lang-en">User 1</tspan><tspan class="lang-es">Usuario 1</tspan>
+              </text>
+              <rect x="130" y="98" width="60" height="30" rx="6" fill="var(--surface)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="160" y="118" text-anchor="middle" fill="var(--mint)" font-size="9">
+                <tspan class="lang-en">User 2</tspan><tspan class="lang-es">Usuario 2</tspan>
+              </text>
+
+              <!-- Arrow: Clients -> Reverse Proxy -->
+              <line x1="210" y1="102" x2="330" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-rev)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-rev-in" />
+                </animateMotion>
+              </circle>
+              <path id="path-rev-in" d="M210,102 L330,102" fill="none" stroke="none" />
+
+              <!-- Reverse Proxy -->
+              <rect
+                x="330"
+                y="65"
+                width="180"
+                height="75"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text x="420" y="95" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Reverse Proxy</tspan><tspan class="lang-es">Proxy Inverso</tspan>
+              </text>
+              <text x="420" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Hides server identity</tspan><tspan class="lang-es">Oculta identidad del servidor</tspan>
+              </text>
+
+              <!-- Arrow: Proxy -> Backend junction -->
+              <line x1="510" y1="102" x2="590" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+
+              <!-- Fan out to 3 backends -->
+              <line x1="590" y1="102" x2="590" y2="37" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="590" y1="37" x2="660" y2="37" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-rev)" />
+              <line x1="590" y1="102" x2="660" y2="102" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-rev)" />
+              <line x1="590" y1="102" x2="590" y2="167" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="590" y1="167" x2="660" y2="167" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-rev)" />
+
+              <!-- Animated dots -->
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-rev-s1" />
+                </animateMotion>
+              </circle>
+              <path id="path-rev-s1" d="M510,102 L590,102 L590,37 L660,37" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-rev-s2" />
+                </animateMotion>
+              </circle>
+              <path id="path-rev-s2" d="M510,102 L660,102" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-rev-s3" />
+                </animateMotion>
+              </circle>
+              <path id="path-rev-s3" d="M510,102 L590,102 L590,167 L660,167" fill="none" stroke="none" />
+
+              <!-- Backend Servers -->
+              <rect x="660" y="15" width="140" height="45" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="730" y="43" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Backend A</tspan><tspan class="lang-es">Backend A</tspan>
+              </text>
+
+              <rect x="660" y="80" width="140" height="45" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="730" y="108" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Backend B</tspan><tspan class="lang-es">Backend B</tspan>
+              </text>
+
+              <rect x="660" y="145" width="140" height="45" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="730" y="173" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Backend C</tspan><tspan class="lang-es">Backend C</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">When to Use</span
+                ><span class="lang-es">Cu&aacute;ndo Usar</span>
+              </h4>
+              <p>
+                <span class="lang-en">Load balancing, SSL termination, compression</span
+                ><span class="lang-es">Balanceo de carga, terminaci&oacute;n SSL, compresi&oacute;n</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Reverse proxies distribute incoming traffic across multiple servers,
+                    handle SSL/TLS encryption centrally, compress responses to save
+                    bandwidth, and protect backends from direct internet exposure.</span
+                  ><span class="lang-es"
+                    >Los proxies inversos distribuyen el tr&aacute;fico entrante entre
+                    m&uacute;ltiples servidores, manejan el cifrado SSL/TLS de forma
+                    centralizada, comprimen respuestas para ahorrar ancho de banda y
+                    protegen los backends de la exposici&oacute;n directa a internet.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Examples</span
+                ><span class="lang-es">Ejemplos</span>
+              </h4>
+              <p>
+                <span class="lang-en">Nginx, HAProxy, Cloudflare, Envoy</span
+                ><span class="lang-es">Nginx, HAProxy, Cloudflare, Envoy</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Nginx and HAProxy are the most popular open-source reverse proxies.
+                    Cloudflare operates a global reverse proxy network (CDN + DDoS
+                    protection). Envoy is a modern proxy designed for service mesh
+                    architectures.</span
+                  ><span class="lang-es"
+                    >Nginx y HAProxy son los proxies inversos de c&oacute;digo abierto
+                    m&aacute;s populares. Cloudflare opera una red global de proxies
+                    inversos (CDN + protecci&oacute;n DDoS). Envoy es un proxy moderno
+                    dise&ntilde;ado para arquitecturas de service mesh.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: WHAT IS AN API GATEWAY? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">What is an API Gateway?</span
+            ><span class="lang-es">&iquest;Qu&eacute; es un API Gateway?</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >An API Gateway is a central entry point for all API requests.
+              It handles cross-cutting concerns like authentication, rate limiting,
+              and routing so individual services do not have to.</span
+            ><span class="lang-es"
+              >Un API Gateway es un punto de entrada central para todas las solicitudes
+              de API. Maneja aspectos transversales como autenticaci&oacute;n,
+              limitaci&oacute;n de tasa y enrutamiento para que los servicios
+              individuales no tengan que hacerlo.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="240" viewBox="0 0 880 240">
+              <defs>
+                <marker
+                  id="arrow-gw"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client Apps -->
+              <g class="arch-tier client-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'client-tier')">
+                <rect
+                  x="30"
+                  y="70"
+                  width="140"
+                  height="100"
+                  rx="8"
+                  fill="var(--surface)"
+                  stroke="var(--mint)"
+                  stroke-width="2"
+                />
+                <text x="100" y="95" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">
+                  <tspan class="lang-en">Client Apps</tspan><tspan class="lang-es">Apps Cliente</tspan>
+                </text>
+                <text x="100" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">Web / Mobile</text>
+                <text x="100" y="130" text-anchor="middle" fill="var(--muted)" font-size="9">IoT / Partners</text>
+              </g>
+
+              <!-- Arrow: Clients -> Gateway -->
+              <line x1="170" y1="120" x2="290" y2="120" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-gw)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-gw-in" />
+                </animateMotion>
+              </circle>
+              <path id="path-gw-in" d="M170,120 L290,120" fill="none" stroke="none" />
+
+              <!-- API Gateway -->
+              <g class="arch-tier gateway-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'gateway-tier')">
+                <rect
+                  x="290"
+                  y="40"
+                  width="200"
+                  height="160"
+                  rx="8"
+                  fill="var(--surface)"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                />
+                <text x="390" y="75" text-anchor="middle" fill="var(--primary)" font-size="14" font-weight="700">
+                  API Gateway
+                </text>
+                <text x="390" y="100" text-anchor="middle" fill="var(--muted)" font-size="9">Auth &middot; Rate Limit</text>
+                <text x="390" y="116" text-anchor="middle" fill="var(--muted)" font-size="9">
+                  <tspan class="lang-en">Routing &middot; Caching</tspan><tspan class="lang-es">Enrutamiento &middot; Cach&eacute;</tspan>
+                </text>
+                <text x="390" y="132" text-anchor="middle" fill="var(--muted)" font-size="9">
+                  <tspan class="lang-en">Transform &middot; Logging</tspan><tspan class="lang-es">Transformaci&oacute;n &middot; Logs</tspan>
+                </text>
+              </g>
+
+              <!-- Arrow: Gateway -> Service A -->
+              <line x1="490" y1="80" x2="610" y2="50" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="610" y1="50" x2="630" y2="50" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-gw)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-gw-sa" />
+                </animateMotion>
+              </circle>
+              <path id="path-gw-sa" d="M490,80 L610,50 L630,50" fill="none" stroke="none" />
+
+              <!-- Arrow: Gateway -> Service B -->
+              <line x1="490" y1="120" x2="630" y2="120" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-gw)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-gw-sb" />
+                </animateMotion>
+              </circle>
+              <path id="path-gw-sb" d="M490,120 L630,120" fill="none" stroke="none" />
+
+              <!-- Arrow: Gateway -> Service C -->
+              <line x1="490" y1="160" x2="610" y2="190" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="610" y1="190" x2="630" y2="190" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-gw)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-gw-sc" />
+                </animateMotion>
+              </circle>
+              <path id="path-gw-sc" d="M490,160 L610,190 L630,190" fill="none" stroke="none" />
+
+              <!-- Service A -->
+              <g class="arch-tier svc-a-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'svc-a-tier')">
+                <rect x="630" y="25" width="150" height="50" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+                <text x="705" y="48" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">Service A</tspan><tspan class="lang-es">Servicio A</tspan>
+                </text>
+                <text x="705" y="64" text-anchor="middle" fill="var(--muted)" font-size="9">
+                  <tspan class="lang-en">Users</tspan><tspan class="lang-es">Usuarios</tspan>
+                </text>
+              </g>
+
+              <!-- Service B -->
+              <g class="arch-tier svc-b-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'svc-b-tier')">
+                <rect x="630" y="95" width="150" height="50" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+                <text x="705" y="118" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">Service B</tspan><tspan class="lang-es">Servicio B</tspan>
+                </text>
+                <text x="705" y="134" text-anchor="middle" fill="var(--muted)" font-size="9">
+                  <tspan class="lang-en">Orders</tspan><tspan class="lang-es">&Oacute;rdenes</tspan>
+                </text>
+              </g>
+
+              <!-- Service C -->
+              <g class="arch-tier svc-c-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'svc-c-tier')">
+                <rect x="630" y="165" width="150" height="50" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+                <text x="705" y="188" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">Service C</tspan><tspan class="lang-es">Servicio C</tspan>
+                </text>
+                <text x="705" y="204" text-anchor="middle" fill="var(--muted)" font-size="9">
+                  <tspan class="lang-en">Payments</tspan><tspan class="lang-es">Pagos</tspan>
+                </text>
+              </g>
+            </svg>
+          </div>
+          <p style="font-size: 0.6em; color: var(--muted); text-align: center; margin-top: 4px">
+            <span class="lang-en">Click each component to highlight</span
+            ><span class="lang-es">Clic en cada componente para resaltar</span>
+          </p>
+          <div style="min-height: 40px; margin-top: 4px">
+            <div class="tier-desc card" data-tier="client-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--mint)"><span class="lang-en">Clients:</span><span class="lang-es">Clientes:</span></b><br />
+              <span class="lang-en">Web, mobile, IoT devices, and partner systems that consume APIs through a single entry point.</span>
+              <span class="lang-es">Aplicaciones web, m&oacute;viles, dispositivos IoT y sistemas de socios que consumen APIs a trav&eacute;s de un &uacute;nico punto de entrada.</span>
+            </div>
+            <div class="tier-desc card" data-tier="gateway-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--primary)"><span class="lang-en">API Gateway:</span><span class="lang-es">API Gateway:</span></b><br />
+              <span class="lang-en">Central entry point handling authentication, rate limiting, request routing, caching, protocol transformation, and observability.</span>
+              <span class="lang-es">Punto de entrada central que maneja autenticaci&oacute;n, limitaci&oacute;n de tasa, enrutamiento, cach&eacute;, transformaci&oacute;n de protocolos y observabilidad.</span>
+            </div>
+            <div class="tier-desc card" data-tier="svc-a-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--gold)"><span class="lang-en">Service A (Users):</span><span class="lang-es">Servicio A (Usuarios):</span></b><br />
+              <span class="lang-en">Handles user registration, authentication, and profile management independently.</span>
+              <span class="lang-es">Maneja registro de usuarios, autenticaci&oacute;n y gesti&oacute;n de perfiles de forma independiente.</span>
+            </div>
+            <div class="tier-desc card" data-tier="svc-b-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--gold)"><span class="lang-en">Service B (Orders):</span><span class="lang-es">Servicio B (&Oacute;rdenes):</span></b><br />
+              <span class="lang-en">Manages order lifecycle: creation, status tracking, and fulfillment.</span>
+              <span class="lang-es">Gestiona el ciclo de vida de &oacute;rdenes: creaci&oacute;n, seguimiento de estado y cumplimiento.</span>
+            </div>
+            <div class="tier-desc card" data-tier="svc-c-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--gold)"><span class="lang-en">Service C (Payments):</span><span class="lang-es">Servicio C (Pagos):</span></b><br />
+              <span class="lang-en">Processes payments, refunds, and billing operations with PCI compliance.</span>
+              <span class="lang-es">Procesa pagos, reembolsos y operaciones de facturaci&oacute;n con cumplimiento PCI.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: API GATEWAY FEATURES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">API Gateway Features</span
+            ><span class="lang-es">Funciones del API Gateway</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Request Routing</span
+                ><span class="lang-es">Enrutamiento</span>
+              </h4>
+              <p>
+                <span class="lang-en">Route requests to the correct backend service</span
+                ><span class="lang-es">Enrutar solicitudes al servicio backend correcto</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Path-based routing (/users, /orders), header-based routing, query
+                    parameter routing, and weighted routing for canary deployments. The
+                    gateway decouples clients from backend topology changes.</span
+                  ><span class="lang-es"
+                    >Enrutamiento por ruta (/users, /orders), por encabezados, por
+                    par&aacute;metros de consulta y enrutamiento ponderado para
+                    despliegues canary. El gateway desacopla a los clientes de los
+                    cambios de topolog&iacute;a del backend.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Authentication</span
+                ><span class="lang-es">Autenticaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en">Verify identity before reaching services</span
+                ><span class="lang-es">Verificar identidad antes de llegar a los servicios</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >JWT validation, OAuth 2.0 token introspection, API key verification,
+                    and mTLS certificate validation. Centralizes auth logic so individual
+                    services can focus on business logic.</span
+                  ><span class="lang-es"
+                    >Validaci&oacute;n de JWT, introspecci&oacute;n de tokens OAuth 2.0,
+                    verificaci&oacute;n de API keys y validaci&oacute;n de certificados
+                    mTLS. Centraliza la l&oacute;gica de autenticaci&oacute;n para que
+                    los servicios se enfoquen en la l&oacute;gica de negocio.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Rate Limiting</span
+                ><span class="lang-es">L&iacute;mite de Tasa</span>
+              </h4>
+              <p>
+                <span class="lang-en">Control request volume per client</span
+                ><span class="lang-es">Controlar volumen de solicitudes por cliente</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Protects backends from abuse and traffic spikes. Can be configured
+                    per API key, IP address, or user identity. Common algorithms include
+                    token bucket and sliding window counters.</span
+                  ><span class="lang-es"
+                    >Protege los backends de abuso y picos de tr&aacute;fico. Se puede
+                    configurar por API key, direcci&oacute;n IP o identidad de usuario.
+                    Los algoritmos comunes incluyen token bucket y ventana deslizante.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Caching</span
+                ><span class="lang-es">Cach&eacute;</span>
+              </h4>
+              <p>
+                <span class="lang-en">Cache responses to reduce backend load</span
+                ><span class="lang-es">Cachear respuestas para reducir carga del backend</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The gateway can cache GET responses using TTL-based expiration.
+                    Reduces latency for frequently requested data and shields backends
+                    from redundant queries during traffic spikes.</span
+                  ><span class="lang-es"
+                    >El gateway puede cachear respuestas GET usando expiraci&oacute;n
+                    basada en TTL. Reduce la latencia para datos solicitados frecuentemente
+                    y protege los backends de consultas redundantes durante picos.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Protocol Transform</span
+                ><span class="lang-es">Transformaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en">Translate between protocols and formats</span
+                ><span class="lang-es">Traducir entre protocolos y formatos</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Convert REST to gRPC, XML to JSON, or aggregate multiple backend
+                    calls into a single client response. Enables backend evolution without
+                    breaking existing clients.</span
+                  ><span class="lang-es"
+                    >Convertir REST a gRPC, XML a JSON, o agregar m&uacute;ltiples
+                    llamadas al backend en una sola respuesta al cliente. Permite la
+                    evoluci&oacute;n del backend sin romper clientes existentes.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Logging &amp; Monitoring</span
+                ><span class="lang-es">Logs y Monitoreo</span>
+              </h4>
+              <p>
+                <span class="lang-en">Centralized observability for all API traffic</span
+                ><span class="lang-es">Observabilidad centralizada para todo el tr&aacute;fico API</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Request/response logging, latency metrics, error rate tracking, and
+                    distributed tracing. A single point to monitor API health across all
+                    services without instrumenting each one individually.</span
+                  ><span class="lang-es"
+                    >Registro de solicitudes/respuestas, m&eacute;tricas de latencia,
+                    seguimiento de tasas de error y trazado distribuido. Un &uacute;nico
+                    punto para monitorear la salud de las APIs sin instrumentar cada
+                    servicio individualmente.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: AUTHENTICATION FLOW ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Authentication Flow</span
+            ><span class="lang-es">Flujo de Autenticaci&oacute;n</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >The API Gateway centralizes authentication so backend services trust
+              every request that reaches them.</span
+            ><span class="lang-es"
+              >El API Gateway centraliza la autenticaci&oacute;n para que los servicios
+              backend conf&iacute;en en cada solicitud que les llega.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="260" viewBox="0 0 880 260">
+              <defs>
+                <marker
+                  id="arrow-auth"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client -->
+              <rect x="30" y="30" width="120" height="50" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="90" y="53" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Client</tspan><tspan class="lang-es">Cliente</tspan>
+              </text>
+              <text x="90" y="70" text-anchor="middle" fill="var(--muted)" font-size="9">+ JWT Token</text>
+
+              <!-- API Gateway -->
+              <rect x="280" y="30" width="160" height="50" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5" />
+              <text x="360" y="58" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">
+                API Gateway
+              </text>
+
+              <!-- Identity Provider -->
+              <rect x="280" y="140" width="160" height="50" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2" />
+              <text x="360" y="163" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Identity Provider</tspan><tspan class="lang-es">Proveedor de Identidad</tspan>
+              </text>
+              <text x="360" y="180" text-anchor="middle" fill="var(--muted)" font-size="9">OAuth 2.0 / OIDC</text>
+
+              <!-- Backend Service -->
+              <rect x="620" y="30" width="160" height="50" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="700" y="53" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Backend Service</tspan><tspan class="lang-es">Servicio Backend</tspan>
+              </text>
+              <text x="700" y="70" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Trusted request</tspan><tspan class="lang-es">Solicitud confiable</tspan>
+              </text>
+
+              <!-- Step 1: Client -> Gateway -->
+              <circle cx="200" cy="35" r="12" fill="var(--primary)" opacity="0.9" />
+              <text x="200" y="39" text-anchor="middle" fill="var(--bg)" font-size="10" font-weight="700">1</text>
+              <line x1="150" y1="55" x2="280" y2="55" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auth)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-auth-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-auth-1" d="M150,55 L280,55" fill="none" stroke="none" />
+
+              <!-- Step 2: Gateway -> IdP (vertical down) -->
+              <circle cx="250" cy="110" r="12" fill="var(--purple)" opacity="0.9" />
+              <text x="250" y="114" text-anchor="middle" fill="var(--bg)" font-size="10" font-weight="700">2</text>
+              <line x1="330" y1="80" x2="330" y2="140" stroke="var(--purple)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auth)" />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-auth-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-auth-2" d="M330,80 L330,140" fill="none" stroke="none" />
+
+              <!-- Step 3: IdP -> Gateway (vertical up) -->
+              <circle cx="470" cy="110" r="12" fill="var(--purple)" opacity="0.9" />
+              <text x="470" y="114" text-anchor="middle" fill="var(--bg)" font-size="10" font-weight="700">3</text>
+              <line x1="390" y1="140" x2="390" y2="80" stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auth)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-auth-3" />
+                </animateMotion>
+              </circle>
+              <path id="path-auth-3" d="M390,140 L390,80" fill="none" stroke="none" />
+
+              <!-- Step 4: Gateway -> Backend -->
+              <circle cx="540" cy="35" r="12" fill="var(--mint)" opacity="0.9" />
+              <text x="540" y="39" text-anchor="middle" fill="var(--bg)" font-size="10" font-weight="700">4</text>
+              <line x1="440" y1="55" x2="620" y2="55" stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auth)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-auth-4" />
+                </animateMotion>
+              </circle>
+              <path id="path-auth-4" d="M440,55 L620,55" fill="none" stroke="none" />
+
+              <!-- Step labels -->
+              <text x="200" y="60" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Send request + token</tspan><tspan class="lang-es">Enviar solicitud + token</tspan>
+              </text>
+              <text x="305" y="116" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Validate token</tspan><tspan class="lang-es">Validar token</tspan>
+              </text>
+              <text x="420" y="116" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Token valid</tspan><tspan class="lang-es">Token v&aacute;lido</tspan>
+              </text>
+              <text x="540" y="60" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Forward (trusted)</tspan><tspan class="lang-es">Reenviar (confiable)</tspan>
+              </text>
+
+              <!-- Description box -->
+              <rect x="30" y="210" width="820" height="40" rx="8" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+              <text x="440" y="235" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">The gateway validates the token with the Identity Provider before forwarding the request to the backend service.</tspan>
+                <tspan class="lang-es">El gateway valida el token con el Proveedor de Identidad antes de reenviar la solicitud al servicio backend.</tspan>
+              </text>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: RATE LIMITING ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Rate Limiting</span
+            ><span class="lang-es">Limitaci&oacute;n de Tasa</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Rate limiting protects backend services from being overwhelmed by
+              controlling the number of requests a client can make in a given time
+              window.</span
+            ><span class="lang-es"
+              >La limitaci&oacute;n de tasa protege los servicios backend de ser
+              abrumados al controlar el n&uacute;mero de solicitudes que un cliente
+              puede hacer en una ventana de tiempo.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="200" viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-rl"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Many Requests -->
+              <rect x="30" y="40" width="160" height="120" rx="8" fill="var(--surface)" stroke="var(--warning)" stroke-width="2" />
+              <text x="110" y="70" text-anchor="middle" fill="var(--warning)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Many Requests</tspan><tspan class="lang-es">Muchas Solicitudes</tspan>
+              </text>
+              <!-- Request arrows (burst) -->
+              <line x1="60" y1="90" x2="110" y2="90" stroke="var(--error)" stroke-width="1.5" />
+              <line x1="60" y1="100" x2="120" y2="100" stroke="var(--error)" stroke-width="1.5" />
+              <line x1="60" y1="110" x2="105" y2="110" stroke="var(--error)" stroke-width="1.5" />
+              <line x1="60" y1="120" x2="130" y2="120" stroke="var(--error)" stroke-width="1.5" />
+              <line x1="60" y1="130" x2="115" y2="130" stroke="var(--error)" stroke-width="1.5" />
+              <line x1="60" y1="140" x2="125" y2="140" stroke="var(--error)" stroke-width="1.5" />
+
+              <!-- Arrow: Requests -> Rate Limiter -->
+              <line x1="190" y1="100" x2="310" y2="100" stroke="var(--warning)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-rl)" />
+              <circle r="3" fill="var(--warning)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-rl-in" />
+                </animateMotion>
+              </circle>
+              <path id="path-rl-in" d="M190,100 L310,100" fill="none" stroke="none" />
+
+              <!-- Rate Limiter (bucket shape) -->
+              <path
+                d="M330,40 L350,40 L370,160 L470,160 L490,40 L510,40 L510,35 L330,35 Z"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text x="420" y="80" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Rate Limiter</tspan><tspan class="lang-es">Limitador de Tasa</tspan>
+              </text>
+              <!-- Water level in bucket -->
+              <rect x="378" y="95" width="84" height="55" rx="2" fill="var(--primary)" opacity="0.15" />
+              <text x="420" y="125" text-anchor="middle" fill="var(--primary)" font-size="9" font-weight="600">
+                100 req/min
+              </text>
+
+              <!-- Rejected (top) -->
+              <line x1="510" y1="55" x2="570" y2="55" stroke="var(--error)" stroke-width="2" stroke-dasharray="8,4" />
+              <text x="610" y="45" text-anchor="middle" fill="var(--error)" font-size="10" font-weight="600">
+                429
+              </text>
+              <text x="610" y="60" text-anchor="middle" fill="var(--error)" font-size="9">
+                <tspan class="lang-en">Too Many Requests</tspan><tspan class="lang-es">Demasiadas Solicitudes</tspan>
+              </text>
+
+              <!-- Arrow: Rate Limiter -> Backend (allowed) -->
+              <line x1="510" y1="120" x2="630" y2="120" stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-rl)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-rl-out" />
+                </animateMotion>
+              </circle>
+              <path id="path-rl-out" d="M510,120 L630,120" fill="none" stroke="none" />
+
+              <!-- Backend -->
+              <rect x="630" y="85" width="180" height="65" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="720" y="112" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Backend Service</tspan><tspan class="lang-es">Servicio Backend</tspan>
+              </text>
+              <text x="720" y="132" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Controlled flow</tspan><tspan class="lang-es">Flujo controlado</tspan>
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 8px">
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Rate Limiting Strategies</span
+                ><span class="lang-es">Estrategias de Limitaci&oacute;n de Tasa</span>
+              </h4>
+              <p>
+                <span class="lang-en">Token bucket, sliding window, fixed window</span
+                ><span class="lang-es">Token bucket, ventana deslizante, ventana fija</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    ><b>Token Bucket:</b> Tokens are added at a fixed rate. Each request
+                    consumes a token. Allows bursts when the bucket is full.
+                    <b>Sliding Window:</b> Counts requests in a rolling time window,
+                    providing smooth rate limiting without boundary spikes.
+                    <b>Fixed Window:</b> Simple counter reset at fixed intervals, but
+                    allows bursts at window boundaries.</span
+                  ><span class="lang-es"
+                    ><b>Token Bucket:</b> Los tokens se agregan a una tasa fija. Cada
+                    solicitud consume un token. Permite r&aacute;fagas cuando el bucket
+                    est&aacute; lleno.
+                    <b>Ventana Deslizante:</b> Cuenta solicitudes en una ventana de
+                    tiempo m&oacute;vil, proporcionando limitaci&oacute;n suave sin picos
+                    en los l&iacute;mites.
+                    <b>Ventana Fija:</b> Contador simple que se reinicia en intervalos
+                    fijos, pero permite r&aacute;fagas en los l&iacute;mites de la
+                    ventana.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: CIRCUIT BREAKER PATTERN ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Circuit Breaker Pattern</span
+            ><span class="lang-es">Patr&oacute;n Circuit Breaker</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >The circuit breaker prevents cascading failures by stopping requests
+              to a failing service and allowing it time to recover.</span
+            ><span class="lang-es"
+              >El circuit breaker previene fallas en cascada al detener solicitudes
+              a un servicio que est&aacute; fallando, d&aacute;ndole tiempo para
+              recuperarse.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-cb"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Closed State -->
+              <circle cx="160" cy="110" r="65" fill="var(--surface)" stroke="var(--mint)" stroke-width="2.5" />
+              <text x="160" y="100" text-anchor="middle" fill="var(--mint)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Closed</tspan><tspan class="lang-es">Cerrado</tspan>
+              </text>
+              <text x="160" y="120" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Normal flow</tspan><tspan class="lang-es">Flujo normal</tspan>
+              </text>
+
+              <!-- Arrow: Closed -> Open -->
+              <line x1="225" y1="80" x2="365" y2="80" stroke="var(--error)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-cb)" />
+              <circle r="3" fill="var(--error)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-cb-co" />
+                </animateMotion>
+              </circle>
+              <path id="path-cb-co" d="M225,80 L365,80" fill="none" stroke="none" />
+              <text x="295" y="72" text-anchor="middle" fill="var(--error)" font-size="8" font-weight="600">
+                <tspan class="lang-en">Failures exceed threshold</tspan><tspan class="lang-es">Fallas superan umbral</tspan>
+              </text>
+
+              <!-- Open State -->
+              <circle cx="440" cy="110" r="65" fill="var(--surface)" stroke="var(--error)" stroke-width="2.5" />
+              <text x="440" y="100" text-anchor="middle" fill="var(--error)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Open</tspan><tspan class="lang-es">Abierto</tspan>
+              </text>
+              <text x="440" y="120" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Fail fast</tspan><tspan class="lang-es">Fallo r&aacute;pido</tspan>
+              </text>
+
+              <!-- Arrow: Open -> Half-Open -->
+              <line x1="505" y1="80" x2="645" y2="80" stroke="var(--warning)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-cb)" />
+              <circle r="3" fill="var(--warning)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-cb-oh" />
+                </animateMotion>
+              </circle>
+              <path id="path-cb-oh" d="M505,80 L645,80" fill="none" stroke="none" />
+              <text x="575" y="72" text-anchor="middle" fill="var(--warning)" font-size="8" font-weight="600">
+                <tspan class="lang-en">Timeout expires</tspan><tspan class="lang-es">Expira el timeout</tspan>
+              </text>
+
+              <!-- Half-Open State -->
+              <circle cx="720" cy="110" r="65" fill="var(--surface)" stroke="var(--warning)" stroke-width="2.5" />
+              <text x="720" y="95" text-anchor="middle" fill="var(--warning)" font-size="12" font-weight="700">
+                <tspan class="lang-en">Half-Open</tspan><tspan class="lang-es">Semi-Abierto</tspan>
+              </text>
+              <text x="720" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Test request</tspan><tspan class="lang-es">Solicitud de prueba</tspan>
+              </text>
+
+              <!-- Arrow: Half-Open -> Closed (curved bottom path) -->
+              <path
+                d="M680,175 L440,195 L200,175"
+                fill="none"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                marker-end="url(#arrow-cb)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="3s" repeatCount="indefinite">
+                  <mpath href="#path-cb-hc" />
+                </animateMotion>
+              </circle>
+              <path id="path-cb-hc" d="M680,175 L440,195 L200,175" fill="none" stroke="none" />
+              <text x="440" y="210" text-anchor="middle" fill="var(--mint)" font-size="8" font-weight="600">
+                <tspan class="lang-en">Success: close circuit</tspan><tspan class="lang-es">&Eacute;xito: cerrar circuito</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="grid-3" style="margin-top: 8px">
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Closed</span
+                ><span class="lang-es">Cerrado</span>
+              </h4>
+              <p>
+                <span class="lang-en">Normal operation: requests pass through</span
+                ><span class="lang-es">Operaci&oacute;n normal: las solicitudes pasan</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >All requests are forwarded to the backend service. The circuit
+                    breaker monitors failure rates. If failures exceed the configured
+                    threshold, the circuit trips to Open state.</span
+                  ><span class="lang-es"
+                    >Todas las solicitudes se reenv&iacute;an al servicio backend.
+                    El circuit breaker monitorea la tasa de fallas. Si las fallas superan
+                    el umbral configurado, el circuito cambia al estado Abierto.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Open</span
+                ><span class="lang-es">Abierto</span>
+              </h4>
+              <p>
+                <span class="lang-en">Fail fast: requests are rejected immediately</span
+                ><span class="lang-es">Fallo r&aacute;pido: solicitudes rechazadas</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >No requests reach the failing service. The gateway returns an
+                    immediate error or fallback response. After a configured timeout,
+                    the circuit transitions to Half-Open to test recovery.</span
+                  ><span class="lang-es"
+                    >Ninguna solicitud llega al servicio que falla. El gateway devuelve
+                    un error inmediato o una respuesta de respaldo. Despu&eacute;s del
+                    timeout configurado, el circuito transiciona a Semi-Abierto para
+                    probar la recuperaci&oacute;n.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Half-Open</span
+                ><span class="lang-es">Semi-Abierto</span>
+              </h4>
+              <p>
+                <span class="lang-en">Test: allow limited requests to check recovery</span
+                ><span class="lang-es">Prueba: permitir solicitudes limitadas</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >A small number of test requests are sent to the backend. If they
+                    succeed, the circuit closes and normal traffic resumes. If they fail,
+                    the circuit reopens and the timeout resets.</span
+                  ><span class="lang-es"
+                    >Se env&iacute;an pocas solicitudes de prueba al backend. Si tienen
+                    &eacute;xito, el circuito se cierra y el tr&aacute;fico normal se
+                    reanuda. Si fallan, el circuito se reabre y el timeout se
+                    reinicia.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: API GATEWAY PLATFORMS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">API Gateway Platforms</span
+            ><span class="lang-es">Plataformas de API Gateway</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Major cloud providers and open-source projects offer API Gateway
+              solutions with different strengths and trade-offs.</span
+            ><span class="lang-es"
+              >Los principales proveedores de nube y proyectos de c&oacute;digo abierto
+              ofrecen soluciones de API Gateway con diferentes fortalezas y
+              compromisos.</span
+            >
+          </p>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>AWS API Gateway</h4>
+              <p>
+                <span class="lang-en">Fully managed, serverless, pay-per-request</span
+                ><span class="lang-es">Completamente gestionado, serverless, pago por solicitud</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >REST, HTTP, and WebSocket APIs. Native integration with Lambda,
+                    IAM, Cognito. Supports canary deployments, request validation, and
+                    usage plans with API keys. No infrastructure to manage.</span
+                  ><span class="lang-es"
+                    >APIs REST, HTTP y WebSocket. Integraci&oacute;n nativa con Lambda,
+                    IAM, Cognito. Soporta despliegues canary, validaci&oacute;n de
+                    solicitudes y planes de uso con API keys. Sin infraestructura que
+                    administrar.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>Azure API Management</h4>
+              <p>
+                <span class="lang-en">Enterprise-grade, developer portal, policies</span
+                ><span class="lang-es">Grado empresarial, portal de desarrolladores</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Built-in developer portal for API documentation. Policy engine for
+                    transformations, caching, and validation. Supports hybrid and
+                    multi-cloud deployments. Strong enterprise governance features.</span
+                  ><span class="lang-es"
+                    >Portal de desarrolladores integrado para documentaci&oacute;n de
+                    APIs. Motor de pol&iacute;ticas para transformaciones, cach&eacute; y
+                    validaci&oacute;n. Soporta despliegues h&iacute;bridos y multi-nube.
+                    Fuertes caracter&iacute;sticas de gobernanza empresarial.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>Google Cloud Endpoints</h4>
+              <p>
+                <span class="lang-en">OpenAPI spec, gRPC support, Cloud Run integration</span
+                ><span class="lang-es">Especificaci&oacute;n OpenAPI, soporte gRPC, Cloud Run</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >API management based on OpenAPI specification. Extensible Service
+                    Proxy (ESP) for authentication, monitoring, and logging. Native gRPC
+                    transcoding. Tight integration with Cloud Run and GKE.</span
+                  ><span class="lang-es"
+                    >Gesti&oacute;n de APIs basada en la especificaci&oacute;n OpenAPI.
+                    Extensible Service Proxy (ESP) para autenticaci&oacute;n, monitoreo
+                    y registro. Transcodificaci&oacute;n gRPC nativa.
+                    Integraci&oacute;n con Cloud Run y GKE.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>Kong (Open Source)</h4>
+              <p>
+                <span class="lang-en">Plugin-based, cloud-agnostic, Kubernetes-native</span
+                ><span class="lang-es">Basado en plugins, agn&oacute;stico de nube</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Built on Nginx/OpenResty. Extensible with Lua plugins for auth,
+                    rate limiting, logging, and transformations. Available as open-source,
+                    enterprise, or managed service (Konnect). Kubernetes Ingress
+                    Controller for native K8s integration.</span
+                  ><span class="lang-es"
+                    >Construido sobre Nginx/OpenResty. Extensible con plugins Lua para
+                    autenticaci&oacute;n, limitaci&oacute;n de tasa, registro y
+                    transformaciones. Disponible como c&oacute;digo abierto, empresarial
+                    o servicio gestionado (Konnect). Controlador de Ingress para
+                    integraci&oacute;n nativa con K8s.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: ARCHITECTURE - GATEWAY + MICROSERVICES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Gateway + Microservices</span
+            ><span class="lang-es">Gateway + Microservicios</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >A complete architecture showing the API Gateway as the single entry
+              point to independently deployable microservices, each with its own
+              data store.</span
+            ><span class="lang-es"
+              >Una arquitectura completa mostrando el API Gateway como &uacute;nico
+              punto de entrada a microservicios desplegables independientemente, cada
+              uno con su propio almac&eacute;n de datos.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="300" viewBox="0 0 880 300">
+              <defs>
+                <marker
+                  id="arrow-arch"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client Apps -->
+              <g class="arch-tier clients-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'clients-tier')">
+                <rect x="10" y="100" width="120" height="100" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+                <text x="70" y="130" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">Client Apps</tspan><tspan class="lang-es">Apps Cliente</tspan>
+                </text>
+                <text x="70" y="150" text-anchor="middle" fill="var(--muted)" font-size="9">Web</text>
+                <text x="70" y="165" text-anchor="middle" fill="var(--muted)" font-size="9">Mobile</text>
+                <text x="70" y="180" text-anchor="middle" fill="var(--muted)" font-size="9">IoT</text>
+              </g>
+
+              <!-- Arrow: Clients -> Gateway -->
+              <line x1="130" y1="150" x2="210" y2="150" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-arch-in" />
+                </animateMotion>
+              </circle>
+              <path id="path-arch-in" d="M130,150 L210,150" fill="none" stroke="none" />
+
+              <!-- API Gateway -->
+              <g class="arch-tier gw-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'gw-tier')">
+                <rect x="210" y="60" width="120" height="180" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5" />
+                <text x="270" y="120" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">API</text>
+                <text x="270" y="140" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">Gateway</text>
+                <text x="270" y="165" text-anchor="middle" fill="var(--muted)" font-size="8">Auth</text>
+                <text x="270" y="178" text-anchor="middle" fill="var(--muted)" font-size="8">Rate Limit</text>
+                <text x="270" y="191" text-anchor="middle" fill="var(--muted)" font-size="8">
+                  <tspan class="lang-en">Routing</tspan><tspan class="lang-es">Enrutamiento</tspan>
+                </text>
+              </g>
+
+              <!-- Arrow: Gateway -> User Service -->
+              <line x1="330" y1="100" x2="420" y2="55" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="420" y1="55" x2="440" y2="55" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-arch-u" />
+                </animateMotion>
+              </circle>
+              <path id="path-arch-u" d="M330,100 L420,55 L440,55" fill="none" stroke="none" />
+
+              <!-- Arrow: Gateway -> Order Service -->
+              <line x1="330" y1="150" x2="440" y2="150" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-arch-o" />
+                </animateMotion>
+              </circle>
+              <path id="path-arch-o" d="M330,150 L440,150" fill="none" stroke="none" />
+
+              <!-- Arrow: Gateway -> Payment Service -->
+              <line x1="330" y1="200" x2="420" y2="245" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="420" y1="245" x2="440" y2="245" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-arch-p" />
+                </animateMotion>
+              </circle>
+              <path id="path-arch-p" d="M330,200 L420,245 L440,245" fill="none" stroke="none" />
+
+              <!-- User Service -->
+              <g class="arch-tier user-svc-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'user-svc-tier')">
+                <rect x="440" y="25" width="130" height="55" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+                <text x="505" y="50" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">User Service</tspan><tspan class="lang-es">Servicio Usuarios</tspan>
+                </text>
+                <text x="505" y="68" text-anchor="middle" fill="var(--muted)" font-size="9">/api/users</text>
+              </g>
+
+              <!-- Order Service -->
+              <g class="arch-tier order-svc-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'order-svc-tier')">
+                <rect x="440" y="120" width="130" height="55" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+                <text x="505" y="145" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">Order Service</tspan><tspan class="lang-es">Servicio &Oacute;rdenes</tspan>
+                </text>
+                <text x="505" y="163" text-anchor="middle" fill="var(--muted)" font-size="9">/api/orders</text>
+              </g>
+
+              <!-- Payment Service -->
+              <g class="arch-tier pay-svc-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'pay-svc-tier')">
+                <rect x="440" y="215" width="130" height="55" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+                <text x="505" y="240" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                  <tspan class="lang-en">Payment Service</tspan><tspan class="lang-es">Servicio Pagos</tspan>
+                </text>
+                <text x="505" y="258" text-anchor="middle" fill="var(--muted)" font-size="9">/api/payments</text>
+              </g>
+
+              <!-- Arrows: Services -> Databases -->
+              <line x1="570" y1="55" x2="660" y2="55" stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+              <line x1="570" y1="150" x2="660" y2="150" stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+              <line x1="570" y1="245" x2="660" y2="245" stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-arch)" />
+
+              <!-- User DB (cylinder) -->
+              <g class="arch-tier user-db-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'user-db-tier')">
+                <ellipse cx="720" cy="35" rx="40" ry="10" fill="none" stroke="var(--purple)" stroke-width="1.5" />
+                <path d="M680,35 v30 c0,5.5 17.9,10 40,10s40,-4.5 40,-10v-30" fill="none" stroke="var(--purple)" stroke-width="1.5" />
+                <text x="720" y="58" text-anchor="middle" fill="var(--purple)" font-size="9" font-weight="600">Users DB</text>
+              </g>
+
+              <!-- Order DB (cylinder) -->
+              <g class="arch-tier order-db-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'order-db-tier')">
+                <ellipse cx="720" cy="130" rx="40" ry="10" fill="none" stroke="var(--purple)" stroke-width="1.5" />
+                <path d="M680,130 v30 c0,5.5 17.9,10 40,10s40,-4.5 40,-10v-30" fill="none" stroke="var(--purple)" stroke-width="1.5" />
+                <text x="720" y="153" text-anchor="middle" fill="var(--purple)" font-size="9" font-weight="600">Orders DB</text>
+              </g>
+
+              <!-- Payment DB (cylinder) -->
+              <g class="arch-tier pay-db-tier" opacity="1" style="cursor: pointer" onclick="highlightTier(this, 'pay-db-tier')">
+                <ellipse cx="720" cy="225" rx="40" ry="10" fill="none" stroke="var(--purple)" stroke-width="1.5" />
+                <path d="M680,225 v30 c0,5.5 17.9,10 40,10s40,-4.5 40,-10v-30" fill="none" stroke="var(--purple)" stroke-width="1.5" />
+                <text x="720" y="248" text-anchor="middle" fill="var(--purple)" font-size="9" font-weight="600">Payments DB</text>
+              </g>
+
+              <!-- Database per service label -->
+              <text x="820" y="150" text-anchor="middle" fill="var(--muted)" font-size="9" font-weight="600" writing-mode="tb">
+                <tspan class="lang-en">Database per Service</tspan><tspan class="lang-es">BD por Servicio</tspan>
+              </text>
+            </svg>
+          </div>
+          <p style="font-size: 0.6em; color: var(--muted); text-align: center; margin-top: 4px">
+            <span class="lang-en">Click each component to highlight</span
+            ><span class="lang-es">Clic en cada componente para resaltar</span>
+          </p>
+          <div style="min-height: 40px; margin-top: 4px">
+            <div class="tier-desc card" data-tier="clients-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--mint)"><span class="lang-en">Clients:</span><span class="lang-es">Clientes:</span></b><br />
+              <span class="lang-en">All client applications connect through a single API Gateway endpoint, simplifying client-side logic.</span>
+              <span class="lang-es">Todas las aplicaciones cliente se conectan a trav&eacute;s de un &uacute;nico endpoint del API Gateway, simplificando la l&oacute;gica del lado del cliente.</span>
+            </div>
+            <div class="tier-desc card" data-tier="gw-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--primary)"><span class="lang-en">API Gateway:</span><span class="lang-es">API Gateway:</span></b><br />
+              <span class="lang-en">Routes requests to the correct service based on URL path. Handles auth, rate limiting, and monitoring centrally.</span>
+              <span class="lang-es">Enruta solicitudes al servicio correcto basado en la ruta URL. Maneja autenticaci&oacute;n, limitaci&oacute;n de tasa y monitoreo de forma centralizada.</span>
+            </div>
+            <div class="tier-desc card" data-tier="user-svc-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--gold)"><span class="lang-en">User Service:</span><span class="lang-es">Servicio de Usuarios:</span></b><br />
+              <span class="lang-en">Manages user profiles, registration, and authentication. Owns its own database for data isolation.</span>
+              <span class="lang-es">Gestiona perfiles de usuario, registro y autenticaci&oacute;n. Posee su propia base de datos para aislamiento de datos.</span>
+            </div>
+            <div class="tier-desc card" data-tier="order-svc-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--gold)"><span class="lang-en">Order Service:</span><span class="lang-es">Servicio de &Oacute;rdenes:</span></b><br />
+              <span class="lang-en">Handles order creation, status updates, and fulfillment. Independently deployable and scalable.</span>
+              <span class="lang-es">Maneja creaci&oacute;n de &oacute;rdenes, actualizaciones de estado y cumplimiento. Desplegable y escalable independientemente.</span>
+            </div>
+            <div class="tier-desc card" data-tier="pay-svc-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--gold)"><span class="lang-en">Payment Service:</span><span class="lang-es">Servicio de Pagos:</span></b><br />
+              <span class="lang-en">Processes payments with PCI-compliant isolation. Separate database ensures sensitive financial data is protected.</span>
+              <span class="lang-es">Procesa pagos con aislamiento compatible con PCI. La base de datos separada asegura que los datos financieros sensibles est&eacute;n protegidos.</span>
+            </div>
+            <div class="tier-desc card" data-tier="user-db-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--purple)"><span class="lang-en">Users DB:</span><span class="lang-es">BD Usuarios:</span></b><br />
+              <span class="lang-en">Each microservice owns its data store. This pattern enables independent schema evolution and technology choice per service.</span>
+              <span class="lang-es">Cada microservicio posee su almac&eacute;n de datos. Este patr&oacute;n permite evoluci&oacute;n independiente del esquema y elecci&oacute;n de tecnolog&iacute;a por servicio.</span>
+            </div>
+            <div class="tier-desc card" data-tier="order-db-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--purple)"><span class="lang-en">Orders DB:</span><span class="lang-es">BD &Oacute;rdenes:</span></b><br />
+              <span class="lang-en">Dedicated data store for the Order Service. Could use a different database technology optimized for order queries.</span>
+              <span class="lang-es">Almac&eacute;n de datos dedicado para el Servicio de &Oacute;rdenes. Podr&iacute;a usar una tecnolog&iacute;a de base de datos diferente optimizada para consultas de &oacute;rdenes.</span>
+            </div>
+            <div class="tier-desc card" data-tier="pay-db-tier" style="display: none; color: var(--text); padding: 10px 12px">
+              <b style="color: var(--purple)"><span class="lang-en">Payments DB:</span><span class="lang-es">BD Pagos:</span></b><br />
+              <span class="lang-en">Isolated storage for financial transactions. Ensures PCI compliance and independent backup/recovery policies.</span>
+              <span class="lang-es">Almacenamiento aislado para transacciones financieras. Asegura cumplimiento PCI y pol&iacute;ticas independientes de respaldo/recuperaci&oacute;n.</span>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">When to Use</span
+                ><span class="lang-es">Cu&aacute;ndo Usar</span>
+              </h4>
+              <p>
+                <span class="lang-en">Multiple clients, independent service teams</span
+                ><span class="lang-es">M&uacute;ltiples clientes, equipos de servicio independientes</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Use this pattern when you have multiple client types (web, mobile,
+                    IoT) that need a unified API, when services need to be deployed and
+                    scaled independently, and when cross-cutting concerns like auth and
+                    rate limiting should be centralized.</span
+                  ><span class="lang-es"
+                    >Use este patr&oacute;n cuando tenga m&uacute;ltiples tipos de
+                    clientes (web, m&oacute;vil, IoT) que necesiten una API unificada,
+                    cuando los servicios necesiten desplegarse y escalarse
+                    independientemente, y cuando aspectos transversales como
+                    autenticaci&oacute;n y limitaci&oacute;n de tasa deban
+                    centralizarse.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Technology Choice</span
+                ><span class="lang-es">Elecci&oacute;n de Tecnolog&iacute;a</span>
+              </h4>
+              <p>
+                <span class="lang-en">Kong, AWS API Gateway, Envoy, Nginx</span
+                ><span class="lang-es">Kong, AWS API Gateway, Envoy, Nginx</span>
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Choose managed gateways (AWS, Azure, GCP) for simplicity and lower
+                    ops burden. Choose self-hosted options (Kong, Envoy) for maximum
+                    control, multi-cloud portability, and advanced customization through
+                    plugins and filters.</span
+                  ><span class="lang-es"
+                    >Elija gateways gestionados (AWS, Azure, GCP) para simplicidad y
+                    menor carga operativa. Elija opciones auto-hospedadas (Kong, Envoy)
+                    para m&aacute;ximo control, portabilidad multi-nube y
+                    personalizaci&oacute;n avanzada mediante plugins y filtros.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Proxy Types</span
+                ><span class="lang-es">Tipos de Proxy</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Forward proxies act on behalf of clients for anonymity and filtering.
+                  Reverse proxies act on behalf of servers for load balancing, SSL
+                  termination, and protection.</span
+                ><span class="lang-es"
+                  >Los proxies directos act&uacute;an en nombre de los clientes para
+                  anonimato y filtrado. Los proxies inversos act&uacute;an en nombre de
+                  los servidores para balanceo de carga, terminaci&oacute;n SSL y
+                  protecci&oacute;n.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Gateway Features</span
+                ><span class="lang-es">Funciones del Gateway</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >API Gateways centralize routing, authentication, rate limiting,
+                  caching, protocol transformation, and observability for all API
+                  traffic.</span
+                ><span class="lang-es"
+                  >Los API Gateways centralizan enrutamiento, autenticaci&oacute;n,
+                  limitaci&oacute;n de tasa, cach&eacute;, transformaci&oacute;n de
+                  protocolos y observabilidad para todo el tr&aacute;fico API.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Architecture Patterns</span
+                ><span class="lang-es">Patrones de Arquitectura</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Gateway + microservices with database-per-service enables independent
+                  deployment, scaling, and technology choice. Circuit breakers prevent
+                  cascading failures.</span
+                ><span class="lang-es"
+                  >Gateway + microservicios con base de datos por servicio permite
+                  despliegue independiente, escalamiento y elecci&oacute;n de
+                  tecnolog&iacute;a. Los circuit breakers previenen fallas en
+                  cascada.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 13: Q&A ========== -->
+        <section>
+          <div class="qa-center">
+            <h1 style="font-size: 2.2em; margin-bottom: 10px">
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h1>
+            <div class="diagram-container" style="margin: 10px 0">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 12</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 12</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+      <script>
+    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
+    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
+    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
+    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
+    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
+    setTimeout(updateProgressBar,500);
+    </script>
+
+</body>
+</html>
