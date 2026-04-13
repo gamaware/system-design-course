@@ -5646,7 +5646,7 @@
           </h2>
           <div style="display: flex; gap: 16px; align-items: flex-start">
             <div style="flex: 1; display: flex; justify-content: center">
-              <svg width="700" height="420" viewBox="0 0 700 420">
+              <svg width="700" height="500" viewBox="0 0 700 500">
                 <defs>
                   <marker
                     id="arrowArch"
@@ -5691,7 +5691,7 @@
                     Browser / Mobile App / SPA
                   </text>
                 </g>
-                <!-- Arrow: Presentation to Load Balancer -->
+                <!-- Arrow: Presentation to Load Balancer icon -->
                 <line
                   x1="350"
                   y1="65"
@@ -5709,33 +5709,35 @@
                   />
                 </line>
                 <text x="372" y="88" fill="var(--muted)" font-size="8">HTTP/REST</text>
-                <!-- Load Balancer -->
+                <!-- Load Balancer: icon ABOVE box -->
                 <g
                   class="arch-tier app-tier"
                   opacity="1"
                   style="cursor: pointer"
                   onclick="highlightTier(this, 'app-tier')"
                 >
+                  <!-- ELB icon above the LB rect -->
+                  <image
+                    href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg"
+                    x="330"
+                    y="100"
+                    width="40"
+                    height="40"
+                  />
+                  <!-- LB rect below icon -->
                   <rect
                     x="200"
-                    y="100"
+                    y="145"
                     width="300"
-                    height="40"
+                    height="35"
                     rx="6"
                     fill="var(--surface)"
                     stroke="var(--warning)"
                     stroke-width="1.5"
                   />
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg"
-                    x="205"
-                    y="100"
-                    width="40"
-                    height="40"
-                  />
                   <text
-                    x="370"
-                    y="125"
+                    x="350"
+                    y="168"
                     text-anchor="middle"
                     fill="var(--warning)"
                     font-size="10"
@@ -5743,30 +5745,30 @@
                   >
                     Load Balancer (ALB/NLB)
                   </text>
-                  <!-- Arrows: LB to App Servers -->
+                  <!-- Arrows: LB to App Server icons (end at top of EC2 icons) -->
                   <line
                     x1="280"
-                    y1="140"
+                    y1="180"
                     x2="165"
-                    y2="185"
+                    y2="222"
                     stroke="var(--warning)"
                     stroke-width="2"
                     marker-end="url(#arrowArch)"
                   />
                   <line
                     x1="350"
-                    y1="140"
+                    y1="180"
                     x2="350"
-                    y2="185"
+                    y2="222"
                     stroke="var(--warning)"
                     stroke-width="2"
                     marker-end="url(#arrowArch)"
                   />
                   <line
                     x1="420"
-                    y1="140"
+                    y1="180"
                     x2="535"
-                    y2="185"
+                    y2="222"
                     stroke="var(--warning)"
                     stroke-width="2"
                     marker-end="url(#arrowArch)"
@@ -5774,7 +5776,7 @@
                   <!-- Application Tier label -->
                   <text
                     x="350"
-                    y="170"
+                    y="212"
                     text-anchor="middle"
                     fill="var(--mint)"
                     font-size="13"
@@ -5783,27 +5785,27 @@
                     <tspan class="lang-en">Application Tier</tspan>
                     <tspan class="lang-es">Capa de Aplicaci&oacute;n</tspan>
                   </text>
-                  <!-- App Server 1 -->
+                  <!-- App Server 1: EC2 icon above box -->
+                  <image
+                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
+                    x="149"
+                    y="225"
+                    width="32"
+                    height="32"
+                  />
                   <rect
                     x="100"
-                    y="185"
+                    y="262"
                     width="130"
-                    height="55"
+                    height="40"
                     rx="6"
                     fill="var(--surface)"
                     stroke="var(--mint)"
                     stroke-width="2"
                   />
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="107"
-                    y="190"
-                    width="40"
-                    height="40"
-                  />
                   <text
                     x="165"
-                    y="208"
+                    y="280"
                     text-anchor="middle"
                     fill="var(--mint)"
                     font-size="10"
@@ -5811,30 +5813,30 @@
                   >
                     App Server 1
                   </text>
-                  <text x="165" y="228" text-anchor="middle" fill="var(--muted)" font-size="8">
+                  <text x="165" y="295" text-anchor="middle" fill="var(--muted)" font-size="8">
                     EC2 / ECS
                   </text>
-                  <!-- App Server 2 -->
+                  <!-- App Server 2: EC2 icon above box -->
+                  <image
+                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
+                    x="334"
+                    y="225"
+                    width="32"
+                    height="32"
+                  />
                   <rect
                     x="285"
-                    y="185"
+                    y="262"
                     width="130"
-                    height="55"
+                    height="40"
                     rx="6"
                     fill="var(--surface)"
                     stroke="var(--mint)"
                     stroke-width="2"
                   />
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="292"
-                    y="190"
-                    width="40"
-                    height="40"
-                  />
                   <text
                     x="350"
-                    y="208"
+                    y="280"
                     text-anchor="middle"
                     fill="var(--mint)"
                     font-size="10"
@@ -5842,30 +5844,30 @@
                   >
                     App Server 2
                   </text>
-                  <text x="350" y="228" text-anchor="middle" fill="var(--muted)" font-size="8">
+                  <text x="350" y="295" text-anchor="middle" fill="var(--muted)" font-size="8">
                     EC2 / ECS
                   </text>
-                  <!-- App Server 3 -->
+                  <!-- App Server 3: EC2 icon above box -->
+                  <image
+                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
+                    x="519"
+                    y="225"
+                    width="32"
+                    height="32"
+                  />
                   <rect
                     x="470"
-                    y="185"
+                    y="262"
                     width="130"
-                    height="55"
+                    height="40"
                     rx="6"
                     fill="var(--surface)"
                     stroke="var(--mint)"
                     stroke-width="2"
                   />
-                  <image
-                    href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="477"
-                    y="190"
-                    width="40"
-                    height="40"
-                  />
                   <text
                     x="535"
-                    y="208"
+                    y="280"
                     text-anchor="middle"
                     fill="var(--mint)"
                     font-size="10"
@@ -5873,16 +5875,16 @@
                   >
                     App Server 3
                   </text>
-                  <text x="535" y="228" text-anchor="middle" fill="var(--muted)" font-size="8">
+                  <text x="535" y="295" text-anchor="middle" fill="var(--muted)" font-size="8">
                     EC2 / ECS
                   </text>
                 </g>
                 <!-- Arrow: App Servers to DB Tier -->
                 <line
                   x1="350"
-                  y1="240"
+                  y1="302"
                   x2="350"
-                  y2="280"
+                  y2="340"
                   stroke="var(--primary)"
                   stroke-width="2"
                   marker-end="url(#arrowArch)"
@@ -5894,7 +5896,7 @@
                     repeatCount="indefinite"
                   />
                 </line>
-                <text x="372" y="266" fill="var(--muted)" font-size="8">SQL/TCP</text>
+                <text x="372" y="326" fill="var(--muted)" font-size="8">SQL/TCP</text>
                 <!-- Database Tier -->
                 <g
                   class="arch-tier db-tier"
@@ -5904,7 +5906,7 @@
                 >
                   <text
                     x="350"
-                    y="290"
+                    y="352"
                     text-anchor="middle"
                     fill="var(--primary)"
                     font-size="13"
@@ -5913,14 +5915,14 @@
                     <tspan class="lang-en">Database Tier</tspan>
                     <tspan class="lang-es">Capa de Base de Datos</tspan>
                   </text>
-                  <!-- Primary DB -->
-                  <g transform="translate(200,310)">
+                  <!-- Primary DB: RDS icon above cylinder -->
+                  <g transform="translate(200,360)">
                     <image
                       href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                      x="22"
-                      y="-2"
-                      width="40"
-                      height="40"
+                      x="39"
+                      y="-38"
+                      width="32"
+                      height="32"
                     />
                     <ellipse
                       cx="55"
@@ -5961,14 +5963,14 @@
                       RDS
                     </text>
                   </g>
-                  <!-- Read Replica -->
-                  <g transform="translate(430,318)">
+                  <!-- Read Replica: RDS icon above cylinder -->
+                  <g transform="translate(430,368)">
                     <image
                       href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                      x="14"
-                      y="-2"
-                      width="40"
-                      height="40"
+                      x="26"
+                      y="-38"
+                      width="32"
+                      height="32"
                     />
                     <ellipse
                       cx="42"
@@ -5999,12 +6001,12 @@
                       Replica
                     </text>
                   </g>
-                  <!-- Replication arrow -->
+                  <!-- Replication arrow: connects between cylinders, below icons -->
                   <line
                     x1="310"
-                    y1="342"
+                    y1="392"
                     x2="430"
-                    y2="342"
+                    y2="392"
                     stroke="var(--gold)"
                     stroke-width="1.5"
                     stroke-dasharray="4,3"
@@ -6016,7 +6018,7 @@
                       repeatCount="indefinite"
                     />
                   </line>
-                  <text x="370" y="357" text-anchor="middle" fill="var(--gold)" font-size="7">
+                  <text x="370" y="407" text-anchor="middle" fill="var(--gold)" font-size="7">
                     Replication
                   </text>
                 </g>
@@ -6236,31 +6238,31 @@
                   DynamoDB
                 </text>
               </g>
-              <!-- Arrow: Client to CloudFront -->
+              <!-- Arrow: Client to CloudFront (ends 8px before icon left edge) -->
               <line
                 x1="120"
                 y1="135"
-                x2="175"
+                x2="167"
                 y2="60"
                 stroke="var(--primary)"
                 stroke-width="2"
                 marker-end="url(#arrowSvl)"
               />
-              <!-- Arrow: Client to S3 -->
+              <!-- Arrow: Client to S3 (ends 8px before icon left edge) -->
               <line
                 x1="120"
                 y1="165"
-                x2="175"
+                x2="167"
                 y2="270"
                 stroke="var(--primary)"
                 stroke-width="2"
                 marker-end="url(#arrowSvl)"
               />
-              <!-- Arrow: Client to API Gateway (animated dashed) -->
+              <!-- Arrow: Client to API Gateway (ends 8px before icon left edge) -->
               <line
                 x1="120"
                 y1="150"
-                x2="325"
+                x2="317"
                 y2="156"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6274,11 +6276,11 @@
                   repeatCount="indefinite"
                 />
               </line>
-              <!-- Arrow: API Gateway to Lambda (animated dashed) -->
+              <!-- Arrow: API Gateway to Lambda (starts 8px after APIGW right edge, ends 8px before Lambda) -->
               <line
-                x1="397"
+                x1="413"
                 y1="156"
-                x2="525"
+                x2="517"
                 y2="156"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6292,11 +6294,11 @@
                   repeatCount="indefinite"
                 />
               </line>
-              <!-- Arrow: Lambda to DynamoDB (animated dashed) -->
+              <!-- Arrow: Lambda to DynamoDB (starts 8px after Lambda right edge, ends 8px before DynamoDB) -->
               <line
-                x1="597"
+                x1="613"
                 y1="156"
-                x2="725"
+                x2="717"
                 y2="156"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6310,15 +6312,16 @@
                   repeatCount="indefinite"
                 />
               </line>
-              <!-- Arrow: Cognito to API Gateway (auth dotted link) -->
+              <!-- Arrow: Cognito to API Gateway (ends at top of APIGW icon, not overlapping) -->
               <line
                 x1="361"
-                y1="97"
+                y1="105"
                 x2="361"
-                y2="120"
+                y2="112"
                 stroke="var(--card-border)"
                 stroke-width="1.5"
                 stroke-dasharray="3,3"
+                marker-end="url(#arrowSvl)"
               />
               <!-- Bottom caption -->
               <text x="450" y="330" text-anchor="middle" fill="var(--muted)" font-size="9">
