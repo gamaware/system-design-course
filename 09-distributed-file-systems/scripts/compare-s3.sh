@@ -29,7 +29,7 @@ MINIO_BUCKET="lab09-minio-test-$(date +%s)"
 
 # Wrapper for MinIO calls using its own credentials
 minio_aws() {
-    AWS_ACCESS_KEY_ID=minioadmin AWS_SECRET_ACCESS_KEY=minioadmin123 AWS_SESSION_TOKEN= \
+    AWS_ACCESS_KEY_ID=minioadmin AWS_SECRET_ACCESS_KEY=minioadmin123 AWS_SESSION_TOKEN='' \
         aws --endpoint-url "$MINIO_ENDPOINT" "$@"
 }
 

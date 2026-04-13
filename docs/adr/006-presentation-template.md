@@ -60,7 +60,8 @@ these overrides with sensible defaults.
 
 - A single source of truth for the presentation theme reduces maintenance to one file.
 - All 17 modules share consistent styling, animations, and accessibility features.
-- Presentations work offline and on `file://` without any server or build tooling.
+- Presentations work on `file://` without a development server, though CDN
+  dependencies (reveal.js, Google Fonts) require internet connectivity.
 - Deployment and distribution must include the `shared/` directory alongside module
   directories to preserve relative path references.
 - Module-specific styling goes in a local `slides.css` file, not in the shared theme.

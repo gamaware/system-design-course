@@ -64,7 +64,7 @@ class ProductHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response)
 
-    def log_message(self, format, *args):
+    def log_message(self, fmt, *args):  # noqa: ARG002
         pass
 
 

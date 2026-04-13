@@ -21,11 +21,12 @@ See `shared/presentation/README.md` for the template API reference.
 ### Quick Start
 
 ```bash
-# Open locally
+# Open locally (macOS)
 open presentation/index.html
 
-# Deploy to here.now
-bash ~/.claude/skills/here-now/scripts/publish.sh presentation
+# Or serve with any HTTP server
+python3 -m http.server 8080
+# Then visit http://localhost:8080/presentation/
 ```
 
 ### Features

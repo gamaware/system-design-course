@@ -210,6 +210,9 @@ const config = Object.assign({}, DEFAULTS, window.PRES_CONFIG || {});
 
 Reveal.initialize(config).then(() => {
   applyTheme(localStorage.getItem('pres-theme') || 'dark');
+  const savedLang = localStorage.getItem('pres-lang') || 'en';
+  const langBtn = document.getElementById('lang-toggle');
+  if (langBtn) langBtn.textContent = savedLang.toUpperCase();
   initParticles();
   const firstSlide = Reveal.getCurrentSlide();
   animateSlideElements(firstSlide);

@@ -9,10 +9,10 @@ const vscaleSpecs = [
 ];
 
 function updateVScale(val) {
+  if (val < 1 || val > vscaleSpecs.length) return;
   const spec = vscaleSpecs[val - 1];
   const svg = document.getElementById('vscale-svg');
-  const cylinder = document.getElementById('vscale-cylinder');
-  if (svg && cylinder) {
+  if (svg) {
     const s = spec.scale;
     svg.setAttribute('width', Math.round(240 * s));
     svg.setAttribute('height', Math.round(200 * s));
@@ -35,7 +35,9 @@ function updateVScale(val) {
 
 function highlightTier(btn, tierClass) {
   const section = btn.closest('section');
+  if (!section) return;
   const svg = section.querySelector('svg');
+  if (!svg) return;
   const tiers = svg.querySelectorAll('.arch-tier');
   tiers.forEach((t) => {
     t.setAttribute('opacity', t.classList.contains(tierClass) ? '1' : '0.25');

@@ -512,7 +512,7 @@ body {
     display: none;
   }
 
-  :root {
+  html {
     --bg: #fff;
     --surface: #f6f8fa;
     --card-border: #d0d7de;

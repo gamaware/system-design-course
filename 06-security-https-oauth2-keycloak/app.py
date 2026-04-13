@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify
-import requests
 import json
 import os
 from datetime import datetime
+
+import requests
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -114,7 +115,7 @@ def public_data():
     })
 
 if __name__ == '__main__':
-    print(f"Starting Flask API...")
+    print("Starting Flask API...")
     print(f"Keycloak URL: {KEYCLOAK_INTROSPECT_URL}")
     print(f"Client ID: {CLIENT_ID}")
     app.run(host='0.0.0.0', port=5000, debug=True)
