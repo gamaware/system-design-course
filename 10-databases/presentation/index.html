@@ -5644,9 +5644,13 @@
             <span class="lang-en">Traditional Three-Tier Architecture</span
             ><span class="lang-es">Arquitectura Tradicional de Tres Capas</span>
           </h2>
+          <p style="font-size:0.68em; color:var(--muted); margin:0 0 6px 0; max-width:700px">
+            <span class="lang-en">Layered architecture separating presentation, application logic, and data storage. Each tier scales independently and can be updated without affecting others.</span>
+            <span class="lang-es">Arquitectura en capas que separa presentaci&oacute;n, l&oacute;gica de aplicaci&oacute;n y almacenamiento. Cada capa escala independientemente.</span>
+          </p>
           <div style="display: flex; gap: 16px; align-items: flex-start">
             <div style="flex: 1; display: flex; justify-content: center">
-              <svg width="700" height="500" viewBox="0 0 700 500">
+              <svg width="700" height="450" viewBox="0 0 700 450">
                 <defs>
                   <marker
                     id="arrowArch"
@@ -5719,10 +5723,10 @@
                   <!-- ELB icon above the LB rect -->
                   <image
                     href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg"
-                    x="322"
-                    y="92"
-                    width="56"
-                    height="56"
+                    x="318"
+                    y="88"
+                    width="64"
+                    height="64"
                   />
                   <!-- LB rect below icon -->
                   <rect
@@ -5788,10 +5792,10 @@
                   <!-- App Server 1: EC2 icon above box -->
                   <image
                     href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="141"
-                    y="217"
-                    width="48"
-                    height="48"
+                    x="133"
+                    y="209"
+                    width="64"
+                    height="64"
                   />
                   <rect
                     x="100"
@@ -5819,10 +5823,10 @@
                   <!-- App Server 2: EC2 icon above box -->
                   <image
                     href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="326"
-                    y="217"
-                    width="48"
-                    height="48"
+                    x="318"
+                    y="209"
+                    width="64"
+                    height="64"
                   />
                   <rect
                     x="285"
@@ -5850,10 +5854,10 @@
                   <!-- App Server 3: EC2 icon above box -->
                   <image
                     href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg"
-                    x="511"
-                    y="217"
-                    width="48"
-                    height="48"
+                    x="503"
+                    y="209"
+                    width="64"
+                    height="64"
                   />
                   <rect
                     x="470"
@@ -5919,10 +5923,10 @@
                   <g transform="translate(200,360)">
                     <image
                       href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                      x="31"
-                      y="-46"
-                      width="48"
-                      height="48"
+                      x="23"
+                      y="-54"
+                      width="64"
+                      height="64"
                     />
                     <ellipse
                       cx="55"
@@ -5967,10 +5971,10 @@
                   <g transform="translate(430,368)">
                     <image
                       href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                      x="18"
-                      y="-46"
-                      width="48"
-                      height="48"
+                      x="10"
+                      y="-54"
+                      width="64"
+                      height="64"
                     />
                     <ellipse
                       cx="42"
@@ -6077,6 +6081,22 @@
               </div>
             </div>
           </div>
+          <div class="grid-2" style="margin-top:8px">
+            <div class="card float-in border-green expandable">
+              <h4><span class="lang-en">When to Use</span><span class="lang-es">Cu&aacute;ndo Usar</span></h4>
+              <p><span class="lang-en">Enterprise apps, e-commerce, CMS</span><span class="lang-es">Apps empresariales, e-commerce, CMS</span></p>
+              <div class="expand-content">
+                <p><span class="lang-en">Best for applications requiring clear separation of concerns, independent tier scaling, and team specialization. Frontend, backend, and database teams can work independently.</span><span class="lang-es">Ideal para aplicaciones que requieren separaci&oacute;n clara de responsabilidades y escalado independiente por capa.</span></p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4><span class="lang-en">Database Choice</span><span class="lang-es">Elecci&oacute;n de Base de Datos</span></h4>
+              <p><span class="lang-en">RDS (PostgreSQL/MySQL) for ACID transactions</span><span class="lang-es">RDS (PostgreSQL/MySQL) para transacciones ACID</span></p>
+              <div class="expand-content">
+                <p><span class="lang-en">Relational databases excel here: complex JOINs for reporting, ACID for data integrity, read replicas for scaling reads, Multi-AZ for high availability.</span><span class="lang-es">Las bases de datos relacionales sobresalen: JOINs complejos, ACID para integridad, r&eacute;plicas de lectura y Multi-AZ para alta disponibilidad.</span></p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- ========== SLIDE 29: SERVERLESS ARCHITECTURE ========== -->
@@ -6085,8 +6105,12 @@
             <span class="lang-en">Serverless Architecture</span
             ><span class="lang-es">Arquitectura Serverless</span>
           </h2>
+          <p style="font-size:0.68em; color:var(--muted); margin:0 0 6px 0; max-width:700px">
+            <span class="lang-en">Fully managed architecture where AWS handles all infrastructure. No servers to provision, automatic scaling, and pay-per-request pricing.</span>
+            <span class="lang-es">Arquitectura completamente administrada donde AWS maneja toda la infraestructura. Sin servidores, escalado autom&aacute;tico y pago por solicitud.</span>
+          </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
-            <svg width="900" height="350" viewBox="0 0 900 350">
+            <svg width="900" height="310" viewBox="0 0 900 310">
               <defs>
                 <marker
                   id="arrowSvl"
@@ -6139,14 +6163,14 @@
               >
                 <image
                   href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-CloudFront_48.svg"
-                  x="175"
-                  y="25"
-                  width="80"
-                  height="80"
+                  x="183"
+                  y="33"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="170"
-                  y="107"
+                  y="99"
                   width="90"
                   height="22"
                   rx="4"
@@ -6156,7 +6180,7 @@
                 />
                 <text
                   x="215"
-                  y="122"
+                  y="114"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -6174,14 +6198,14 @@
               >
                 <image
                   href="../../shared/presentation/assets/aws-icons/storage/Arch_Amazon-Simple-Storage-Service_48.svg"
-                  x="175"
-                  y="235"
-                  width="80"
-                  height="80"
+                  x="183"
+                  y="203"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="170"
-                  y="317"
+                  y="269"
                   width="90"
                   height="22"
                   rx="4"
@@ -6191,7 +6215,7 @@
                 />
                 <text
                   x="215"
-                  y="332"
+                  y="284"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -6209,14 +6233,14 @@
               >
                 <image
                   href="../../shared/presentation/assets/aws-icons/security/Arch_Amazon-Cognito_48.svg"
-                  x="325"
-                  y="25"
-                  width="80"
-                  height="80"
+                  x="333"
+                  y="33"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="320"
-                  y="105"
+                  y="99"
                   width="90"
                   height="20"
                   rx="4"
@@ -6226,7 +6250,7 @@
                 />
                 <text
                   x="365"
-                  y="119"
+                  y="113"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -6244,14 +6268,14 @@
               >
                 <image
                   href="../../shared/presentation/assets/aws-icons/networking/Arch_Amazon-API-Gateway_48.svg"
-                  x="325"
-                  y="120"
-                  width="80"
-                  height="80"
+                  x="333"
+                  y="128"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="320"
-                  y="202"
+                  y="194"
                   width="90"
                   height="22"
                   rx="4"
@@ -6261,7 +6285,7 @@
                 />
                 <text
                   x="365"
-                  y="217"
+                  y="209"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -6279,14 +6303,14 @@
               >
                 <image
                   href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="525"
-                  y="120"
-                  width="80"
-                  height="80"
+                  x="533"
+                  y="128"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="520"
-                  y="202"
+                  y="194"
                   width="90"
                   height="22"
                   rx="4"
@@ -6296,7 +6320,7 @@
                 />
                 <text
                   x="565"
-                  y="217"
+                  y="209"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -6314,14 +6338,14 @@
               >
                 <image
                   href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg"
-                  x="725"
-                  y="120"
-                  width="80"
-                  height="80"
+                  x="733"
+                  y="128"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="720"
-                  y="202"
+                  y="194"
                   width="90"
                   height="22"
                   rx="4"
@@ -6331,7 +6355,7 @@
                 />
                 <text
                   x="765"
-                  y="217"
+                  y="209"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -6344,7 +6368,7 @@
               <line
                 x1="120"
                 y1="135"
-                x2="167"
+                x2="175"
                 y2="60"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6354,8 +6378,8 @@
               <line
                 x1="120"
                 y1="165"
-                x2="167"
-                y2="270"
+                x2="175"
+                y2="230"
                 stroke="var(--primary)"
                 stroke-width="2"
                 marker-end="url(#arrowSvl)"
@@ -6364,7 +6388,7 @@
               <line
                 x1="120"
                 y1="150"
-                x2="317"
+                x2="325"
                 y2="156"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6380,9 +6404,9 @@
               </line>
               <!-- Arrow: API Gateway to Lambda (starts 8px after APIGW right edge, ends 8px before Lambda) -->
               <line
-                x1="413"
+                x1="405"
                 y1="156"
-                x2="517"
+                x2="525"
                 y2="156"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6398,9 +6422,9 @@
               </line>
               <!-- Arrow: Lambda to DynamoDB (starts 8px after Lambda right edge, ends 8px before DynamoDB) -->
               <line
-                x1="613"
+                x1="605"
                 y1="156"
-                x2="717"
+                x2="725"
                 y2="156"
                 stroke="var(--primary)"
                 stroke-width="2"
@@ -6417,15 +6441,15 @@
               <!-- Visual connector: Cognito label to API Gateway icon -->
               <line
                 x1="365"
-                y1="125"
+                y1="119"
                 x2="365"
-                y2="120"
+                y2="128"
                 stroke="var(--card-border)"
                 stroke-width="1.5"
                 stroke-dasharray="3,3"
               />
               <!-- Bottom caption -->
-              <text x="450" y="330" text-anchor="middle" fill="var(--muted)" font-size="9">
+              <text x="450" y="290" text-anchor="middle" fill="var(--muted)" font-size="9">
                 <tspan class="lang-en">
                   No servers to manage &mdash; scales automatically &mdash; pay per request
                 </tspan>
@@ -6434,7 +6458,7 @@
                   por solicitud
                 </tspan>
               </text>
-              <text x="450" y="348" text-anchor="middle" fill="var(--muted)" font-size="8">
+              <text x="450" y="306" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">Click each service to learn more</tspan>
                 <tspan class="lang-es">Clic en cada servicio para aprender m&aacute;s</tspan>
               </text>
@@ -6532,6 +6556,22 @@
               >
             </div>
           </div>
+          <div class="grid-2" style="margin-top:8px">
+            <div class="card float-in border-green expandable">
+              <h4><span class="lang-en">When to Use</span><span class="lang-es">Cu&aacute;ndo Usar</span></h4>
+              <p><span class="lang-en">Variable traffic APIs, event processing, startups</span><span class="lang-es">APIs con tr&aacute;fico variable, procesamiento de eventos, startups</span></p>
+              <div class="expand-content">
+                <p><span class="lang-en">Perfect when traffic is unpredictable or spiky. Zero infrastructure management, cost proportional to usage. Ideal for MVPs and rapid prototyping where operational overhead must be minimal.</span><span class="lang-es">Perfecto cuando el tr&aacute;fico es impredecible. Cero gesti&oacute;n de infraestructura, costo proporcional al uso.</span></p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4><span class="lang-en">Database Choice</span><span class="lang-es">Elecci&oacute;n de Base de Datos</span></h4>
+              <p><span class="lang-en">DynamoDB for serverless-native key-value storage</span><span class="lang-es">DynamoDB para almacenamiento clave-valor nativo serverless</span></p>
+              <div class="expand-content">
+                <p><span class="lang-en">DynamoDB integrates natively with Lambda (no connection pooling needed). Single-digit millisecond latency at any scale. S3 for static assets and CloudFront for global distribution.</span><span class="lang-es">DynamoDB se integra nativamente con Lambda. Latencia de milisegundos a cualquier escala. S3 para activos est&aacute;ticos.</span></p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- ========== SLIDE 30: EVENT-DRIVEN ARCHITECTURE ========== -->
@@ -6540,6 +6580,10 @@
             <span class="lang-en">Event-Driven Architecture</span
             ><span class="lang-es">Arquitectura Basada en Eventos</span>
           </h2>
+          <p style="font-size:0.68em; color:var(--muted); margin:0 0 6px 0; max-width:700px">
+            <span class="lang-en">Asynchronous pipeline where database changes trigger downstream processing. Events flow through the system without tight coupling between services.</span>
+            <span class="lang-es">Pipeline asincr&oacute;nico donde los cambios en la base de datos activan procesamiento posterior. Los eventos fluyen sin acoplamiento entre servicios.</span>
+          </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
             <svg width="900" height="380" viewBox="0 0 900 380">
               <defs>
@@ -6910,8 +6954,12 @@
             <span class="lang-en">Microservices &amp; Polyglot Persistence</span
             ><span class="lang-es">Microservicios y Persistencia Pol&iacute;glota</span>
           </h2>
+          <p style="font-size:0.68em; color:var(--muted); margin:0 0 6px 0; max-width:700px">
+            <span class="lang-en">Each microservice owns its data and chooses the database type that best fits its access patterns. Services communicate through a shared API Gateway.</span>
+            <span class="lang-es">Cada microservicio elige la base de datos que mejor se ajusta a sus patrones de acceso. Los servicios se comunican a trav&eacute;s de un API Gateway.</span>
+          </p>
           <div style="display: flex; justify-content: center; margin: 8px auto">
-            <svg width="900" height="400" viewBox="0 0 900 400">
+            <svg width="900" height="350" viewBox="0 0 900 350">
               <defs>
                 <marker
                   id="arrowMicro"
@@ -7023,14 +7071,14 @@
                 <!-- Lambda icon -->
                 <image
                   href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="126"
-                  y="130"
-                  width="48"
-                  height="48"
+                  x="118"
+                  y="122"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="100"
-                  y="180"
+                  y="188"
                   width="100"
                   height="24"
                   rx="4"
@@ -7040,7 +7088,7 @@
                 />
                 <text
                   x="150"
-                  y="196"
+                  y="204"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -7051,9 +7099,9 @@
                 <!-- Arrow down to DB -->
                 <line
                   x1="150"
-                  y1="204"
+                  y1="212"
                   x2="150"
-                  y2="252"
+                  y2="244"
                   stroke="var(--mint)"
                   stroke-width="2"
                   marker-end="url(#arrowMicro)"
@@ -7061,14 +7109,14 @@
                 <!-- RDS icon -->
                 <image
                   href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-RDS_48.svg"
-                  x="126"
-                  y="260"
-                  width="48"
-                  height="48"
+                  x="118"
+                  y="252"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="90"
-                  y="310"
+                  y="318"
                   width="120"
                   height="24"
                   rx="4"
@@ -7078,24 +7126,13 @@
                 />
                 <text
                   x="150"
-                  y="326"
+                  y="334"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
                   font-weight="600"
                 >
                   PostgreSQL (RDS)
-                </text>
-                <!-- Badge -->
-                <text
-                  x="150"
-                  y="348"
-                  text-anchor="middle"
-                  fill="var(--muted)"
-                  font-size="7"
-                  font-style="italic"
-                >
-                  Relational &mdash; ACID transactions
                 </text>
               </g>
               <!-- Lane 2: Session Service -->
@@ -7108,14 +7145,14 @@
                 <!-- Lambda icon -->
                 <image
                   href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="426"
-                  y="130"
-                  width="48"
-                  height="48"
+                  x="418"
+                  y="122"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="400"
-                  y="180"
+                  y="188"
                   width="100"
                   height="24"
                   rx="4"
@@ -7125,7 +7162,7 @@
                 />
                 <text
                   x="450"
-                  y="196"
+                  y="204"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -7136,9 +7173,9 @@
                 <!-- Arrow down to DB -->
                 <line
                   x1="450"
-                  y1="204"
+                  y1="212"
                   x2="450"
-                  y2="252"
+                  y2="244"
                   stroke="var(--mint)"
                   stroke-width="2"
                   marker-end="url(#arrowMicro)"
@@ -7146,14 +7183,14 @@
                 <!-- DynamoDB icon -->
                 <image
                   href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-DynamoDB_48.svg"
-                  x="426"
-                  y="260"
-                  width="48"
-                  height="48"
+                  x="418"
+                  y="252"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="400"
-                  y="310"
+                  y="318"
                   width="100"
                   height="24"
                   rx="4"
@@ -7163,24 +7200,13 @@
                 />
                 <text
                   x="450"
-                  y="326"
+                  y="334"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
                   font-weight="600"
                 >
                   DynamoDB
-                </text>
-                <!-- Badge -->
-                <text
-                  x="450"
-                  y="348"
-                  text-anchor="middle"
-                  fill="var(--muted)"
-                  font-size="7"
-                  font-style="italic"
-                >
-                  Key-Value &mdash; millisecond latency
                 </text>
               </g>
               <!-- Lane 3: Cache Service -->
@@ -7193,14 +7219,14 @@
                 <!-- Lambda icon -->
                 <image
                   href="../../shared/presentation/assets/aws-icons/compute/Arch_AWS-Lambda_48.svg"
-                  x="726"
-                  y="130"
-                  width="48"
-                  height="48"
+                  x="718"
+                  y="122"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="700"
-                  y="180"
+                  y="188"
                   width="100"
                   height="24"
                   rx="4"
@@ -7210,7 +7236,7 @@
                 />
                 <text
                   x="750"
-                  y="196"
+                  y="204"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -7221,9 +7247,9 @@
                 <!-- Arrow down to DB -->
                 <line
                   x1="750"
-                  y1="204"
+                  y1="212"
                   x2="750"
-                  y2="252"
+                  y2="244"
                   stroke="var(--mint)"
                   stroke-width="2"
                   marker-end="url(#arrowMicro)"
@@ -7231,14 +7257,14 @@
                 <!-- ElastiCache icon -->
                 <image
                   href="../../shared/presentation/assets/aws-icons/databases/Arch_Amazon-ElastiCache_48.svg"
-                  x="726"
-                  y="260"
-                  width="48"
-                  height="48"
+                  x="718"
+                  y="252"
+                  width="64"
+                  height="64"
                 />
                 <rect
                   x="690"
-                  y="310"
+                  y="318"
                   width="120"
                   height="24"
                   rx="4"
@@ -7248,7 +7274,7 @@
                 />
                 <text
                   x="750"
-                  y="326"
+                  y="334"
                   text-anchor="middle"
                   fill="var(--text)"
                   font-size="9"
@@ -7256,20 +7282,9 @@
                 >
                   ElastiCache (Redis)
                 </text>
-                <!-- Badge -->
-                <text
-                  x="750"
-                  y="348"
-                  text-anchor="middle"
-                  fill="var(--muted)"
-                  font-size="7"
-                  font-style="italic"
-                >
-                  In-Memory &mdash; sub-ms reads
-                </text>
               </g>
               <!-- Bottom caption -->
-              <text x="450" y="380" text-anchor="middle" fill="var(--muted)" font-size="9">
+              <text x="450" y="348" text-anchor="middle" fill="var(--muted)" font-size="9">
                 <tspan class="lang-en">
                   Each microservice chooses the database that best fits its data model and
                   access patterns
@@ -7280,6 +7295,22 @@
                 </tspan>
               </text>
             </svg>
+          </div>
+          <div class="grid-2" style="margin-top:8px">
+            <div class="card float-in border-green expandable">
+              <h4><span class="lang-en">When to Use</span><span class="lang-es">Cu&aacute;ndo Usar</span></h4>
+              <p><span class="lang-en">Large teams, diverse data requirements, independent scaling</span><span class="lang-es">Equipos grandes, requisitos de datos diversos, escalado independiente</span></p>
+              <div class="expand-content">
+                <p><span class="lang-en">When different parts of the system have fundamentally different data models. User profiles need JOINs (relational), sessions need fast key lookups (key-value), and real-time features need sub-millisecond reads (in-memory).</span><span class="lang-es">Cuando diferentes partes del sistema tienen modelos de datos fundamentalmente distintos.</span></p>
+              </div>
+            </div>
+            <div class="card float-in border-blue expandable">
+              <h4><span class="lang-en">Database Choice</span><span class="lang-es">Elecci&oacute;n de Base de Datos</span></h4>
+              <p><span class="lang-en">Each service picks the best fit for its data model</span><span class="lang-es">Cada servicio elige la mejor opci&oacute;n para su modelo de datos</span></p>
+              <div class="expand-content">
+                <p><span class="lang-en">PostgreSQL (RDS) for transactional data needing JOINs and ACID guarantees. DynamoDB for high-throughput key-value access patterns. ElastiCache (Redis) for sub-millisecond reads, session caching, and leaderboards.</span><span class="lang-es">PostgreSQL para datos transaccionales con JOINs. DynamoDB para acceso clave-valor. ElastiCache para lecturas sub-milisegundo.</span></p>
+              </div>
+            </div>
           </div>
         </section>
 
