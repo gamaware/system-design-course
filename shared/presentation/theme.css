@@ -318,8 +318,8 @@ body {
 }
 
 .diagram-container svg {
-  max-width: 700px;
-  max-height: 380px;
+  max-width: 900px;
+  max-height: 440px;
 }
 
 /* ============ SIDE BY SIDE ============ */
