@@ -1,0 +1,1747 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solutions Architecture | Arquitectura de Soluciones - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="120" height="130" viewBox="0 0 120 130">
+                <!-- Building / architecture icon -->
+                <rect
+                  x="30"
+                  y="40"
+                  width="60"
+                  height="70"
+                  rx="4"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </rect>
+                <!-- Roof / pediment -->
+                <path
+                  d="M20,42 L60,12 L100,42"
+                  fill="none"
+                  stroke="var(--mint)"
+                  stroke-width="2.5"
+                  stroke-linejoin="round"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+                <!-- Columns -->
+                <line x1="45" y1="55" x2="45" y2="100" stroke="var(--primary)" stroke-width="2" />
+                <line x1="60" y1="55" x2="60" y2="100" stroke="var(--primary)" stroke-width="2" />
+                <line x1="75" y1="55" x2="75" y2="100" stroke="var(--primary)" stroke-width="2" />
+                <!-- Orbiting data dots -->
+                <circle cx="15" cy="65" r="3" fill="var(--purple)">
+                  <animate
+                    attributeName="cy"
+                    values="55;75;55"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="105" cy="75" r="3" fill="var(--gold)">
+                  <animate
+                    attributeName="cy"
+                    values="75;55;75"
+                    dur="1.8s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.8s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="60" cy="25" r="2.5" fill="var(--error)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Scalable, Resilient &amp; Fault-Tolerant Architecture</span>
+              <span class="lang-es">Arquitectura Escalable, Resiliente y Tolerante a Fallos</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 13 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 13 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Scalability</span
+                ><span class="lang-es">1. Escalabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en">Vertical vs horizontal scaling, auto-scaling</span
+                ><span class="lang-es"
+                  >Escalado vertical vs horizontal, auto-escalado</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Resilience</span
+                ><span class="lang-es">2. Resiliencia</span>
+              </h4>
+              <p>
+                <span class="lang-en">Redundancy, failover, graceful degradation</span
+                ><span class="lang-es"
+                  >Redundancia, failover, degradaci&oacute;n elegante</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. Fault Tolerance</span
+                ><span class="lang-es">3. Tolerancia a Fallos</span>
+              </h4>
+              <p>
+                <span class="lang-en">Retries, timeouts, bulkheads, health checks</span
+                ><span class="lang-es"
+                  >Reintentos, tiempos de espera, bulkheads, health checks</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Architecture Patterns</span
+                ><span class="lang-es">4. Patrones de Arquitectura</span>
+              </h4>
+              <p>
+                <span class="lang-en">E-commerce, real-time chat, video streaming</span
+                ><span class="lang-es"
+                  >E-commerce, chat en tiempo real, streaming de video</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHAT IS SOLUTIONS ARCHITECTURE? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">What is Solutions Architecture?</span
+            ><span class="lang-es">&iquest;Qu&eacute; es la Arquitectura de Soluciones?</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Solutions architecture is the practice of designing end-to-end systems
+              that meet business requirements while being scalable, resilient, and
+              fault-tolerant. It bridges the gap between business needs and
+              technical implementation.</span
+            ><span class="lang-es"
+              >La arquitectura de soluciones es la pr&aacute;ctica de dise&ntilde;ar
+              sistemas de extremo a extremo que cumplan con los requisitos del negocio
+              siendo escalables, resilientes y tolerantes a fallos. Conecta las
+              necesidades del negocio con la implementaci&oacute;n t&eacute;cnica.</span
+            >
+          </p>
+          <div class="card float-in border-blue expandable">
+            <h4>
+              <span class="lang-en">Key Responsibilities</span
+              ><span class="lang-es">Responsabilidades Clave</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Define system components, data flows, integration patterns, and
+                non-functional requirements (performance, availability, security).</span
+              ><span class="lang-es"
+                >Definir componentes del sistema, flujos de datos, patrones de
+                integraci&oacute;n y requisitos no funcionales (rendimiento,
+                disponibilidad, seguridad).</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >A solutions architect evaluates trade-offs between cost, performance,
+                  and reliability. They produce architecture diagrams, select appropriate
+                  technologies, and ensure the system can evolve over time without major
+                  rewrites. The goal is not perfection but pragmatic design that balances
+                  constraints.</span
+                ><span class="lang-es"
+                  >Un arquitecto de soluciones eval&uacute;a trade-offs entre costo,
+                  rendimiento y confiabilidad. Producen diagramas de arquitectura,
+                  seleccionan tecnolog&iacute;as apropiadas y aseguran que el sistema
+                  pueda evolucionar sin reescrituras mayores. El objetivo no es la
+                  perfecci&oacute;n sino un dise&ntilde;o pragm&aacute;tico que
+                  equilibre restricciones.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: SCALABILITY PATTERNS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Scalability Patterns</span
+            ><span class="lang-es">Patrones de Escalabilidad</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Two fundamental approaches to handle growing demand: make the
+              machine bigger or add more machines.</span
+            ><span class="lang-es"
+              >Dos enfoques fundamentales para manejar demanda creciente: hacer la
+              m&aacute;quina m&aacute;s grande o agregar m&aacute;s m&aacute;quinas.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="200" viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-scale"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Vertical Scaling (left side) -->
+              <text x="200" y="20" text-anchor="middle" fill="var(--mint)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Vertical Scaling (Scale Up)</tspan
+                ><tspan class="lang-es">Escalado Vertical (Scale Up)</tspan>
+              </text>
+
+              <!-- Small server -->
+              <rect x="120" y="70" width="60" height="50" rx="6" fill="var(--surface)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="150" y="100" text-anchor="middle" fill="var(--mint)" font-size="9">2 CPU</text>
+
+              <!-- Arrow -->
+              <line x1="195" y1="95" x2="230" y2="95" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-scale)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-vert" />
+                </animateMotion>
+              </circle>
+              <path id="path-vert" d="M195,95 L230,95" fill="none" stroke="none" />
+
+              <!-- Big server -->
+              <rect x="245" y="50" width="90" height="90" rx="6" fill="var(--surface)" stroke="var(--mint)" stroke-width="2.5" />
+              <text x="290" y="95" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">32 CPU</text>
+              <text x="290" y="115" text-anchor="middle" fill="var(--muted)" font-size="9">128 GB RAM</text>
+
+              <!-- Divider -->
+              <line x1="440" y1="15" x2="440" y2="190" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,4" />
+
+              <!-- Horizontal Scaling (right side) -->
+              <text x="660" y="20" text-anchor="middle" fill="var(--purple)" font-size="13" font-weight="700">
+                <tspan class="lang-en">Horizontal Scaling (Scale Out)</tspan
+                ><tspan class="lang-es">Escalado Horizontal (Scale Out)</tspan>
+              </text>
+
+              <!-- Single server -->
+              <rect x="510" y="70" width="60" height="50" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="540" y="100" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <!-- Arrow -->
+              <line x1="585" y1="95" x2="625" y2="95" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-scale)" />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-horiz" />
+                </animateMotion>
+              </circle>
+              <path id="path-horiz" d="M585,95 L625,95" fill="none" stroke="none" />
+
+              <!-- Multiple servers -->
+              <rect x="640" y="35" width="55" height="40" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="667" y="60" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <rect x="710" y="35" width="55" height="40" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="737" y="60" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <rect x="780" y="35" width="55" height="40" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="807" y="60" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <rect x="640" y="90" width="55" height="40" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="667" y="115" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <rect x="710" y="90" width="55" height="40" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="737" y="115" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <rect x="780" y="90" width="55" height="40" rx="6" fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="807" y="115" text-anchor="middle" fill="var(--purple)" font-size="9">1x</text>
+
+              <!-- Labels -->
+              <text x="200" y="175" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Simpler, but has a ceiling</tspan
+                ><tspan class="lang-es">M&aacute;s simple, pero tiene un l&iacute;mite</tspan>
+              </text>
+              <text x="660" y="160" text-anchor="middle" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Complex, but nearly unlimited</tspan
+                ><tspan class="lang-es">Complejo, pero casi ilimitado</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="grid-2">
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Vertical Scaling</span
+                ><span class="lang-es">Escalado Vertical</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Add more CPU, RAM, or storage to an existing machine.</span
+                ><span class="lang-es"
+                  >Agregar m&aacute;s CPU, RAM o almacenamiento a una m&aacute;quina existente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Pros: no code changes, no distributed complexity. Cons: hardware limits,
+                    single point of failure, expensive at the top end. Suitable for databases
+                    and legacy applications.</span
+                  ><span class="lang-es"
+                    >Pros: sin cambios de c&oacute;digo, sin complejidad distribuida. Contras:
+                    l&iacute;mites de hardware, punto &uacute;nico de fallo, costoso en el
+                    extremo superior. Adecuado para bases de datos y aplicaciones legacy.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Horizontal Scaling</span
+                ><span class="lang-es">Escalado Horizontal</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Add more machines and distribute the load across them.</span
+                ><span class="lang-es"
+                  >Agregar m&aacute;s m&aacute;quinas y distribuir la carga entre ellas.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Pros: nearly unlimited capacity, fault tolerance via redundancy.
+                    Cons: requires stateless design, load balancing, data consistency
+                    strategies. The foundation of cloud-native architecture.</span
+                  ><span class="lang-es"
+                    >Pros: capacidad casi ilimitada, tolerancia a fallos por redundancia.
+                    Contras: requiere dise&ntilde;o sin estado, balanceo de carga,
+                    estrategias de consistencia de datos. La base de la arquitectura
+                    cloud-native.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: AUTO-SCALING ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Auto-Scaling</span
+            ><span class="lang-es">Auto-Escalado</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Automatically adjust the number of compute instances based on demand
+              metrics. Scale out when traffic surges, scale in when it subsides.</span
+            ><span class="lang-es"
+              >Ajustar autom&aacute;ticamente el n&uacute;mero de instancias de
+              c&oacute;mputo seg&uacute;n m&eacute;tricas de demanda. Escalar hacia
+              afuera cuando el tr&aacute;fico aumenta, reducir cuando disminuye.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="200" viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-auto"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Monitor -->
+              <rect x="30" y="60" width="130" height="60" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="95" y="85" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Monitoring</tspan><tspan class="lang-es">Monitoreo</tspan>
+              </text>
+              <text x="95" y="103" text-anchor="middle" fill="var(--muted)" font-size="9">CPU / Mem / RPS</text>
+
+              <!-- Arrow Monitor -> Alarm -->
+              <line x1="160" y1="90" x2="230" y2="90" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auto)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-mon-alarm" />
+                </animateMotion>
+              </circle>
+              <path id="path-mon-alarm" d="M160,90 L230,90" fill="none" stroke="none" />
+
+              <!-- Alarm -->
+              <rect x="240" y="60" width="130" height="60" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="305" y="85" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Alarm</tspan><tspan class="lang-es">Alarma</tspan>
+              </text>
+              <text x="305" y="103" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Threshold breach</tspan><tspan class="lang-es">Umbral superado</tspan>
+              </text>
+
+              <!-- Arrow Alarm -> Scale Out (upper) -->
+              <line x1="370" y1="75" x2="470" y2="40" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auto)" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-alarm-out" />
+                </animateMotion>
+              </circle>
+              <path id="path-alarm-out" d="M370,75 L470,40" fill="none" stroke="none" />
+
+              <!-- Arrow Alarm -> Scale In (lower) -->
+              <line x1="370" y1="105" x2="470" y2="145" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auto)" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-alarm-in" />
+                </animateMotion>
+              </circle>
+              <path id="path-alarm-in" d="M370,105 L470,145" fill="none" stroke="none" />
+
+              <!-- Scale Out -->
+              <rect x="480" y="15" width="160" height="55" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="560" y="38" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Scale Out</tspan><tspan class="lang-es">Escalar Afuera</tspan>
+              </text>
+              <text x="560" y="55" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">+ Add instances</tspan><tspan class="lang-es">+ Agregar instancias</tspan>
+              </text>
+
+              <!-- Scale In -->
+              <rect x="480" y="120" width="160" height="55" rx="8" fill="var(--surface)" stroke="var(--error)" stroke-width="2" />
+              <text x="560" y="143" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Scale In</tspan><tspan class="lang-es">Escalar Adentro</tspan>
+              </text>
+              <text x="560" y="160" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">- Remove instances</tspan><tspan class="lang-es">- Remover instancias</tspan>
+              </text>
+
+              <!-- Arrows to Instance Pool -->
+              <line x1="640" y1="42" x2="710" y2="85" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auto)" />
+              <line x1="640" y1="147" x2="710" y2="105" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-auto)" />
+
+              <!-- Instance Pool -->
+              <rect x="720" y="55" width="140" height="70" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2.5" />
+              <text x="790" y="85" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="700">
+                <tspan class="lang-en">Instance Pool</tspan><tspan class="lang-es">Pool de Instancias</tspan>
+              </text>
+              <text x="790" y="105" text-anchor="middle" fill="var(--muted)" font-size="9">2..N</text>
+            </svg>
+          </div>
+          <div class="card float-in border-blue expandable">
+            <h4>
+              <span class="lang-en">Scaling Policies</span
+              ><span class="lang-es">Pol&iacute;ticas de Escalado</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Define rules based on CPU utilization, memory usage, or request count
+                to trigger scaling actions automatically.</span
+              ><span class="lang-es"
+                >Defina reglas basadas en utilizaci&oacute;n de CPU, uso de memoria
+                o conteo de solicitudes para activar acciones de escalado
+                autom&aacute;ticamente.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Target tracking maintains a metric at a specified value (e.g., 70%
+                  CPU). Step scaling adds or removes capacity in increments based on
+                  alarm severity. Scheduled scaling handles predictable traffic patterns
+                  (e.g., business hours). Cooldown periods prevent thrashing between
+                  scale-out and scale-in events.</span
+                ><span class="lang-es"
+                  >El seguimiento de objetivo mantiene una m&eacute;trica en un valor
+                  especificado (ej., 70% CPU). El escalado por pasos agrega o remueve
+                  capacidad en incrementos seg&uacute;n la severidad de la alarma. El
+                  escalado programado maneja patrones de tr&aacute;fico predecibles
+                  (ej., horario laboral). Los per&iacute;odos de enfriamiento previenen
+                  oscilaciones entre eventos de scale-out y scale-in.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: RESILIENCE PATTERNS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Resilience Patterns</span
+            ><span class="lang-es">Patrones de Resiliencia</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Redundancy</span
+                ><span class="lang-es">Redundancia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Deploy multiple copies of critical components to eliminate single
+                  points of failure.</span
+                ><span class="lang-es"
+                  >Desplegar m&uacute;ltiples copias de componentes cr&iacute;ticos
+                  para eliminar puntos &uacute;nicos de fallo.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Active-active: all nodes handle traffic simultaneously, maximizing
+                    throughput. Active-passive: standby nodes take over only when the
+                    primary fails, simpler but wastes capacity. Geographic redundancy
+                    distributes across regions for disaster recovery.</span
+                  ><span class="lang-es"
+                    >Activo-activo: todos los nodos manejan tr&aacute;fico
+                    simult&aacute;neamente, maximizando throughput. Activo-pasivo:
+                    los nodos en espera toman el control solo cuando el primario falla,
+                    m&aacute;s simple pero desperdicia capacidad. La redundancia
+                    geogr&aacute;fica distribuye entre regiones para recuperaci&oacute;n
+                    ante desastres.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Failover</span
+                ><span class="lang-es">Failover</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Automatically switch to a backup system when the primary fails.</span
+                ><span class="lang-es"
+                  >Cambiar autom&aacute;ticamente a un sistema de respaldo cuando el
+                  primario falla.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >DNS failover redirects traffic to healthy endpoints. Database failover
+                    promotes a read replica to primary. Load balancer failover removes
+                    unhealthy targets from the pool. Recovery Time Objective (RTO) defines
+                    acceptable downtime; Recovery Point Objective (RPO) defines acceptable
+                    data loss.</span
+                  ><span class="lang-es"
+                    >El failover DNS redirige tr&aacute;fico a endpoints saludables.
+                    El failover de base de datos promueve una r&eacute;plica de lectura
+                    a primario. El failover del balanceador de carga remueve targets
+                    no saludables. El Objetivo de Tiempo de Recuperaci&oacute;n (RTO)
+                    define el tiempo de inactividad aceptable; el Objetivo de Punto de
+                    Recuperaci&oacute;n (RPO) define la p&eacute;rdida de datos
+                    aceptable.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Graceful Degradation</span
+                ><span class="lang-es">Degradaci&oacute;n Elegante</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Continue operating with reduced functionality instead of complete
+                  failure.</span
+                ><span class="lang-es"
+                  >Continuar operando con funcionalidad reducida en lugar de fallar
+                  completamente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Serve cached content when the database is unavailable. Disable
+                    non-essential features under heavy load (e.g., recommendations,
+                    analytics). Return default values instead of errors. Netflix shows
+                    generic recommendations when the personalization service is down.</span
+                  ><span class="lang-es"
+                    >Servir contenido en cach&eacute; cuando la base de datos no est&aacute;
+                    disponible. Deshabilitar funciones no esenciales bajo carga pesada
+                    (ej., recomendaciones, anal&iacute;tica). Retornar valores
+                    predeterminados en lugar de errores. Netflix muestra recomendaciones
+                    gen&eacute;ricas cuando el servicio de personalizaci&oacute;n
+                    est&aacute; ca&iacute;do.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Circuit Breaker</span
+                ><span class="lang-es">Circuit Breaker</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Stop calling a failing service to prevent cascading failures across
+                  the system.</span
+                ><span class="lang-es"
+                  >Dejar de llamar a un servicio fallido para prevenir fallos en
+                  cascada a trav&eacute;s del sistema.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Three states: Closed (normal flow), Open (all calls fail-fast),
+                    Half-Open (test with limited calls). After a timeout in the Open
+                    state, the circuit transitions to Half-Open and allows a few test
+                    requests. If they succeed, the circuit closes; if they fail, it
+                    reopens. Libraries: Resilience4j, Hystrix, Polly.</span
+                  ><span class="lang-es"
+                    >Tres estados: Cerrado (flujo normal), Abierto (todas las llamadas
+                    fallan r&aacute;pido), Semi-Abierto (probar con llamadas limitadas).
+                    Despu&eacute;s de un tiempo de espera en estado Abierto, el circuito
+                    transiciona a Semi-Abierto y permite algunas solicitudes de prueba.
+                    Si tienen &eacute;xito, el circuito se cierra; si fallan, se reabre.
+                    Librer&iacute;as: Resilience4j, Hystrix, Polly.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: FAULT TOLERANCE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Fault Tolerance</span
+            ><span class="lang-es">Tolerancia a Fallos</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Retry with Backoff</span
+                ><span class="lang-es">Reintento con Backoff</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Retry failed operations with increasing delays to give the
+                  downstream service time to recover.</span
+                ><span class="lang-es"
+                  >Reintentar operaciones fallidas con retrasos crecientes para dar
+                  tiempo al servicio destino de recuperarse.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Exponential backoff doubles the wait: 1s, 2s, 4s, 8s. Add jitter
+                    (random delay) to prevent thundering herd when many clients retry
+                    simultaneously. Set a max retry count to avoid infinite loops. Only
+                    retry on transient errors (5xx, timeouts), not client errors (4xx).</span
+                  ><span class="lang-es"
+                    >El backoff exponencial duplica la espera: 1s, 2s, 4s, 8s. Agregue
+                    jitter (retraso aleatorio) para prevenir la estampida cuando muchos
+                    clientes reintentan simult&aacute;neamente. Establezca un conteo
+                    m&aacute;ximo de reintentos para evitar bucles infinitos. Solo
+                    reintente en errores transitorios (5xx, timeouts), no errores de
+                    cliente (4xx).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Timeout Budgets</span
+                ><span class="lang-es">Presupuestos de Timeout</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Set time limits on every network call to prevent threads from
+                  blocking indefinitely.</span
+                ><span class="lang-es"
+                  >Establecer l&iacute;mites de tiempo en cada llamada de red para
+                  prevenir que los hilos se bloqueen indefinidamente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Distribute the total request budget across service calls. If the API
+                    gateway allows 3 seconds total, the auth service gets 500ms, the
+                    product service gets 1.5s, and the payment service gets 1s. Fail fast
+                    when the remaining budget is insufficient for the next call.</span
+                  ><span class="lang-es"
+                    >Distribuya el presupuesto total de solicitud entre llamadas de
+                    servicio. Si el API gateway permite 3 segundos en total, el servicio
+                    de autenticaci&oacute;n obtiene 500ms, el servicio de productos
+                    1.5s y el servicio de pagos 1s. Falle r&aacute;pido cuando el
+                    presupuesto restante sea insuficiente para la siguiente llamada.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Bulkhead Isolation</span
+                ><span class="lang-es">Aislamiento Bulkhead</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Isolate components so a failure in one does not consume all shared
+                  resources.</span
+                ><span class="lang-es"
+                  >Aislar componentes para que un fallo en uno no consuma todos los
+                  recursos compartidos.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Named after ship compartments that prevent the entire vessel from
+                    sinking. Use separate thread pools, connection pools, or even
+                    separate processes for different services. If the payment service
+                    pool is exhausted, the catalog service continues to work with its
+                    own pool.</span
+                  ><span class="lang-es"
+                    >Nombrado como los compartimentos de barcos que previenen que toda
+                    la embarcaci&oacute;n se hunda. Use pools de hilos, pools de
+                    conexiones o incluso procesos separados para diferentes servicios.
+                    Si el pool del servicio de pagos se agota, el servicio de
+                    cat&aacute;logo contin&uacute;a funcionando con su propio pool.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Health Checks &amp; Self-Healing</span
+                ><span class="lang-es">Health Checks y Auto-Recuperaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Continuously probe service health and automatically replace
+                  unhealthy instances.</span
+                ><span class="lang-es"
+                  >Verificar continuamente la salud del servicio y reemplazar
+                  autom&aacute;ticamente instancias no saludables.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Liveness probes detect if a process is alive. Readiness probes check
+                    if it can accept traffic. Startup probes handle slow-starting
+                    containers. Container orchestrators (Kubernetes, ECS) automatically
+                    restart failed containers and redistribute traffic to healthy
+                    ones.</span
+                  ><span class="lang-es"
+                    >Las sondas de vivacidad detectan si un proceso est&aacute; vivo. Las
+                    sondas de disponibilidad verifican si puede aceptar tr&aacute;fico.
+                    Las sondas de inicio manejan contenedores de arranque lento. Los
+                    orquestadores de contenedores (Kubernetes, ECS) reinician
+                    autom&aacute;ticamente contenedores fallidos y redistribuyen
+                    tr&aacute;fico a los saludables.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: DESIGN FOR FAILURE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Design for Failure</span
+            ><span class="lang-es">Dise&ntilde;ar para el Fallo</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Chaos engineering: intentionally inject failures in production to
+              discover weaknesses before they cause outages. The question is not
+              &ldquo;if&rdquo; something will fail, but &ldquo;when.&rdquo;</span
+            ><span class="lang-es"
+              >Ingenier&iacute;a del caos: inyectar fallos intencionalmente en
+              producci&oacute;n para descubrir debilidades antes de que causen
+              interrupciones. La pregunta no es &ldquo;si&rdquo; algo fallar&aacute;,
+              sino &ldquo;cu&aacute;ndo.&rdquo;</span
+            >
+          </p>
+          <div class="card float-in border-orange expandable">
+            <h4>
+              <span class="lang-en">Chaos Monkey (Netflix)</span
+              ><span class="lang-es">Chaos Monkey (Netflix)</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Randomly terminates instances in production to ensure services can
+                tolerate instance failures.</span
+              ><span class="lang-es"
+                >Termina instancias aleatoriamente en producci&oacute;n para asegurar
+                que los servicios toleren fallos de instancias.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Part of the Simian Army: Chaos Monkey (instances), Chaos Gorilla
+                  (availability zones), Chaos Kong (regions). Netflix runs these in
+                  production during business hours so engineers are present to observe
+                  and fix issues. This culture of failure testing makes Netflix one of
+                  the most resilient streaming platforms.</span
+                ><span class="lang-es"
+                  >Parte del Simian Army: Chaos Monkey (instancias), Chaos Gorilla
+                  (zonas de disponibilidad), Chaos Kong (regiones). Netflix los ejecuta
+                  en producci&oacute;n durante horario laboral para que los ingenieros
+                  est&eacute;n presentes para observar y corregir problemas. Esta
+                  cultura de pruebas de fallos hace a Netflix una de las plataformas
+                  de streaming m&aacute;s resilientes.</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="card float-in border-blue expandable">
+            <h4>
+              <span class="lang-en">Fault Injection Simulator</span
+              ><span class="lang-es">Simulador de Inyecci&oacute;n de Fallos</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Managed services for injecting CPU stress, network latency, instance
+                termination, and API throttling.</span
+              ><span class="lang-es"
+                >Servicios administrados para inyectar estr&eacute;s de CPU, latencia
+                de red, terminaci&oacute;n de instancias y throttling de API.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Cloud providers offer managed chaos engineering tools (AWS FIS, Azure
+                  Chaos Studio, GCP Fault Injection Testing). These provide guardrails
+                  like stop conditions and rollback to prevent experiments from causing
+                  real outages. Start with non-production environments and gradually
+                  move to production.</span
+                ><span class="lang-es"
+                  >Los proveedores de nube ofrecen herramientas administradas de
+                  ingenier&iacute;a del caos (AWS FIS, Azure Chaos Studio, GCP Fault
+                  Injection Testing). Proporcionan protecciones como condiciones de
+                  parada y rollback para prevenir que los experimentos causen
+                  interrupciones reales. Comience en ambientes de no-producci&oacute;n
+                  y avance gradualmente a producci&oacute;n.</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="card float-in border-green expandable">
+            <h4>
+              <span class="lang-en">Blast Radius Containment</span
+              ><span class="lang-es">Contenci&oacute;n del Radio de Impacto</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Limit the scope of failures through isolation boundaries: cells,
+                shards, and regional deployments.</span
+              ><span class="lang-es"
+                >Limitar el alcance de los fallos a trav&eacute;s de l&iacute;mites de
+                aislamiento: celdas, shards y despliegues regionales.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >Cell-based architecture partitions users into independent cells. A
+                  failure in one cell affects only a percentage of users. Canary
+                  deployments roll out changes to a small cell first. If the canary
+                  fails, only 1-5% of users are affected instead of 100%.</span
+                ><span class="lang-es"
+                  >La arquitectura basada en celdas divide usuarios en celdas
+                  independientes. Un fallo en una celda afecta solo un porcentaje de
+                  usuarios. Los despliegues canario lanzan cambios a una celda
+                  peque&ntilde;a primero. Si el canario falla, solo 1-5% de los
+                  usuarios se ven afectados en lugar del 100%.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: ARCHITECTURE - E-COMMERCE PLATFORM ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Architecture: E-Commerce Platform</span
+            ><span class="lang-es">Arquitectura: Plataforma E-Commerce</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="300" viewBox="0 0 880 300">
+              <defs>
+                <marker
+                  id="arrow-ecom"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- CDN -->
+              <rect x="10" y="105" width="90" height="50" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="55" y="135" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">CDN</text>
+
+              <!-- Arrow CDN -> LB -->
+              <line x1="100" y1="130" x2="140" y2="130" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-1" d="M100,130 L140,130" fill="none" stroke="none" />
+
+              <!-- Load Balancer -->
+              <rect x="150" y="105" width="90" height="50" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="195" y="125" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">Load</text>
+              <text x="195" y="140" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">Balancer</text>
+
+              <!-- Arrow LB -> Web Servers -->
+              <line x1="240" y1="130" x2="280" y2="130" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-2" d="M240,130 L280,130" fill="none" stroke="none" />
+
+              <!-- Web Servers -->
+              <rect x="290" y="105" width="90" height="50" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2" />
+              <text x="335" y="125" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">Web</text>
+              <text x="335" y="140" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">Servers</text>
+
+              <!-- Arrow Web -> API Gateway -->
+              <line x1="380" y1="130" x2="420" y2="130" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-3" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-3" d="M380,130 L420,130" fill="none" stroke="none" />
+
+              <!-- API Gateway -->
+              <rect x="430" y="95" width="100" height="70" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5" />
+              <text x="480" y="125" text-anchor="middle" fill="var(--primary)" font-size="10" font-weight="700">API</text>
+              <text x="480" y="140" text-anchor="middle" fill="var(--primary)" font-size="10" font-weight="700">Gateway</text>
+
+              <!-- Arrow API GW -> Microservices -->
+              <line x1="530" y1="130" x2="570" y2="130" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-4" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-4" d="M530,130 L570,130" fill="none" stroke="none" />
+
+              <!-- Microservices -->
+              <rect x="580" y="95" width="110" height="70" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="635" y="120" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">Micro-</text>
+              <text x="635" y="135" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">services</text>
+              <text x="635" y="152" text-anchor="middle" fill="var(--muted)" font-size="8">Cart / Orders / Users</text>
+
+              <!-- Arrows from Microservices to DB, Cache, MQ -->
+              <!-- To Database (top) -->
+              <line x1="690" y1="110" x2="740" y2="55" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+              <!-- To Cache (middle) -->
+              <line x1="690" y1="130" x2="740" y2="130" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+              <!-- To Message Queue (bottom) -->
+              <line x1="690" y1="150" x2="740" y2="210" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-ecom)" />
+
+              <!-- Animated dots for back-end connections -->
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-db" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-db" d="M690,110 L740,55" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-cache" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-cache" d="M690,130 L740,130" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-ecom-mq" />
+                </animateMotion>
+              </circle>
+              <path id="path-ecom-mq" d="M690,150 L740,210" fill="none" stroke="none" />
+
+              <!-- Database -->
+              <rect x="750" y="25" width="110" height="55" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="805" y="48" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">Database</text>
+              <text x="805" y="65" text-anchor="middle" fill="var(--muted)" font-size="8">SQL / NoSQL</text>
+
+              <!-- Cache -->
+              <rect x="750" y="105" width="110" height="50" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="805" y="128" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">Cache</text>
+              <text x="805" y="143" text-anchor="middle" fill="var(--muted)" font-size="8">Redis / Memcached</text>
+
+              <!-- Message Queue -->
+              <rect x="750" y="190" width="110" height="55" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2" />
+              <text x="805" y="213" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Message Queue</tspan><tspan class="lang-es">Cola de Mensajes</tspan>
+              </text>
+              <text x="805" y="231" text-anchor="middle" fill="var(--muted)" font-size="8">Kafka / RabbitMQ</text>
+            </svg>
+          </div>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">When to Use</span
+                ><span class="lang-es">Cu&aacute;ndo Usar</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >High-traffic retail platforms with many product pages, shopping
+                  carts, and payment flows.</span
+                ><span class="lang-es"
+                  >Plataformas de comercio de alto tr&aacute;fico con muchas
+                  p&aacute;ginas de productos, carritos de compras y flujos de pago.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The CDN caches static assets close to users. The load balancer
+                    distributes requests across web servers. The API gateway handles
+                    authentication, rate limiting, and routing. Microservices decompose
+                    business logic. The message queue decouples order processing from
+                    the user-facing request path for asynchronous workflows (emails,
+                    inventory updates).</span
+                  ><span class="lang-es"
+                    >El CDN almacena en cach&eacute; recursos est&aacute;ticos cerca
+                    de los usuarios. El balanceador distribuye solicitudes entre
+                    servidores web. El API gateway maneja autenticaci&oacute;n,
+                    l&iacute;mites de tasa y enrutamiento. Los microservicios
+                    descomponen la l&oacute;gica de negocio. La cola de mensajes
+                    desacopla el procesamiento de pedidos del flujo del usuario
+                    para flujos asincr&oacute;nicos (correos, actualizaciones
+                    de inventario).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Technology Choice</span
+                ><span class="lang-es">Elecci&oacute;n de Tecnolog&iacute;a</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Choose based on team expertise, traffic patterns, and
+                  consistency requirements.</span
+                ><span class="lang-es"
+                  >Elegir basado en la experiencia del equipo, patrones de
+                  tr&aacute;fico y requisitos de consistencia.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >SQL databases for orders and payments (ACID guarantees). NoSQL for
+                    product catalog and sessions (flexible schema, horizontal scaling).
+                    Redis for caching hot data and session state. Kafka for event
+                    streaming when order of events matters; RabbitMQ for task queues
+                    when routing flexibility matters.</span
+                  ><span class="lang-es"
+                    >Bases de datos SQL para pedidos y pagos (garant&iacute;as ACID).
+                    NoSQL para cat&aacute;logo de productos y sesiones (esquema
+                    flexible, escalado horizontal). Redis para almacenar en cach&eacute;
+                    datos calientes y estado de sesi&oacute;n. Kafka para streaming
+                    de eventos cuando el orden importa; RabbitMQ para colas de tareas
+                    cuando la flexibilidad de enrutamiento importa.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: ARCHITECTURE - REAL-TIME CHAT ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Architecture: Real-Time Chat</span
+            ><span class="lang-es">Arquitectura: Chat en Tiempo Real</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="280" viewBox="0 0 880 280">
+              <defs>
+                <marker
+                  id="arrow-chat"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client A -->
+              <rect x="20" y="40" width="100" height="45" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="70" y="58" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Client A</tspan><tspan class="lang-es">Cliente A</tspan>
+              </text>
+              <text x="70" y="73" text-anchor="middle" fill="var(--muted)" font-size="8">Web / Mobile</text>
+
+              <!-- Client B -->
+              <rect x="20" y="120" width="100" height="45" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="70" y="138" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Client B</tspan><tspan class="lang-es">Cliente B</tspan>
+              </text>
+              <text x="70" y="153" text-anchor="middle" fill="var(--muted)" font-size="8">Web / Mobile</text>
+
+              <!-- Client C -->
+              <rect x="20" y="200" width="100" height="45" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="70" y="218" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Client C</tspan><tspan class="lang-es">Cliente C</tspan>
+              </text>
+              <text x="70" y="233" text-anchor="middle" fill="var(--muted)" font-size="8">Web / Mobile</text>
+
+              <!-- Arrows Clients -> WS Server -->
+              <line x1="120" y1="62" x2="230" y2="62" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="230" y1="62" x2="230" y2="140" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="120" y1="142" x2="230" y2="142" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="120" y1="222" x2="230" y2="222" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="230" y1="222" x2="230" y2="142" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="230" y1="142" x2="270" y2="142" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-chat)" />
+
+              <!-- Animated dots -->
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-chat-a" />
+                </animateMotion>
+              </circle>
+              <path id="path-chat-a" d="M120,62 L230,62 L230,142 L270,142" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-chat-b" />
+                </animateMotion>
+              </circle>
+              <path id="path-chat-b" d="M120,142 L270,142" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-chat-c" />
+                </animateMotion>
+              </circle>
+              <path id="path-chat-c" d="M120,222 L230,222 L230,142 L270,142" fill="none" stroke="none" />
+
+              <!-- WebSocket Server -->
+              <rect x="280" y="105" width="130" height="75" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5" />
+              <text x="345" y="135" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">WebSocket</text>
+              <text x="345" y="152" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700">Server</text>
+              <text x="345" y="170" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Persistent connections</tspan
+                ><tspan class="lang-es">Conexiones persistentes</tspan>
+              </text>
+
+              <!-- Arrow WS -> Message Broker -->
+              <line x1="410" y1="142" x2="470" y2="142" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-chat)" />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-chat-broker" />
+                </animateMotion>
+              </circle>
+              <path id="path-chat-broker" d="M410,142 L470,142" fill="none" stroke="none" />
+
+              <!-- Message Broker -->
+              <rect x="480" y="105" width="140" height="75" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2.5" />
+              <text x="550" y="130" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="700">
+                <tspan class="lang-en">Message Broker</tspan
+                ><tspan class="lang-es">Broker de Mensajes</tspan>
+              </text>
+              <text x="550" y="152" text-anchor="middle" fill="var(--muted)" font-size="9">Kafka / Redis Pub-Sub</text>
+              <text x="550" y="168" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Fan-out to subscribers</tspan
+                ><tspan class="lang-es">Fan-out a suscriptores</tspan>
+              </text>
+
+              <!-- Arrow Broker -> Notification Service (upper) -->
+              <line x1="620" y1="120" x2="690" y2="65" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-chat)" />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-chat-notif" />
+                </animateMotion>
+              </circle>
+              <path id="path-chat-notif" d="M620,120 L690,65" fill="none" stroke="none" />
+
+              <!-- Arrow Broker -> Storage (lower) -->
+              <line x1="620" y1="165" x2="690" y2="220" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-chat)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-chat-store" />
+                </animateMotion>
+              </circle>
+              <path id="path-chat-store" d="M620,165 L690,220" fill="none" stroke="none" />
+
+              <!-- Notification Service -->
+              <rect x="700" y="35" width="150" height="55" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="775" y="58" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Notification Service</tspan
+                ><tspan class="lang-es">Servicio de Notificaciones</tspan>
+              </text>
+              <text x="775" y="75" text-anchor="middle" fill="var(--muted)" font-size="8">Push / Email / SMS</text>
+
+              <!-- Storage -->
+              <rect x="700" y="195" width="150" height="55" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="775" y="218" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Message Storage</tspan
+                ><tspan class="lang-es">Almacenamiento de Mensajes</tspan>
+              </text>
+              <text x="775" y="235" text-anchor="middle" fill="var(--muted)" font-size="8">NoSQL / Time-Series DB</text>
+            </svg>
+          </div>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Key Challenges</span
+                ><span class="lang-es">Desaf&iacute;os Clave</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Maintaining persistent WebSocket connections at scale, message
+                  ordering, and presence management.</span
+                ><span class="lang-es"
+                  >Mantener conexiones WebSocket persistentes a escala, ordenamiento
+                  de mensajes y gesti&oacute;n de presencia.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Each WebSocket server holds a set of active connections. The message
+                    broker enables fan-out: when User A sends a message, the broker
+                    delivers it to the WebSocket server holding User B's connection.
+                    Presence is tracked via heartbeats. Offline messages are queued and
+                    delivered when the user reconnects.</span
+                  ><span class="lang-es"
+                    >Cada servidor WebSocket mantiene un conjunto de conexiones activas.
+                    El broker de mensajes habilita fan-out: cuando el Usuario A
+                    env&iacute;a un mensaje, el broker lo entrega al servidor WebSocket
+                    que tiene la conexi&oacute;n del Usuario B. La presencia se rastrea
+                    con heartbeats. Los mensajes offline se encolan y entregan cuando
+                    el usuario se reconecta.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Design Decisions</span
+                ><span class="lang-es">Decisiones de Dise&ntilde;o</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Push vs pull, message persistence depth, and read receipt
+                  delivery guarantees.</span
+                ><span class="lang-es"
+                  >Push vs pull, profundidad de persistencia de mensajes y
+                  garant&iacute;as de entrega de confirmaciones de lectura.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >WhatsApp stores messages only until delivered. Discord stores all
+                    messages permanently. Slack uses a hybrid approach. The choice
+                    affects storage costs, backup strategy, and privacy compliance.
+                    Use time-series databases for efficient range queries on chat
+                    history.</span
+                  ><span class="lang-es"
+                    >WhatsApp almacena mensajes solo hasta entregarlos. Discord almacena
+                    todos los mensajes permanentemente. Slack usa un enfoque h&iacute;brido.
+                    La elecci&oacute;n afecta costos de almacenamiento, estrategia de
+                    respaldo y cumplimiento de privacidad. Use bases de datos de series
+                    de tiempo para consultas eficientes de rango en historial de
+                    chat.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: ARCHITECTURE - VIDEO STREAMING ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Architecture: Video Streaming</span
+            ><span class="lang-es">Arquitectura: Streaming de Video</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="280" viewBox="0 0 880 280">
+              <defs>
+                <marker
+                  id="arrow-vid"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Upload -->
+              <rect x="20" y="95" width="110" height="60" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="75" y="120" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Upload</tspan><tspan class="lang-es">Subida</tspan>
+              </text>
+              <text x="75" y="140" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Original file</tspan><tspan class="lang-es">Archivo original</tspan>
+              </text>
+
+              <!-- Arrow Upload -> Object Storage -->
+              <line x1="130" y1="125" x2="180" y2="125" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-vid)" />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-vid-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-vid-1" d="M130,125 L180,125" fill="none" stroke="none" />
+
+              <!-- Object Storage -->
+              <rect x="190" y="95" width="110" height="60" rx="8" fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="245" y="118" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Object Storage</tspan
+                ><tspan class="lang-es">Almacenamiento</tspan>
+              </text>
+              <text x="245" y="140" text-anchor="middle" fill="var(--muted)" font-size="8">S3 / Blob / GCS</text>
+
+              <!-- Arrow Object Storage -> Transcoding Pipeline (fan-out to 3 parallel) -->
+              <line x1="300" y1="110" x2="370" y2="50" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-vid)" />
+              <line x1="300" y1="125" x2="370" y2="125" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-vid)" />
+              <line x1="300" y1="140" x2="370" y2="200" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-vid)" />
+
+              <!-- Animated dots for parallel paths -->
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-vid-t1" />
+                </animateMotion>
+              </circle>
+              <path id="path-vid-t1" d="M300,110 L370,50" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-vid-t2" />
+                </animateMotion>
+              </circle>
+              <path id="path-vid-t2" d="M300,125 L370,125" fill="none" stroke="none" />
+
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-vid-t3" />
+                </animateMotion>
+              </circle>
+              <path id="path-vid-t3" d="M300,140 L370,200" fill="none" stroke="none" />
+
+              <!-- Transcoding Workers (3 parallel) -->
+              <rect x="380" y="25" width="130" height="50" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2" />
+              <text x="445" y="45" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">1080p</text>
+              <text x="445" y="62" text-anchor="middle" fill="var(--muted)" font-size="8">Transcode Worker</text>
+
+              <rect x="380" y="100" width="130" height="50" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2" />
+              <text x="445" y="120" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">720p</text>
+              <text x="445" y="137" text-anchor="middle" fill="var(--muted)" font-size="8">Transcode Worker</text>
+
+              <rect x="380" y="175" width="130" height="50" rx="8" fill="var(--surface)" stroke="var(--purple)" stroke-width="2" />
+              <text x="445" y="195" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">480p</text>
+              <text x="445" y="212" text-anchor="middle" fill="var(--muted)" font-size="8">Transcode Worker</text>
+
+              <!-- Label: Parallel Transcoding -->
+              <text x="445" y="252" text-anchor="middle" fill="var(--muted)" font-size="9" font-style="italic">
+                <tspan class="lang-en">Parallel transcoding pipeline</tspan
+                ><tspan class="lang-es">Pipeline de transcodificaci&oacute;n paralela</tspan>
+              </text>
+
+              <!-- Arrows from workers -> CDN -->
+              <line x1="510" y1="50" x2="590" y2="100" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="510" y1="125" x2="590" y2="125" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="510" y1="200" x2="590" y2="150" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" />
+              <line x1="590" y1="125" x2="620" y2="125" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-vid)" />
+
+              <!-- CDN -->
+              <rect x="630" y="90" width="110" height="70" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5" />
+              <text x="685" y="120" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">CDN</text>
+              <text x="685" y="140" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Edge caching</tspan><tspan class="lang-es">Cach&eacute; en el borde</tspan>
+              </text>
+
+              <!-- Arrow CDN -> Client -->
+              <line x1="740" y1="125" x2="790" y2="125" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrow-vid)" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.5s" repeatCount="indefinite">
+                  <mpath href="#path-vid-cdn" />
+                </animateMotion>
+              </circle>
+              <path id="path-vid-cdn" d="M740,125 L790,125" fill="none" stroke="none" />
+
+              <!-- Client Playback -->
+              <rect x="800" y="90" width="65" height="70" rx="8" fill="var(--surface)" stroke="var(--mint)" stroke-width="2" />
+              <text x="832" y="118" text-anchor="middle" fill="var(--mint)" font-size="9" font-weight="600">
+                <tspan class="lang-en">Player</tspan><tspan class="lang-es">Reproductor</tspan>
+              </text>
+              <text x="832" y="135" text-anchor="middle" fill="var(--muted)" font-size="8">HLS</text>
+              <text x="832" y="148" text-anchor="middle" fill="var(--muted)" font-size="8">DASH</text>
+            </svg>
+          </div>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Adaptive Bitrate Streaming</span
+                ><span class="lang-es">Streaming con Tasa de Bits Adaptativa</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >The client dynamically selects video quality based on current
+                  network bandwidth using HLS or DASH protocols.</span
+                ><span class="lang-es"
+                  >El cliente selecciona din&aacute;micamente la calidad de video
+                  basado en el ancho de banda actual usando protocolos HLS o DASH.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Videos are split into small segments (2-10 seconds). Each segment
+                    is encoded at multiple bitrates. The player requests the appropriate
+                    quality for each segment based on throughput measurements. This
+                    prevents buffering on slow connections while maximizing quality on
+                    fast ones.</span
+                  ><span class="lang-es"
+                    >Los videos se dividen en segmentos peque&ntilde;os (2-10 segundos).
+                    Cada segmento se codifica a m&uacute;ltiples tasas de bits. El
+                    reproductor solicita la calidad apropiada para cada segmento basado
+                    en mediciones de throughput. Esto previene el buffering en conexiones
+                    lentas y maximiza la calidad en conexiones r&aacute;pidas.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Cost Optimization</span
+                ><span class="lang-es">Optimizaci&oacute;n de Costos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Transcoding is the most expensive step. Use spot instances and
+                  pre-warm CDN for popular content.</span
+                ><span class="lang-es"
+                  >La transcodificaci&oacute;n es el paso m&aacute;s costoso. Use
+                  instancias spot y precaliente el CDN para contenido popular.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Encode only popular resolutions initially (720p, 1080p). Generate
+                    4K or 480p on demand. Use tiered storage: hot storage for recent
+                    content, cold storage for archives. Pre-position popular content
+                    at edge locations to reduce origin fetches and egress costs.</span
+                  ><span class="lang-es"
+                    >Codifique solo resoluciones populares inicialmente (720p, 1080p).
+                    Genere 4K o 480p bajo demanda. Use almacenamiento escalonado:
+                    almacenamiento caliente para contenido reciente, fr&iacute;o para
+                    archivos. Pre-posicione contenido popular en ubicaciones de borde
+                    para reducir consultas al origen y costos de salida.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: CLOUD-AGNOSTIC DESIGN ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Cloud-Agnostic Design</span
+            ><span class="lang-es">Dise&ntilde;o Cloud-Agnostic</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >The same architectural pattern maps to equivalent services across
+              cloud providers. Choosing cloud-agnostic abstractions reduces
+              vendor lock-in.</span
+            ><span class="lang-es"
+              >El mismo patr&oacute;n arquitect&oacute;nico se mapea a servicios
+              equivalentes entre proveedores de nube. Elegir abstracciones
+              cloud-agnostic reduce la dependencia del proveedor.</span
+            >
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Service</span
+                  ><span class="lang-es">Servicio</span>
+                </th>
+                <th>AWS</th>
+                <th>Azure</th>
+                <th>GCP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-blue">Compute</span></td>
+                <td>EC2 / ECS / Lambda</td>
+                <td>VMs / ACI / Functions</td>
+                <td>GCE / Cloud Run / Functions</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-green">Storage</span></td>
+                <td>S3</td>
+                <td>Blob Storage</td>
+                <td>Cloud Storage</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-orange">Database</span></td>
+                <td>RDS / DynamoDB</td>
+                <td>SQL DB / Cosmos DB</td>
+                <td>Cloud SQL / Firestore</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-purple">CDN</span></td>
+                <td>CloudFront</td>
+                <td>Front Door</td>
+                <td>Cloud CDN</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="badge badge-blue">
+                    <span class="lang-en">Message Queue</span
+                    ><span class="lang-es">Cola de Mensajes</span>
+                  </span>
+                </td>
+                <td>SQS / SNS / Kinesis</td>
+                <td>Service Bus / Event Hubs</td>
+                <td>Pub/Sub</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ========== SLIDE 12: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Scalability</span
+                ><span class="lang-es">Escalabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Scale vertically for simplicity, horizontally for unlimited growth.
+                  Auto-scaling automates capacity management based on real-time
+                  metrics.</span
+                ><span class="lang-es"
+                  >Escale verticalmente para simplicidad, horizontalmente para
+                  crecimiento ilimitado. El auto-escalado automatiza la
+                  gesti&oacute;n de capacidad basado en m&eacute;tricas en
+                  tiempo real.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Resilience</span
+                ><span class="lang-es">Resiliencia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Redundancy eliminates single points of failure. Failover and
+                  circuit breakers prevent cascading failures. Graceful degradation
+                  keeps core functionality available.</span
+                ><span class="lang-es"
+                  >La redundancia elimina puntos &uacute;nicos de fallo. El failover
+                  y los circuit breakers previenen fallos en cascada. La
+                  degradaci&oacute;n elegante mantiene la funcionalidad principal
+                  disponible.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Fault Tolerance &amp; Architecture</span
+                ><span class="lang-es">Tolerancia a Fallos y Arquitectura</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Retries, timeouts, bulkheads, and health checks make systems
+                  self-healing. Real-world architectures combine these patterns
+                  into layered, cloud-agnostic designs.</span
+                ><span class="lang-es"
+                  >Reintentos, timeouts, bulkheads y health checks hacen los
+                  sistemas auto-recuperables. Las arquitecturas del mundo real
+                  combinan estos patrones en dise&ntilde;os en capas y
+                  cloud-agnostic.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 13: Q&A ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 60px">
+            <div class="diagram-container">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <h1>
+              <span class="lang-en">Questions &amp; Answers</span>
+              <span class="lang-es">Preguntas y Respuestas</span>
+            </h1>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 13</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 13</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+  </body>
+</html>

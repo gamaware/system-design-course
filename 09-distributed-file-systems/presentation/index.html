@@ -1,0 +1,1476 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Replication | Replicaci&oacute;n de Datos - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="160" height="120" viewBox="0 0 160 120">
+                <!-- Source DB cylinder -->
+                <ellipse cx="40" cy="30" rx="22" ry="10" fill="none" stroke="var(--primary)" stroke-width="2" />
+                <rect x="18" y="30" width="44" height="40" fill="var(--surface)" stroke="none" />
+                <line x1="18" y1="30" x2="18" y2="70" stroke="var(--primary)" stroke-width="2" />
+                <line x1="62" y1="30" x2="62" y2="70" stroke="var(--primary)" stroke-width="2" />
+                <ellipse cx="40" cy="70" rx="22" ry="10" fill="none" stroke="var(--primary)" stroke-width="2" />
+                <text x="40" y="55" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">DB</text>
+
+                <!-- Replica DB cylinder -->
+                <ellipse cx="120" cy="30" rx="22" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+                <rect x="98" y="30" width="44" height="40" fill="var(--surface)" stroke="none" />
+                <line x1="98" y1="30" x2="98" y2="70" stroke="var(--mint)" stroke-width="2" />
+                <line x1="142" y1="30" x2="142" y2="70" stroke="var(--mint)" stroke-width="2" />
+                <ellipse cx="120" cy="70" rx="22" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+                <text x="120" y="55" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">DB</text>
+
+                <!-- Replication arrow -->
+                <line x1="64" y1="50" x2="96" y2="50" stroke="var(--gold)" stroke-width="2" stroke-dasharray="4,3" />
+                <polygon points="93,46 100,50 93,54" fill="var(--gold)" />
+
+                <!-- Animated dot along the arrow -->
+                <circle r="3" fill="var(--gold)">
+                  <animateMotion dur="1.5s" repeatCount="indefinite" path="M64,50 L96,50" />
+                </circle>
+
+                <!-- Sync waves -->
+                <circle cx="80" cy="90" r="6" fill="none" stroke="var(--purple)" stroke-width="1" opacity="0">
+                  <animate attributeName="r" values="4;16" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="80" cy="90" r="6" fill="none" stroke="var(--purple)" stroke-width="1" opacity="0">
+                  <animate attributeName="r" values="4;16" dur="2s" begin="1s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.8;0" dur="2s" begin="1s" repeatCount="indefinite" />
+                </circle>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Data Replication</span>
+              <span class="lang-es">Replicaci&oacute;n de Datos</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 09 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 09 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Why Replication?</span
+                ><span class="lang-es">1. &iquest;Por qu&eacute; Replicar?</span>
+              </h4>
+              <p>
+                <span class="lang-en">Durability, availability, latency, throughput</span
+                ><span class="lang-es"
+                  >Durabilidad, disponibilidad, latencia, rendimiento</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Replication Strategies</span
+                ><span class="lang-es">2. Estrategias de Replicaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en">Leader-follower, multi-leader, leaderless</span
+                ><span class="lang-es"
+                  >L&iacute;der-seguidor, multi-l&iacute;der, sin l&iacute;der</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. Consistency Models</span
+                ><span class="lang-es">3. Modelos de Consistencia</span>
+              </h4>
+              <p>
+                <span class="lang-en">Strong, eventual, causal consistency</span
+                ><span class="lang-es"
+                  >Consistencia fuerte, eventual, causal</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Cloud Services</span
+                ><span class="lang-es">4. Servicios en la Nube</span>
+              </h4>
+              <p>
+                <span class="lang-en">AWS, Azure, GCP, OCI replication options</span
+                ><span class="lang-es"
+                  >Opciones de replicaci&oacute;n en AWS, Azure, GCP, OCI</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: WHY REPLICATION? ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Why Replication?</span
+            ><span class="lang-es">&iquest;Por qu&eacute; Replicar?</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Replication keeps copies of data on multiple machines to improve
+              reliability and performance.</span
+            ><span class="lang-es"
+              >La replicaci&oacute;n mantiene copias de los datos en m&uacute;ltiples
+              m&aacute;quinas para mejorar la confiabilidad y el rendimiento.</span
+            >
+          </p>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Durability</span
+                ><span class="lang-es">Durabilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en">Survive hardware failures without data loss</span
+                ><span class="lang-es"
+                  >Sobrevivir fallas de hardware sin perder datos</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >If one node fails, another replica holds the data. Cloud providers
+                    replicate across availability zones to protect against datacenter
+                    outages (e.g., AWS S3 stores 3+ copies across AZs).</span
+                  ><span class="lang-es"
+                    >Si un nodo falla, otra r&eacute;plica conserva los datos. Los proveedores
+                    cloud replican entre zonas de disponibilidad para proteger contra
+                    ca&iacute;das de centros de datos (ej., AWS S3 almacena 3+ copias entre AZs).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Availability</span
+                ><span class="lang-es">Disponibilidad</span>
+              </h4>
+              <p>
+                <span class="lang-en">Automatic failover keeps the system running</span
+                ><span class="lang-es"
+                  >El failover autom&aacute;tico mantiene el sistema operando</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >When the primary node becomes unreachable, a replica is promoted
+                    to take over. This enables high availability (99.99%+) without
+                    manual intervention.</span
+                  ><span class="lang-es"
+                    >Cuando el nodo primario queda inaccesible, una r&eacute;plica se
+                    promueve para tomar el control. Esto permite alta disponibilidad
+                    (99.99%+) sin intervenci&oacute;n manual.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Latency</span
+                ><span class="lang-es">Latencia</span>
+              </h4>
+              <p>
+                <span class="lang-en">Clients read from the nearest replica</span
+                ><span class="lang-es"
+                  >Los clientes leen de la r&eacute;plica m&aacute;s cercana</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Geo-distributed replicas reduce round-trip time. A user in Tokyo
+                    reads from a local replica instead of crossing the Pacific to
+                    a US datacenter (200ms &rarr; 5ms).</span
+                  ><span class="lang-es"
+                    >Las r&eacute;plicas geo-distribuidas reducen el tiempo de ida y vuelta.
+                    Un usuario en Tokio lee de una r&eacute;plica local en vez de cruzar
+                    el Pac&iacute;fico hacia un datacenter en EE.UU. (200ms &rarr; 5ms).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">Throughput</span
+                ><span class="lang-es">Rendimiento</span>
+              </h4>
+              <p>
+                <span class="lang-en">Distribute reads across multiple replicas</span
+                ><span class="lang-es"
+                  >Distribuir lecturas entre m&uacute;ltiples r&eacute;plicas</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Instead of one node handling all queries, read traffic is spread
+                    across N replicas, increasing total read capacity by Nx. Write
+                    capacity is still limited to the leader node(s).</span
+                  ><span class="lang-es"
+                    >En lugar de que un solo nodo maneje todas las consultas, el tr&aacute;fico
+                    de lectura se distribuye entre N r&eacute;plicas, aumentando la capacidad
+                    de lectura Nx. La capacidad de escritura sigue limitada al nodo(s) l&iacute;der.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: LEADER-FOLLOWER REPLICATION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Leader-Follower Replication</span
+            ><span class="lang-es">Replicaci&oacute;n L&iacute;der-Seguidor</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >One node (leader) accepts all writes and propagates changes to
+              followers. Clients can read from any replica.</span
+            ><span class="lang-es"
+              >Un nodo (l&iacute;der) acepta todas las escrituras y propaga los cambios
+              a los seguidores. Los clientes pueden leer de cualquier r&eacute;plica.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-repl"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client -->
+              <rect x="20" y="75" width="120" height="50" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="80" y="97" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Client</tspan>
+                <tspan class="lang-es">Cliente</tspan>
+              </text>
+              <text x="80" y="113" text-anchor="middle" fill="var(--muted)" font-size="9">writes &amp; reads</text>
+
+              <!-- Arrow: Client -> Leader -->
+              <line x1="140" y1="100" x2="260" y2="100"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3"
+                marker-end="url(#arrow-repl)" />
+              <text x="200" y="92" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">1. Write</tspan>
+                <tspan class="lang-es">1. Escritura</tspan>
+              </text>
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M140,100 L260,100" />
+              </circle>
+
+              <!-- Leader DB -->
+              <ellipse cx="330" cy="70" rx="50" ry="14" fill="none" stroke="var(--primary)" stroke-width="2" />
+              <rect x="280" y="70" width="100" height="50" fill="var(--surface)" stroke="none" />
+              <line x1="280" y1="70" x2="280" y2="120" stroke="var(--primary)" stroke-width="2" />
+              <line x1="380" y1="70" x2="380" y2="120" stroke="var(--primary)" stroke-width="2" />
+              <ellipse cx="330" cy="120" rx="50" ry="14" fill="none" stroke="var(--primary)" stroke-width="2" />
+              <text x="330" y="100" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">Leader</text>
+
+              <!-- Arrow: Leader -> Follower 1 -->
+              <line x1="380" y1="85" x2="530" y2="50"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3"
+                marker-end="url(#arrow-repl)" />
+              <text x="455" y="55" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">2. Replicate</tspan>
+                <tspan class="lang-es">2. Replicar</tspan>
+              </text>
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite" path="M380,85 L530,50" />
+              </circle>
+
+              <!-- Arrow: Leader -> Follower 2 -->
+              <line x1="380" y1="110" x2="530" y2="160"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3"
+                marker-end="url(#arrow-repl)" />
+              <text x="455" y="150" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">2. Replicate</tspan>
+                <tspan class="lang-es">2. Replicar</tspan>
+              </text>
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" begin="0.3s" repeatCount="indefinite" path="M380,110 L530,160" />
+              </circle>
+
+              <!-- Follower 1 DB -->
+              <ellipse cx="600" cy="25" rx="50" ry="14" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <rect x="550" y="25" width="100" height="45" fill="var(--surface)" stroke="none" />
+              <line x1="550" y1="25" x2="550" y2="70" stroke="var(--mint)" stroke-width="2" />
+              <line x1="650" y1="25" x2="650" y2="70" stroke="var(--mint)" stroke-width="2" />
+              <ellipse cx="600" cy="70" rx="50" ry="14" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <text x="600" y="52" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">Follower 1</text>
+
+              <!-- Follower 2 DB -->
+              <ellipse cx="600" cy="140" rx="50" ry="14" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <rect x="550" y="140" width="100" height="45" fill="var(--surface)" stroke="none" />
+              <line x1="550" y1="140" x2="550" y2="185" stroke="var(--mint)" stroke-width="2" />
+              <line x1="650" y1="140" x2="650" y2="185" stroke="var(--mint)" stroke-width="2" />
+              <ellipse cx="600" cy="185" rx="50" ry="14" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <text x="600" y="167" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">Follower 2</text>
+
+              <!-- Read clients -->
+              <rect x="720" y="20" width="100" height="40" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="770" y="44" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">
+                <tspan class="lang-en">Reader</tspan>
+                <tspan class="lang-es">Lector</tspan>
+              </text>
+
+              <!-- Arrow: Follower 1 -> Reader -->
+              <line x1="650" y1="45" x2="720" y2="40"
+                stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="6,3"
+                marker-end="url(#arrow-repl)" />
+              <text x="685" y="32" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">3. Read</tspan>
+                <tspan class="lang-es">3. Leer</tspan>
+              </text>
+
+              <rect x="720" y="150" width="100" height="40" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="770" y="174" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">
+                <tspan class="lang-en">Reader</tspan>
+                <tspan class="lang-es">Lector</tspan>
+              </text>
+
+              <!-- Arrow: Follower 2 -> Reader -->
+              <line x1="650" y1="165" x2="720" y2="170"
+                stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="6,3"
+                marker-end="url(#arrow-repl)" />
+              <text x="685" y="183" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">3. Read</tspan>
+                <tspan class="lang-es">3. Leer</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Benefits</span
+                ><span class="lang-es">Beneficios</span>
+              </h4>
+              <p>
+                <span class="lang-en">Simple, no write conflicts, easy to reason about</span
+                ><span class="lang-es"
+                  >Simple, sin conflictos de escritura, f&aacute;cil de razonar</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >All writes go through a single leader, so there are no conflicts.
+                    Read replicas scale read throughput linearly. Most relational
+                    databases support this pattern natively (PostgreSQL, MySQL, SQL Server).</span
+                  ><span class="lang-es"
+                    >Todas las escrituras pasan por un solo l&iacute;der, por lo que no hay
+                    conflictos. Las r&eacute;plicas de lectura escalan el rendimiento
+                    linealmente. La mayor&iacute;a de bases de datos relacionales soportan
+                    este patr&oacute;n nativamente (PostgreSQL, MySQL, SQL Server).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Tradeoffs</span
+                ><span class="lang-es">Compromisos</span>
+              </h4>
+              <p>
+                <span class="lang-en">Leader is a single point of failure for writes</span
+                ><span class="lang-es"
+                  >El l&iacute;der es un punto &uacute;nico de falla para escrituras</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >If the leader goes down, writes are blocked until failover completes.
+                    Followers may serve stale data (replication lag). Failover can cause
+                    data loss if the leader had unreplicated writes.</span
+                  ><span class="lang-es"
+                    >Si el l&iacute;der cae, las escrituras se bloquean hasta que el failover
+                    se complete. Los seguidores pueden servir datos obsoletos (lag de
+                    replicaci&oacute;n). El failover puede causar p&eacute;rdida de datos
+                    si el l&iacute;der ten&iacute;a escrituras no replicadas.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: SYNC VS ASYNC REPLICATION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Sync vs Async Replication</span
+            ><span class="lang-es">Replicaci&oacute;n S&iacute;ncrona vs As&iacute;ncrona</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Should the leader wait for followers to confirm before acknowledging
+              the write to the client?</span
+            ><span class="lang-es"
+              >&iquest;Debe el l&iacute;der esperar la confirmaci&oacute;n de los seguidores
+              antes de responder al cliente?</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="200" viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-sync"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Divider -->
+              <line x1="440" y1="10" x2="440" y2="190" stroke="var(--muted)" stroke-width="1" stroke-dasharray="4,4" opacity="0.4" />
+
+              <!-- LEFT: Synchronous -->
+              <text x="220" y="22" text-anchor="middle" fill="var(--primary)" font-size="14" font-weight="700">
+                <tspan class="lang-en">Synchronous</tspan>
+                <tspan class="lang-es">S&iacute;ncrona</tspan>
+              </text>
+
+              <!-- Client -->
+              <rect x="20" y="45" width="90" height="35" rx="6"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="65" y="67" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">Client</text>
+
+              <!-- Leader -->
+              <ellipse cx="200" cy="50" rx="35" ry="10" fill="none" stroke="var(--primary)" stroke-width="1.5" />
+              <rect x="165" y="50" width="70" height="30" fill="var(--surface)" stroke="none" />
+              <line x1="165" y1="50" x2="165" y2="80" stroke="var(--primary)" stroke-width="1.5" />
+              <line x1="235" y1="50" x2="235" y2="80" stroke="var(--primary)" stroke-width="1.5" />
+              <ellipse cx="200" cy="80" rx="35" ry="10" fill="none" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="200" y="70" text-anchor="middle" fill="var(--primary)" font-size="10" font-weight="600">Leader</text>
+
+              <!-- Follower -->
+              <ellipse cx="370" cy="50" rx="35" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <rect x="335" y="50" width="70" height="30" fill="var(--surface)" stroke="none" />
+              <line x1="335" y1="50" x2="335" y2="80" stroke="var(--mint)" stroke-width="1.5" />
+              <line x1="405" y1="50" x2="405" y2="80" stroke="var(--mint)" stroke-width="1.5" />
+              <ellipse cx="370" cy="80" rx="35" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="370" y="70" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">Follower</text>
+
+              <!-- Arrows: sync flow -->
+              <line x1="110" y1="60" x2="163" y2="60"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="137" y="55" text-anchor="middle" fill="var(--muted)" font-size="8">1. Write</text>
+              <circle r="2.5" fill="var(--gold)">
+                <animateMotion dur="1s" repeatCount="indefinite" path="M110,60 L163,60" />
+              </circle>
+
+              <line x1="236" y1="60" x2="333" y2="60"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="284" y="55" text-anchor="middle" fill="var(--muted)" font-size="8">2. Replicate</text>
+              <circle r="2.5" fill="var(--mint)">
+                <animateMotion dur="1.2s" repeatCount="indefinite" path="M236,60 L333,60" />
+              </circle>
+
+              <!-- ACK back -->
+              <line x1="333" y1="75" x2="236" y2="75"
+                stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="284" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">3. ACK</text>
+
+              <line x1="163" y1="75" x2="110" y2="75"
+                stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="137" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">4. OK</text>
+
+              <!-- Wait indicator -->
+              <text x="200" y="105" text-anchor="middle" fill="var(--gold)" font-size="9" font-style="italic">
+                <tspan class="lang-en">Leader waits for ACK</tspan>
+                <tspan class="lang-es">L&iacute;der espera ACK</tspan>
+              </text>
+
+              <!-- RIGHT: Asynchronous -->
+              <text x="660" y="22" text-anchor="middle" fill="var(--primary)" font-size="14" font-weight="700">
+                <tspan class="lang-en">Asynchronous</tspan>
+                <tspan class="lang-es">As&iacute;ncrona</tspan>
+              </text>
+
+              <!-- Client -->
+              <rect x="460" y="45" width="90" height="35" rx="6"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="505" y="67" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">Client</text>
+
+              <!-- Leader -->
+              <ellipse cx="640" cy="50" rx="35" ry="10" fill="none" stroke="var(--primary)" stroke-width="1.5" />
+              <rect x="605" y="50" width="70" height="30" fill="var(--surface)" stroke="none" />
+              <line x1="605" y1="50" x2="605" y2="80" stroke="var(--primary)" stroke-width="1.5" />
+              <line x1="675" y1="50" x2="675" y2="80" stroke="var(--primary)" stroke-width="1.5" />
+              <ellipse cx="640" cy="80" rx="35" ry="10" fill="none" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="640" y="70" text-anchor="middle" fill="var(--primary)" font-size="10" font-weight="600">Leader</text>
+
+              <!-- Follower -->
+              <ellipse cx="810" cy="50" rx="35" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <rect x="775" y="50" width="70" height="30" fill="var(--surface)" stroke="none" />
+              <line x1="775" y1="50" x2="775" y2="80" stroke="var(--mint)" stroke-width="1.5" />
+              <line x1="845" y1="50" x2="845" y2="80" stroke="var(--mint)" stroke-width="1.5" />
+              <ellipse cx="810" cy="80" rx="35" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="810" y="70" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">Follower</text>
+
+              <!-- Arrows: async flow -->
+              <line x1="550" y1="60" x2="603" y2="60"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="577" y="55" text-anchor="middle" fill="var(--muted)" font-size="8">1. Write</text>
+              <circle r="2.5" fill="var(--gold)">
+                <animateMotion dur="1s" repeatCount="indefinite" path="M550,60 L603,60" />
+              </circle>
+
+              <!-- Immediate OK -->
+              <line x1="603" y1="75" x2="550" y2="75"
+                stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="577" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">2. OK</text>
+
+              <!-- Later replicate -->
+              <line x1="676" y1="65" x2="773" y2="65"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-sync)" />
+              <text x="724" y="60" text-anchor="middle" fill="var(--muted)" font-size="8">3. Replicate</text>
+              <circle r="2.5" fill="var(--mint)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M676,65 L773,65" />
+              </circle>
+
+              <!-- No wait indicator -->
+              <text x="640" y="105" text-anchor="middle" fill="var(--gold)" font-size="9" font-style="italic">
+                <tspan class="lang-en">Leader continues immediately</tspan>
+                <tspan class="lang-es">L&iacute;der contin&uacute;a de inmediato</tspan>
+              </text>
+
+              <!-- Comparison cards below -->
+              <!-- Sync card -->
+              <rect x="30" y="120" width="380" height="65" rx="8"
+                fill="var(--surface)" stroke="var(--blue)" stroke-width="1.5" opacity="0.9" />
+              <text x="220" y="142" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Strong consistency, higher latency</tspan>
+                <tspan class="lang-es">Consistencia fuerte, mayor latencia</tspan>
+              </text>
+              <text x="220" y="160" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">No data loss on leader failure. Every follower is up-to-date.</tspan>
+                <tspan class="lang-es">Sin p&eacute;rdida de datos si cae el l&iacute;der. Cada seguidor est&aacute; actualizado.</tspan>
+              </text>
+              <text x="220" y="175" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Risk: one slow follower blocks all writes.</tspan>
+                <tspan class="lang-es">Riesgo: un seguidor lento bloquea todas las escrituras.</tspan>
+              </text>
+
+              <!-- Async card -->
+              <rect x="470" y="120" width="380" height="65" rx="8"
+                fill="var(--surface)" stroke="var(--green)" stroke-width="1.5" opacity="0.9" />
+              <text x="660" y="142" text-anchor="middle" fill="var(--green)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Eventual consistency, lower latency</tspan>
+                <tspan class="lang-es">Consistencia eventual, menor latencia</tspan>
+              </text>
+              <text x="660" y="160" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Writes are fast. Leader never blocks on slow followers.</tspan>
+                <tspan class="lang-es">Escrituras r&aacute;pidas. L&iacute;der nunca se bloquea por seguidores lentos.</tspan>
+              </text>
+              <text x="660" y="175" text-anchor="middle" fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Risk: data loss if leader fails before replication.</tspan>
+                <tspan class="lang-es">Riesgo: p&eacute;rdida de datos si el l&iacute;der falla antes de replicar.</tspan>
+              </text>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: MULTI-LEADER REPLICATION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Multi-Leader Replication</span
+            ><span class="lang-es">Replicaci&oacute;n Multi-L&iacute;der</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Multiple nodes accept writes and replicate changes to each other.
+              Enables geo-distributed writes but introduces conflicts.</span
+            ><span class="lang-es"
+              >M&uacute;ltiples nodos aceptan escrituras y replican cambios entre s&iacute;.
+              Permite escrituras geo-distribuidas pero introduce conflictos.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-multi"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client A -->
+              <rect x="20" y="30" width="100" height="40" rx="6"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="70" y="55" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">Client A</text>
+
+              <!-- Client B -->
+              <rect x="20" y="145" width="100" height="40" rx="6"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="70" y="170" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">Client B</text>
+
+              <!-- Arrow: Client A -> Leader 1 -->
+              <line x1="120" y1="50" x2="220" y2="50"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-multi)" />
+              <text x="170" y="43" text-anchor="middle" fill="var(--muted)" font-size="8">Write</text>
+              <circle r="2.5" fill="var(--gold)">
+                <animateMotion dur="1.2s" repeatCount="indefinite" path="M120,50 L220,50" />
+              </circle>
+
+              <!-- Arrow: Client B -> Leader 2 -->
+              <line x1="120" y1="165" x2="220" y2="165"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-multi)" />
+              <text x="170" y="158" text-anchor="middle" fill="var(--muted)" font-size="8">Write</text>
+              <circle r="2.5" fill="var(--gold)">
+                <animateMotion dur="1.2s" begin="0.4s" repeatCount="indefinite" path="M120,165 L220,165" />
+              </circle>
+
+              <!-- Leader 1 -->
+              <ellipse cx="290" cy="25" rx="50" ry="12" fill="none" stroke="var(--primary)" stroke-width="2" />
+              <rect x="240" y="25" width="100" height="45" fill="var(--surface)" stroke="none" />
+              <line x1="240" y1="25" x2="240" y2="70" stroke="var(--primary)" stroke-width="2" />
+              <line x1="340" y1="25" x2="340" y2="70" stroke="var(--primary)" stroke-width="2" />
+              <ellipse cx="290" cy="70" rx="50" ry="12" fill="none" stroke="var(--primary)" stroke-width="2" />
+              <text x="290" y="52" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">Leader 1</text>
+
+              <!-- Leader 2 -->
+              <ellipse cx="290" cy="140" rx="50" ry="12" fill="none" stroke="var(--primary)" stroke-width="2" />
+              <rect x="240" y="140" width="100" height="45" fill="var(--surface)" stroke="none" />
+              <line x1="240" y1="140" x2="240" y2="185" stroke="var(--primary)" stroke-width="2" />
+              <line x1="340" y1="140" x2="340" y2="185" stroke="var(--primary)" stroke-width="2" />
+              <ellipse cx="290" cy="185" rx="50" ry="12" fill="none" stroke="var(--primary)" stroke-width="2" />
+              <text x="290" y="167" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">Leader 2</text>
+
+              <!-- Bi-directional replication between leaders -->
+              <line x1="300" y1="72" x2="300" y2="138"
+                stroke="var(--error)" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrow-multi)" />
+              <line x1="280" y1="138" x2="280" y2="72"
+                stroke="var(--error)" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrow-multi)" />
+              <circle r="2.5" fill="var(--error)">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M300,72 L300,138" />
+              </circle>
+              <circle r="2.5" fill="var(--error)">
+                <animateMotion dur="1.5s" begin="0.5s" repeatCount="indefinite" path="M280,138 L280,72" />
+              </circle>
+
+              <!-- Conflict indicator -->
+              <text x="320" y="110" fill="var(--error)" font-size="16" font-weight="700">&#9888;</text>
+              <text x="340" y="110" fill="var(--error)" font-size="9" font-weight="500">
+                <tspan class="lang-en">Conflict!</tspan>
+                <tspan class="lang-es">&iexcl;Conflicto!</tspan>
+              </text>
+
+              <!-- Follower 1 (of Leader 1) -->
+              <ellipse cx="520" cy="25" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <rect x="478" y="25" width="84" height="35" fill="var(--surface)" stroke="none" />
+              <line x1="478" y1="25" x2="478" y2="60" stroke="var(--mint)" stroke-width="1.5" />
+              <line x1="562" y1="25" x2="562" y2="60" stroke="var(--mint)" stroke-width="1.5" />
+              <ellipse cx="520" cy="60" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="520" y="47" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">Follower</text>
+
+              <!-- Follower 2 (of Leader 2) -->
+              <ellipse cx="520" cy="150" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <rect x="478" y="150" width="84" height="35" fill="var(--surface)" stroke="none" />
+              <line x1="478" y1="150" x2="478" y2="185" stroke="var(--mint)" stroke-width="1.5" />
+              <line x1="562" y1="150" x2="562" y2="185" stroke="var(--mint)" stroke-width="1.5" />
+              <ellipse cx="520" cy="185" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="520" y="172" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">Follower</text>
+
+              <!-- Arrows: Leaders -> Followers -->
+              <line x1="340" y1="45" x2="476" y2="42"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-multi)" />
+              <line x1="340" y1="165" x2="476" y2="167"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-multi)" />
+
+              <!-- Use case box -->
+              <rect x="620" y="30" width="240" height="160" rx="10"
+                fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" opacity="0.9" />
+              <text x="740" y="55" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Use Cases</tspan>
+                <tspan class="lang-es">Casos de Uso</tspan>
+              </text>
+              <text x="640" y="80" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">&#8226; Multi-datacenter operations</tspan>
+                <tspan class="lang-es">&#8226; Operaciones multi-datacenter</tspan>
+              </text>
+              <text x="640" y="100" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">&#8226; Offline-capable clients</tspan>
+                <tspan class="lang-es">&#8226; Clientes con modo offline</tspan>
+              </text>
+              <text x="640" y="120" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">&#8226; Collaborative editing</tspan>
+                <tspan class="lang-es">&#8226; Edici&oacute;n colaborativa</tspan>
+              </text>
+              <text x="640" y="145" fill="var(--muted)" font-size="9" font-style="italic">
+                <tspan class="lang-en">Examples: CouchDB, Google Docs,</tspan>
+                <tspan class="lang-es">Ejemplos: CouchDB, Google Docs,</tspan>
+              </text>
+              <text x="640" y="160" fill="var(--muted)" font-size="9" font-style="italic">
+                Dynamo, Cassandra
+              </text>
+            </svg>
+          </div>
+          <div style="margin-top: 8px">
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Conflict Resolution</span
+                ><span class="lang-es">Resoluci&oacute;n de Conflictos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >When two leaders modify the same data concurrently, a conflict arises.
+                  Strategies include last-write-wins (LWW), version vectors, and
+                  application-level merge logic.</span
+                ><span class="lang-es"
+                  >Cuando dos l&iacute;deres modifican los mismos datos concurrentemente,
+                  surge un conflicto. Las estrategias incluyen last-write-wins (LWW),
+                  vectores de versi&oacute;n y l&oacute;gica de merge a nivel de aplicaci&oacute;n.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >LWW is simple but can silently drop writes. Version vectors detect
+                    conflicts accurately but require application logic to resolve them.
+                    CRDTs (Conflict-free Replicated Data Types) offer automatic resolution
+                    for certain data structures like counters and sets.</span
+                  ><span class="lang-es"
+                    >LWW es simple pero puede descartar escrituras silenciosamente. Los
+                    vectores de versi&oacute;n detectan conflictos con precisi&oacute;n
+                    pero requieren l&oacute;gica de aplicaci&oacute;n para resolverlos.
+                    Los CRDTs ofrecen resoluci&oacute;n autom&aacute;tica para ciertas
+                    estructuras de datos como contadores y conjuntos.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: LEADERLESS REPLICATION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Leaderless Replication</span
+            ><span class="lang-es">Replicaci&oacute;n sin L&iacute;der</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >The client writes to multiple nodes simultaneously. Quorum rules
+              determine success: W + R &gt; N ensures overlap.</span
+            ><span class="lang-es"
+              >El cliente escribe a m&uacute;ltiples nodos simult&aacute;neamente.
+              Reglas de qu&oacute;rum determinan el &eacute;xito: W + R &gt; N
+              asegura traslape.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-less"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Writer Client -->
+              <rect x="20" y="60" width="110" height="45" rx="6"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="1.5" />
+              <text x="75" y="80" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Writer</tspan>
+                <tspan class="lang-es">Escritor</tspan>
+              </text>
+              <text x="75" y="95" text-anchor="middle" fill="var(--muted)" font-size="9">W = 2</text>
+
+              <!-- Node 1 -->
+              <ellipse cx="280" cy="22" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <rect x="238" y="22" width="84" height="36" fill="var(--surface)" stroke="none" />
+              <line x1="238" y1="22" x2="238" y2="58" stroke="var(--mint)" stroke-width="2" />
+              <line x1="322" y1="22" x2="322" y2="58" stroke="var(--mint)" stroke-width="2" />
+              <ellipse cx="280" cy="58" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <text x="280" y="44" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">Node 1</text>
+
+              <!-- Node 2 -->
+              <ellipse cx="280" cy="88" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <rect x="238" y="88" width="84" height="36" fill="var(--surface)" stroke="none" />
+              <line x1="238" y1="88" x2="238" y2="124" stroke="var(--mint)" stroke-width="2" />
+              <line x1="322" y1="88" x2="322" y2="124" stroke="var(--mint)" stroke-width="2" />
+              <ellipse cx="280" cy="124" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <text x="280" y="110" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">Node 2</text>
+
+              <!-- Node 3 -->
+              <ellipse cx="280" cy="156" rx="42" ry="10" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <rect x="238" y="156" width="84" height="36" fill="var(--surface)" stroke="none" />
+              <line x1="238" y1="156" x2="238" y2="192" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <line x1="322" y1="156" x2="322" y2="192" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <ellipse cx="280" cy="192" rx="42" ry="10" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <text x="280" y="178" text-anchor="middle" fill="var(--muted)" font-size="11" font-weight="600">Node 3</text>
+              <text x="280" y="210" text-anchor="middle" fill="var(--error)" font-size="9">
+                <tspan class="lang-en">(not written)</tspan>
+                <tspan class="lang-es">(no escrito)</tspan>
+              </text>
+
+              <!-- Write arrows to Node 1 and Node 2 -->
+              <line x1="130" y1="72" x2="236" y2="40"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-less)" />
+              <circle r="2.5" fill="var(--gold)">
+                <animateMotion dur="1.2s" repeatCount="indefinite" path="M130,72 L236,40" />
+              </circle>
+
+              <line x1="130" y1="82" x2="236" y2="106"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-less)" />
+              <circle r="2.5" fill="var(--gold)">
+                <animateMotion dur="1.2s" begin="0.2s" repeatCount="indefinite" path="M130,82 L236,106" />
+              </circle>
+
+              <!-- Write labels -->
+              <text x="175" y="48" text-anchor="middle" fill="var(--muted)" font-size="8">Write</text>
+              <text x="175" y="105" text-anchor="middle" fill="var(--muted)" font-size="8">Write</text>
+
+              <!-- Divider -->
+              <line x1="410" y1="10" x2="410" y2="210" stroke="var(--muted)" stroke-width="1" stroke-dasharray="4,4" opacity="0.3" />
+
+              <!-- Reader Client -->
+              <rect x="440" y="60" width="110" height="45" rx="6"
+                fill="var(--surface)" stroke="var(--purple)" stroke-width="1.5" />
+              <text x="495" y="80" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">
+                <tspan class="lang-en">Reader</tspan>
+                <tspan class="lang-es">Lector</tspan>
+              </text>
+              <text x="495" y="95" text-anchor="middle" fill="var(--muted)" font-size="9">R = 2</text>
+
+              <!-- Read Nodes -->
+              <ellipse cx="700" cy="22" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <rect x="658" y="22" width="84" height="36" fill="var(--surface)" stroke="none" />
+              <line x1="658" y1="22" x2="658" y2="58" stroke="var(--mint)" stroke-width="2" />
+              <line x1="742" y1="22" x2="742" y2="58" stroke="var(--mint)" stroke-width="2" />
+              <ellipse cx="700" cy="58" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <text x="700" y="44" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">Node 1</text>
+
+              <ellipse cx="700" cy="88" rx="42" ry="10" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <rect x="658" y="88" width="84" height="36" fill="var(--surface)" stroke="none" />
+              <line x1="658" y1="88" x2="658" y2="124" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <line x1="742" y1="88" x2="742" y2="124" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <ellipse cx="700" cy="124" rx="42" ry="10" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4,3" />
+              <text x="700" y="110" text-anchor="middle" fill="var(--muted)" font-size="11" font-weight="600">Node 2</text>
+
+              <ellipse cx="700" cy="156" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <rect x="658" y="156" width="84" height="36" fill="var(--surface)" stroke="none" />
+              <line x1="658" y1="156" x2="658" y2="192" stroke="var(--mint)" stroke-width="2" />
+              <line x1="742" y1="156" x2="742" y2="192" stroke="var(--mint)" stroke-width="2" />
+              <ellipse cx="700" cy="192" rx="42" ry="10" fill="none" stroke="var(--mint)" stroke-width="2" />
+              <text x="700" y="178" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">Node 3</text>
+
+              <!-- Read arrows -->
+              <line x1="550" y1="72" x2="656" y2="40"
+                stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-less)" />
+              <line x1="550" y1="88" x2="656" y2="175"
+                stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-less)" />
+              <text x="595" y="48" text-anchor="middle" fill="var(--muted)" font-size="8">Read</text>
+              <text x="595" y="145" text-anchor="middle" fill="var(--muted)" font-size="8">Read</text>
+
+              <!-- Quorum formula -->
+              <rect x="780" y="80" width="90" height="60" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="2" />
+              <text x="825" y="100" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="700">
+                <tspan class="lang-en">Quorum</tspan>
+                <tspan class="lang-es">Qu&oacute;rum</tspan>
+              </text>
+              <text x="825" y="118" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">W+R &gt; N</text>
+              <text x="825" y="132" text-anchor="middle" fill="var(--muted)" font-size="9">2+2 &gt; 3 &#10003;</text>
+            </svg>
+          </div>
+          <div style="margin-top: 8px">
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">How Quorums Work</span
+                ><span class="lang-es">C&oacute;mo Funcionan los Qu&oacute;rums</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >With N replicas, writes need W acknowledgments and reads query R nodes.
+                  If W + R &gt; N, at least one node has the latest value.</span
+                ><span class="lang-es"
+                  >Con N r&eacute;plicas, las escrituras necesitan W confirmaciones y las
+                  lecturas consultan R nodos. Si W + R &gt; N, al menos un nodo tiene
+                  el valor m&aacute;s reciente.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Common configurations: N=3, W=2, R=2 (balanced). N=3, W=3, R=1
+                    (strong write, fast reads). N=3, W=1, R=3 (fast writes, strong reads).
+                    Used by Dynamo, Cassandra, and Riak. Sloppy quorums relax rules for
+                    availability during partitions.</span
+                  ><span class="lang-es"
+                    >Configuraciones comunes: N=3, W=2, R=2 (balanceado). N=3, W=3, R=1
+                    (escritura fuerte, lecturas r&aacute;pidas). N=3, W=1, R=3 (escrituras
+                    r&aacute;pidas, lecturas fuertes). Usado por Dynamo, Cassandra y Riak.
+                    Los qu&oacute;rums laxos relajan las reglas para disponibilidad durante
+                    particiones.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: CONFLICT RESOLUTION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Conflict Resolution</span
+            ><span class="lang-es">Resoluci&oacute;n de Conflictos</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >When concurrent writes happen on different replicas, the system must
+              decide which value wins.</span
+            ><span class="lang-es"
+              >Cuando escrituras concurrentes ocurren en diferentes r&eacute;plicas,
+              el sistema debe decidir qu&eacute; valor prevalece.</span
+            >
+          </p>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Last-Write-Wins (LWW)</span
+                ><span class="lang-es">Last-Write-Wins (LWW)</span>
+              </h4>
+              <p>
+                <span class="lang-en">Timestamp determines the winner; simple but lossy</span
+                ><span class="lang-es"
+                  >La marca de tiempo determina al ganador; simple pero con p&eacute;rdida</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Each write is tagged with a timestamp. The write with the highest
+                    timestamp wins. Problem: clock skew between nodes can cause the
+                    &ldquo;wrong&rdquo; write to win. Used by Cassandra as default
+                    conflict resolution strategy.</span
+                  ><span class="lang-es"
+                    >Cada escritura se etiqueta con una marca de tiempo. La escritura
+                    con la marca m&aacute;s alta gana. Problema: el desfase de relojes
+                    entre nodos puede hacer que la escritura &ldquo;incorrecta&rdquo; gane.
+                    Usado por Cassandra como estrategia predeterminada.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Version Vectors</span
+                ><span class="lang-es">Vectores de Versi&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en">Track causal history per replica to detect conflicts</span
+                ><span class="lang-es"
+                  >Rastrean historial causal por r&eacute;plica para detectar conflictos</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Each node maintains a vector of counters (one per replica). Two versions
+                    are concurrent if neither dominates the other. The application is then
+                    asked to merge the conflicting values. Used by Amazon DynamoDB and Riak.</span
+                  ><span class="lang-es"
+                    >Cada nodo mantiene un vector de contadores (uno por r&eacute;plica).
+                    Dos versiones son concurrentes si ninguna domina a la otra. La
+                    aplicaci&oacute;n entonces debe fusionar los valores en conflicto.
+                    Usado por Amazon DynamoDB y Riak.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Application-Level Merge</span
+                ><span class="lang-es">Merge a Nivel de Aplicaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en">Custom logic to merge conflicting values</span
+                ><span class="lang-es"
+                  >L&oacute;gica personalizada para fusionar valores en conflicto</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >The application provides a merge function invoked when conflicts are
+                    detected. Example: a shopping cart merges items by taking the union
+                    of both carts. Offers maximum flexibility but adds complexity.</span
+                  ><span class="lang-es"
+                    >La aplicaci&oacute;n proporciona una funci&oacute;n de merge que se
+                    invoca al detectar conflictos. Ejemplo: un carrito de compras fusiona
+                    art&iacute;culos tomando la uni&oacute;n de ambos carritos. Ofrece
+                    m&aacute;xima flexibilidad pero agrega complejidad.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">CRDTs</span
+                ><span class="lang-es">CRDTs</span>
+              </h4>
+              <p>
+                <span class="lang-en">Data structures that auto-merge without conflicts</span
+                ><span class="lang-es"
+                  >Estructuras de datos que se auto-fusionan sin conflictos</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Conflict-free Replicated Data Types (CRDTs) are mathematically
+                    guaranteed to converge. Examples: G-Counter (grow-only counter),
+                    OR-Set (observed-remove set), LWW-Register. Used by Redis CRDT,
+                    Automerge, and Yjs for collaborative editing.</span
+                  ><span class="lang-es"
+                    >Los tipos de datos replicados sin conflicto (CRDTs) est&aacute;n
+                    matem&aacute;ticamente garantizados para converger. Ejemplos: G-Counter
+                    (contador de solo crecimiento), OR-Set (conjunto con eliminaci&oacute;n
+                    observada), LWW-Register. Usados por Redis CRDT, Automerge y Yjs para
+                    edici&oacute;n colaborativa.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: CONSISTENCY MODELS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Consistency Models</span
+            ><span class="lang-es">Modelos de Consistencia</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Different applications require different guarantees about when replicas
+              reflect the latest write.</span
+            ><span class="lang-es"
+              >Diferentes aplicaciones requieren diferentes garant&iacute;as sobre
+              cu&aacute;ndo las r&eacute;plicas reflejan la &uacute;ltima escritura.</span
+            >
+          </p>
+          <div class="grid-3">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Strong Consistency</span
+                ><span class="lang-es">Consistencia Fuerte</span>
+              </h4>
+              <p>
+                <span class="lang-en">Linearizable &mdash; reads always return the latest write</span
+                ><span class="lang-es"
+                  >Linealizable &mdash; las lecturas siempre devuelven la &uacute;ltima escritura</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >After a write completes, all subsequent reads (from any client, any
+                    replica) see the new value. Requires synchronous replication or
+                    consensus protocols (Raft, Paxos). High latency cost. Used by: Google
+                    Spanner, CockroachDB, etcd, ZooKeeper.</span
+                  ><span class="lang-es"
+                    >Despu&eacute;s de que una escritura se completa, todas las lecturas
+                    subsecuentes (de cualquier cliente, cualquier r&eacute;plica) ven el
+                    nuevo valor. Requiere replicaci&oacute;n s&iacute;ncrona o protocolos
+                    de consenso (Raft, Paxos). Alto costo de latencia. Usado por: Google
+                    Spanner, CockroachDB, etcd, ZooKeeper.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Eventual Consistency</span
+                ><span class="lang-es">Consistencia Eventual</span>
+              </h4>
+              <p>
+                <span class="lang-en">Replicas converge &mdash; given enough time, all return same value</span
+                ><span class="lang-es"
+                  >Las r&eacute;plicas convergen &mdash; dado suficiente tiempo, todas devuelven el mismo valor</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >After a write, replicas may temporarily return stale data. The system
+                    guarantees that, if no new writes occur, all replicas will eventually
+                    return the same value. Low latency, high availability. Used by: DynamoDB,
+                    Cassandra, DNS, S3.</span
+                  ><span class="lang-es"
+                    >Despu&eacute;s de una escritura, las r&eacute;plicas pueden devolver
+                    datos obsoletos temporalmente. El sistema garantiza que, si no hay nuevas
+                    escrituras, todas las r&eacute;plicas eventualmente devolver&aacute;n
+                    el mismo valor. Baja latencia, alta disponibilidad. Usado por: DynamoDB,
+                    Cassandra, DNS, S3.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Causal Consistency</span
+                ><span class="lang-es">Consistencia Causal</span>
+              </h4>
+              <p>
+                <span class="lang-en">Preserves cause-and-effect order between related operations</span
+                ><span class="lang-es"
+                  >Preserva el orden causa-efecto entre operaciones relacionadas</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >If operation A causally precedes operation B, all replicas see A before
+                    B. Concurrent (unrelated) operations may appear in any order. Weaker
+                    than strong consistency but stronger than eventual. Used by: MongoDB
+                    (causal sessions), COPS, Eiger.</span
+                  ><span class="lang-es"
+                    >Si la operaci&oacute;n A precede causalmente a la operaci&oacute;n B,
+                    todas las r&eacute;plicas ven A antes que B. Las operaciones concurrentes
+                    (no relacionadas) pueden aparecer en cualquier orden. M&aacute;s d&eacute;bil
+                    que la consistencia fuerte pero m&aacute;s fuerte que la eventual. Usado
+                    por: MongoDB (sesiones causales), COPS, Eiger.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: CLOUD STORAGE SERVICES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Cloud Storage Services</span
+            ><span class="lang-es">Servicios de Almacenamiento en la Nube</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Major cloud providers offer managed replication for storage and
+              database services across regions.</span
+            ><span class="lang-es"
+              >Los principales proveedores cloud ofrecen replicaci&oacute;n administrada
+              para servicios de almacenamiento y bases de datos entre regiones.</span
+            >
+          </p>
+          <div class="grid-2">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">AWS S3 / EBS</span
+                ><span class="lang-es">AWS S3 / EBS</span>
+              </h4>
+              <p>
+                <span class="lang-en">Cross-Region Replication (CRR) for S3; multi-AZ EBS snapshots</span
+                ><span class="lang-es"
+                  >Replicaci&oacute;n entre regiones (CRR) para S3; snapshots multi-AZ de EBS</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >S3 stores objects across 3+ AZs by default (11 nines durability).
+                    CRR asynchronously copies objects to a bucket in another region for
+                    disaster recovery. EBS volumes can be replicated via snapshots stored
+                    in S3. RDS supports read replicas across AZs and regions.</span
+                  ><span class="lang-es"
+                    >S3 almacena objetos en 3+ AZs por defecto (11 nueves de durabilidad).
+                    CRR copia objetos as&iacute;ncronamente a un bucket en otra regi&oacute;n
+                    para recuperaci&oacute;n ante desastres. Los vol&uacute;menes EBS pueden
+                    replicarse v&iacute;a snapshots almacenados en S3. RDS soporta
+                    r&eacute;plicas de lectura entre AZs y regiones.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Azure Blob Storage</span
+                ><span class="lang-es">Azure Blob Storage</span>
+              </h4>
+              <p>
+                <span class="lang-en">Geo-redundant storage (GRS) replicates to a paired region</span
+                ><span class="lang-es"
+                  >Almacenamiento geo-redundante (GRS) replica a una regi&oacute;n emparejada</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Azure offers LRS (3 copies in one datacenter), ZRS (3 AZs), GRS
+                    (cross-region pair), and GZRS (ZRS + cross-region). Read-access GRS
+                    (RA-GRS) allows reads from the secondary region. Cosmos DB offers
+                    5 consistency levels from strong to eventual.</span
+                  ><span class="lang-es"
+                    >Azure ofrece LRS (3 copias en un datacenter), ZRS (3 AZs), GRS
+                    (par entre regiones) y GZRS (ZRS + entre regiones). RA-GRS permite
+                    lecturas desde la regi&oacute;n secundaria. Cosmos DB ofrece 5 niveles
+                    de consistencia desde fuerte hasta eventual.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">GCP Cloud Storage</span
+                ><span class="lang-es">GCP Cloud Storage</span>
+              </h4>
+              <p>
+                <span class="lang-en">Multi-region buckets replicate across geographies automatically</span
+                ><span class="lang-es"
+                  >Los buckets multi-regi&oacute;n replican autom&aacute;ticamente entre geograf&iacute;as</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >GCP Cloud Storage offers regional, dual-region, and multi-region
+                    buckets. Multi-region provides geo-redundancy with strong consistency.
+                    Cloud Spanner is the only globally distributed database offering
+                    external consistency (stronger than linearizability).</span
+                  ><span class="lang-es"
+                    >GCP Cloud Storage ofrece buckets regionales, de doble regi&oacute;n
+                    y multi-regi&oacute;n. Multi-regi&oacute;n proporciona geo-redundancia
+                    con consistencia fuerte. Cloud Spanner es la &uacute;nica base de datos
+                    globalmente distribuida que ofrece consistencia externa (m&aacute;s fuerte
+                    que la linealizabilidad).</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-purple expandable">
+              <h4>
+                <span class="lang-en">OCI Object Storage</span
+                ><span class="lang-es">OCI Object Storage</span>
+              </h4>
+              <p>
+                <span class="lang-en">Cross-region replication with configurable policies</span
+                ><span class="lang-es"
+                  >Replicaci&oacute;n entre regiones con pol&iacute;ticas configurables</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Oracle Cloud Infrastructure Object Storage replicates across fault
+                    domains within an AD and across ADs within a region. Cross-region
+                    replication is available via replication policies. Autonomous Database
+                    supports Data Guard for automated failover and read replicas.</span
+                  ><span class="lang-es"
+                    >Oracle Cloud Infrastructure Object Storage replica entre dominios
+                    de falla dentro de un AD y entre ADs dentro de una regi&oacute;n. La
+                    replicaci&oacute;n entre regiones est&aacute; disponible v&iacute;a
+                    pol&iacute;ticas. Autonomous Database soporta Data Guard para failover
+                    automatizado y r&eacute;plicas de lectura.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Replication Strategies</span
+                ><span class="lang-es">Estrategias de Replicaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Leader-follower is the most common. Multi-leader enables geo-writes.
+                  Leaderless uses quorums for high availability.</span
+                ><span class="lang-es"
+                  >L&iacute;der-seguidor es la m&aacute;s com&uacute;n. Multi-l&iacute;der
+                  permite escrituras geo-distribuidas. Sin l&iacute;der usa qu&oacute;rums
+                  para alta disponibilidad.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Consistency Tradeoffs</span
+                ><span class="lang-es">Compromisos de Consistencia</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Strong consistency has high latency. Eventual consistency is fast
+                  but stale. Causal consistency is a practical middle ground.</span
+                ><span class="lang-es"
+                  >Consistencia fuerte tiene alta latencia. Consistencia eventual es
+                  r&aacute;pida pero con datos obsoletos. Consistencia causal es un
+                  punto medio pr&aacute;ctico.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Cloud Integration</span
+                ><span class="lang-es">Integraci&oacute;n con la Nube</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >All major cloud providers offer managed replication. Understand the
+                  consistency model your service uses before relying on it.</span
+                ><span class="lang-es"
+                  >Todos los proveedores cloud importantes ofrecen replicaci&oacute;n
+                  administrada. Entiende el modelo de consistencia de tu servicio antes
+                  de depender de &eacute;l.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: Q&A ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 60px">
+            <h2>
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h2>
+            <div class="diagram-container" style="margin: 20px auto">
+              <svg width="80" height="90" viewBox="0 0 80 90">
+                <circle
+                  cx="40"
+                  cy="45"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 09</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 09</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+  </body>
+</html>
