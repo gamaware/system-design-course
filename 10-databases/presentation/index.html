@@ -5650,7 +5650,7 @@
           </p>
           <div style="display: flex; gap: 16px; align-items: flex-start">
             <div style="flex: 1; display: flex; justify-content: center">
-              <svg width="880" height="400" viewBox="0 0 880 400">
+              <svg width="880" height="460" viewBox="0 0 880 460">
                 <defs>
                   <marker id="arrowArch" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                     <path d="M0,0 L8,3 L0,6" fill="var(--primary)" />
@@ -5665,45 +5665,45 @@
                   <text x="440" y="42" text-anchor="middle" fill="var(--muted)" font-size="10">Browser / Mobile App / SPA</text>
                 </g>
                 <!-- Arrow: Presentation Tier to ELB (vertical) -->
-                <line x1="440" y1="50" x2="440" y2="65" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
-                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,50 L440,65" /></circle>
+                <line x1="440" y1="50" x2="440" y2="90" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,50 L440,90" /></circle>
                 <!-- ELB icon -->
                 <g class="arch-tier elb-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'elb-tier')">
-                  <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg" x="408" y="65" width="64" height="64" />
-                  <rect x="390" y="133" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                  <text x="440" y="148" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Load Balancer</text>
+                  <image href="../../shared/presentation/assets/aws-icons/networking/Arch_Elastic-Load-Balancing_48.svg" x="408" y="90" width="64" height="64" />
+                  <rect x="390" y="158" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="440" y="173" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">Load Balancer</text>
                 </g>
                 <!-- Application Tier label -->
-                <text x="440" y="145" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="700" dy="20">
+                <text x="440" y="170" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="700" dy="20">
                   <tspan class="lang-en">Application Tier</tspan><tspan class="lang-es">Capa de Aplicaci&oacute;n</tspan>
                 </text>
                 <!-- L-shaped arrows: ELB to App Servers (horizontal then vertical) -->
                 <!-- Left: ELB center -> horizontal left -> vertical down to App1 -->
-                <path d="M440,155 L112,155 L112,170" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
-                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,155 L112,155 L112,170" /></circle>
+                <path d="M440,180 L112,180 L112,195" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,180 L112,180 L112,195" /></circle>
                 <!-- Center: ELB straight down to App2 -->
-                <line x1="440" y1="155" x2="440" y2="170" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
-                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,155 L440,170" /></circle>
+                <line x1="440" y1="180" x2="440" y2="195" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,180 L440,195" /></circle>
                 <!-- Right: ELB center -> horizontal right -> vertical down to App3 -->
-                <path d="M440,155 L768,155 L768,170" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
-                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,155 L768,155 L768,170" /></circle>
+                <path d="M440,180 L768,180 L768,195" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
+                <circle r="3" fill="var(--primary)"><animateMotion dur="2s" repeatCount="indefinite" path="M440,180 L768,180 L768,195" /></circle>
                 <!-- App Server 1 -->
                 <g class="arch-tier app1-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'app1-tier')">
-                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="80" y="170" width="64" height="64" />
-                  <rect x="62" y="238" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                  <text x="112" y="253" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 1</text>
+                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="80" y="195" width="64" height="64" />
+                  <rect x="62" y="263" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="112" y="278" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 1</text>
                 </g>
                 <!-- App Server 2 -->
                 <g class="arch-tier app2-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'app2-tier')">
-                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="408" y="170" width="64" height="64" />
-                  <rect x="390" y="238" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                  <text x="440" y="253" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 2</text>
+                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="408" y="195" width="64" height="64" />
+                  <rect x="390" y="263" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="440" y="278" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 2</text>
                 </g>
                 <!-- App Server 3 -->
                 <g class="arch-tier app3-tier" opacity="1" style="cursor:pointer" onclick="highlightTier(this, 'app3-tier')">
-                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="736" y="170" width="64" height="64" />
-                  <rect x="718" y="238" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
-                  <text x="768" y="253" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 3</text>
+                  <image href="../../shared/presentation/assets/aws-icons/compute/Arch_Amazon-EC2_48.svg" x="736" y="195" width="64" height="64" />
+                  <rect x="718" y="263" width="100" height="22" rx="4" fill="var(--surface)" stroke="var(--card-border)" stroke-width="1" />
+                  <text x="768" y="278" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="600">App Server 3</text>
                 </g>
                 <!-- Arrow: App Server 2 to Database Tier (vertical) -->
                 <line x1="440" y1="260" x2="440" y2="280" stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowArch)" />
