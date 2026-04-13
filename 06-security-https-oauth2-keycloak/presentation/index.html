@@ -1,0 +1,1670 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security &amp; Authentication | Seguridad y Autenticaci&oacute;n - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="120" height="130" viewBox="0 0 120 130">
+                <!-- Shield shape -->
+                <path
+                  d="M60,10 L100,30 L100,70 C100,95 60,120 60,120 C60,120 20,95 20,70 L20,30 Z"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2.5"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2.5;3.5;2.5"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+                <!-- Lock body -->
+                <rect
+                  x="45"
+                  y="60"
+                  width="30"
+                  height="24"
+                  rx="3"
+                  fill="var(--mint)"
+                  opacity="0.8"
+                >
+                  <animate
+                    attributeName="opacity"
+                    values="0.6;1;0.6"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </rect>
+                <!-- Lock shackle -->
+                <path
+                  d="M50,60 L50,50 C50,42 70,42 70,50 L70,60"
+                  fill="none"
+                  stroke="var(--mint)"
+                  stroke-width="3"
+                  opacity="0.8"
+                >
+                  <animate
+                    attributeName="opacity"
+                    values="0.6;1;0.6"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+                <!-- Keyhole -->
+                <circle cx="60" cy="69" r="3" fill="var(--surface)" />
+                <rect x="58.5" y="71" width="3" height="6" rx="1" fill="var(--surface)" />
+                <!-- Animated dots -->
+                <circle cx="30" cy="45" r="2.5" fill="var(--purple)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.8s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="90" cy="50" r="2.5" fill="var(--gold)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle cx="60" cy="100" r="2.5" fill="var(--error)">
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Security &amp; Authentication</span>
+              <span class="lang-es">Seguridad y Autenticaci&oacute;n</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 06 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 06 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Fundamentals</span
+                ><span class="lang-es">1. Fundamentos</span>
+              </h4>
+              <p>
+                <span class="lang-en">Authentication vs Authorization, core concepts</span
+                ><span class="lang-es"
+                  >Autenticaci&oacute;n vs Autorizaci&oacute;n, conceptos clave</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Cookies, Sessions &amp; JWT</span
+                ><span class="lang-es">2. Cookies, Sesiones y JWT</span>
+              </h4>
+              <p>
+                <span class="lang-en">Session management, tokens, PASETO</span
+                ><span class="lang-es"
+                  >Gesti&oacute;n de sesiones, tokens, PASETO</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. OAuth &amp; SSO</span
+                ><span class="lang-es">3. OAuth y SSO</span>
+              </h4>
+              <p>
+                <span class="lang-en">Authorization Code flow, SAML, federated identity</span
+                ><span class="lang-es"
+                  >Flujo Authorization Code, SAML, identidad federada</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. Best Practices</span
+                ><span class="lang-es">4. Mejores Pr&aacute;cticas</span>
+              </h4>
+              <p>
+                <span class="lang-en">MFA, API keys, HTTPS, platform comparison</span
+                ><span class="lang-es"
+                  >MFA, llaves API, HTTPS, comparaci&oacute;n de plataformas</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: AUTHENTICATION VS AUTHORIZATION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Authentication vs Authorization</span
+            ><span class="lang-es">Autenticaci&oacute;n vs Autorizaci&oacute;n</span>
+          </h2>
+          <div class="side-by-side">
+            <div class="card expandable float-in border-blue" tabindex="0">
+              <h4>
+                <span class="badge badge-blue">AuthN</span>
+                <span class="lang-en"> Authentication</span
+                ><span class="lang-es"> Autenticaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  ><strong>&ldquo;Who are you?&rdquo;</strong> &mdash; Verifies the identity
+                  of a user or system.</span
+                ><span class="lang-es"
+                  ><strong>&laquo;&iquest;Qui&eacute;n eres?&raquo;</strong> &mdash; Verifica
+                  la identidad de un usuario o sistema.</span
+                >
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Passwords, biometrics, certificates</span
+                    ><span class="lang-es">Contrase&ntilde;as, biom&eacute;tricos, certificados</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Happens before authorization</span
+                    ><span class="lang-es">Ocurre antes de la autorizaci&oacute;n</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">HTTP 401 Unauthorized on failure</span
+                    ><span class="lang-es">HTTP 401 Unauthorized al fallar</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-green" tabindex="0">
+              <h4>
+                <span class="badge badge-green">AuthZ</span>
+                <span class="lang-en"> Authorization</span
+                ><span class="lang-es"> Autorizaci&oacute;n</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  ><strong>&ldquo;What can you do?&rdquo;</strong> &mdash; Determines the
+                  permissions and access level.</span
+                ><span class="lang-es"
+                  ><strong>&laquo;&iquest;Qu&eacute; puedes hacer?&raquo;</strong> &mdash;
+                  Determina los permisos y nivel de acceso.</span
+                >
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Roles, policies, ACLs, scopes</span
+                    ><span class="lang-es">Roles, pol&iacute;ticas, ACLs, scopes</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Happens after authentication</span
+                    ><span class="lang-es">Ocurre despu&eacute;s de la autenticaci&oacute;n</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">HTTP 403 Forbidden on failure</span
+                    ><span class="lang-es">HTTP 403 Forbidden al fallar</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 3: COOKIES & SESSIONS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Cookies &amp; Sessions</span
+            ><span class="lang-es">Cookies y Sesiones</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="220" viewBox="0 0 880 220">
+              <defs>
+                <marker
+                  id="arrow-session"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- User -->
+              <rect
+                x="20"
+                y="60"
+                width="110"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
+              />
+              <text x="75" y="82" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">User</tspan>
+                <tspan class="lang-es">Usuario</tspan>
+              </text>
+              <text x="75" y="100" text-anchor="middle" fill="var(--muted)" font-size="8">
+                Browser
+              </text>
+
+              <!-- Step 1: Login Request -->
+              <line
+                x1="130" y1="75" x2="250" y2="75"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-session)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s3-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-s3-1" d="M130,75 L250,75" fill="none" stroke="none" />
+              <text x="190" y="65" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">1. Login</tspan>
+                <tspan class="lang-es">1. Login</tspan>
+              </text>
+
+              <!-- Backend Server -->
+              <rect
+                x="250"
+                y="45"
+                width="150"
+                height="75"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
+              />
+              <text x="325" y="72" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">
+                <tspan class="lang-en">Backend Server</tspan>
+                <tspan class="lang-es">Servidor Backend</tspan>
+              </text>
+              <text x="325" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">2. Creates session</tspan>
+                <tspan class="lang-es">2. Crea sesi&oacute;n</tspan>
+              </text>
+
+              <!-- Arrow to Session Store -->
+              <line
+                x1="400" y1="82" x2="500" y2="82"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-session)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s3-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-s3-2" d="M400,82 L500,82" fill="none" stroke="none" />
+
+              <!-- Session Store -->
+              <rect
+                x="500"
+                y="50"
+                width="130"
+                height="65"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2"
+              />
+              <text x="565" y="76" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="600">
+                Session Store
+              </text>
+              <text x="565" y="96" text-anchor="middle" fill="var(--muted)" font-size="8">
+                Redis / DB
+              </text>
+
+              <!-- Cookie sent back -->
+              <line
+                x1="250" y1="130" x2="130" y2="130"
+                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-session)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-s3-3" />
+                </animateMotion>
+              </circle>
+              <path id="path-s3-3" d="M250,130 L130,130" fill="none" stroke="none" />
+              <text x="190" y="148" text-anchor="middle" fill="var(--muted)" font-size="8">
+                3. Set-Cookie: session_id
+              </text>
+
+              <!-- Subsequent requests -->
+              <line
+                x1="130" y1="170" x2="250" y2="170"
+                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-session)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-s3-4" />
+                </animateMotion>
+              </circle>
+              <path id="path-s3-4" d="M130,170 L250,170" fill="none" stroke="none" />
+              <text x="190" y="190" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">4. Requests with cookie</tspan>
+                <tspan class="lang-es">4. Requests con cookie</tspan>
+              </text>
+
+              <!-- Server validates with store -->
+              <line
+                x1="400" y1="170" x2="500" y2="130"
+                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-session)"
+              />
+              <text x="460" y="142" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">5. Validates</tspan>
+                <tspan class="lang-es">5. Valida</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card expandable float-in border-green" tabindex="0">
+            <h4>
+              <span class="lang-en">How Sessions Work</span
+              ><span class="lang-es">C&oacute;mo Funcionan las Sesiones</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Server-side session storage with a cookie-based session ID. Stateful
+                but simple.</span
+              ><span class="lang-es"
+                >Almacenamiento de sesi&oacute;n en el servidor con un session ID en
+                cookie. Con estado pero simple.</span
+              >
+            </p>
+            <div class="expand-content">
+              <ul>
+                <li>
+                  <span class="lang-en">Server must store session data (memory, Redis, DB)</span
+                  ><span class="lang-es">El servidor almacena datos de sesi&oacute;n (memoria, Redis, BD)</span>
+                </li>
+                <li>
+                  <span class="lang-en">Cookie must use HttpOnly + Secure + SameSite flags</span
+                  ><span class="lang-es">Cookie debe usar flags HttpOnly + Secure + SameSite</span>
+                </li>
+                <li>
+                  <span class="lang-en">Scaling requires shared session store (sticky sessions or Redis)</span
+                  ><span class="lang-es">Escalar requiere almac&eacute;n compartido (sesiones sticky o Redis)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: JWT ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">JWT (JSON Web Tokens)</span
+            ><span class="lang-es">JWT (JSON Web Tokens)</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="200" viewBox="0 0 880 200">
+              <defs>
+                <marker
+                  id="arrow-jwt"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- JWT structure -->
+              <rect x="20" y="10" width="200" height="30" rx="4" fill="var(--error)" opacity="0.3" />
+              <text x="120" y="30" text-anchor="middle" fill="var(--error)" font-size="10" font-weight="600">
+                Header (alg, typ)
+              </text>
+              <rect x="220" y="10" width="240" height="30" rx="4" fill="var(--purple)" opacity="0.3" />
+              <text x="340" y="30" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">
+                Payload (sub, exp, claims)
+              </text>
+              <rect x="460" y="10" width="200" height="30" rx="4" fill="var(--mint)" opacity="0.3" />
+              <text x="560" y="30" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+                Signature (HMAC/RSA)
+              </text>
+              <!-- Dots between sections -->
+              <text x="213" y="30" text-anchor="middle" fill="var(--muted)" font-size="14" font-weight="700">.</text>
+              <text x="453" y="30" text-anchor="middle" fill="var(--muted)" font-size="14" font-weight="700">.</text>
+
+              <!-- User -->
+              <rect
+                x="20" y="70" width="110" height="50" rx="8"
+                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+              />
+              <text x="75" y="98" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">User</tspan>
+                <tspan class="lang-es">Usuario</tspan>
+              </text>
+
+              <!-- Step 1: Login -->
+              <line
+                x1="130" y1="88" x2="270" y2="88"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-jwt)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s4-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-s4-1" d="M130,88 L270,88" fill="none" stroke="none" />
+              <text x="200" y="80" text-anchor="middle" fill="var(--muted)" font-size="8">
+                1. Login
+              </text>
+
+              <!-- Auth Server -->
+              <rect
+                x="270" y="62" width="150" height="65" rx="8"
+                fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5"
+              />
+              <text x="345" y="88" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">
+                <tspan class="lang-en">Auth Server</tspan>
+                <tspan class="lang-es">Servidor Auth</tspan>
+              </text>
+              <text x="345" y="106" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">2. Creates JWT</tspan>
+                <tspan class="lang-es">2. Crea JWT</tspan>
+              </text>
+
+              <!-- JWT returned -->
+              <line
+                x1="270" y1="140" x2="130" y2="140"
+                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-jwt)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-s4-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-s4-2" d="M270,140 L130,140" fill="none" stroke="none" />
+              <text x="200" y="155" text-anchor="middle" fill="var(--muted)" font-size="8">
+                3. JWT token
+              </text>
+
+              <!-- Client sends to API -->
+              <line
+                x1="130" y1="175" x2="530" y2="175"
+                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-jwt)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path-s4-3" />
+                </animateMotion>
+              </circle>
+              <path id="path-s4-3" d="M130,175 L530,175" fill="none" stroke="none" />
+              <text x="330" y="190" text-anchor="middle" fill="var(--muted)" font-size="8">
+                4. Authorization: Bearer &lt;token&gt;
+              </text>
+
+              <!-- API Server -->
+              <rect
+                x="530" y="62" width="150" height="65" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="2"
+              />
+              <text x="605" y="88" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                API Server
+              </text>
+              <text x="605" y="106" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">5. Validates JWT</tspan>
+                <tspan class="lang-es">5. Valida JWT</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card expandable float-in border-purple" tabindex="0">
+            <h4>
+              <span class="lang-en">JWT Characteristics</span
+              ><span class="lang-es">Caracter&iacute;sticas de JWT</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Stateless, self-contained tokens. No server-side storage needed.</span
+              ><span class="lang-es"
+                >Tokens sin estado y autocontenidos. No requieren almacenamiento en servidor.</span
+              >
+            </p>
+            <div class="expand-content">
+              <ul>
+                <li>
+                  <span class="lang-en">Base64url-encoded, not encrypted by default</span
+                  ><span class="lang-es">Codificado en Base64url, no cifrado por defecto</span>
+                </li>
+                <li>
+                  <span class="lang-en">Cannot be revoked individually (use short expiry + refresh tokens)</span
+                  ><span class="lang-es">No se pueden revocar individualmente (usar expiraci&oacute;n corta + refresh tokens)</span>
+                </li>
+                <li>
+                  <span class="lang-en">Vulnerable to algorithm confusion and &ldquo;none&rdquo; attacks</span
+                  ><span class="lang-es">Vulnerable a confusi&oacute;n de algoritmo y ataques &ldquo;none&rdquo;</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: PASETO ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">PASETO (Platform-Agnostic Security Tokens)</span
+            ><span class="lang-es">PASETO (Tokens de Seguridad Independientes de Plataforma)</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >PASETO addresses the design flaws of JWT by removing algorithm negotiation
+              and providing secure defaults.</span
+            ><span class="lang-es"
+              >PASETO aborda las fallas de dise&ntilde;o de JWT al eliminar la
+              negociaci&oacute;n de algoritmos y proveer configuraciones seguras por
+              defecto.</span
+            >
+          </p>
+          <div class="card expandable float-in border-blue" tabindex="0">
+            <h4>
+              <span class="lang-en">JWT vs PASETO</span
+              ><span class="lang-es">JWT vs PASETO</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >PASETO is simpler, more secure, and eliminates entire classes of JWT
+                vulnerabilities.</span
+              ><span class="lang-es"
+                >PASETO es m&aacute;s simple, m&aacute;s seguro, y elimina clases
+                completas de vulnerabilidades de JWT.</span
+              >
+            </p>
+            <div class="expand-content">
+              <table>
+                <thead>
+                  <tr>
+                    <th><span class="lang-en">Aspect</span><span class="lang-es">Aspecto</span></th>
+                    <th>JWT</th>
+                    <th>PASETO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="lang-en">Algorithm</span
+                      ><span class="lang-es">Algoritmo</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Negotiable (header)</span
+                      ><span class="lang-es">Negociable (header)</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Fixed per version</span
+                      ><span class="lang-es">Fijo por versi&oacute;n</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="lang-en">&ldquo;none&rdquo; attack</span
+                      ><span class="lang-es">Ataque &ldquo;none&rdquo;</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Possible</span
+                      ><span class="lang-es">Posible</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Impossible</span
+                      ><span class="lang-es">Imposible</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="lang-en">Complexity</span
+                      ><span class="lang-es">Complejidad</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">High (many options)</span
+                      ><span class="lang-es">Alta (muchas opciones)</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Low (opinionated)</span
+                      ><span class="lang-es">Baja (con opiniones definidas)</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="lang-en">Adoption</span
+                      ><span class="lang-es">Adopci&oacute;n</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Industry standard</span
+                      ><span class="lang-es">Est&aacute;ndar de la industria</span>
+                    </td>
+                    <td>
+                      <span class="lang-en">Growing</span
+                      ><span class="lang-es">En crecimiento</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: OAUTH 2.0 ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">OAuth 2.0 &mdash; Authorization Code Flow</span
+            ><span class="lang-es">OAuth 2.0 &mdash; Flujo Authorization Code</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="250" viewBox="0 0 880 250">
+              <defs>
+                <marker
+                  id="arrow-oauth"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- User -->
+              <rect
+                x="20" y="30" width="110" height="50" rx="8"
+                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+              />
+              <text x="75" y="58" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">User</tspan>
+                <tspan class="lang-es">Usuario</tspan>
+              </text>
+
+              <!-- App / Client -->
+              <rect
+                x="20" y="130" width="110" height="50" rx="8"
+                fill="var(--surface)" stroke="var(--primary)" stroke-width="2"
+              />
+              <text x="75" y="158" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="600">
+                App (Client)
+              </text>
+
+              <!-- Auth Server -->
+              <rect
+                x="350" y="30" width="160" height="60" rx="8"
+                fill="var(--surface)" stroke="var(--purple)" stroke-width="2.5"
+              />
+              <text x="430" y="55" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="700">
+                <tspan class="lang-en">Auth Server</tspan>
+                <tspan class="lang-es">Servidor Auth</tspan>
+              </text>
+              <text x="430" y="73" text-anchor="middle" fill="var(--muted)" font-size="8">
+                (Keycloak, Auth0, etc.)
+              </text>
+
+              <!-- Resource Server / API -->
+              <rect
+                x="350" y="160" width="160" height="55" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="2"
+              />
+              <text x="430" y="185" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+                <tspan class="lang-en">Resource API</tspan>
+                <tspan class="lang-es">API de Recursos</tspan>
+              </text>
+
+              <!-- Step 1: User clicks login -->
+              <line
+                x1="75" y1="80" x2="75" y2="130"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-oauth)"
+              />
+              <text x="55" y="110" fill="var(--muted)" font-size="8">1</text>
+
+              <!-- Step 2: App redirects to Auth Server -->
+              <line
+                x1="130" y1="140" x2="350" y2="60"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-oauth)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s6-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-s6-2" d="M130,140 L350,60" fill="none" stroke="none" />
+              <text x="230" y="93" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">2. Redirect to login</tspan>
+                <tspan class="lang-es">2. Redirige al login</tspan>
+              </text>
+
+              <!-- Step 3: Auth Server redirects back with code -->
+              <line
+                x1="350" y1="80" x2="130" y2="150"
+                stroke="var(--purple)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-oauth)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-s6-3" />
+                </animateMotion>
+              </circle>
+              <path id="path-s6-3" d="M350,80 L130,150" fill="none" stroke="none" />
+              <text x="230" y="128" text-anchor="middle" fill="var(--muted)" font-size="8">
+                3. Redirect + code
+              </text>
+
+              <!-- Step 4: App exchanges code for token -->
+              <line
+                x1="130" y1="165" x2="350" y2="165"
+                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-oauth)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s6-4" />
+                </animateMotion>
+              </circle>
+              <path id="path-s6-4" d="M130,165 L350,165" fill="none" stroke="none" />
+              <text x="240" y="158" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">4. Exchange code for token</tspan>
+                <tspan class="lang-es">4. Intercambia c&oacute;digo por token</tspan>
+              </text>
+
+              <!-- Step 5: Token returned -->
+              <line
+                x1="350" y1="180" x2="130" y2="180"
+                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-oauth)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s6-5" />
+                </animateMotion>
+              </circle>
+              <path id="path-s6-5" d="M350,180 L130,180" fill="none" stroke="none" />
+              <text x="240" y="198" text-anchor="middle" fill="var(--muted)" font-size="8">
+                5. Access token
+              </text>
+
+              <!-- Step 6: Access API with token -->
+              <line
+                x1="130" y1="195" x2="350" y2="195"
+                stroke="var(--error)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-oauth)"
+              />
+              <circle r="3" fill="var(--error)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-s6-6" />
+                </animateMotion>
+              </circle>
+              <path id="path-s6-6" d="M130,195 L350,195" fill="none" stroke="none" />
+              <text x="240" y="215" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">6. Access API with token</tspan>
+                <tspan class="lang-es">6. Accede API con token</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card expandable float-in border-orange" tabindex="0">
+            <h4>
+              <span class="lang-en">Why Authorization Code Flow?</span
+              ><span class="lang-es">&iquest;Por qu&eacute; Authorization Code Flow?</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >Most secure OAuth flow for server-side apps. The code exchange happens
+                server-to-server.</span
+              ><span class="lang-es"
+                >Flujo OAuth m&aacute;s seguro para apps del lado servidor. El intercambio
+                de c&oacute;digo ocurre servidor a servidor.</span
+              >
+            </p>
+            <div class="expand-content">
+              <ul>
+                <li>
+                  <span class="lang-en">Authorization code is short-lived and single-use</span
+                  ><span class="lang-es">El c&oacute;digo de autorizaci&oacute;n es de corta vida y un solo uso</span>
+                </li>
+                <li>
+                  <span class="lang-en">Tokens never exposed to the browser</span
+                  ><span class="lang-es">Los tokens nunca se exponen al navegador</span>
+                </li>
+                <li>
+                  <span class="lang-en">Use PKCE extension for public clients (SPA, mobile)</span
+                  ><span class="lang-es">Usar extensi&oacute;n PKCE para clientes p&uacute;blicos (SPA, m&oacute;vil)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: SSO & SAML ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">SSO &amp; SAML</span
+            ><span class="lang-es">SSO y SAML</span>
+          </h2>
+          <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
+            <span class="lang-en"
+              >Single Sign-On allows users to authenticate once and access multiple
+              applications. SAML is the enterprise standard for SSO.</span
+            ><span class="lang-es"
+              >Single Sign-On permite a los usuarios autenticarse una vez y acceder a
+              m&uacute;ltiples aplicaciones. SAML es el est&aacute;ndar empresarial
+              para SSO.</span
+            >
+          </p>
+          <div class="diagram-container">
+            <svg width="880" height="180" viewBox="0 0 880 180">
+              <defs>
+                <marker
+                  id="arrow-saml"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- User -->
+              <rect
+                x="30" y="55" width="110" height="50" rx="8"
+                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+              />
+              <text x="85" y="83" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">User</tspan>
+                <tspan class="lang-es">Usuario</tspan>
+              </text>
+
+              <!-- SP -->
+              <rect
+                x="240" y="45" width="140" height="70" rx="8"
+                fill="var(--surface)" stroke="var(--primary)" stroke-width="2"
+              />
+              <text x="310" y="72" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+                Service Provider
+              </text>
+              <text x="310" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">
+                (SP &mdash; App)
+              </text>
+
+              <!-- IdP -->
+              <rect
+                x="500" y="45" width="150" height="70" rx="8"
+                fill="var(--surface)" stroke="var(--purple)" stroke-width="2.5"
+              />
+              <text x="575" y="72" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="700">
+                Identity Provider
+              </text>
+              <text x="575" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">
+                (IdP &mdash; Keycloak, Okta)
+              </text>
+
+              <!-- Step 1: User -> SP -->
+              <line
+                x1="140" y1="72" x2="240" y2="72"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-saml)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-s7-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-s7-1" d="M140,72 L240,72" fill="none" stroke="none" />
+              <text x="190" y="64" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">1. Access app</tspan>
+                <tspan class="lang-es">1. Accede app</tspan>
+              </text>
+
+              <!-- Step 2: SP -> IdP -->
+              <line
+                x1="380" y1="65" x2="500" y2="65"
+                stroke="var(--purple)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-saml)"
+              />
+              <circle r="3" fill="var(--purple)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s7-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-s7-2" d="M380,65 L500,65" fill="none" stroke="none" />
+              <text x="440" y="56" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">2. Redirect to IdP</tspan>
+                <tspan class="lang-es">2. Redirige a IdP</tspan>
+              </text>
+
+              <!-- Step 3: IdP -> SP (SAML assertion) -->
+              <line
+                x1="500" y1="95" x2="380" y2="95"
+                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-saml)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2.2s" repeatCount="indefinite">
+                  <mpath href="#path-s7-3" />
+                </animateMotion>
+              </circle>
+              <path id="path-s7-3" d="M500,95 L380,95" fill="none" stroke="none" />
+              <text x="440" y="110" text-anchor="middle" fill="var(--muted)" font-size="8">
+                3. SAML Assertion
+              </text>
+
+              <!-- Step 4: SP -> User (access granted) -->
+              <line
+                x1="240" y1="95" x2="140" y2="95"
+                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-saml)"
+              />
+              <circle r="3" fill="var(--gold)">
+                <animateMotion dur="1.8s" repeatCount="indefinite">
+                  <mpath href="#path-s7-4" />
+                </animateMotion>
+              </circle>
+              <path id="path-s7-4" d="M240,95 L140,95" fill="none" stroke="none" />
+              <text x="190" y="112" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">4. Access granted</tspan>
+                <tspan class="lang-es">4. Acceso concedido</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card expandable float-in border-purple" tabindex="0">
+            <h4>
+              <span class="lang-en">SAML vs OAuth 2.0 / OIDC</span
+              ><span class="lang-es">SAML vs OAuth 2.0 / OIDC</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >SAML uses XML assertions for enterprise SSO. OAuth 2.0 + OIDC uses
+                JSON tokens and is preferred for modern web/mobile apps.</span
+              ><span class="lang-es"
+                >SAML usa aserciones XML para SSO empresarial. OAuth 2.0 + OIDC usa
+                tokens JSON y es preferido para apps web/m&oacute;vil modernas.</span
+              >
+            </p>
+            <div class="expand-content">
+              <ul>
+                <li>
+                  <span class="lang-en">SAML: XML-based, heavyweight, enterprise legacy systems</span
+                  ><span class="lang-es">SAML: basado en XML, pesado, sistemas legados empresariales</span>
+                </li>
+                <li>
+                  <span class="lang-en">OIDC: JSON-based, lightweight, modern APIs and SPAs</span
+                  ><span class="lang-es">OIDC: basado en JSON, ligero, APIs modernas y SPAs</span>
+                </li>
+                <li>
+                  <span class="lang-en">Both support SSO but with different protocols</span
+                  ><span class="lang-es">Ambos soportan SSO pero con diferentes protocolos</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: MFA & BIOMETRICS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Multi-Factor Authentication</span
+            ><span class="lang-es">Autenticaci&oacute;n Multi-Factor</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card expandable float-in border-blue" tabindex="0">
+              <h4>
+                <span class="lang-en">Something You Know</span
+                ><span class="lang-es">Algo que Sabes</span>
+              </h4>
+              <p>
+                <span class="lang-en">Passwords, PINs, security questions</span
+                ><span class="lang-es">Contrase&ntilde;as, PINs, preguntas de seguridad</span>
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Most common but weakest factor alone</span
+                    ><span class="lang-es">M&aacute;s com&uacute;n pero el factor m&aacute;s d&eacute;bil solo</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Vulnerable to phishing, brute force, credential stuffing</span
+                    ><span class="lang-es">Vulnerable a phishing, fuerza bruta, credential stuffing</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-green" tabindex="0">
+              <h4>
+                <span class="lang-en">Something You Have</span
+                ><span class="lang-es">Algo que Tienes</span>
+              </h4>
+              <p>
+                <span class="lang-en">Phone, hardware token, smart card</span
+                ><span class="lang-es">Tel&eacute;fono, token de hardware, tarjeta inteligente</span>
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">YubiKey, Google Authenticator, SMS codes</span
+                    ><span class="lang-es">YubiKey, Google Authenticator, c&oacute;digos SMS</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Hardware keys (FIDO2/WebAuthn) are phishing-resistant</span
+                    ><span class="lang-es">Llaves de hardware (FIDO2/WebAuthn) son resistentes a phishing</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-orange" tabindex="0">
+              <h4>
+                <span class="lang-en">Something You Are</span
+                ><span class="lang-es">Algo que Eres</span>
+              </h4>
+              <p>
+                <span class="lang-en">Fingerprint, face recognition, iris scan</span
+                ><span class="lang-es">Huella digital, reconocimiento facial, escaneo de iris</span>
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Convenient but cannot be changed if compromised</span
+                    ><span class="lang-es">Conveniente pero no se puede cambiar si se compromete</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Used in Touch ID, Face ID, Windows Hello</span
+                    ><span class="lang-es">Usado en Touch ID, Face ID, Windows Hello</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-purple" tabindex="0">
+              <h4>
+                <span class="lang-en">Time-Based OTP (TOTP)</span
+                ><span class="lang-es">OTP Basado en Tiempo (TOTP)</span>
+              </h4>
+              <p>
+                <span class="lang-en">6-digit code that changes every 30 seconds</span
+                ><span class="lang-es">C&oacute;digo de 6 d&iacute;gitos que cambia cada 30 segundos</span>
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">RFC 6238 standard, works offline</span
+                    ><span class="lang-es">Est&aacute;ndar RFC 6238, funciona sin conexi&oacute;n</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Shared secret + current time = OTP</span
+                    ><span class="lang-es">Secreto compartido + tiempo actual = OTP</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 9: API KEY AUTHENTICATION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">API Key Authentication</span
+            ><span class="lang-es">Autenticaci&oacute;n con API Key</span>
+          </h2>
+          <div class="diagram-container">
+            <svg width="880" height="160" viewBox="0 0 880 160">
+              <defs>
+                <marker
+                  id="arrow-apikey"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10z" fill="var(--primary)" />
+                </marker>
+              </defs>
+
+              <!-- Client -->
+              <rect
+                x="40" y="45" width="140" height="55" rx="8"
+                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+              />
+              <text x="110" y="68" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Client App</tspan>
+                <tspan class="lang-es">App Cliente</tspan>
+              </text>
+              <text x="110" y="86" text-anchor="middle" fill="var(--muted)" font-size="8">
+                X-API-Key: abc123...
+              </text>
+
+              <!-- Arrow: Client -> Gateway -->
+              <line
+                x1="180" y1="72" x2="330" y2="72"
+                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-apikey)"
+              />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s9-1" />
+                </animateMotion>
+              </circle>
+              <path id="path-s9-1" d="M180,72 L330,72" fill="none" stroke="none" />
+              <text x="255" y="62" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">1. Request + API Key</tspan>
+                <tspan class="lang-es">1. Request + API Key</tspan>
+              </text>
+
+              <!-- API Gateway -->
+              <rect
+                x="330" y="35" width="180" height="75" rx="8"
+                fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5"
+              />
+              <text x="420" y="65" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+                API Gateway
+              </text>
+              <text x="420" y="85" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">2. Validates key</tspan>
+                <tspan class="lang-es">2. Valida llave</tspan>
+              </text>
+
+              <!-- Arrow: Gateway -> Backend -->
+              <line
+                x1="510" y1="72" x2="630" y2="72"
+                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                marker-end="url(#arrow-apikey)"
+              />
+              <circle r="3" fill="var(--mint)">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#path-s9-2" />
+                </animateMotion>
+              </circle>
+              <path id="path-s9-2" d="M510,72 L630,72" fill="none" stroke="none" />
+              <text x="570" y="62" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">3. Forward</tspan>
+                <tspan class="lang-es">3. Reenv&iacute;a</tspan>
+              </text>
+
+              <!-- Backend -->
+              <rect
+                x="630" y="45" width="140" height="55" rx="8"
+                fill="var(--surface)" stroke="var(--gold)" stroke-width="2"
+              />
+              <text x="700" y="68" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+                <tspan class="lang-en">Backend</tspan>
+                <tspan class="lang-es">Backend</tspan>
+              </text>
+              <text x="700" y="86" text-anchor="middle" fill="var(--muted)" font-size="8">
+                <tspan class="lang-en">Protected API</tspan>
+                <tspan class="lang-es">API Protegida</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="card expandable float-in border-orange" tabindex="0">
+            <h4>
+              <span class="lang-en">API Keys: Simple but Limited</span
+              ><span class="lang-es">API Keys: Simples pero Limitadas</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >API keys identify the calling application, not the user. Good for
+                server-to-server, not for user authentication.</span
+              ><span class="lang-es"
+                >Las API keys identifican la aplicaci&oacute;n, no al usuario. Buenas
+                para servidor a servidor, no para autenticaci&oacute;n de usuarios.</span
+              >
+            </p>
+            <div class="expand-content">
+              <ul>
+                <li>
+                  <span class="lang-en">No expiration by default &mdash; must be rotated manually</span
+                  ><span class="lang-es">Sin expiraci&oacute;n por defecto &mdash; deben rotarse manualmente</span>
+                </li>
+                <li>
+                  <span class="lang-en">Often sent in headers (X-API-Key) or query parameters</span
+                  ><span class="lang-es">Generalmente enviadas en headers (X-API-Key) o par&aacute;metros de consulta</span>
+                </li>
+                <li>
+                  <span class="lang-en">Use with rate limiting and IP allowlists for security</span
+                  ><span class="lang-es">Usar con rate limiting y listas de IP permitidas para seguridad</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: SECURITY BEST PRACTICES ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Security Best Practices</span
+            ><span class="lang-es">Mejores Pr&aacute;cticas de Seguridad</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card expandable float-in border-blue" tabindex="0">
+              <h4>
+                <span class="lang-en">HTTPS Everywhere</span
+                ><span class="lang-es">HTTPS en Todo</span>
+              </h4>
+              <p>
+                <span class="lang-en">TLS/SSL for all traffic</span
+                ><span class="lang-es">TLS/SSL para todo el tr&aacute;fico</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en"
+                    >Encrypt all data in transit. Use HSTS headers. Redirect HTTP to HTTPS.
+                    Use TLS 1.3 minimum.</span
+                  ><span class="lang-es"
+                    >Cifrar todos los datos en tr&aacute;nsito. Usar headers HSTS. Redirigir
+                    HTTP a HTTPS. Usar TLS 1.3 m&iacute;nimo.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card expandable float-in border-green" tabindex="0">
+              <h4>
+                <span class="lang-en">HttpOnly / Secure Cookies</span
+                ><span class="lang-es">Cookies HttpOnly / Secure</span>
+              </h4>
+              <p>
+                <span class="lang-en">Prevent XSS token theft</span
+                ><span class="lang-es">Prevenir robo de tokens por XSS</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en"
+                    >HttpOnly prevents JavaScript access. Secure ensures HTTPS-only
+                    transmission. SameSite prevents CSRF.</span
+                  ><span class="lang-es"
+                    >HttpOnly previene acceso por JavaScript. Secure asegura transmisi&oacute;n
+                    solo por HTTPS. SameSite previene CSRF.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card expandable float-in border-orange" tabindex="0">
+              <h4>
+                <span class="lang-en">Token Rotation</span
+                ><span class="lang-es">Rotaci&oacute;n de Tokens</span>
+              </h4>
+              <p>
+                <span class="lang-en">Short-lived access tokens</span
+                ><span class="lang-es">Tokens de acceso de corta vida</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en"
+                    >Access tokens: 15 min. Refresh tokens: days/weeks with rotation.
+                    Revoke refresh tokens on logout.</span
+                  ><span class="lang-es"
+                    >Tokens de acceso: 15 min. Refresh tokens: d&iacute;as/semanas con
+                    rotaci&oacute;n. Revocar refresh tokens al cerrar sesi&oacute;n.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card expandable float-in border-purple" tabindex="0">
+              <h4>
+                <span class="lang-en">Rate Limiting</span
+                ><span class="lang-es">Limitaci&oacute;n de Tasa</span>
+              </h4>
+              <p>
+                <span class="lang-en">Prevent brute force attacks</span
+                ><span class="lang-es">Prevenir ataques de fuerza bruta</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en"
+                    >Limit login attempts per IP/user. Use exponential backoff. Return
+                    429 Too Many Requests.</span
+                  ><span class="lang-es"
+                    >Limitar intentos de login por IP/usuario. Usar backoff exponencial.
+                    Retornar 429 Too Many Requests.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card expandable float-in border-red" tabindex="0">
+              <h4>
+                <span class="lang-en">Input Validation</span
+                ><span class="lang-es">Validaci&oacute;n de Entrada</span>
+              </h4>
+              <p>
+                <span class="lang-en">Sanitize all user input</span
+                ><span class="lang-es">Sanitizar toda entrada de usuario</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en"
+                    >Prevent SQL injection, XSS, and command injection. Use parameterized
+                    queries. Validate on server side.</span
+                  ><span class="lang-es"
+                    >Prevenir inyecci&oacute;n SQL, XSS e inyecci&oacute;n de comandos.
+                    Usar consultas parametrizadas. Validar en el servidor.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card expandable float-in border-gold" tabindex="0">
+              <h4>
+                <span class="lang-en">Least Privilege</span
+                ><span class="lang-es">M&iacute;nimo Privilegio</span>
+              </h4>
+              <p>
+                <span class="lang-en">Grant minimum permissions</span
+                ><span class="lang-es">Otorgar permisos m&iacute;nimos</span>
+              </p>
+              <div class="expand-content">
+                <p>
+                  <span class="lang-en"
+                    >Users and services should only have the permissions they need. Review
+                    and audit access regularly.</span
+                  ><span class="lang-es"
+                    >Usuarios y servicios deben tener solo los permisos que necesitan.
+                    Revisar y auditar acceso regularmente.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 11: PLATFORMS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Identity Platforms</span
+            ><span class="lang-es">Plataformas de Identidad</span>
+          </h2>
+          <div class="grid-2">
+            <div class="card expandable float-in border-blue" tabindex="0">
+              <h4>AWS Cognito</h4>
+              <p>
+                <span class="lang-en"
+                  >User pools + identity pools for web/mobile apps on AWS.</span
+                ><span class="lang-es"
+                  >User pools + identity pools para apps web/m&oacute;vil en AWS.</span
+                >
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Built-in hosted UI for login flows</span
+                    ><span class="lang-es">UI hospedada integrada para flujos de login</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Social + enterprise federation (SAML, OIDC)</span
+                    ><span class="lang-es">Federaci&oacute;n social + empresarial (SAML, OIDC)</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Lambda triggers for custom workflows</span
+                    ><span class="lang-es">Lambda triggers para flujos personalizados</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-green" tabindex="0">
+              <h4>Azure AD B2C</h4>
+              <p>
+                <span class="lang-en"
+                  >Customer identity and access management for Azure apps.</span
+                ><span class="lang-es"
+                  >Gesti&oacute;n de identidad y acceso de clientes para apps Azure.</span
+                >
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Custom user flows and policies</span
+                    ><span class="lang-es">Flujos de usuario y pol&iacute;ticas personalizadas</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Multi-tenant with custom domains</span
+                    ><span class="lang-es">Multi-tenant con dominios personalizados</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Conditional Access + MFA built-in</span
+                    ><span class="lang-es">Acceso Condicional + MFA integrado</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-orange" tabindex="0">
+              <h4>GCP Identity Platform</h4>
+              <p>
+                <span class="lang-en"
+                  >Google-backed authentication for apps on GCP.</span
+                ><span class="lang-es"
+                  >Autenticaci&oacute;n respaldada por Google para apps en GCP.</span
+                >
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Firebase Auth under the hood</span
+                    ><span class="lang-es">Firebase Auth bajo el capot</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Multi-factor, email/phone, social login</span
+                    ><span class="lang-es">Multi-factor, email/tel&eacute;fono, login social</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Blocking functions for custom logic</span
+                    ><span class="lang-es">Funciones de bloqueo para l&oacute;gica personalizada</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card expandable float-in border-purple" tabindex="0">
+              <h4>Keycloak <span class="badge badge-green">Open Source</span></h4>
+              <p>
+                <span class="lang-en"
+                  >Self-hosted identity and access management by Red Hat.</span
+                ><span class="lang-es"
+                  >Gesti&oacute;n de identidad y acceso auto-hospedada por Red Hat.</span
+                >
+              </p>
+              <div class="expand-content">
+                <ul>
+                  <li>
+                    <span class="lang-en">Full OAuth 2.0, OIDC, SAML 2.0 support</span
+                    ><span class="lang-es">Soporte completo de OAuth 2.0, OIDC, SAML 2.0</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Customizable themes, user federation (LDAP, AD)</span
+                    ><span class="lang-es">Temas personalizables, federaci&oacute;n de usuarios (LDAP, AD)</span>
+                  </li>
+                  <li>
+                    <span class="lang-en">Used in this course lab for hands-on practice</span
+                    ><span class="lang-es">Usado en el laboratorio de este curso para pr&aacute;ctica</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Identity &amp; Access</span
+                ><span class="lang-es">Identidad y Acceso</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Authentication (AuthN) verifies identity; Authorization (AuthZ) controls
+                  access. Sessions are stateful; JWTs are stateless. PASETO improves on
+                  JWT security by eliminating algorithm negotiation.</span
+                ><span class="lang-es"
+                  >Autenticaci&oacute;n (AuthN) verifica identidad; Autorizaci&oacute;n
+                  (AuthZ) controla acceso. Las sesiones son con estado; los JWTs son sin
+                  estado. PASETO mejora la seguridad de JWT al eliminar la
+                  negociaci&oacute;n de algoritmos.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Protocols &amp; Flows</span
+                ><span class="lang-es">Protocolos y Flujos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >OAuth 2.0 Authorization Code flow is the standard for secure
+                  delegation. SAML handles enterprise SSO. OIDC adds identity on top
+                  of OAuth. Use PKCE for public clients.</span
+                ><span class="lang-es"
+                  >El flujo OAuth 2.0 Authorization Code es el est&aacute;ndar para
+                  delegaci&oacute;n segura. SAML maneja SSO empresarial. OIDC agrega
+                  identidad sobre OAuth. Usar PKCE para clientes p&uacute;blicos.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">Defense in Depth</span
+                ><span class="lang-es">Defensa en Profundidad</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Layer multiple security controls: HTTPS, secure cookies, MFA, token
+                  rotation, rate limiting, input validation, and least privilege. No
+                  single mechanism is sufficient.</span
+                ><span class="lang-es"
+                  >Capas de m&uacute;ltiples controles de seguridad: HTTPS, cookies
+                  seguras, MFA, rotaci&oacute;n de tokens, rate limiting,
+                  validaci&oacute;n de entrada y m&iacute;nimo privilegio. Ning&uacute;n
+                  mecanismo &uacute;nico es suficiente.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 13: Q&A ========== -->
+        <section>
+          <div class="qa-center">
+            <h1 style="font-size: 2.2em; margin-bottom: 10px">
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h1>
+            <div class="diagram-container" style="margin: 10px 0">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 06</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 06</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+  </body>
+</html>

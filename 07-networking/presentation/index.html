@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Networking | Redes - ITESO ESI3901C</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../shared/presentation/theme.css" />
+    <link rel="stylesheet" href="slides.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem('pres-theme') || 'dark';
+        var l = localStorage.getItem('pres-lang') || 'en';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-lang', l);
+        var b = document.getElementById('lang-toggle');
+        if (b) b.textContent = l.toUpperCase();
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Toggle bar -->
+    <div class="toggle-bar">
+      <button class="toggle-btn" id="lang-toggle" onclick="toggleLang()" title="Toggle language">
+        EN
+      </button>
+      <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        &#9790;
+      </button>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- ========== SLIDE 0: TITLE ========== -->
+        <section>
+          <div style="text-align: center; padding-top: 30px">
+            <div class="diagram-container">
+              <svg width="120" height="130" viewBox="0 0 120 130">
+                <!-- Globe outline -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="45"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="stroke-width"
+                    values="2;3;2"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <!-- Horizontal lines (latitude) -->
+                <ellipse cx="60" cy="60" rx="45" ry="15" fill="none"
+                  stroke="var(--primary)" stroke-width="1" opacity="0.5" />
+                <ellipse cx="60" cy="60" rx="45" ry="30" fill="none"
+                  stroke="var(--primary)" stroke-width="1" opacity="0.4" />
+                <!-- Vertical arc (longitude) -->
+                <ellipse cx="60" cy="60" rx="15" ry="45" fill="none"
+                  stroke="var(--primary)" stroke-width="1" opacity="0.5" />
+                <ellipse cx="60" cy="60" rx="30" ry="45" fill="none"
+                  stroke="var(--primary)" stroke-width="1" opacity="0.4" />
+                <!-- Animated data dots orbiting -->
+                <circle r="3" fill="var(--mint)">
+                  <animateMotion
+                    path="M15,60 A45,15 0 1,1 105,60 A45,15 0 1,1 15,60"
+                    dur="4s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle r="3" fill="var(--gold)">
+                  <animateMotion
+                    path="M60,15 A15,45 0 1,1 60,105 A15,45 0 1,1 60,15"
+                    dur="3.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle r="2.5" fill="var(--purple)">
+                  <animateMotion
+                    path="M30,15 A30,45 0 1,1 90,105 A30,45 0 1,1 30,15"
+                    dur="5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <!-- Connection nodes -->
+                <circle cx="60" cy="15" r="3" fill="var(--error)">
+                  <animate attributeName="opacity" values="0.5;1;0.5"
+                    dur="1.8s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="105" cy="60" r="3" fill="var(--mint)">
+                  <animate attributeName="opacity" values="0.5;1;0.5"
+                    dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="60" cy="105" r="3" fill="var(--warning)">
+                  <animate attributeName="opacity" values="0.5;1;0.5"
+                    dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="15" cy="60" r="3" fill="var(--purple)">
+                  <animate attributeName="opacity" values="0.5;1;0.5"
+                    dur="2.2s" repeatCount="indefinite" />
+                </circle>
+              </svg>
+            </div>
+            <h1 style="margin-top: 10px">
+              <span class="lang-en">Networking</span>
+              <span class="lang-es">Redes</span>
+            </h1>
+            <p class="subtitle">
+              <span class="lang-en">Module 07 &mdash; Scalable System Design</span>
+              <span class="lang-es"
+                >M&oacute;dulo 07 &mdash; Dise&ntilde;o de Sistemas Escalables</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 14px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez<br />
+              <span class="iteso-tag">ITESO &middot; ESI3901C</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 1: AGENDA ========== -->
+        <section>
+          <h2><span class="lang-en">Agenda</span><span class="lang-es">Agenda</span></h2>
+          <div class="grid-2">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">1. Internet Components</span
+                ><span class="lang-es">1. Componentes de Internet</span>
+              </h4>
+              <p>
+                <span class="lang-en">Edge, access networks, network core</span
+                ><span class="lang-es"
+                  >Borde, redes de acceso, n&uacute;cleo de red</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">2. Access Networks</span
+                ><span class="lang-es">2. Redes de Acceso</span>
+              </h4>
+              <p>
+                <span class="lang-en">Home, institutional, mobile</span
+                ><span class="lang-es">Hogar, institucional, m&oacute;vil</span>
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">3. Protocols</span
+                ><span class="lang-es">3. Protocolos</span>
+              </h4>
+              <p>
+                <span class="lang-en">OSI model, TCP/IP stack, HTTP/HTTPS</span
+                ><span class="lang-es">Modelo OSI, pila TCP/IP, HTTP/HTTPS</span>
+              </p>
+            </div>
+            <div class="card float-in border-purple">
+              <h4>
+                <span class="lang-en">4. TCP/IP</span
+                ><span class="lang-es">4. TCP/IP</span>
+              </h4>
+              <p>
+                <span class="lang-en">TCP vs UDP, protocol comparison, ports</span
+                ><span class="lang-es"
+                  >TCP vs UDP, comparaci&oacute;n de protocolos, puertos</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 2: INTERNET EVOLUTION ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Internet Evolution</span
+            ><span class="lang-es">Evoluci&oacute;n de Internet</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 150" style="max-width: 880px; width: 100%">
+              <!-- Timeline base line -->
+              <line x1="60" y1="75" x2="820" y2="75"
+                stroke="var(--muted)" stroke-width="2" stroke-dasharray="6,4" />
+
+              <!-- ARPANET 1969 -->
+              <circle cx="120" cy="75" r="18" fill="var(--primary)" opacity="0.2" />
+              <circle cx="120" cy="75" r="10" fill="var(--primary)" />
+              <text x="120" y="40" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">ARPANET</text>
+              <text x="120" y="115" text-anchor="middle"
+                fill="var(--muted)" font-size="11">1969</text>
+
+              <!-- TCP/IP 1980s -->
+              <circle cx="300" cy="75" r="18" fill="var(--mint)" opacity="0.2" />
+              <circle cx="300" cy="75" r="10" fill="var(--mint)" />
+              <text x="300" y="40" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">TCP/IP</text>
+              <text x="300" y="115" text-anchor="middle"
+                fill="var(--muted)" font-size="11">1980s</text>
+
+              <!-- WWW 1990s -->
+              <circle cx="480" cy="75" r="18" fill="var(--gold)" opacity="0.2" />
+              <circle cx="480" cy="75" r="10" fill="var(--gold)" />
+              <text x="480" y="40" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">WWW</text>
+              <text x="480" y="115" text-anchor="middle"
+                fill="var(--muted)" font-size="11">1990s</text>
+
+              <!-- Broadband 2000s -->
+              <circle cx="630" cy="75" r="18" fill="var(--warning)" opacity="0.2" />
+              <circle cx="630" cy="75" r="10" fill="var(--warning)" />
+              <text x="630" y="40" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">Broadband</text>
+              <text x="630" y="115" text-anchor="middle"
+                fill="var(--muted)" font-size="11">2000s</text>
+
+              <!-- Cloud/5G 2020s -->
+              <circle cx="790" cy="75" r="18" fill="var(--purple)" opacity="0.2" />
+              <circle cx="790" cy="75" r="10" fill="var(--purple)" />
+              <text x="790" y="40" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">Cloud/5G</text>
+              <text x="790" y="115" text-anchor="middle"
+                fill="var(--muted)" font-size="11">2020s</text>
+
+              <!-- Animated dot traveling the timeline -->
+              <circle r="4" fill="var(--primary)">
+                <animateMotion
+                  path="M120,75 L300,75 L480,75 L630,75 L790,75"
+                  dur="5s"
+                  repeatCount="indefinite"
+                />
+                <animate attributeName="opacity" values="1;0.4;1"
+                  dur="5s" repeatCount="indefinite" />
+              </circle>
+            </svg>
+          </div>
+          <p style="text-align: center; font-size: 0.75em; color: var(--muted); margin-top: 10px">
+            <span class="lang-en"
+              >From 4 nodes to billions of connected devices in 50+ years</span
+            ><span class="lang-es"
+              >De 4 nodos a miles de millones de dispositivos conectados en m&aacute;s de 50 a&ntilde;os</span
+            >
+          </p>
+        </section>
+
+        <!-- ========== SLIDE 3: COMPONENTS OF THE INTERNET ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Components of the Internet</span
+            ><span class="lang-es">Componentes de Internet</span>
+          </h2>
+          <p style="font-size: 0.78em; margin-bottom: 12px">
+            <span class="lang-en"
+              >The Internet is a network of networks, organized in three main
+              components.</span
+            ><span class="lang-es"
+              >Internet es una red de redes, organizada en tres componentes
+              principales.</span
+            >
+          </p>
+          <div class="grid-3">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Network Edge</span
+                ><span class="lang-es">Borde de Red</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >End systems (hosts): clients and servers that run
+                  applications.</span
+                ><span class="lang-es"
+                  >Sistemas finales (hosts): clientes y servidores que ejecutan
+                  aplicaciones.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Includes laptops, smartphones, IoT devices, web servers,
+                    and data centers. These are the source and destination of all
+                    network communication.</span
+                  ><span class="lang-es"
+                    >Incluye laptops, smartphones, dispositivos IoT, servidores
+                    web y centros de datos. Son el origen y destino de toda la
+                    comunicaci&oacute;n de red.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Access Networks</span
+                ><span class="lang-es">Redes de Acceso</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Connect end systems to the first router (edge
+                  router).</span
+                ><span class="lang-es"
+                  >Conectan los sistemas finales al primer router (router de
+                  borde).</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Technologies include DSL, cable, fiber (FTTH), WiFi, and
+                    cellular networks. Bandwidth and latency vary widely between
+                    access network types.</span
+                  ><span class="lang-es"
+                    >Las tecnolog&iacute;as incluyen DSL, cable, fibra (FTTH),
+                    WiFi y redes celulares. El ancho de banda y la latencia
+                    var&iacute;an ampliamente entre tipos de redes de
+                    acceso.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Network Core</span
+                ><span class="lang-es">N&uacute;cleo de Red</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Interconnected routers forming the backbone of the
+                  Internet.</span
+                ><span class="lang-es"
+                  >Routers interconectados que forman la columna vertebral de
+                  Internet.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Tier-1 ISPs (backbone providers) interconnect through
+                    Internet Exchange Points (IXPs). Data travels across
+                    multiple autonomous systems via BGP routing.</span
+                  ><span class="lang-es"
+                    >Los ISP de nivel 1 (proveedores de backbone) se
+                    interconectan a trav&eacute;s de puntos de intercambio de
+                    Internet (IXPs). Los datos viajan a trav&eacute;s de
+                    m&uacute;ltiples sistemas aut&oacute;nomos mediante
+                    enrutamiento BGP.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 4: ACCESS NETWORKS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Access Networks</span
+            ><span class="lang-es">Redes de Acceso</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Home Networks</span
+                ><span class="lang-es">Redes Dom&eacute;sticas</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >WiFi router connects laptops, phones, smart TVs, and IoT
+                  devices to the ISP.</span
+                ><span class="lang-es"
+                  >El router WiFi conecta laptops, tel&eacute;fonos, smart TVs y
+                  dispositivos IoT al ISP.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Typical setup: modem &rarr; router &rarr; WiFi AP. Speeds
+                    range from 25 Mbps (DSL) to 1+ Gbps (fiber). WiFi 6/6E
+                    supports higher density and lower latency.</span
+                  ><span class="lang-es"
+                    >Configuraci&oacute;n t&iacute;pica: m&oacute;dem &rarr;
+                    router &rarr; AP WiFi. Velocidades de 25 Mbps (DSL) a 1+
+                    Gbps (fibra). WiFi 6/6E soporta mayor densidad y menor
+                    latencia.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Institutional Networks</span
+                ><span class="lang-es">Redes Institucionales</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Ethernet switches, routers, firewalls, and servers connected
+                  via dedicated links.</span
+                ><span class="lang-es"
+                  >Switches Ethernet, routers, firewalls y servidores conectados
+                  mediante enlaces dedicados.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Enterprise networks use VLANs for segmentation, redundant
+                    links for high availability, and 10/25/100 GbE for backbone
+                    connectivity.</span
+                  ><span class="lang-es"
+                    >Las redes empresariales usan VLANs para segmentaci&oacute;n,
+                    enlaces redundantes para alta disponibilidad y 10/25/100 GbE
+                    para conectividad de backbone.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-orange expandable">
+              <h4>
+                <span class="lang-en">Mobile Networks</span
+                ><span class="lang-es">Redes M&oacute;viles</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Cell towers provide wireless coverage via 4G LTE and 5G
+                  standards.</span
+                ><span class="lang-es"
+                  >Las torres celulares proveen cobertura inal&aacute;mbrica
+                  mediante est&aacute;ndares 4G LTE y 5G.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >5G offers up to 10 Gbps peak speeds, &lt;1ms latency, and
+                    massive device density. Uses mmWave for short range and
+                    sub-6 GHz for broader coverage.</span
+                  ><span class="lang-es"
+                    >5G ofrece hasta 10 Gbps de velocidad pico, &lt;1ms de
+                    latencia y densidad masiva de dispositivos. Usa mmWave para
+                    corto alcance y sub-6 GHz para cobertura amplia.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 5: NETWORK CORE ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Network Core</span
+            ><span class="lang-es">N&uacute;cleo de Red</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200" style="max-width: 880px; width: 100%">
+              <!-- Packet Switching (left side) -->
+              <text x="220" y="20" text-anchor="middle"
+                fill="var(--primary)" font-size="13" font-weight="600">
+                <tspan class="lang-en">Packet Switching</tspan>
+                <tspan class="lang-es">Conmutaci&oacute;n de Paquetes</tspan>
+              </text>
+
+              <!-- Routers -->
+              <rect x="60" y="70" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="80" y="90" text-anchor="middle"
+                fill="var(--text)" font-size="9">R1</text>
+
+              <rect x="200" y="40" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="220" y="60" text-anchor="middle"
+                fill="var(--text)" font-size="9">R2</text>
+
+              <rect x="200" y="110" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="220" y="130" text-anchor="middle"
+                fill="var(--text)" font-size="9">R3</text>
+
+              <rect x="340" y="70" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="360" y="90" text-anchor="middle"
+                fill="var(--text)" font-size="9">R4</text>
+
+              <!-- Links (dashed) -->
+              <line x1="100" y1="80" x2="200" y2="55"
+                stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4,3" />
+              <line x1="100" y1="90" x2="200" y2="125"
+                stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4,3" />
+              <line x1="240" y1="55" x2="340" y2="80"
+                stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4,3" />
+              <line x1="240" y1="125" x2="340" y2="90"
+                stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4,3" />
+              <line x1="220" y1="70" x2="220" y2="110"
+                stroke="var(--muted)" stroke-width="1" stroke-dasharray="4,3" />
+
+              <!-- Animated packets (top path) -->
+              <rect width="10" height="7" rx="2" fill="var(--mint)">
+                <animateMotion
+                  path="M80,85 L220,55 L360,85"
+                  dur="2.5s" repeatCount="indefinite" />
+              </rect>
+              <!-- Animated packets (bottom path) -->
+              <rect width="10" height="7" rx="2" fill="var(--gold)">
+                <animateMotion
+                  path="M80,90 L220,125 L360,90"
+                  dur="3s" repeatCount="indefinite" />
+              </rect>
+
+              <!-- Labels -->
+              <text x="50" y="170" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Packets take independent paths</tspan>
+                <tspan class="lang-es">Los paquetes toman rutas independientes</tspan>
+              </text>
+
+              <!-- Divider -->
+              <line x1="440" y1="10" x2="440" y2="190"
+                stroke="var(--card-border)" stroke-width="1" stroke-dasharray="3,3" />
+
+              <!-- Circuit Switching (right side) -->
+              <text x="660" y="20" text-anchor="middle"
+                fill="var(--mint)" font-size="13" font-weight="600">
+                <tspan class="lang-en">Circuit Switching</tspan>
+                <tspan class="lang-es">Conmutaci&oacute;n de Circuitos</tspan>
+              </text>
+
+              <!-- Switches -->
+              <rect x="500" y="70" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="520" y="90" text-anchor="middle"
+                fill="var(--text)" font-size="9">S1</text>
+
+              <rect x="640" y="70" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="660" y="90" text-anchor="middle"
+                fill="var(--text)" font-size="9">S2</text>
+
+              <rect x="780" y="70" width="40" height="30" rx="4"
+                fill="var(--card-bg)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="800" y="90" text-anchor="middle"
+                fill="var(--text)" font-size="9">S3</text>
+
+              <!-- Dedicated circuit (solid line) -->
+              <line x1="540" y1="85" x2="640" y2="85"
+                stroke="var(--mint)" stroke-width="2.5" />
+              <line x1="680" y1="85" x2="780" y2="85"
+                stroke="var(--mint)" stroke-width="2.5" />
+
+              <!-- Animated signal on circuit -->
+              <circle r="4" fill="var(--mint)">
+                <animateMotion
+                  path="M540,85 L640,85 L680,85 L780,85"
+                  dur="2s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="1;0.4;1"
+                  dur="2s" repeatCount="indefinite" />
+              </circle>
+
+              <!-- Labels -->
+              <text x="500" y="170" fill="var(--muted)" font-size="10">
+                <tspan class="lang-en">Dedicated path for entire session</tspan>
+                <tspan class="lang-es">Ruta dedicada para toda la sesi&oacute;n</tspan>
+              </text>
+            </svg>
+          </div>
+          <div class="grid-2" style="margin-top: 8px">
+            <div class="card float-in border-blue expandable">
+              <h4>
+                <span class="lang-en">Packet Switching</span
+                ><span class="lang-es">Conmutaci&oacute;n de Paquetes</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Data split into packets; each routed independently. Used by
+                  the Internet.</span
+                ><span class="lang-es"
+                  >Datos divididos en paquetes; cada uno enrutado
+                  independientemente. Usado por Internet.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >More efficient for bursty traffic. Statistical multiplexing
+                    allows many users to share links. Packets may arrive out of
+                    order and need reassembly.</span
+                  ><span class="lang-es"
+                    >M&aacute;s eficiente para tr&aacute;fico en r&aacute;fagas.
+                    La multiplexaci&oacute;n estad&iacute;stica permite a muchos
+                    usuarios compartir enlaces. Los paquetes pueden llegar
+                    desordenados y necesitan reensamblaje.</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="card float-in border-green expandable">
+              <h4>
+                <span class="lang-en">Circuit Switching</span
+                ><span class="lang-es">Conmutaci&oacute;n de Circuitos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >Dedicated path reserved for the entire communication.
+                  Traditional telephony.</span
+                ><span class="lang-es"
+                  >Ruta dedicada reservada para toda la comunicaci&oacute;n.
+                  Telefon&iacute;a tradicional.</span
+                >
+              </p>
+              <div class="expand-content">
+                <p style="color: var(--muted)">
+                  <span class="lang-en"
+                    >Guaranteed bandwidth and constant delay, but wasteful when
+                    data is not being transmitted. Resources reserved even during
+                    silence periods.</span
+                  ><span class="lang-es"
+                    >Ancho de banda garantizado y retardo constante, pero
+                    desperdicia recursos cuando no se transmiten datos. Recursos
+                    reservados incluso durante periodos de silencio.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 6: OSI MODEL ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">OSI Model</span
+            ><span class="lang-es">Modelo OSI</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 280" style="max-width: 880px; width: 100%">
+              <!-- Layer 7: Application -->
+              <rect x="200" y="5" width="260" height="32" rx="4"
+                fill="var(--primary)" opacity="0.25"
+                stroke="var(--primary)" stroke-width="1.5" />
+              <text x="210" y="26" fill="var(--text)" font-size="12" font-weight="600">
+                7 &mdash; Application</text>
+              <text x="540" y="26" fill="var(--muted)" font-size="11">
+                HTTP, FTP, SMTP, DNS</text>
+
+              <!-- Layer 6: Presentation -->
+              <rect x="200" y="42" width="260" height="32" rx="4"
+                fill="var(--purple)" opacity="0.25"
+                stroke="var(--purple)" stroke-width="1.5" />
+              <text x="210" y="63" fill="var(--text)" font-size="12" font-weight="600">
+                6 &mdash; Presentation</text>
+              <text x="540" y="63" fill="var(--muted)" font-size="11">
+                SSL/TLS, JPEG, ASCII</text>
+
+              <!-- Layer 5: Session -->
+              <rect x="200" y="79" width="260" height="32" rx="4"
+                fill="var(--gold)" opacity="0.25"
+                stroke="var(--gold)" stroke-width="1.5" />
+              <text x="210" y="100" fill="var(--text)" font-size="12" font-weight="600">
+                5 &mdash; Session</text>
+              <text x="540" y="100" fill="var(--muted)" font-size="11">
+                NetBIOS, RPC, PPTP</text>
+
+              <!-- Layer 4: Transport -->
+              <rect x="200" y="116" width="260" height="32" rx="4"
+                fill="var(--mint)" opacity="0.25"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="210" y="137" fill="var(--text)" font-size="12" font-weight="600">
+                4 &mdash; Transport</text>
+              <text x="540" y="137" fill="var(--muted)" font-size="11">
+                TCP, UDP</text>
+
+              <!-- Layer 3: Network -->
+              <rect x="200" y="153" width="260" height="32" rx="4"
+                fill="var(--warning)" opacity="0.25"
+                stroke="var(--warning)" stroke-width="1.5" />
+              <text x="210" y="174" fill="var(--text)" font-size="12" font-weight="600">
+                3 &mdash; Network</text>
+              <text x="540" y="174" fill="var(--muted)" font-size="11">
+                IP, ICMP, ARP, OSPF</text>
+
+              <!-- Layer 2: Data Link -->
+              <rect x="200" y="190" width="260" height="32" rx="4"
+                fill="var(--error)" opacity="0.25"
+                stroke="var(--error)" stroke-width="1.5" />
+              <text x="210" y="211" fill="var(--text)" font-size="12" font-weight="600">
+                2 &mdash; Data Link</text>
+              <text x="540" y="211" fill="var(--muted)" font-size="11">
+                Ethernet, WiFi (802.11), PPP</text>
+
+              <!-- Layer 1: Physical -->
+              <rect x="200" y="227" width="260" height="32" rx="4"
+                fill="var(--card-border)" opacity="0.5"
+                stroke="var(--muted)" stroke-width="1.5" />
+              <text x="210" y="248" fill="var(--text)" font-size="12" font-weight="600">
+                1 &mdash; Physical</text>
+              <text x="540" y="248" fill="var(--muted)" font-size="11">
+                Cables, radio, fiber optics</text>
+
+              <!-- Side labels -->
+              <text x="160" y="26" text-anchor="end"
+                fill="var(--primary)" font-size="10" font-weight="500">Software</text>
+              <text x="160" y="248" text-anchor="end"
+                fill="var(--muted)" font-size="10" font-weight="500">Hardware</text>
+
+              <!-- Animated data flow arrow -->
+              <line x1="180" y1="15" x2="180" y2="252"
+                stroke="var(--muted)" stroke-width="1" stroke-dasharray="3,3" />
+              <circle r="3" fill="var(--primary)">
+                <animateMotion
+                  path="M180,15 L180,252"
+                  dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="1;0.3;1"
+                  dur="3s" repeatCount="indefinite" />
+              </circle>
+
+              <!-- Direction labels -->
+              <text x="175" y="275" text-anchor="end"
+                fill="var(--muted)" font-size="9">
+                <tspan class="lang-en">Data flows down (send) / up (receive)</tspan>
+                <tspan class="lang-es">Datos fluyen abajo (enviar) / arriba (recibir)</tspan>
+              </text>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 7: TCP/IP STACK ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">TCP/IP Stack vs OSI</span
+            ><span class="lang-es">Pila TCP/IP vs OSI</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 200" style="max-width: 880px; width: 100%">
+              <!-- OSI side (left) -->
+              <text x="200" y="18" text-anchor="middle"
+                fill="var(--muted)" font-size="13" font-weight="600">OSI (7 layers)</text>
+
+              <rect x="120" y="28" width="160" height="22" rx="3"
+                fill="var(--primary)" opacity="0.2"
+                stroke="var(--primary)" stroke-width="1" />
+              <text x="200" y="44" text-anchor="middle"
+                fill="var(--text)" font-size="10">7. Application</text>
+
+              <rect x="120" y="52" width="160" height="22" rx="3"
+                fill="var(--purple)" opacity="0.2"
+                stroke="var(--purple)" stroke-width="1" />
+              <text x="200" y="68" text-anchor="middle"
+                fill="var(--text)" font-size="10">6. Presentation</text>
+
+              <rect x="120" y="76" width="160" height="22" rx="3"
+                fill="var(--gold)" opacity="0.2"
+                stroke="var(--gold)" stroke-width="1" />
+              <text x="200" y="92" text-anchor="middle"
+                fill="var(--text)" font-size="10">5. Session</text>
+
+              <rect x="120" y="102" width="160" height="22" rx="3"
+                fill="var(--mint)" opacity="0.2"
+                stroke="var(--mint)" stroke-width="1" />
+              <text x="200" y="118" text-anchor="middle"
+                fill="var(--text)" font-size="10">4. Transport</text>
+
+              <rect x="120" y="128" width="160" height="22" rx="3"
+                fill="var(--warning)" opacity="0.2"
+                stroke="var(--warning)" stroke-width="1" />
+              <text x="200" y="144" text-anchor="middle"
+                fill="var(--text)" font-size="10">3. Network</text>
+
+              <rect x="120" y="154" width="160" height="22" rx="3"
+                fill="var(--error)" opacity="0.2"
+                stroke="var(--error)" stroke-width="1" />
+              <text x="200" y="170" text-anchor="middle"
+                fill="var(--text)" font-size="10">2. Data Link</text>
+
+              <rect x="120" y="180" width="160" height="22" rx="3"
+                fill="var(--card-border)" opacity="0.4"
+                stroke="var(--muted)" stroke-width="1" />
+              <text x="200" y="196" text-anchor="middle"
+                fill="var(--text)" font-size="10">1. Physical</text>
+
+              <!-- TCP/IP side (right) -->
+              <text x="660" y="18" text-anchor="middle"
+                fill="var(--primary)" font-size="13" font-weight="600">TCP/IP (4 layers)</text>
+
+              <rect x="580" y="28" width="160" height="70" rx="3"
+                fill="var(--primary)" opacity="0.2"
+                stroke="var(--primary)" stroke-width="1.5" />
+              <text x="660" y="68" text-anchor="middle"
+                fill="var(--text)" font-size="11" font-weight="600">Application</text>
+              <text x="660" y="82" text-anchor="middle"
+                fill="var(--muted)" font-size="9">HTTP, FTP, DNS, SMTP</text>
+
+              <rect x="580" y="102" width="160" height="22" rx="3"
+                fill="var(--mint)" opacity="0.2"
+                stroke="var(--mint)" stroke-width="1.5" />
+              <text x="660" y="118" text-anchor="middle"
+                fill="var(--text)" font-size="11" font-weight="600">Transport</text>
+
+              <rect x="580" y="128" width="160" height="22" rx="3"
+                fill="var(--warning)" opacity="0.2"
+                stroke="var(--warning)" stroke-width="1.5" />
+              <text x="660" y="144" text-anchor="middle"
+                fill="var(--text)" font-size="11" font-weight="600">Internet</text>
+
+              <rect x="580" y="154" width="160" height="48" rx="3"
+                fill="var(--error)" opacity="0.2"
+                stroke="var(--error)" stroke-width="1.5" />
+              <text x="660" y="182" text-anchor="middle"
+                fill="var(--text)" font-size="11" font-weight="600">Link</text>
+
+              <!-- Mapping arrows (dashed) -->
+              <line x1="280" y1="62" x2="580" y2="62"
+                stroke="var(--primary)" stroke-width="1" stroke-dasharray="4,3" />
+              <line x1="280" y1="113" x2="580" y2="113"
+                stroke="var(--mint)" stroke-width="1" stroke-dasharray="4,3" />
+              <line x1="280" y1="139" x2="580" y2="139"
+                stroke="var(--warning)" stroke-width="1" stroke-dasharray="4,3" />
+              <line x1="280" y1="175" x2="580" y2="175"
+                stroke="var(--error)" stroke-width="1" stroke-dasharray="4,3" />
+
+              <!-- Animated mapping dots -->
+              <circle r="3" fill="var(--primary)">
+                <animateMotion path="M280,62 L580,62"
+                  dur="2s" repeatCount="indefinite" />
+              </circle>
+              <circle r="3" fill="var(--mint)">
+                <animateMotion path="M280,113 L580,113"
+                  dur="2.5s" repeatCount="indefinite" />
+              </circle>
+              <circle r="3" fill="var(--warning)">
+                <animateMotion path="M280,139 L580,139"
+                  dur="3s" repeatCount="indefinite" />
+              </circle>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 8: TCP vs UDP ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">TCP vs UDP</span
+            ><span class="lang-es">TCP vs UDP</span>
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Feature</span
+                  ><span class="lang-es">Caracter&iacute;stica</span>
+                </th>
+                <th>TCP</th>
+                <th>UDP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="lang-en">Connection</span
+                  ><span class="lang-es">Conexi&oacute;n</span>
+                </td>
+                <td>
+                  <span class="lang-en">Connection-oriented (3-way handshake)</span
+                  ><span class="lang-es">Orientado a conexi&oacute;n (3-way handshake)</span>
+                </td>
+                <td>
+                  <span class="lang-en">Connectionless</span
+                  ><span class="lang-es">Sin conexi&oacute;n</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Reliability</span
+                  ><span class="lang-es">Fiabilidad</span>
+                </td>
+                <td>
+                  <span class="lang-en">Guaranteed delivery, ordering, retransmission</span
+                  ><span class="lang-es">Entrega garantizada, orden, retransmisi&oacute;n</span>
+                </td>
+                <td>
+                  <span class="lang-en">Best-effort, no guarantees</span
+                  ><span class="lang-es">Mejor esfuerzo, sin garant&iacute;as</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Speed</span
+                  ><span class="lang-es">Velocidad</span>
+                </td>
+                <td>
+                  <span class="lang-en">Slower (overhead for reliability)</span
+                  ><span class="lang-es">M&aacute;s lento (overhead por fiabilidad)</span>
+                </td>
+                <td>
+                  <span class="lang-en">Faster (minimal overhead)</span
+                  ><span class="lang-es">M&aacute;s r&aacute;pido (overhead m&iacute;nimo)</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Flow Control</span
+                  ><span class="lang-es">Control de Flujo</span>
+                </td>
+                <td>
+                  <span class="lang-en">Yes (sliding window)</span
+                  ><span class="lang-es">S&iacute; (ventana deslizante)</span>
+                </td>
+                <td>
+                  <span class="lang-en">No</span
+                  ><span class="lang-es">No</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="lang-en">Use Cases</span
+                  ><span class="lang-es">Casos de Uso</span>
+                </td>
+                <td>
+                  <span class="lang-en">Web (HTTP), email (SMTP), file transfer (FTP)</span
+                  ><span class="lang-es">Web (HTTP), correo (SMTP), transferencia de archivos (FTP)</span>
+                </td>
+                <td>
+                  <span class="lang-en">Streaming, gaming, DNS, VoIP</span
+                  ><span class="lang-es">Streaming, juegos, DNS, VoIP</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ========== SLIDE 9: HTTP/HTTPS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">HTTP / HTTPS</span
+            ><span class="lang-es">HTTP / HTTPS</span>
+          </h2>
+          <div class="diagram-container">
+            <svg viewBox="0 0 880 180" style="max-width: 880px; width: 100%">
+              <!-- Client -->
+              <rect x="40" y="50" width="100" height="50" rx="6"
+                fill="var(--card-bg)" stroke="var(--primary)" stroke-width="1.5" />
+              <text x="90" y="80" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">Client</text>
+
+              <!-- Server -->
+              <rect x="700" y="50" width="100" height="50" rx="6"
+                fill="var(--card-bg)" stroke="var(--mint)" stroke-width="1.5" />
+              <text x="750" y="80" text-anchor="middle"
+                fill="var(--text)" font-size="12" font-weight="600">Server</text>
+
+              <!-- HTTP Request arrow -->
+              <line x1="140" y1="65" x2="700" y2="65"
+                stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="6,3" />
+              <polygon points="696,61 704,65 696,69" fill="var(--primary)" />
+              <text x="420" y="58" text-anchor="middle"
+                fill="var(--primary)" font-size="11" font-weight="500">
+                GET /page HTTP/1.1</text>
+
+              <!-- HTTP Response arrow -->
+              <line x1="700" y1="90" x2="140" y2="90"
+                stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="6,3" />
+              <polygon points="144,86 136,90 144,94" fill="var(--mint)" />
+              <text x="420" y="107" text-anchor="middle"
+                fill="var(--mint)" font-size="11" font-weight="500">
+                200 OK + HTML</text>
+
+              <!-- Animated request dot -->
+              <circle r="4" fill="var(--primary)">
+                <animateMotion path="M140,65 L700,65"
+                  dur="2s" repeatCount="indefinite" />
+              </circle>
+
+              <!-- Animated response dot -->
+              <circle r="4" fill="var(--mint)">
+                <animateMotion path="M700,90 L140,90"
+                  dur="2s" repeatCount="indefinite" />
+              </circle>
+
+              <!-- TLS lock icon (center) -->
+              <rect x="395" y="125" width="90" height="30" rx="4"
+                fill="var(--gold)" opacity="0.15"
+                stroke="var(--gold)" stroke-width="1" />
+              <text x="440" y="145" text-anchor="middle"
+                fill="var(--gold)" font-size="11" font-weight="600">
+                TLS / SSL</text>
+
+              <!-- Lock lines to arrows -->
+              <line x1="440" y1="125" x2="440" y2="107"
+                stroke="var(--gold)" stroke-width="1" stroke-dasharray="2,2" />
+            </svg>
+          </div>
+          <div class="card float-in border-gold expandable" style="margin-top: 8px">
+            <h4>
+              <span class="lang-en">HTTPS = HTTP + TLS</span
+              ><span class="lang-es">HTTPS = HTTP + TLS</span>
+            </h4>
+            <p>
+              <span class="lang-en"
+                >HTTPS encrypts all communication using TLS (Transport Layer Security),
+                protecting data integrity and confidentiality.</span
+              ><span class="lang-es"
+                >HTTPS cifra toda la comunicaci&oacute;n usando TLS (Seguridad de Capa de
+                Transporte), protegiendo la integridad y confidencialidad de los
+                datos.</span
+              >
+            </p>
+            <div class="expand-content">
+              <p style="color: var(--muted)">
+                <span class="lang-en"
+                  >TLS handshake: Client Hello &rarr; Server Hello + Certificate &rarr;
+                  Key Exchange &rarr; Encrypted session. Uses asymmetric crypto for key
+                  exchange, symmetric crypto for data transfer. Port 443 (vs 80 for
+                  HTTP).</span
+                ><span class="lang-es"
+                  >Handshake TLS: Client Hello &rarr; Server Hello + Certificado &rarr;
+                  Intercambio de claves &rarr; Sesi&oacute;n cifrada. Usa criptograf&iacute;a
+                  asim&eacute;trica para intercambio de claves, sim&eacute;trica para
+                  transferencia de datos. Puerto 443 (vs 80 para HTTP).</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 10: NETWORK PROTOCOLS ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Network Protocols</span
+            ><span class="lang-es">Protocolos de Red</span>
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span class="lang-en">Protocol</span
+                  ><span class="lang-es">Protocolo</span>
+                </th>
+                <th>
+                  <span class="lang-en">Layer</span
+                  ><span class="lang-es">Capa</span>
+                </th>
+                <th>
+                  <span class="lang-en">Port</span
+                  ><span class="lang-es">Puerto</span>
+                </th>
+                <th>
+                  <span class="lang-en">Purpose</span
+                  ><span class="lang-es">Prop&oacute;sito</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>DNS</td>
+                <td>Application</td>
+                <td>53</td>
+                <td>
+                  <span class="lang-en">Domain name resolution</span
+                  ><span class="lang-es">Resoluci&oacute;n de nombres de dominio</span>
+                </td>
+              </tr>
+              <tr>
+                <td>DHCP</td>
+                <td>Application</td>
+                <td>67/68</td>
+                <td>
+                  <span class="lang-en">Dynamic IP address assignment</span
+                  ><span class="lang-es">Asignaci&oacute;n din&aacute;mica de direcciones IP</span>
+                </td>
+              </tr>
+              <tr>
+                <td>HTTP</td>
+                <td>Application</td>
+                <td>80</td>
+                <td>
+                  <span class="lang-en">Web page transfer (unencrypted)</span
+                  ><span class="lang-es">Transferencia de p&aacute;ginas web (sin cifrar)</span>
+                </td>
+              </tr>
+              <tr>
+                <td>HTTPS</td>
+                <td>Application</td>
+                <td>443</td>
+                <td>
+                  <span class="lang-en">Secure web page transfer (TLS)</span
+                  ><span class="lang-es">Transferencia segura de p&aacute;ginas web (TLS)</span>
+                </td>
+              </tr>
+              <tr>
+                <td>SSH</td>
+                <td>Application</td>
+                <td>22</td>
+                <td>
+                  <span class="lang-en">Secure remote shell access</span
+                  ><span class="lang-es">Acceso remoto seguro por terminal</span>
+                </td>
+              </tr>
+              <tr>
+                <td>FTP</td>
+                <td>Application</td>
+                <td>21</td>
+                <td>
+                  <span class="lang-en">File transfer</span
+                  ><span class="lang-es">Transferencia de archivos</span>
+                </td>
+              </tr>
+              <tr>
+                <td>SMTP</td>
+                <td>Application</td>
+                <td>25</td>
+                <td>
+                  <span class="lang-en">Email sending</span
+                  ><span class="lang-es">Env&iacute;o de correo electr&oacute;nico</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ========== SLIDE 11: SUMMARY ========== -->
+        <section>
+          <h2>
+            <span class="lang-en">Summary</span
+            ><span class="lang-es">Resumen</span>
+          </h2>
+          <div class="grid-3">
+            <div class="card float-in border-blue">
+              <h4>
+                <span class="lang-en">Internet Architecture</span
+                ><span class="lang-es">Arquitectura de Internet</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >The Internet is structured in three layers: network edge (end
+                  systems), access networks (connecting users), and network core
+                  (routing backbone). Packet switching enables efficient resource
+                  sharing.</span
+                ><span class="lang-es"
+                  >Internet se estructura en tres capas: borde de red (sistemas
+                  finales), redes de acceso (conectando usuarios) y n&uacute;cleo
+                  de red (backbone de enrutamiento). La conmutaci&oacute;n de
+                  paquetes permite compartir recursos eficientemente.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-green">
+              <h4>
+                <span class="lang-en">Protocol Layers</span
+                ><span class="lang-es">Capas de Protocolos</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >The OSI model defines 7 layers for network communication.
+                  TCP/IP simplifies this to 4 practical layers. Each layer
+                  encapsulates data and provides services to the layer
+                  above.</span
+                ><span class="lang-es"
+                  >El modelo OSI define 7 capas para comunicaci&oacute;n de red.
+                  TCP/IP simplifica esto a 4 capas pr&aacute;cticas. Cada capa
+                  encapsula datos y provee servicios a la capa superior.</span
+                >
+              </p>
+            </div>
+            <div class="card float-in border-orange">
+              <h4>
+                <span class="lang-en">TCP vs UDP</span
+                ><span class="lang-es">TCP vs UDP</span>
+              </h4>
+              <p>
+                <span class="lang-en"
+                  >TCP provides reliable, ordered delivery for web and email.
+                  UDP offers fast, lightweight communication for streaming and
+                  gaming. HTTPS adds TLS encryption on top of HTTP for secure
+                  web traffic.</span
+                ><span class="lang-es"
+                  >TCP provee entrega confiable y ordenada para web y correo.
+                  UDP ofrece comunicaci&oacute;n r&aacute;pida y ligera para
+                  streaming y juegos. HTTPS agrega cifrado TLS sobre HTTP para
+                  tr&aacute;fico web seguro.</span
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SLIDE 12: Q&A ========== -->
+        <section>
+          <div class="qa-center">
+            <h1 style="font-size: 2.2em; margin-bottom: 10px">
+              <span class="lang-en">Questions?</span
+              ><span class="lang-es">&iquest;Preguntas?</span>
+            </h1>
+            <div class="diagram-container" style="margin: 10px 0">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="var(--primary)"
+                  stroke-width="2"
+                >
+                  <animate
+                    attributeName="r"
+                    values="33;37;33"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x="40"
+                  y="50"
+                  text-anchor="middle"
+                  fill="var(--primary)"
+                  font-size="32"
+                  font-weight="700"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+            <p style="font-size: 0.82em; color: var(--muted)">
+              <span class="lang-en"
+                >Scalable System Design &mdash; Module 07</span
+              ><span class="lang-es"
+                >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 07</span
+              >
+            </p>
+            <p style="font-size: 0.65em; color: var(--muted); margin-top: 6px">
+              Prof. Jorge A. Garc&iacute;a Mart&iacute;nez
+            </p>
+            <p class="iteso-tag" style="margin-top: 8px">ITESO &middot; ESI3901C</p>
+          </div>
+        </section>
+      </div>
+      <!-- /slides -->
+    </div>
+    <!-- /reveal -->
+
+    <script src="slides.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="../../shared/presentation/presenter.js"></script>
+  </body>
+</html>
