@@ -90,7 +90,8 @@ In the AWS Console:
 
 #### Step 4: Wait for the stack to complete
 
-The stack takes about 3-5 minutes to create. Watch the progress in
+The stack takes about 5-10 minutes to create (Docker pulls MySQL and
+builds the visualizer image on first launch). Watch the progress in
 the **Events** tab.
 
 When complete, click the **Outputs** tab to find:

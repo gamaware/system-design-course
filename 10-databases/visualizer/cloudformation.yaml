@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
   Lab 10 - Database Scalability Visualizer.
-  Launches a t3.medium EC2 instance with Docker and Docker Compose
+  Launches a t3.large EC2 instance with Docker and Docker Compose
   pre-installed. Clones the course repository, runs the MySQL
   primary-replica cluster and visualizer automatically. SSH and
   visualizer web access enabled.
@@ -32,7 +32,7 @@ Resources:
   LabInstance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t3.medium
+      InstanceType: t3.large
       ImageId: !Ref LatestAmiId
       KeyName: vockey
       SecurityGroupIds:
