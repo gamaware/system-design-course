@@ -174,7 +174,13 @@ graph LR
 
 Open the visualizer in your browser (`http://localhost:8081` for local
 setup, or the **VisualizerURL** from CloudFormation Outputs for EC2).
+You should see the Replication tab with the architecture diagram:
+
+![Replication Tab](screenshots/01-replication-tab.png)
+
 The sidebar on the right shows live database state:
+
+![Sidebar State](screenshots/02-sidebar-state.png)
 
 - **IO Thread / SQL Thread**: Both should show `Yes` (replication
   active)
@@ -238,7 +244,9 @@ Watch the animation:
 1. Latency pills show real timing for each operation
 
 The result panel shows **REPLICATED** -- the data appeared on the
-replica within milliseconds.
+replica within milliseconds:
+
+![Replication Result](screenshots/03-replication-result.png)
 
 ### Step 2.2: Verify via SQL Console
 
@@ -312,7 +320,9 @@ Watch the animation step through:
 1. `COMMIT` -- make all changes permanent
 
 The result shows **COMMITTED**. Check the sidebar: CS101 dropped from
-4 to 3, PHYS101 went from 2 to 3.
+4 to 3, PHYS101 went from 2 to 3:
+
+![Consistency Committed](screenshots/04-consistency-committed.png)
 
 ### Step 3.2: Trigger a rollback
 
@@ -368,7 +378,9 @@ accessing resource-10.
 
 The result shows **Rows scanned: ~9,894** in red, with Key: **NONE
 (full scan)**. MySQL examined nearly all 10,000 rows to find a
-handful of matches. Check the sidebar: Indexes shows **None**.
+handful of matches. Check the sidebar: Indexes shows **None**:
+
+![Schema No Index](screenshots/05-schema-no-index.png)
 
 ### Step 4.2: Add a composite index
 
@@ -383,7 +395,9 @@ Click **Run EXPLAIN** again (same query).
 
 The result now shows **Rows scanned: ~24** in green, with Key:
 **idx_student_resource**. MySQL used the index to jump directly to
-matching rows -- a ~400x improvement.
+matching rows -- a ~400x improvement:
+
+![Schema With Index](screenshots/06-schema-with-index.png)
 
 ### Step 4.4: Verify via SQL Console
 
@@ -425,8 +439,11 @@ longer because MySQL must update both the table and the index.
 
 ## Task 5: Free Exploration
 
-Use the SQL Console to explore on your own. Here are some queries to
-try:
+Use the SQL Console to explore on your own:
+
+![SQL Console](screenshots/07-sql-console.png)
+
+Here are some queries to try:
 
 **Check which students are enrolled in which courses:**
 
