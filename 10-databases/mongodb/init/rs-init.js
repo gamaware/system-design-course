@@ -13,8 +13,8 @@ rs.initiate({
 let attempts = 0;
 while (attempts < 60) {
   try {
-    const isMaster = db.adminCommand({ isMaster: 1 });
-    if (isMaster.ismaster) {
+    const hello = db.adminCommand({ hello: 1 });
+    if (hello.isWritablePrimary) {
       print("This node is now PRIMARY.");
       break;
     }

@@ -17,6 +17,11 @@ if ! docker info &> /dev/null 2>&1; then
     exit 1
 fi
 
+if ! docker compose version &> /dev/null 2>&1; then
+    echo "ERROR: Docker Compose is not available."
+    exit 1
+fi
+
 echo "Starting MySQL primary, replica, and visualizer..."
 docker compose up -d --build
 

@@ -127,7 +127,7 @@ def consistency_transfer(body):
     seq = 1
 
     conn = get_conn(PRIMARY_HOST)
-    conn.autocommit = False
+    conn.autocommit(False)
     try:
         t0 = time.perf_counter()
         conn.begin()
@@ -357,7 +357,7 @@ def db_reset(_body):
 ALLOWED_SQL = frozenset({
     "SELECT", "INSERT", "UPDATE", "DELETE",
     "EXPLAIN", "SHOW", "DESCRIBE", "DESC",
-    "ANALYZE", "USE", "SET",
+    "ANALYZE", "START", "COMMIT", "ROLLBACK",
 })
 
 
@@ -457,7 +457,11 @@ class Handler(SimpleHTTPRequestHandler):
         body = {}
         if content_length > 0:
             raw = self.rfile.read(content_length)
-            body = json.loads(raw.decode())
+            try:
+                body = json.loads(raw.decode())
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._send_json({"error": "Invalid JSON body"}, 400)
+                return
         try:
             result = handler(body)
             self._send_json(result)

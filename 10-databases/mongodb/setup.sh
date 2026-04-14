@@ -58,7 +58,11 @@ done
 echo ""
 echo "Initializing replica set and seeding data..."
 docker cp init/rs-init.js mongo1:/tmp/rs-init.js
-docker exec mongo1 mongosh --quiet --file /tmp/rs-init.js 2>/dev/null || true
+if ! docker exec mongo1 mongosh --quiet --file /tmp/rs-init.js 2>/dev/null; then
+    echo "ERROR: Replica set initialization failed."
+    docker compose logs mongo1 | tail -20
+    exit 1
+fi
 
 # Wait for replica set to stabilize
 echo "  Waiting for primary election..."
