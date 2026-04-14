@@ -156,6 +156,7 @@ graph LR
 10-databases/visualizer/
 ├── LAB-VISUALIZER.md         # This file (lab instructions)
 ├── docker-compose.yml        # MySQL primary + replica + visualizer
+├── cloudformation.yaml       # EC2 deployment template (AWS Academy)
 ├── setup.sh                  # Start environment and configure replication
 ├── cleanup.sh                # Tear down all containers and volumes
 ├── Dockerfile                # Python API bridge image
@@ -171,9 +172,9 @@ graph LR
 
 ### Step 1.1: Verify the cluster
 
-After running `./setup.sh`, open
-[http://localhost:8081](http://localhost:8081). The sidebar on the
-right shows live database state:
+Open the visualizer in your browser (`http://localhost:8081` for local
+setup, or the **VisualizerURL** from CloudFormation Outputs for EC2).
+The sidebar on the right shows live database state:
 
 - **IO Thread / SQL Thread**: Both should show `Yes` (replication
   active)
@@ -458,9 +459,14 @@ custom indexes).
 
 ## Cleanup
 
+**Local:**
+
 ```bash
 ./cleanup.sh
 ```
+
+**EC2:** Delete the `lab10-visualizer` CloudFormation stack in the AWS
+Console (see [EC2 Cleanup](#ec2-cleanup) above).
 
 ## Troubleshooting
 
@@ -471,6 +477,8 @@ custom indexes).
 | Replica shows `--` in sidebar | Replication not configured | Re-run `./setup.sh` |
 | EXPLAIN shows `rows: 1` | Table stats stale | Run `ANALYZE TABLE access_log;` in the console |
 | Animation stuck | Previous operation still running | Wait for it to finish or refresh the page |
+| EC2 page does not load | Stack still initializing | Wait 5-10 min after CREATE_COMPLETE for Docker setup |
+| EC2 stack create fails | Learner Lab not started | Ensure the AWS indicator is green before creating the stack |
 
 ## Key Concepts
 

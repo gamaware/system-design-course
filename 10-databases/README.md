@@ -46,12 +46,15 @@ For optional CLI-based labs with MongoDB and Cassandra, see
 - **Docker Desktop** installed and running (includes Docker Compose)
 - A web browser (Chrome, Firefox, or Safari)
 - Basic SQL knowledge (SELECT, INSERT, UPDATE)
-- No cloud account required for the main lab
+- No cloud account required for local Docker; AWS Academy credentials
+  required for the EC2 option
 
 ## Architecture
 
 The visualizer connects to a live MySQL primary-replica cluster. Every
 button click and console query executes real SQL against real databases.
+The same Docker Compose stack runs locally or on an EC2 instance via
+CloudFormation.
 
 ```mermaid
 graph LR
@@ -88,6 +91,7 @@ graph LR
 ├── visualizer/                         # Main lab (interactive browser)
 │   ├── LAB-VISUALIZER.md              # Step-by-step instructions (5 tasks)
 │   ├── docker-compose.yml             # MySQL primary + replica + visualizer
+│   ├── cloudformation.yaml            # EC2 deployment (AWS Academy)
 │   ├── setup.sh / cleanup.sh          # Start and stop environment
 │   ├── Dockerfile                     # Python API bridge image
 │   ├── server.py                      # API bridge (proxies SQL to MySQL)
@@ -118,14 +122,21 @@ graph LR
 
 ## Quick Start
 
+**Local (Docker Desktop):**
+
 ```bash
 cd visualizer
 ./setup.sh
 ```
 
-Open [http://localhost:8081](http://localhost:8081). The visualizer
-has three tabs (Replication, Consistency, Schema & Indexing) and a
-SQL console at the bottom. Follow
+Open [http://localhost:8081](http://localhost:8081).
+
+**EC2 (AWS Academy):** Upload `visualizer/cloudformation.yaml` to
+CloudFormation. When the stack completes (~5-10 min), open the
+**VisualizerURL** from the Outputs tab.
+
+The visualizer has three tabs (Replication, Consistency, Schema &
+Indexing) and a SQL console at the bottom. Follow
 [LAB-VISUALIZER.md](visualizer/LAB-VISUALIZER.md) for the guided
 walkthrough.
 
@@ -167,6 +178,8 @@ cd visualizer
 | Animation stuck | Previous operation running | Wait for it to finish or refresh the page |
 | Port 3306 in use | Local MySQL running | Stop local MySQL or change port in docker-compose |
 | Cassandra OOM crash | Not enough Docker memory | Allocate at least 4 GB RAM in Docker Desktop |
+| EC2 page does not load | Stack still initializing | Wait 5-10 min after CREATE_COMPLETE for Docker setup |
+| EC2 stack create fails | Learner Lab not started | Ensure the AWS indicator is green before creating the stack |
 
 ## Key Concepts
 
@@ -185,19 +198,6 @@ cd visualizer
 | **Partition key** | Determines data distribution across nodes (Cassandra, DynamoDB) |
 | **Write concern** | How many nodes must acknowledge a write (MongoDB) |
 | **Consistency level** | How many replicas must respond for a read/write (Cassandra) |
-
-## Presentation
-
-Interactive reveal.js presentation in `presentation/index.html`.
-See `shared/presentation/README.md` for the template API reference.
-
-```bash
-open presentation/index.html
-```
-
-31 slides with animated SVG diagrams, bilingual EN/ES toggle,
-dark/light mode, interactive expandable cards, and official AWS
-architecture icons.
 
 ## How This Relates to Scalable Systems Design
 
