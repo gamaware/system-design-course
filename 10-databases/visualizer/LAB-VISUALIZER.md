@@ -63,7 +63,13 @@ required beyond a web browser.
 Log in to your AWS Academy Learner Lab course:
 
 1. Go to **Modules** and click **Launch AWS Academy Learner Lab**
+
+   ![AWS Academy Modules](screenshots/02-aws-academy-modules.png)
+
 1. Click **Start Lab** and wait for the AWS indicator to turn **green**
+
+   ![Learner Lab Toolbar](screenshots/03-learner-lab-toolbar.png)
+
 1. Click the **AWS** link (green dot) to open the AWS Management Console
 
 #### Step 2: Download the CloudFormation template
@@ -83,8 +89,14 @@ In the AWS Console:
 1. Click **Create stack** > **With new resources (standard)**
 1. Select **Upload a template file**, click **Choose file**, and
    upload `cloudformation.yaml`
+
+   ![Upload Template](screenshots/06-cfn-create-stack.png)
+
 1. Click **Next**
 1. Enter the stack name: `lab10-visualizer`
+
+   ![Stack Name](screenshots/08-cfn-stack-name.png)
+
 1. Click **Next** twice (skip Configure stack options)
 1. On the Review page, scroll down and click **Submit**
 
@@ -92,9 +104,13 @@ In the AWS Console:
 
 The stack takes about 5-10 minutes to create (Docker pulls MySQL and
 builds the visualizer image on first launch). Watch the progress in
-the **Events** tab.
+the **Events** tab:
+
+![Stack Creating](screenshots/10-cfn-creating.png)
 
 When complete, click the **Outputs** tab to find:
+
+![Stack Outputs](screenshots/11-cfn-outputs.png)
 
 - **PublicIP** -- the EC2 instance address
 - **VisualizerURL** -- the URL to open in your browser
