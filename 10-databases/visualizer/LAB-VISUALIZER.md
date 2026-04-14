@@ -166,6 +166,22 @@ graph LR
 └── style.css                 # Dark theme styling
 ```
 
+## Data Model
+
+The lab uses a **university enrollment** scenario pre-loaded with
+sample data:
+
+| Table | Rows | Description |
+| --- | --- | --- |
+| `students` | 10 | Name, email, major (e.g., Alice Johnson, Computer Science) |
+| `courses` | 4 | CS101, CS201, MATH101, PHYS101 with capacity and enrolled count |
+| `enrollments` | 10 | Links students to courses (foreign keys with unique constraint) |
+| `access_log` | 10,000 | Simulated resource access records for indexing exercises |
+
+This is the same data model used across all Module 10 labs (MySQL,
+MongoDB, Cassandra), so you can compare how each database handles the
+same scenario differently.
+
 ---
 
 ## Task 1: Explore the Environment
@@ -342,7 +358,7 @@ remain unchanged.
 In the SQL Console (Primary), run:
 
 ```sql
-SELECT c.code, c.enrolled FROM courses ORDER BY code;
+SELECT code, enrolled FROM courses ORDER BY code;
 ```
 
 Confirm the counts match what the sidebar shows. The failed
@@ -376,7 +392,7 @@ accessing resource-10.
 1. Set Student ID to `3`, Resource to `resource-10`
 1. Click **Run EXPLAIN**
 
-The result shows **Rows scanned: ~9,894** in red, with Key: **NONE
+The result shows **Rows scanned: ~10,000** in red, with Key: **NONE
 (full scan)**. MySQL examined nearly all 10,000 rows to find a
 handful of matches. Check the sidebar: Indexes shows **None**:
 

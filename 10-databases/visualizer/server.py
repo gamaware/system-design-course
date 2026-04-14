@@ -368,8 +368,13 @@ def sql_exec(body):
     if not query:
         return {"error": "Empty query"}
 
+    # Strip mysql CLI formatting suffix (\G) -- not valid SQL
+    query = query.rstrip(";").rstrip()
+    if query.endswith("\\G"):
+        query = query[:-2].rstrip()
+
     # Reject multi-statement queries
-    if ";" in query.rstrip(";"):
+    if ";" in query:
         return {"error": "Multi-statement queries are not allowed"}
 
     # Allowlist: only permit known safe SQL commands

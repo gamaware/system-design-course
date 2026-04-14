@@ -473,7 +473,7 @@ async function doSqlExec() {
   const query = input.value.trim();
   if (!query) return;
 
-  const target = document.querySelector('input[name="sql-target"]:checked').value;
+  const target = document.querySelector('.target-btn.active')?.dataset.target || 'primary';
   const output = $('#console-output');
 
   // Add to history
@@ -563,6 +563,24 @@ function initConsole() {
       $('#console-input').value =
         consoleHistoryIndex >= 0 ? consoleHistory[consoleHistoryIndex] : '';
     }
+  });
+
+  // Target toggle buttons
+  $$('.target-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.target-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.target;
+      const prompt = $('.console-prompt');
+      if (prompt) {
+        prompt.textContent = target === 'replica' ? 'replica>' : 'mysql>';
+      }
+    });
+  });
+
+  // Clear button
+  $('#console-clear').addEventListener('click', () => {
+    $('#console-output').innerHTML = '';
   });
 }
 
