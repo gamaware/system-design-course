@@ -12,6 +12,9 @@
         <button class="tab active" data-tab="replication">Replication</button>
         <button class="tab" data-tab="consistency">Consistency (ACID)</button>
         <button class="tab" data-tab="schema">Schema &amp; Indexing</button>
+        <button class="tab" data-tab="cap">CAP Theorem</button>
+        <button class="tab" data-tab="views">Materialized Views</button>
+        <button class="tab" data-tab="vertical">Vertical Scaling</button>
       </div>
       <button id="btn-reset-db" class="btn btn-reset" title="Reset database to initial state">Reset DB</button>
     </header>
@@ -197,6 +200,37 @@
             <button id="idx-explain" class="btn btn-primary">Run EXPLAIN</button>
             <button id="idx-add" class="btn btn-secondary">Add Index</button>
             <button id="idx-drop" class="btn btn-danger">Drop Index</button>
+          </div>
+
+          <!-- CAP Theorem controls -->
+          <div id="controls-cap" class="controls">
+            <button id="cap-stop" class="btn btn-danger">Stop Replication</button>
+            <button id="cap-start" class="btn btn-secondary">Start Replication</button>
+            <button id="cap-test" class="btn btn-primary">Write &amp; Compare</button>
+          </div>
+
+          <!-- Materialized Views controls -->
+          <div id="controls-views" class="controls">
+            <button id="views-create" class="btn btn-primary">Create View</button>
+            <button id="views-drop" class="btn btn-danger">Drop View</button>
+            <button id="views-join" class="btn btn-secondary">Query with JOINs</button>
+            <button id="views-view" class="btn btn-secondary">Query from View</button>
+            <button id="views-refresh" class="btn btn-secondary">Refresh View</button>
+          </div>
+
+          <!-- Vertical Scaling controls -->
+          <div id="controls-vertical" class="controls">
+            <div class="control-group">
+              <label for="vert-buffer">Buffer Pool Size</label>
+              <select id="vert-buffer">
+                <option value="16777216">16 MB</option>
+                <option value="67108864">64 MB</option>
+                <option value="134217728" selected>128 MB</option>
+                <option value="268435456">256 MB</option>
+              </select>
+            </div>
+            <button id="vert-set" class="btn btn-secondary">Set Buffer</button>
+            <button id="vert-bench" class="btn btn-primary">Run Benchmark (200 queries)</button>
           </div>
         </section>
 

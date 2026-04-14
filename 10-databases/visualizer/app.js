@@ -12,6 +12,12 @@ const PATTERN_DESCRIPTIONS = {
     'Transfer enrollment between courses inside an ACID transaction. Observe commit or rollback.',
   schema:
     'Run EXPLAIN to see query plans. Add/drop indexes and compare rows scanned.',
+  cap:
+    'Stop replication to simulate a network partition. Write data and observe divergence between primary and replica.',
+  views:
+    'Compare expensive multi-table JOINs vs a pre-computed materialized view. See the read-speed vs write-cost trade-off.',
+  vertical:
+    'Adjust the InnoDB buffer pool size and benchmark query performance. More RAM = more data cached in memory = faster reads.',
 };
 
 const EXPLANATIONS = {
@@ -73,6 +79,66 @@ const EXPLANATIONS = {
       detail:
         'A composite index on (student_id, resource) lets MySQL jump ' +
         'directly to matching rows. Rows examined drops from ~10,000 to ~20.',
+    },
+  ],
+  cap: [
+    {
+      title: '1. Stop Replication (Simulate Partition)',
+      detail:
+        'STOP REPLICA halts the IO and SQL threads on the replica. ' +
+        'New writes to the primary will NOT propagate. This simulates a network partition.',
+    },
+    {
+      title: '2. Write & Compare',
+      detail:
+        'INSERT a row on the primary, then immediately read from both nodes. ' +
+        'Primary has the data (consistent). Replica does NOT (stale). This is the CAP trade-off.',
+    },
+    {
+      title: '3. Start Replication (Recovery)',
+      detail:
+        'START REPLICA resumes the threads. The replica catches up by replaying ' +
+        'missed binlog events. Data becomes consistent again across both nodes.',
+    },
+  ],
+  views: [
+    {
+      title: '1. Query with JOINs (Expensive)',
+      detail:
+        'A 3-table JOIN (students + enrollments + courses) scans multiple tables ' +
+        'and computes the result on every query. Slow at scale.',
+    },
+    {
+      title: '2. Materialized View (Pre-computed)',
+      detail:
+        'CREATE TABLE ... AS SELECT pre-computes the JOIN result into a single flat table. ' +
+        'Reads are fast (single table scan), but the view becomes stale after writes.',
+    },
+    {
+      title: '3. Refresh (The Trade-off)',
+      detail:
+        'After new data is inserted, the materialized view must be refreshed (dropped and recreated). ' +
+        'This is the read-speed vs data-freshness trade-off.',
+    },
+  ],
+  vertical: [
+    {
+      title: '1. Set Buffer Pool Size',
+      detail:
+        'innodb_buffer_pool_size controls how much RAM MySQL uses to cache data pages. ' +
+        'More RAM = more data stays in memory instead of being read from disk.',
+    },
+    {
+      title: '2. Run Benchmark',
+      detail:
+        '200 random queries hit the access_log table. With a small buffer, most reads go to disk (slow). ' +
+        'With a large buffer, the working set fits in RAM (fast).',
+    },
+    {
+      title: '3. Compare Results',
+      detail:
+        'The buffer hit ratio shows what percentage of reads were served from memory. ' +
+        'Higher ratio = faster queries. This is vertical scaling: bigger machine, more RAM.',
     },
   ],
 };
@@ -429,6 +495,249 @@ async function doDropIndex() {
   await updateSidebar();
 }
 
+// --- CAP Theorem Actions ---
+
+async function doCapStop() {
+  const result = await apiPost('/api/cap/stop-replication', {});
+  logEvent({ action: 'STOP REPLICA', target: 'replica',
+    result: result.result, latency_ms: result.latency_ms });
+  showExplanation('cap');
+  highlightExpStep(0);
+  // Visual: grey out replica node
+  const replicaRect = document.querySelector('#node-replica rect');
+  if (replicaRect) replicaRect.style.opacity = '0.4';
+  showResult('PARTITION ACTIVE', result.latency_ms,
+    { message: 'Replication stopped. Replica will not receive new writes.' },
+    'rolled-back');
+  await updateSidebar();
+}
+
+async function doCapStart() {
+  const result = await apiPost('/api/cap/start-replication', {});
+  logEvent({ action: 'START REPLICA', target: 'replica',
+    result: result.result, latency_ms: result.latency_ms });
+  showExplanation('cap');
+  highlightExpStep(2);
+  // Visual: restore replica node
+  const replicaRect = document.querySelector('#node-replica rect');
+  if (replicaRect) replicaRect.style.opacity = '1';
+  showResult('PARTITION RECOVERED', result.latency_ms,
+    { message: 'Replication resumed. Replica is catching up.' },
+    'committed');
+  await updateSidebar();
+}
+
+async function doCapTest() {
+  if (animating) return;
+  animating = true;
+  setButtonsDisabled(true);
+  clearAnimations();
+  showExplanation('cap');
+
+  const result = await apiPost('/api/cap/test-divergence', {
+    name: 'CAP Student ' + Math.floor(Math.random() * 1000),
+  });
+
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+    animating = false;
+    setButtonsDisabled(false);
+    return;
+  }
+
+  for (const step of result.steps) {
+    logEvent(step);
+    if (step.action === 'INSERT') {
+      highlightExpStep(0);
+      await animateArrow('arrow-app-primary', 'dot-app-primary',
+        'latency-app-primary', step.latency_ms, 'arrow-op');
+    } else if (step.action === 'SELECT (primary)') {
+      highlightExpStep(1);
+      await animateArrow('arrow-app-primary', 'dot-app-primary',
+        'latency-app-primary', step.latency_ms, 'arrow-success');
+    } else if (step.action === 'SELECT (replica)') {
+      highlightExpStep(1);
+      const cls = step.result.includes('stale') ? 'arrow-error' : 'arrow-success';
+      await animateArrow('arrow-app-replica', 'dot-app-replica',
+        'latency-app-replica', step.latency_ms, cls);
+    }
+    await sleep(STEP_PAUSE_MS);
+  }
+
+  const diverged = result.outcome.includes('DIVERGED');
+  showResult(
+    result.outcome,
+    result.total_ms,
+    result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
+    diverged ? 'rolled-back' : 'committed'
+  );
+
+  await updateSidebar();
+  animating = false;
+  setButtonsDisabled(false);
+}
+
+// --- Materialized Views Actions ---
+
+async function doViewsCreate() {
+  const result = await apiPost('/api/views/create', {});
+  logEvent({ action: 'CREATE VIEW', target: 'primary',
+    result: result.result || 'ERROR', latency_ms: result.latency_ms || 0 });
+  showExplanation('views');
+  highlightExpStep(1);
+  showResult(
+    result.error ? 'ERROR' : `VIEW CREATED (${result.rows} rows)`,
+    result.latency_ms || 0, result,
+    result.error ? 'rolled-back' : 'committed'
+  );
+  await updateSidebar();
+}
+
+async function doViewsDrop() {
+  const result = await apiPost('/api/views/drop', {});
+  logEvent({ action: 'DROP VIEW', target: 'primary',
+    result: result.result, latency_ms: result.latency_ms });
+  await updateSidebar();
+}
+
+async function doViewsJoin() {
+  if (animating) return;
+  animating = true;
+  setButtonsDisabled(true);
+  clearAnimations();
+  showExplanation('views');
+  highlightExpStep(0);
+
+  const result = await apiPost('/api/views/query-join', {});
+
+  for (const step of result.steps) {
+    logEvent(step);
+    await animateArrow('arrow-app-primary', 'dot-app-primary',
+      'latency-app-primary', step.latency_ms, 'arrow-op');
+    await sleep(STEP_PAUSE_MS / 2);
+  }
+
+  showResult(
+    `JOIN: ${result.row_count} rows`,
+    result.total_ms, result.steps.map(s => ({
+      action: s.action, result: s.result, ms: s.latency_ms,
+    })), 'committed'
+  );
+
+  animating = false;
+  setButtonsDisabled(false);
+}
+
+async function doViewsView() {
+  if (animating) return;
+  animating = true;
+  setButtonsDisabled(true);
+  clearAnimations();
+  showExplanation('views');
+  highlightExpStep(1);
+
+  const result = await apiPost('/api/views/query-view', {});
+
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+    animating = false;
+    setButtonsDisabled(false);
+    return;
+  }
+
+  for (const step of result.steps) {
+    logEvent(step);
+    await animateArrow('arrow-app-primary', 'dot-app-primary',
+      'latency-app-primary', step.latency_ms, 'arrow-success');
+  }
+
+  showResult(
+    `VIEW: ${result.row_count} rows`,
+    result.total_ms, result.steps.map(s => ({
+      action: s.action, result: s.result, ms: s.latency_ms,
+    })), 'committed'
+  );
+
+  animating = false;
+  setButtonsDisabled(false);
+}
+
+async function doViewsRefresh() {
+  const result = await apiPost('/api/views/refresh', {});
+  logEvent({ action: 'REFRESH VIEW', target: 'primary',
+    result: result.result || 'ERROR', latency_ms: result.latency_ms || 0 });
+  showExplanation('views');
+  highlightExpStep(2);
+  showResult(
+    result.error ? 'ERROR' : `VIEW REFRESHED (${result.rows} rows)`,
+    result.latency_ms || 0, result,
+    result.error ? 'rolled-back' : 'committed'
+  );
+}
+
+// --- Vertical Scaling Actions ---
+
+async function doVerticalSet() {
+  const size = $('#vert-buffer').value;
+  const label = $('#vert-buffer').options[$('#vert-buffer').selectedIndex].text;
+  const result = await apiPost('/api/vertical/set-buffer', { size });
+  logEvent({ action: `SET BUFFER ${label}`, target: 'primary',
+    result: result.error ? 'ERROR' : 'OK', latency_ms: result.latency_ms || 0 });
+  showExplanation('vertical');
+  highlightExpStep(0);
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+  } else {
+    showResult(`Buffer pool set to ${label}`, result.latency_ms, result, 'committed');
+  }
+}
+
+async function doVerticalBench() {
+  if (animating) return;
+  animating = true;
+  setButtonsDisabled(true);
+  clearAnimations();
+  showExplanation('vertical');
+  highlightExpStep(1);
+
+  const result = await apiPost('/api/vertical/benchmark', { count: 200 });
+
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+    animating = false;
+    setButtonsDisabled(false);
+    return;
+  }
+
+  // Animate a few representative arrows
+  for (let i = 0; i < 3; i++) {
+    await animateArrow('arrow-app-primary', 'dot-app-primary',
+      'latency-app-primary', result.stats.avg_latency_ms, 'arrow-op');
+    await sleep(100);
+  }
+
+  highlightExpStep(2);
+  const s = result.stats;
+  showResult(
+    `${s.queries} queries | ${s.avg_latency_ms}ms avg | ${s.buffer_hit_ratio}% hit ratio`,
+    result.total_ms,
+    {
+      buffer_pool_size: s.buffer_pool_size,
+      avg_latency_ms: s.avg_latency_ms,
+      p95_latency_ms: s.p95_latency_ms,
+      queries_per_sec: s.queries_per_sec,
+      buffer_hit_ratio: `${s.buffer_hit_ratio}%`,
+      memory_reads: s.memory_reads,
+      disk_reads: s.disk_reads,
+    },
+    s.buffer_hit_ratio > 90 ? 'committed' : 'rolled-back'
+  );
+
+  await updateSidebar();
+  animating = false;
+  setButtonsDisabled(false);
+}
+
 // --- Reset ---
 
 async function doReset() {
@@ -590,6 +899,16 @@ function initButtons() {
   $('#idx-explain').addEventListener('click', doExplain);
   $('#idx-add').addEventListener('click', doAddIndex);
   $('#idx-drop').addEventListener('click', doDropIndex);
+  $('#cap-stop').addEventListener('click', doCapStop);
+  $('#cap-start').addEventListener('click', doCapStart);
+  $('#cap-test').addEventListener('click', doCapTest);
+  $('#views-create').addEventListener('click', doViewsCreate);
+  $('#views-drop').addEventListener('click', doViewsDrop);
+  $('#views-join').addEventListener('click', doViewsJoin);
+  $('#views-view').addEventListener('click', doViewsView);
+  $('#views-refresh').addEventListener('click', doViewsRefresh);
+  $('#vert-set').addEventListener('click', doVerticalSet);
+  $('#vert-bench').addEventListener('click', doVerticalBench);
   $('#btn-reset-db').addEventListener('click', doReset);
 }
 

@@ -453,13 +453,11 @@ longer because MySQL must update both the table and the index.
 
 ---
 
-## Task 5: Free Exploration
+## Task 5: SQL Console Exploration
 
-Use the SQL Console to explore on your own:
+Use the SQL Console to verify what you learned:
 
 ![SQL Console](screenshots/07-sql-console.png)
-
-Here are some queries to try:
 
 **Check which students are enrolled in which courses:**
 
@@ -481,6 +479,172 @@ return identical results.
 In one SQL Console query, insert a student. In the sidebar, watch
 the Primary Rows counter increment and -- a moment later -- the
 Replica Rows counter catch up.
+
+**Reset the database:**
+
+Click the **Reset DB** button in the top-right corner to restore
+the original data (10 students, 4 courses, 10 enrollments, no
+custom indexes).
+
+---
+
+## Task 6: CAP Theorem -- Partition Tolerance
+
+The CAP theorem states that a distributed system can guarantee at most
+two of three properties: Consistency, Availability, and Partition
+Tolerance. In this task you simulate a network partition and observe
+how MySQL handles it.
+
+### Step 6.1: Stop replication (simulate partition)
+
+Switch to the **CAP Theorem** tab. Click **Stop Replication**.
+
+This runs `STOP REPLICA` on the replica node, halting both the IO
+and SQL threads. New writes to the primary will NOT propagate to the
+replica -- this simulates a network partition.
+
+### Step 6.2: Write and compare
+
+Click **Write & Compare**. The visualizer inserts a new student on
+the primary, then reads from both nodes:
+
+![CAP Diverged](screenshots/08-cap-diverged.png)
+
+The result shows **DIVERGED (partition active)**:
+
+- Primary: FOUND (has the new data)
+- Replica: NOT FOUND (stale -- partition prevents replication)
+
+This is the CAP trade-off: during a partition, you can have
+consistency (read from primary only) OR availability (read from
+replicas too, but get stale data). MySQL's primary-replica setup
+chooses CP when you read from the primary.
+
+### Step 6.3: Recover from partition
+
+Click **Start Replication**, wait a moment, then click
+**Write & Compare** again:
+
+![CAP Consistent](screenshots/09-cap-consistent.png)
+
+The result shows **CONSISTENT** -- both nodes return the same data.
+The replica caught up by replaying missed binlog events.
+
+> **Question:** Netflix reads from replicas for performance. During a
+> network partition, users might see stale data (old movie catalog).
+> Is this acceptable?
+>
+> **Hint:** For a streaming catalog, showing a slightly outdated list
+> is better than showing nothing. Netflix chooses AP (availability +
+> partition tolerance). For a banking app, stale balances would be
+> unacceptable -- banks choose CP.
+
+---
+
+## Task 7: Materialized Views -- Read Speed vs Freshness
+
+Materialized views pre-compute expensive queries into a flat table.
+Reads become fast, but the view must be refreshed after writes.
+
+### Step 7.1: Query with JOINs (expensive)
+
+Switch to the **Materialized Views** tab. Click **Query with JOINs**.
+
+This runs a 3-table JOIN (students + enrollments + courses) to fetch
+enrollment data:
+
+![Views JOIN](screenshots/10-views-join.png)
+
+Note the query time and that 3 tables were scanned.
+
+### Step 7.2: Create and query the materialized view
+
+Click **Create View** to pre-compute the JOIN result into a single
+table. Then click **Query from View**:
+
+![Views View](screenshots/11-views-view.png)
+
+The view query reads from a single flat table -- no JOINs needed.
+Compare the timing with Step 7.1.
+
+### Step 7.3: Observe staleness
+
+Use the SQL Console to insert a new enrollment:
+
+```sql
+INSERT INTO students (name, email, major)
+VALUES ('New Student', 'new@university.edu', 'Engineering');
+```
+
+Now click **Query from View** again. The new student does NOT appear
+in the view because it was created before the insert. Click
+**Refresh View** to rebuild it -- now the new data appears.
+
+> **Question:** A dashboard shows daily sales summaries for managers.
+> Should you use a materialized view or a live JOIN query?
+>
+> **Hint:** Managers check the dashboard a few times per day. A
+> materialized view refreshed hourly gives fast reads with acceptable
+> staleness. A live JOIN on every page load would be wasteful.
+
+---
+
+## Task 8: Vertical Scaling -- Buffer Pool Tuning
+
+Vertical scaling means adding more resources (RAM, CPU) to a single
+machine. The most impactful vertical scaling lever for MySQL is the
+InnoDB buffer pool -- the amount of RAM used to cache data pages.
+
+### Step 8.1: Set a small buffer and benchmark
+
+Switch to the **Vertical Scaling** tab. Select **16 MB** from the
+dropdown, click **Set Buffer**, then click
+**Run Benchmark (200 queries)**:
+
+![Vertical Benchmark](screenshots/12-vertical-benchmark.png)
+
+Note the **buffer hit ratio**, **avg latency**, and **queries/sec**.
+
+### Step 8.2: Set a large buffer and benchmark again
+
+Select **256 MB**, click **Set Buffer**, then
+**Run Benchmark (200 queries)** again.
+
+Compare the results. With more RAM, the buffer hit ratio increases
+and query latency decreases -- more data is served from memory
+instead of disk.
+
+### Step 8.3: Understand the ceiling
+
+Vertical scaling has diminishing returns. Once the entire working set
+fits in the buffer pool, adding more RAM provides no benefit. And
+every machine has a physical limit -- you cannot add infinite RAM.
+
+This is why horizontal scaling (replication, sharding) exists: when
+a single machine cannot handle the load, you distribute it across
+multiple machines.
+
+> **Question:** Your database server has 64 GB RAM and the dataset is
+> 60 GB. Adding more RAM would cost $500/month. Adding a read replica
+> would cost $200/month. Which should you choose?
+>
+> **Hint:** The dataset nearly fills available RAM, so the buffer hit
+> ratio is likely already high. More RAM gives diminishing returns. A
+> read replica distributes read load across two machines -- better
+> value for read-heavy workloads.
+
+---
+
+## Task 9: Free Exploration
+
+Use the SQL Console to explore on your own:
+
+![SQL Console](screenshots/07-sql-console.png)
+
+Refer to the previous Task 5 for example queries. Try combining
+concepts: create an index, then benchmark with different buffer
+sizes. Or stop replication, insert data, query the materialized view,
+and observe the interaction between these mechanisms.
 
 **Reset the database:**
 
@@ -526,6 +690,13 @@ Console (see [EC2 Cleanup](#ec2-cleanup) above).
 | **Composite index** | An index on multiple columns that speeds up multi-column WHERE clauses |
 | **EXPLAIN** | Shows MySQL's query execution plan: index used, rows examined |
 | **Read-write split** | Send writes to primary, reads to replicas -- the most common scaling pattern |
+| **CAP Theorem** | A distributed system can guarantee at most 2 of: Consistency, Availability, Partition Tolerance |
+| **Network partition** | A break in communication between nodes -- some nodes cannot reach others |
+| **Materialized view** | A pre-computed query result stored as a table for fast reads |
+| **View staleness** | A materialized view becomes outdated after new writes until refreshed |
+| **Buffer pool** | RAM cache for InnoDB data pages -- larger pool = fewer disk reads |
+| **Vertical scaling** | Adding more resources (RAM, CPU) to a single machine |
+| **Horizontal scaling** | Adding more machines to distribute the load |
 
 ## Conclusions
 
@@ -546,10 +717,22 @@ Console (see [EC2 Cleanup](#ec2-cleanup) above).
    free: they consume storage and slow down writes. The right index
    depends on your query patterns.
 
-4. **These three mechanisms compose.** A production system uses all
-   three: replication for read scaling, ACID for correctness, and
-   indexes for performance. They are not alternatives -- they solve
-   different problems at different layers.
+4. **The CAP theorem is a real constraint, not a theoretical
+   exercise.** You saw data diverge during a simulated partition.
+   Every distributed database makes a CAP trade-off: MySQL
+   primary-replica is CP when reading from the primary, but AP when
+   reading from replicas for performance.
+
+5. **Materialized views trade freshness for read speed.** Pre-computing
+   a JOIN eliminates repeated work, but the view becomes stale after
+   writes. The right refresh interval depends on how much staleness
+   your application can tolerate.
+
+6. **Vertical scaling has diminishing returns.** More RAM improves
+   buffer hit ratio, but once the working set fits in memory, adding
+   more RAM provides no benefit. This is why horizontal scaling
+   (replication, sharding) exists -- it breaks the single-machine
+   ceiling.
 
 ## Next Steps (Optional)
 

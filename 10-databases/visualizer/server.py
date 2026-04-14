@@ -411,6 +411,293 @@ def sql_exec(body):
         conn.close()
 
 
+# ---- CAP Theorem Tab ----
+
+def cap_stop_replication(_body):
+    """Stop replica IO/SQL threads to simulate network partition."""
+    conn = get_conn(REPLICA_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute("STOP REPLICA")
+        t1 = time.perf_counter()
+        return {"action": "STOP REPLICA", "result": "STOPPED",
+                "latency_ms": round((t1 - t0) * 1000, 2)}
+    finally:
+        conn.close()
+
+
+def cap_start_replication(_body):
+    """Restart replica threads to simulate partition recovery."""
+    conn = get_conn(REPLICA_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute("START REPLICA")
+        t1 = time.perf_counter()
+        return {"action": "START REPLICA", "result": "STARTED",
+                "latency_ms": round((t1 - t0) * 1000, 2)}
+    finally:
+        conn.close()
+
+
+def cap_test_divergence(body):
+    """Write to primary, read from both, show divergence."""
+    name = body.get("name", "CAP Test")
+    email = f"cap{int(time.time())}@university.edu"
+    steps = []
+    total_start = time.perf_counter()
+    seq = 1
+
+    # Write to primary
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO students (name, email, major) VALUES (%s, %s, 'CAP Test')",
+                        (name, email))
+            new_id = cur.lastrowid
+        t1 = time.perf_counter()
+        steps.append(step_entry(seq, "INSERT", "primary", "OK",
+                                (t1 - t0) * 1000, {"student_id": new_id}))
+        seq += 1
+    finally:
+        conn.close()
+
+    # Read from primary (should always have it)
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM students WHERE student_id = %s", (new_id,))
+            row = cur.fetchone()
+        t1 = time.perf_counter()
+        steps.append(step_entry(seq, "SELECT (primary)", "primary",
+                                "FOUND" if row else "NOT FOUND",
+                                (t1 - t0) * 1000, row))
+        seq += 1
+    finally:
+        conn.close()
+
+    # Read from replica (may not have it if replication stopped)
+    conn = get_conn(REPLICA_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM students WHERE student_id = %s", (new_id,))
+            row = cur.fetchone()
+        t1 = time.perf_counter()
+        found = row is not None
+        steps.append(step_entry(seq, "SELECT (replica)", "replica",
+                                "FOUND (consistent)" if found else "NOT FOUND (stale)",
+                                (t1 - t0) * 1000, row))
+    finally:
+        conn.close()
+
+    total_ms = (time.perf_counter() - total_start) * 1000
+    diverged = steps[1]["result"] != steps[2]["result"].split(" ")[0]
+    return {
+        "pattern": "cap", "steps": steps, "total_ms": round(total_ms, 2),
+        "outcome": "DIVERGED (partition active)" if diverged else "CONSISTENT",
+    }
+
+
+# ---- Materialized Views Tab ----
+
+def views_create(_body):
+    """Create a materialized view (table from SELECT) for enrollment summary."""
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        with conn.cursor() as cur:
+            t0 = time.perf_counter()
+            cur.execute("DROP TABLE IF EXISTS enrollment_summary")
+            cur.execute("""
+                CREATE TABLE enrollment_summary AS
+                SELECT s.student_id, s.name, s.major,
+                       c.code AS course_code, c.title AS course_title,
+                       e.enrolled_at
+                FROM enrollments e
+                JOIN students s ON e.student_id = s.student_id
+                JOIN courses c ON e.course_id = c.course_id
+            """)
+            cur.execute("SELECT COUNT(*) AS cnt FROM enrollment_summary")
+            cnt = cur.fetchone()["cnt"]
+            t1 = time.perf_counter()
+        return {"action": "CREATE VIEW", "result": "CREATED",
+                "rows": cnt, "latency_ms": round((t1 - t0) * 1000, 2)}
+    finally:
+        conn.close()
+
+
+def views_drop(_body):
+    """Drop the materialized view table."""
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute("DROP TABLE IF EXISTS enrollment_summary")
+        t1 = time.perf_counter()
+        return {"action": "DROP VIEW", "result": "DROPPED",
+                "latency_ms": round((t1 - t0) * 1000, 2)}
+    finally:
+        conn.close()
+
+
+def views_query_join(_body):
+    """Run the 3-table JOIN query with timing."""
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        steps = []
+        seq = 1
+        total_start = time.perf_counter()
+
+        with conn.cursor() as cur:
+            t0 = time.perf_counter()
+            cur.execute("""
+                SELECT s.name, s.major, c.code, c.title, e.enrolled_at
+                FROM enrollments e
+                JOIN students s ON e.student_id = s.student_id
+                JOIN courses c ON e.course_id = c.course_id
+                ORDER BY s.name
+            """)
+            rows = cur.fetchall()
+            t1 = time.perf_counter()
+            steps.append(step_entry(seq, "SELECT with 3-table JOIN", "primary",
+                                    "OK", (t1 - t0) * 1000,
+                                    {"row_count": len(rows)}))
+            seq += 1
+
+            # Get EXPLAIN
+            t0 = time.perf_counter()
+            cur.execute("""
+                EXPLAIN SELECT s.name, s.major, c.code, c.title, e.enrolled_at
+                FROM enrollments e
+                JOIN students s ON e.student_id = s.student_id
+                JOIN courses c ON e.course_id = c.course_id
+            """)
+            plan = cur.fetchall()
+            t1 = time.perf_counter()
+            tables_scanned = len(plan)
+            steps.append(step_entry(seq, "EXPLAIN (tables scanned)", "primary",
+                                    f"{tables_scanned} tables", (t1 - t0) * 1000))
+
+        total_ms = (time.perf_counter() - total_start) * 1000
+        return {"pattern": "views-join", "steps": steps,
+                "total_ms": round(total_ms, 2), "row_count": len(rows)}
+    finally:
+        conn.close()
+
+
+def views_query_view(_body):
+    """Query the pre-computed materialized view."""
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        steps = []
+        total_start = time.perf_counter()
+
+        with conn.cursor() as cur:
+            # Check if view exists
+            cur.execute("SHOW TABLES LIKE 'enrollment_summary'")
+            if not cur.fetchone():
+                return {"error": "View not created yet. Click 'Create View' first."}
+
+            t0 = time.perf_counter()
+            cur.execute("SELECT * FROM enrollment_summary ORDER BY name")
+            rows = cur.fetchall()
+            t1 = time.perf_counter()
+            steps.append(step_entry(1, "SELECT from materialized view", "primary",
+                                    "OK", (t1 - t0) * 1000,
+                                    {"row_count": len(rows)}))
+
+        total_ms = (time.perf_counter() - total_start) * 1000
+        return {"pattern": "views-view", "steps": steps,
+                "total_ms": round(total_ms, 2), "row_count": len(rows)}
+    finally:
+        conn.close()
+
+
+def views_refresh(_body):
+    """Refresh the materialized view (drop + recreate)."""
+    return views_create(_body)
+
+
+# ---- Vertical Scalability Tab ----
+
+def vertical_set_buffer(body):
+    """Set InnoDB buffer pool size."""
+    size = body.get("size", "64M")
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        t0 = time.perf_counter()
+        with conn.cursor() as cur:
+            cur.execute(f"SET GLOBAL innodb_buffer_pool_size = {size}")
+        t1 = time.perf_counter()
+        return {"action": "SET BUFFER POOL", "size": size,
+                "latency_ms": round((t1 - t0) * 1000, 2)}
+    except pymysql.MySQLError as exc:
+        return {"error": str(exc)}
+    finally:
+        conn.close()
+
+
+def vertical_benchmark(body):
+    """Run random queries and measure performance."""
+    count = int(body.get("count", 200))
+    conn = get_conn(PRIMARY_HOST)
+    try:
+        steps = []
+        total_start = time.perf_counter()
+        latencies = []
+
+        # Reset buffer pool stats
+        with conn.cursor() as cur:
+            cur.execute("FLUSH STATUS")
+
+        with conn.cursor() as cur:
+            import random
+            for i in range(count):
+                sid = random.randint(1, 10)
+                rid = f"resource-{random.randint(1, 50)}"
+                t0 = time.perf_counter()
+                cur.execute(
+                    "SELECT * FROM access_log WHERE student_id = %s AND resource = %s",
+                    (sid, rid))
+                cur.fetchall()
+                t1 = time.perf_counter()
+                latencies.append((t1 - t0) * 1000)
+
+        # Get buffer pool stats
+        with conn.cursor() as cur:
+            cur.execute("SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_read_requests'")
+            read_requests = int(cur.fetchone().get("Value", 0))
+            cur.execute("SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_reads'")
+            disk_reads = int(cur.fetchone().get("Value", 0))
+            cur.execute("SHOW GLOBAL VARIABLES LIKE 'innodb_buffer_pool_size'")
+            pool_size = cur.fetchone().get("Value", "0")
+
+        hit_ratio = round((1 - disk_reads / max(read_requests, 1)) * 100, 1)
+        avg_latency = round(sum(latencies) / len(latencies), 2)
+        p95 = round(sorted(latencies)[int(len(latencies) * 0.95)], 2)
+        qps = round(count / ((time.perf_counter() - total_start)), 1)
+
+        total_ms = (time.perf_counter() - total_start) * 1000
+        return {
+            "pattern": "vertical", "total_ms": round(total_ms, 2),
+            "stats": {
+                "queries": count,
+                "avg_latency_ms": avg_latency,
+                "p95_latency_ms": p95,
+                "queries_per_sec": qps,
+                "buffer_pool_size": pool_size,
+                "buffer_hit_ratio": hit_ratio,
+                "disk_reads": disk_reads,
+                "memory_reads": read_requests,
+            },
+        }
+    finally:
+        conn.close()
+
+
 ROUTES = {
     ("GET", "/api/db/state"): db_state,
     ("POST", "/api/db/reset"): db_reset,
@@ -421,6 +708,16 @@ ROUTES = {
     ("POST", "/api/schema/add-index"): schema_add_index,
     ("POST", "/api/schema/drop-index"): schema_drop_index,
     ("POST", "/api/sql/exec"): sql_exec,
+    ("POST", "/api/cap/stop-replication"): cap_stop_replication,
+    ("POST", "/api/cap/start-replication"): cap_start_replication,
+    ("POST", "/api/cap/test-divergence"): cap_test_divergence,
+    ("POST", "/api/views/create"): views_create,
+    ("POST", "/api/views/drop"): views_drop,
+    ("POST", "/api/views/query-join"): views_query_join,
+    ("POST", "/api/views/query-view"): views_query_view,
+    ("POST", "/api/views/refresh"): views_refresh,
+    ("POST", "/api/vertical/set-buffer"): vertical_set_buffer,
+    ("POST", "/api/vertical/benchmark"): vertical_benchmark,
 }
 
 MIME_TYPES = {
