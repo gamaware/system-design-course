@@ -1,5 +1,6 @@
 """Database scalability visualizer API bridge — MySQL primary-replica."""
 
+import contextlib
 import json
 import os
 import time
@@ -346,10 +347,8 @@ def db_reset(_body):
             # Re-insert original enrollments
             cur.execute("""INSERT INTO enrollments (student_id, course_id) VALUES
                 (1,1),(3,1),(5,1),(8,1),(1,2),(3,2),(2,3),(6,3),(4,4),(9,4)""")
-            try:
+            with contextlib.suppress(pymysql.err.OperationalError):
                 cur.execute("DROP INDEX idx_student_resource ON access_log")
-            except pymysql.err.OperationalError:
-                pass
         return {"result": "OK", "message": "Database reset to initial state"}
     finally:
         conn.close()

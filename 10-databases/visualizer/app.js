@@ -233,7 +233,7 @@ async function updateSidebar() {
       (state.replica?.sql_running === 'Yes' ? 'ok' : 'warn');
 
     const lag = state.replica?.lag;
-    $('#stat-lag').textContent = lag != null ? lag : '--';
+    $('#stat-lag').textContent = lag !== null && lag !== undefined ? lag : '--';
     $('#stat-lag').className = 'stat-value ' + (lag === 0 ? 'ok' : 'warn');
 
     $('#stat-primary-rows').textContent = state.primary?.students || '--';

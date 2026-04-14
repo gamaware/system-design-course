@@ -1,6 +1,10 @@
 export default [
   {
-    ignores: ['01-introduction-horizontal-scalability/**', 'node_modules/**'],
+    ignores: [
+      '01-introduction-horizontal-scalability/**',
+      'node_modules/**',
+      '10-databases/mongodb/init/**',
+    ],
   },
   {
     files: ['**/*.js'],
