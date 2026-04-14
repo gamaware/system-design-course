@@ -1,0 +1,68 @@
+services:
+  mysql-primary:
+    image: mysql:8
+    container_name: mysql-primary
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: university
+    volumes:
+      - ../mysql/init/primary-init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - primary-data:/var/lib/mysql
+    command:
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --binlog-format=ROW
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mysql-replica:
+    image: mysql:8
+    container_name: mysql-replica
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - replica-data:/var/lib/mysql
+    command:
+      - --server-id=2
+      - --log-bin=mysql-bin
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --binlog-format=ROW
+    depends_on:
+      mysql-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  visualizer:
+    build: .
+    container_name: db-visualizer
+    ports:
+      - "8081:8080"
+    environment:
+      - MYSQL_PRIMARY_HOST=mysql-primary
+      - MYSQL_REPLICA_HOST=mysql-replica
+      - MYSQL_USER=root
+      - MYSQL_PASS=rootpass
+      - MYSQL_DB=university
+    depends_on:
+      mysql-primary:
+        condition: service_healthy
+      mysql-replica:
+        condition: service_healthy
+
+volumes:
+  primary-data:
+  replica-data:

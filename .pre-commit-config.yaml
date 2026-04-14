@@ -10,7 +10,8 @@ repos:
             01-introduction-horizontal-scalability/ecsdemo-.*/kubernetes/.*|
             01-introduction-horizontal-scalability/ecsdemo-.*/copilot/.*|
             08-cloud-networking-vpc/cloudformation/.*|
-            09-distributed-file-systems/cloudformation\.yaml
+            09-distributed-file-systems/cloudformation\.yaml|
+            10-databases/.*/cloudformation\.yaml
           )$
       - id: check-json
       - id: check-added-large-files

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Scalability Visualizer — Lab 10</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="tab-bar">
+      <div class="tab-group">
+        <button class="tab active" data-tab="replication">Replication</button>
+        <button class="tab" data-tab="consistency">Consistency (ACID)</button>
+        <button class="tab" data-tab="schema">Schema &amp; Indexing</button>
+      </div>
+      <button id="btn-reset-db" class="btn btn-reset" title="Reset database to initial state">Reset DB</button>
+    </header>
+
+    <div id="pattern-description" class="pattern-description">
+      Write to primary, read from replica. Observe replication lag in real time.
+    </div>
+
+    <div class="layout">
+      <main class="main-area">
+        <section class="diagram-container">
+          <svg id="architecture-svg" viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr-right" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+              </marker>
+              <marker id="arr-left" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                <polygon points="10 0, 0 3.5, 10 7" fill="#64748b" />
+              </marker>
+              <marker id="arr-success" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" />
+              </marker>
+              <linearGradient id="grad-app" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#2563eb" />
+              </linearGradient>
+              <linearGradient id="grad-primary" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fbbf24" /><stop offset="100%" stop-color="#d97706" />
+              </linearGradient>
+              <linearGradient id="grad-replica" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a78bfa" /><stop offset="100%" stop-color="#7c3aed" />
+              </linearGradient>
+              <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+                <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.35" />
+              </filter>
+            </defs>
+
+            <!-- Connection lines -->
+            <line x1="230" y1="130" x2="370" y2="130" stroke="#334155" stroke-width="2" />
+            <line x1="530" y1="130" x2="670" y2="130" stroke="#334155" stroke-width="2" />
+            <line x1="450" y1="200" x2="450" y2="260" stroke="#334155" stroke-width="2" stroke-dasharray="6 4" />
+            <text x="460" y="235" fill="#94a3b8" font-size="10" font-family="monospace">replication</text>
+
+            <!-- Animated arrows -->
+            <line id="arrow-app-primary" class="arrow" x1="230" y1="120" x2="370" y2="120"
+                  stroke="#64748b" stroke-width="3" marker-end="url(#arr-right)" />
+            <line id="arrow-primary-app" class="arrow" x1="370" y1="140" x2="230" y2="140"
+                  stroke="#64748b" stroke-width="3" marker-end="url(#arr-left)" />
+            <line id="arrow-app-replica" class="arrow" x1="230" y1="160" x2="670" y2="160"
+                  stroke="#64748b" stroke-width="3" marker-end="url(#arr-right)" />
+            <line id="arrow-replica-app" class="arrow" x1="670" y1="170" x2="230" y2="170"
+                  stroke="#64748b" stroke-width="3" marker-end="url(#arr-left)" />
+
+            <!-- Traveling dots -->
+            <circle id="dot-app-primary" class="travel-dot" r="5" fill="#3b82f6" opacity="0" />
+            <circle id="dot-app-replica" class="travel-dot" r="5" fill="#8b5cf6" opacity="0" />
+
+            <!-- Latency pills -->
+            <g id="latency-app-primary" class="latency-group" opacity="0">
+              <rect x="268" y="88" width="64" height="22" rx="11" fill="#1e293b" stroke="#475569" stroke-width="1" />
+              <text x="300" y="103" text-anchor="middle" class="latency-label"></text>
+            </g>
+            <g id="latency-app-replica" class="latency-group" opacity="0">
+              <rect x="418" y="148" width="64" height="22" rx="11" fill="#1e293b" stroke="#475569" stroke-width="1" />
+              <text x="450" y="163" text-anchor="middle" class="latency-label"></text>
+            </g>
+
+            <!-- Visualizer node -->
+            <g id="node-app" class="node">
+              <rect x="80" y="60" width="150" height="140" rx="14" fill="url(#grad-app)" filter="url(#shadow)" />
+              <g transform="translate(131, 90)">
+                <rect x="-20" y="-16" width="40" height="28" rx="3" fill="none" stroke="#fff" stroke-width="2" />
+                <line x1="-8" y1="16" x2="8" y2="16" stroke="#fff" stroke-width="2" />
+                <line x1="0" y1="12" x2="0" y2="16" stroke="#fff" stroke-width="2" />
+                <text x="0" y="2" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold"
+                      font-family="monospace">&lt;/&gt;</text>
+              </g>
+              <text x="155" y="148" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Visualizer</text>
+              <g id="badge-app" class="node-badge" opacity="0">
+                <rect x="118" y="160" width="74" height="22" rx="11" fill="#0f172a" fill-opacity="0.6" />
+                <text x="155" y="175" text-anchor="middle" fill="#fff" font-size="11" font-weight="700"></text>
+              </g>
+            </g>
+
+            <!-- Primary node -->
+            <g id="node-primary" class="node">
+              <rect x="370" y="60" width="150" height="140" rx="14" fill="url(#grad-primary)" filter="url(#shadow)" />
+              <g transform="translate(445, 90)">
+                <ellipse cx="0" cy="-14" rx="16" ry="6" fill="none" stroke="#fff" stroke-width="2" />
+                <line x1="-16" y1="-14" x2="-16" y2="10" stroke="#fff" stroke-width="2" />
+                <line x1="16" y1="-14" x2="16" y2="10" stroke="#fff" stroke-width="2" />
+                <ellipse cx="0" cy="10" rx="16" ry="6" fill="none" stroke="#fff" stroke-width="2" />
+              </g>
+              <text x="445" y="148" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Primary</text>
+              <text x="445" y="165" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10">MySQL :3306</text>
+              <g id="badge-primary" class="node-badge" opacity="0">
+                <rect x="408" y="172" width="74" height="22" rx="11" fill="#0f172a" fill-opacity="0.6" />
+                <text x="445" y="187" text-anchor="middle" fill="#fff" font-size="11" font-weight="700"></text>
+              </g>
+            </g>
+
+            <!-- Replica node -->
+            <g id="node-replica" class="node">
+              <rect x="670" y="60" width="150" height="140" rx="14" fill="url(#grad-replica)" filter="url(#shadow)" />
+              <g transform="translate(745, 90)">
+                <ellipse cx="0" cy="-14" rx="16" ry="6" fill="none" stroke="#fff" stroke-width="2" />
+                <line x1="-16" y1="-14" x2="-16" y2="10" stroke="#fff" stroke-width="2" />
+                <line x1="16" y1="-14" x2="16" y2="10" stroke="#fff" stroke-width="2" />
+                <ellipse cx="0" cy="10" rx="16" ry="6" fill="none" stroke="#fff" stroke-width="2" />
+                <text x="0" y="2" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="8">RO</text>
+              </g>
+              <text x="745" y="148" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Replica</text>
+              <text x="745" y="165" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10">MySQL :3307</text>
+              <g id="badge-replica" class="node-badge" opacity="0">
+                <rect x="708" y="172" width="74" height="22" rx="11" fill="#0f172a" fill-opacity="0.6" />
+                <text x="745" y="187" text-anchor="middle" fill="#fff" font-size="11" font-weight="700"></text>
+              </g>
+            </g>
+          </svg>
+        </section>
+
+        <!-- Result Panel -->
+        <div id="result-panel" class="result-panel hidden">
+          <div class="result-header">
+            <span id="result-status" class="result-status"></span>
+            <span id="result-latency" class="result-latency"></span>
+          </div>
+          <pre id="result-data" class="result-data"></pre>
+        </div>
+
+        <section class="controls-panel">
+          <!-- Replication controls -->
+          <div id="controls-replication" class="controls active">
+            <div class="control-group">
+              <label for="repl-name">Student Name</label>
+              <input type="text" id="repl-name" value="Zoe Adams" />
+            </div>
+            <div class="control-group">
+              <label for="repl-major">Major</label>
+              <select id="repl-major">
+                <option>Computer Science</option>
+                <option>Mathematics</option>
+                <option>Physics</option>
+                <option>Biology</option>
+                <option>Engineering</option>
+              </select>
+            </div>
+            <button id="repl-write" class="btn btn-primary">Write &amp; Read</button>
+          </div>
+
+          <!-- Consistency controls -->
+          <div id="controls-consistency" class="controls">
+            <div class="control-group">
+              <label for="tx-student">Student ID</label>
+              <input type="number" id="tx-student" min="1" max="10" value="1" />
+            </div>
+            <div class="control-group">
+              <label for="tx-from">From Course</label>
+              <select id="tx-from">
+                <option>CS101</option><option>CS201</option>
+                <option>MATH101</option><option>PHYS101</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="tx-to">To Course</label>
+              <select id="tx-to">
+                <option>PHYS101</option><option>CS101</option>
+                <option>CS201</option><option>MATH101</option>
+              </select>
+            </div>
+            <button id="tx-transfer" class="btn btn-primary">Transfer Enrollment</button>
+          </div>
+
+          <!-- Schema controls -->
+          <div id="controls-schema" class="controls">
+            <div class="control-group">
+              <label for="idx-student">Student ID</label>
+              <input type="number" id="idx-student" min="1" max="10" value="3" />
+            </div>
+            <div class="control-group">
+              <label for="idx-resource">Resource</label>
+              <input type="text" id="idx-resource" value="resource-10" />
+            </div>
+            <button id="idx-explain" class="btn btn-primary">Run EXPLAIN</button>
+            <button id="idx-add" class="btn btn-secondary">Add Index</button>
+            <button id="idx-drop" class="btn btn-danger">Drop Index</button>
+          </div>
+        </section>
+
+        <!-- Explanation Panel -->
+        <div id="explanation-panel" class="explanation-panel hidden">
+          <h3 class="explanation-title">What's Happening</h3>
+          <div id="explanation-steps" class="explanation-steps"></div>
+        </div>
+      </main>
+
+      <aside class="sidebar">
+        <h2>Database State</h2>
+
+        <div class="sidebar-section">
+          <h3>Replication</h3>
+          <div class="stat-grid">
+            <div class="stat">
+              <span class="stat-label">IO Thread</span>
+              <span class="stat-value" id="stat-io">--</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">SQL Thread</span>
+              <span class="stat-value" id="stat-sql">--</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Lag (sec)</span>
+              <span class="stat-value" id="stat-lag">--</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Primary Rows</span>
+              <span class="stat-value" id="stat-primary-rows">--</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Replica Rows</span>
+              <span class="stat-value" id="stat-replica-rows">--</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>Courses</h3>
+          <ul id="course-list" class="course-list"></ul>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>Indexes (access_log)</h3>
+          <div id="index-list" class="stat-value" style="font-size: 0.8rem;">--</div>
+          <div class="stat" style="margin-top: 0.5rem;">
+            <span class="stat-label">access_log rows</span>
+            <span class="stat-value" id="stat-log-rows">--</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="bottom-bar">
+      <div class="bottom-split">
+        <div class="event-log-container">
+          <h3>Event Log</h3>
+          <div id="event-log" class="event-log"></div>
+        </div>
+
+        <div class="sql-console">
+          <details id="console-details">
+            <summary>SQL Console</summary>
+            <div class="console-body">
+              <div class="console-target">
+                <label><input type="radio" name="sql-target" value="primary" checked /> Primary</label>
+                <label><input type="radio" name="sql-target" value="replica" /> Replica</label>
+              </div>
+              <div id="console-output" class="console-output"></div>
+              <div class="console-input-row">
+                <input type="text" id="console-input" placeholder="SELECT * FROM students LIMIT 5;" />
+                <button id="console-submit" class="btn btn-primary">Run</button>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

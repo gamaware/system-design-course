@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Lab 10B - MongoDB Replica Set, Consistency, and Schema Design.
+  Launches a t3.medium EC2 instance with Docker and Docker Compose
+  pre-installed. Clones the course repository and runs the MongoDB lab
+  setup automatically. SSH access enabled.
+
+Parameters:
+  LatestAmiId:
+    Description: Amazon Linux 2023 AMI (auto-resolved via SSM)
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+
+Resources:
+  LabSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Lab 10B MongoDB - SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: SSH access
+
+  LabInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.medium
+      ImageId: !Ref LatestAmiId
+      KeyName: vockey
+      SecurityGroupIds:
+        - !GetAtt LabSecurityGroup.GroupId
+      Tags:
+        - Key: Name
+          Value: lab10b-mongodb
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          set -ex
+
+          dnf update -y
+          dnf install -y docker git
+          systemctl enable docker
+          systemctl start docker
+          usermod -aG docker ec2-user
+
+          ARCH=$(uname -m)
+          mkdir -p /usr/local/lib/docker/cli-plugins
+
+          curl -fsSL \
+            "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-${ARCH}" \
+            -o /usr/local/lib/docker/cli-plugins/docker-compose
+          chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+          su - ec2-user -c '
+            git clone https://github.com/gamaware/system-design-course.git
+            cd system-design-course/10-databases/mongodb
+            chmod +x setup.sh cleanup.sh
+            ./setup.sh
+          '
+
+          touch /home/ec2-user/LAB_READY
+
+Outputs:
+  InstanceId:
+    Description: EC2 instance ID
+    Value: !Ref LabInstance
+
+  PublicIP:
+    Description: Public IP address (use for SSH)
+    Value: !GetAtt LabInstance.PublicIp
+
+  SSHCommand:
+    Description: SSH command (use the labsuser.pem key from AWS Details)
+    Value: !Sub >-
+      ssh -i labsuser.pem ec2-user@${LabInstance.PublicIp}
