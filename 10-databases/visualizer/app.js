@@ -159,6 +159,31 @@ async function apiPost(url, body) {
   return res.json();
 }
 
+// --- SQL Glass Box (auto-log queries to console) ---
+
+function logSqlToConsole(result) {
+  const output = $('#console-output');
+  const steps = result.steps || [];
+
+  steps.forEach(step => {
+    if (!step.sql) return;
+    const qDiv = document.createElement('div');
+    qDiv.className = 'console-query';
+    qDiv.textContent = `mysql(${step.target})> ${step.sql}`;
+    output.appendChild(qDiv);
+
+    const rDiv = document.createElement('div');
+    rDiv.className = step.result.toLowerCase().includes('error') ||
+      step.result.toLowerCase().includes('not found') ||
+      step.result.toLowerCase().includes('stale')
+      ? 'console-error' : 'console-meta';
+    rDiv.textContent = `-- ${step.result} (${step.latency_ms}ms)`;
+    output.appendChild(rDiv);
+  });
+
+  output.scrollTop = output.scrollHeight;
+}
+
 async function apiGet(url) {
   const res = await fetch(url);
   return res.json();
@@ -271,7 +296,7 @@ function highlightExpStep(index) {
 
 // --- Result Panel ---
 
-function showResult(status, latency, data, cls) {
+function showResult(status, latency, data, cls, apiResult) {
   const panel = $('#result-panel');
   const statusEl = $('#result-status');
   const latencyEl = $('#result-latency');
@@ -282,6 +307,21 @@ function showResult(status, latency, data, cls) {
   latencyEl.textContent = `${latency.toFixed(1)}ms total`;
   dataEl.textContent = JSON.stringify(data, null, 2);
   panel.classList.remove('hidden');
+
+  // Show interpretation below the JSON
+  const existingInterp = panel.querySelector('.result-interpretation');
+  if (existingInterp) existingInterp.remove();
+  if (apiResult?.interpretation) {
+    const iDiv = document.createElement('div');
+    iDiv.className = 'result-interpretation';
+    iDiv.textContent = apiResult.interpretation;
+    panel.appendChild(iDiv);
+  }
+
+  // Log SQL queries to the console (without interpretation)
+  if (apiResult) {
+    logSqlToConsole(apiResult);
+  }
 }
 
 // --- Sidebar Update ---
@@ -368,7 +408,8 @@ async function doReplication() {
     lastStep.data?.lag_seconds === 0 ? 'REPLICATED' : 'LAG DETECTED',
     result.total_ms,
     result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
-    lastStep.data?.lag_seconds === 0 ? 'committed' : 'rolled-back'
+    lastStep.data?.lag_seconds === 0 ? 'committed' : 'rolled-back',
+    result
   );
 
   await updateSidebar();
@@ -433,7 +474,8 @@ async function doTransfer() {
     result.outcome,
     result.total_ms,
     result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
-    committed ? 'committed' : 'rolled-back'
+    committed ? 'committed' : 'rolled-back',
+    result
   );
 
   await updateSidebar();
@@ -473,7 +515,8 @@ async function doExplain() {
     `Rows scanned: ${rows} | Key: ${keyUsed}`,
     result.total_ms,
     plan,
-    rows > 1000 ? 'rolled-back' : 'committed'
+    rows > 1000 ? 'rolled-back' : 'committed',
+    result
   );
 
   await updateSidebar();
@@ -508,7 +551,7 @@ async function doCapStop() {
   if (replicaRect) replicaRect.style.opacity = '0.4';
   showResult('PARTITION ACTIVE', result.latency_ms,
     { message: 'Replication stopped. Replica will not receive new writes.' },
-    'rolled-back');
+    'rolled-back', result);
   await updateSidebar();
 }
 
@@ -523,7 +566,7 @@ async function doCapStart() {
   if (replicaRect) replicaRect.style.opacity = '1';
   showResult('PARTITION RECOVERED', result.latency_ms,
     { message: 'Replication resumed. Replica is catching up.' },
-    'committed');
+    'committed', result);
   await updateSidebar();
 }
 
@@ -569,7 +612,8 @@ async function doCapTest() {
     result.outcome,
     result.total_ms,
     result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
-    diverged ? 'rolled-back' : 'committed'
+    diverged ? 'rolled-back' : 'committed',
+    result
   );
 
   await updateSidebar();
@@ -588,7 +632,8 @@ async function doViewsCreate() {
   showResult(
     result.error ? 'ERROR' : `VIEW CREATED (${result.rows} rows)`,
     result.latency_ms || 0, result,
-    result.error ? 'rolled-back' : 'committed'
+    result.error ? 'rolled-back' : 'committed',
+    result
   );
   await updateSidebar();
 }
@@ -621,7 +666,8 @@ async function doViewsJoin() {
     `JOIN: ${result.row_count} rows`,
     result.total_ms, result.steps.map(s => ({
       action: s.action, result: s.result, ms: s.latency_ms,
-    })), 'committed'
+    })), 'committed',
+    result
   );
 
   animating = false;
@@ -655,7 +701,8 @@ async function doViewsView() {
     `VIEW: ${result.row_count} rows`,
     result.total_ms, result.steps.map(s => ({
       action: s.action, result: s.result, ms: s.latency_ms,
-    })), 'committed'
+    })), 'committed',
+    result
   );
 
   animating = false;
@@ -671,7 +718,8 @@ async function doViewsRefresh() {
   showResult(
     result.error ? 'ERROR' : `VIEW REFRESHED (${result.rows} rows)`,
     result.latency_ms || 0, result,
-    result.error ? 'rolled-back' : 'committed'
+    result.error ? 'rolled-back' : 'committed',
+    result
   );
 }
 
@@ -688,7 +736,7 @@ async function doVerticalSet() {
   if (result.error) {
     showResult('ERROR', 0, result, 'rolled-back');
   } else {
-    showResult(`Buffer pool set to ${label}`, result.latency_ms, result, 'committed');
+    showResult(`Buffer pool set to ${label}`, result.latency_ms, result, 'committed', result);
   }
 }
 
@@ -730,7 +778,8 @@ async function doVerticalBench() {
       memory_reads: s.memory_reads,
       disk_reads: s.disk_reads,
     },
-    s.buffer_hit_ratio > 90 ? 'committed' : 'rolled-back'
+    s.buffer_hit_ratio > 90 ? 'committed' : 'rolled-back',
+    result
   );
 
   await updateSidebar();
@@ -891,6 +940,39 @@ function initConsole() {
   $('#console-clear').addEventListener('click', () => {
     $('#console-output').innerHTML = '';
   });
+
+  // Draggable resize handle for bottom bar
+  const handle = $('#resize-handle');
+  const bar = document.querySelector('.bottom-bar');
+  if (handle && bar) {
+    let dragging = false;
+    let startY = 0;
+    let startH = 0;
+
+    handle.addEventListener('mousedown', (e) => {
+      dragging = true;
+      startY = e.clientY;
+      startH = bar.offsetHeight;
+      document.body.style.cursor = 'ns-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const diff = startY - e.clientY;
+      const newH = Math.max(120, Math.min(startH + diff, window.innerHeight * 0.7));
+      bar.style.height = newH + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (dragging) {
+        dragging = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      }
+    });
+  }
 }
 
 function initButtons() {
@@ -917,10 +999,57 @@ function startPolling() {
   pollTimer = setInterval(updateSidebar, POLL_INTERVAL_MS);
 }
 
+// --- Tooltips (JS-driven, fixed positioning) ---
+
+function initTooltips() {
+  const popup = $('#tooltip-popup');
+  if (!popup) return;
+
+  document.addEventListener('mouseover', (e) => {
+    const el = e.target.closest('[data-tooltip]');
+    if (!el) {
+      popup.classList.remove('visible');
+      return;
+    }
+    popup.textContent = el.dataset.tooltip;
+    popup.classList.add('visible');
+
+    // Position above the element
+    const rect = el.getBoundingClientRect();
+    const popupW = popup.offsetWidth;
+    const popupH = popup.offsetHeight;
+    let left = rect.left + rect.width / 2 - popupW / 2;
+    let top = rect.top - popupH - 8;
+
+    // Keep within viewport
+    if (left < 8) left = 8;
+    if (left + popupW > window.innerWidth - 8) {
+      left = window.innerWidth - popupW - 8;
+    }
+    // If no room above, show below
+    if (top < 8) {
+      top = rect.bottom + 8;
+    }
+
+    popup.style.left = left + 'px';
+    popup.style.top = top + 'px';
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    const el = e.target.closest('[data-tooltip]');
+    if (!el) return;
+    // Only hide if we're leaving the tooltip target
+    const related = e.relatedTarget;
+    if (related && el.contains(related)) return;
+    popup.classList.remove('visible');
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initButtons();
   initConsole();
+  initTooltips();
   startPolling();
   showExplanation('replication');
 });

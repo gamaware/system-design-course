@@ -25,7 +25,7 @@ def get_conn(host):
     )
 
 
-def step_entry(seq, action, target, result, latency_ms, data=None):
+def step_entry(seq, action, target, result, latency_ms, data=None, sql=None):
     """Build a single step trace entry."""
     entry = {
         "seq": seq, "action": action, "target": target,
@@ -33,6 +33,8 @@ def step_entry(seq, action, target, result, latency_ms, data=None):
     }
     if data is not None:
         entry["data"] = data
+    if sql is not None:
+        entry["sql"] = sql
     return entry
 
 
@@ -47,7 +49,7 @@ def replication_write(body):
     total_start = time.perf_counter()
     seq = 1
 
-    # Write to primary
+    insert_sql = f"INSERT INTO students (name, email, major) VALUES ('{name}', '{email}', '{major}')"
     conn = get_conn(PRIMARY_HOST)
     try:
         t0 = time.perf_counter()
@@ -59,12 +61,13 @@ def replication_write(body):
             new_id = cur.lastrowid
         t1 = time.perf_counter()
         steps.append(step_entry(seq, "INSERT", "primary", "OK",
-                                (t1 - t0) * 1000, {"student_id": new_id}))
+                                (t1 - t0) * 1000, {"student_id": new_id},
+                                sql=insert_sql))
         seq += 1
     finally:
         conn.close()
 
-    # Read from replica
+    select_sql = f"SELECT * FROM students WHERE student_id = {new_id}"
     conn = get_conn(REPLICA_HOST)
     try:
         t0 = time.perf_counter()
@@ -76,11 +79,10 @@ def replication_write(body):
         steps.append(step_entry(
             seq, "SELECT", "replica",
             "FOUND" if found else "NOT YET REPLICATED",
-            (t1 - t0) * 1000, row,
+            (t1 - t0) * 1000, row, sql=select_sql,
         ))
         seq += 1
 
-        # Check replication lag
         t0 = time.perf_counter()
         with conn.cursor() as cur:
             cur.execute("SHOW REPLICA STATUS")
@@ -88,12 +90,25 @@ def replication_write(body):
         t1 = time.perf_counter()
         lag = status.get("Seconds_Behind_Source", "N/A") if status else "N/A"
         steps.append(step_entry(seq, "SHOW REPLICA STATUS", "replica", "OK",
-                                (t1 - t0) * 1000, {"lag_seconds": lag}))
+                                (t1 - t0) * 1000, {"lag_seconds": lag},
+                                sql="SHOW REPLICA STATUS"))
     finally:
         conn.close()
 
     total_ms = (time.perf_counter() - total_start) * 1000
-    return {"pattern": "replication", "steps": steps, "total_ms": round(total_ms, 2)}
+    if found:
+        interp = (f"The row appeared on the replica within {round(total_ms, 1)}ms. "
+                  f"Replication lag is {lag} seconds. In a read-heavy system, "
+                  "distributing SELECTs to replicas reduces primary load -- this is "
+                  "horizontal read scaling. The trade-off: replicas may serve "
+                  "slightly stale data during lag spikes.")
+    else:
+        interp = ("The row was NOT found on the replica -- replication has not "
+                  "caught up yet. This is replication lag in action. Any application "
+                  "reading from replicas must tolerate eventual consistency: the data "
+                  "will arrive, but not instantly.")
+    return {"pattern": "replication", "steps": steps, "total_ms": round(total_ms, 2),
+            "interpretation": interp}
 
 
 def replication_status(_body):
@@ -110,6 +125,7 @@ def replication_status(_body):
             "sql_running": status.get("Replica_SQL_Running"),
             "lag_seconds": status.get("Seconds_Behind_Source"),
             "source_host": status.get("Source_Host"),
+            "sql": "SHOW REPLICA STATUS",
         }
     finally:
         conn.close()
@@ -132,7 +148,8 @@ def consistency_transfer(body):
         t0 = time.perf_counter()
         conn.begin()
         t1 = time.perf_counter()
-        steps.append(step_entry(seq, "BEGIN", "primary", "OK", (t1 - t0) * 1000))
+        steps.append(step_entry(seq, "BEGIN", "primary", "OK", (t1 - t0) * 1000,
+                                sql="BEGIN"))
         seq += 1
 
         with conn.cursor() as cur:
@@ -150,6 +167,8 @@ def consistency_transfer(body):
             to_id = to_row["course_id"]
 
             # Delete old enrollment
+            delete_sql = (f"DELETE FROM enrollments WHERE student_id = {student_id} "
+                          f"AND course_id = {from_id}")
             t0 = time.perf_counter()
             cur.execute("DELETE FROM enrollments WHERE student_id = %s AND course_id = %s",
                         (student_id, from_id))
@@ -157,56 +176,80 @@ def consistency_transfer(body):
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"DELETE enrollment ({from_course})", "primary",
                                     "OK" if affected > 0 else "NO ROWS",
-                                    (t1 - t0) * 1000, {"rows_affected": affected}))
+                                    (t1 - t0) * 1000, {"rows_affected": affected},
+                                    sql=delete_sql))
             seq += 1
 
             # Update from-course count
+            update_from_sql = (f"UPDATE courses SET enrolled = enrolled - 1 "
+                               f"WHERE course_id = {from_id} AND enrolled > 0")
             t0 = time.perf_counter()
             cur.execute("UPDATE courses SET enrolled = enrolled - 1 WHERE course_id = %s AND enrolled > 0",
                         (from_id,))
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"UPDATE {from_course} enrolled-1", "primary", "OK",
-                                    (t1 - t0) * 1000))
+                                    (t1 - t0) * 1000,
+                                    sql=update_from_sql))
             seq += 1
 
             # Insert new enrollment
+            insert_sql = (f"INSERT INTO enrollments (student_id, course_id) "
+                          f"VALUES ({student_id}, {to_id})")
             t0 = time.perf_counter()
             try:
                 cur.execute("INSERT INTO enrollments (student_id, course_id) VALUES (%s, %s)",
                             (student_id, to_id))
                 t1 = time.perf_counter()
                 steps.append(step_entry(seq, f"INSERT enrollment ({to_course})", "primary", "OK",
-                                        (t1 - t0) * 1000))
+                                        (t1 - t0) * 1000, sql=insert_sql))
             except pymysql.IntegrityError as exc:
                 t1 = time.perf_counter()
                 conn.rollback()
                 steps.append(step_entry(seq, f"INSERT enrollment ({to_course})", "primary",
                                         "CONSTRAINT VIOLATION", (t1 - t0) * 1000,
-                                        {"error": str(exc)}))
-                steps.append(step_entry(seq + 1, "ROLLBACK", "primary", "OK", 0))
+                                        {"error": str(exc)}, sql=insert_sql))
+                steps.append(step_entry(seq + 1, "ROLLBACK", "primary", "OK", 0,
+                                        sql="ROLLBACK"))
                 total_ms = (time.perf_counter() - total_start) * 1000
                 return {"pattern": "consistency", "steps": steps,
-                        "total_ms": round(total_ms, 2), "outcome": "ROLLED BACK"}
+                        "total_ms": round(total_ms, 2), "outcome": "ROLLED BACK",
+                        "interpretation": (
+                            "The transaction was ROLLED BACK due to a constraint "
+                            "violation. This demonstrates atomicity: none of the "
+                            "changes (DELETE, UPDATE, INSERT) were applied. The "
+                            "database remains in a consistent state as if the "
+                            "transfer was never attempted.")}
             seq += 1
 
             # Update to-course count
+            update_to_sql = (f"UPDATE courses SET enrolled = enrolled + 1 "
+                             f"WHERE course_id = {to_id}")
             t0 = time.perf_counter()
             cur.execute("UPDATE courses SET enrolled = enrolled + 1 WHERE course_id = %s",
                         (to_id,))
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"UPDATE {to_course} enrolled+1", "primary", "OK",
-                                    (t1 - t0) * 1000))
+                                    (t1 - t0) * 1000,
+                                    sql=update_to_sql))
             seq += 1
 
         # COMMIT
         t0 = time.perf_counter()
         conn.commit()
         t1 = time.perf_counter()
-        steps.append(step_entry(seq, "COMMIT", "primary", "OK", (t1 - t0) * 1000))
+        steps.append(step_entry(seq, "COMMIT", "primary", "OK", (t1 - t0) * 1000,
+                                sql="COMMIT"))
 
         total_ms = (time.perf_counter() - total_start) * 1000
         return {"pattern": "consistency", "steps": steps,
-                "total_ms": round(total_ms, 2), "outcome": "COMMITTED"}
+                "total_ms": round(total_ms, 2), "outcome": "COMMITTED",
+                "interpretation": (
+                    f"The transaction COMMITTED successfully in "
+                    f"{round(total_ms, 1)}ms. All four operations (DELETE, "
+                    f"UPDATE, INSERT, UPDATE) were applied atomically -- either "
+                    f"all succeed or none do. This guarantees the enrollment "
+                    f"counts stay consistent even if the server crashes "
+                    f"mid-transaction.")}
     except Exception as exc:
         conn.rollback()
         return {"error": str(exc)}
@@ -224,6 +267,11 @@ def schema_explain(body):
     total_start = time.perf_counter()
     seq = 1
 
+    explain_sql = (f"EXPLAIN SELECT * FROM access_log WHERE student_id = {student_id} "
+                   f"AND resource = '{resource}'")
+    count_sql = (f"SELECT COUNT(*) AS cnt FROM access_log WHERE student_id = {student_id} "
+                 f"AND resource = '{resource}'")
+
     conn = get_conn(PRIMARY_HOST)
     try:
         with conn.cursor() as cur:
@@ -236,7 +284,7 @@ def schema_explain(body):
             plan = cur.fetchone()
             t1 = time.perf_counter()
             steps.append(step_entry(seq, "EXPLAIN", "primary", "OK",
-                                    (t1 - t0) * 1000, plan))
+                                    (t1 - t0) * 1000, plan, sql=explain_sql))
             seq += 1
 
             # Run actual query with timing
@@ -248,10 +296,25 @@ def schema_explain(body):
             result = cur.fetchone()
             t1 = time.perf_counter()
             steps.append(step_entry(seq, "SELECT COUNT(*)", "primary", "OK",
-                                    (t1 - t0) * 1000, result))
+                                    (t1 - t0) * 1000, result, sql=count_sql))
+
+        rows_scanned = plan.get("rows", "?") if plan else "?"
+        scan_type = plan.get("type", "unknown") if plan else "unknown"
+        key_used = plan.get("key") if plan else None
+        if key_used:
+            interp = (f"The query uses index '{key_used}' ({scan_type}), scanning "
+                      f"~{rows_scanned} rows. Index lookups are fast because the "
+                      f"engine jumps directly to matching entries instead of reading "
+                      f"every row in the table.")
+        else:
+            interp = (f"The query performs a {scan_type} scanning ~{rows_scanned} rows "
+                      f"with no index. Every row in the table must be examined, which "
+                      f"gets slower as the table grows. Adding a composite index on "
+                      f"(student_id, resource) would reduce this to a few rows.")
 
         total_ms = (time.perf_counter() - total_start) * 1000
-        return {"pattern": "schema", "steps": steps, "total_ms": round(total_ms, 2)}
+        return {"pattern": "schema", "steps": steps, "total_ms": round(total_ms, 2),
+                "interpretation": interp}
     finally:
         conn.close()
 
@@ -271,7 +334,8 @@ def schema_add_index(_body):
                 result = "ALREADY EXISTS"
             t1 = time.perf_counter()
         return {"action": "CREATE INDEX", "result": result,
-                "latency_ms": round((t1 - t0) * 1000, 2)}
+                "latency_ms": round((t1 - t0) * 1000, 2),
+                "sql": "CREATE INDEX idx_student_resource ON access_log (student_id, resource)"}
     finally:
         conn.close()
 
@@ -289,7 +353,8 @@ def schema_drop_index(_body):
                 result = "NOT FOUND"
             t1 = time.perf_counter()
         return {"action": "DROP INDEX", "result": result,
-                "latency_ms": round((t1 - t0) * 1000, 2)}
+                "latency_ms": round((t1 - t0) * 1000, 2),
+                "sql": "DROP INDEX idx_student_resource ON access_log"}
     finally:
         conn.close()
 
@@ -422,7 +487,13 @@ def cap_stop_replication(_body):
             cur.execute("STOP REPLICA")
         t1 = time.perf_counter()
         return {"action": "STOP REPLICA", "result": "STOPPED",
-                "latency_ms": round((t1 - t0) * 1000, 2)}
+                "latency_ms": round((t1 - t0) * 1000, 2),
+                "sql": "STOP REPLICA",
+                "interpretation": (
+                    "Replication stopped -- the replica will no longer receive "
+                    "updates from the primary. This simulates a network partition: "
+                    "writes continue on the primary but the replica serves "
+                    "increasingly stale data.")}
     finally:
         conn.close()
 
@@ -436,7 +507,12 @@ def cap_start_replication(_body):
             cur.execute("START REPLICA")
         t1 = time.perf_counter()
         return {"action": "START REPLICA", "result": "STARTED",
-                "latency_ms": round((t1 - t0) * 1000, 2)}
+                "latency_ms": round((t1 - t0) * 1000, 2),
+                "sql": "START REPLICA",
+                "interpretation": (
+                    "Replication restarted -- the replica will catch up with all "
+                    "writes that occurred on the primary during the partition. "
+                    "Once lag reaches zero, both nodes are consistent again.")}
     finally:
         conn.close()
 
@@ -450,6 +526,8 @@ def cap_test_divergence(body):
     seq = 1
 
     # Write to primary
+    insert_sql = (f"INSERT INTO students (name, email, major) "
+                  f"VALUES ('{name}', '{email}', 'CAP Test')")
     conn = get_conn(PRIMARY_HOST)
     try:
         t0 = time.perf_counter()
@@ -459,7 +537,8 @@ def cap_test_divergence(body):
             new_id = cur.lastrowid
         t1 = time.perf_counter()
         steps.append(step_entry(seq, "INSERT", "primary", "OK",
-                                (t1 - t0) * 1000, {"student_id": new_id}))
+                                (t1 - t0) * 1000, {"student_id": new_id},
+                                sql=insert_sql))
         seq += 1
     finally:
         conn.close()
@@ -472,9 +551,10 @@ def cap_test_divergence(body):
             cur.execute("SELECT * FROM students WHERE student_id = %s", (new_id,))
             row = cur.fetchone()
         t1 = time.perf_counter()
+        select_sql = f"SELECT * FROM students WHERE student_id = {new_id}"
         steps.append(step_entry(seq, "SELECT (primary)", "primary",
                                 "FOUND" if row else "NOT FOUND",
-                                (t1 - t0) * 1000, row))
+                                (t1 - t0) * 1000, row, sql=select_sql))
         seq += 1
     finally:
         conn.close()
@@ -490,15 +570,25 @@ def cap_test_divergence(body):
         found = row is not None
         steps.append(step_entry(seq, "SELECT (replica)", "replica",
                                 "FOUND (consistent)" if found else "NOT FOUND (stale)",
-                                (t1 - t0) * 1000, row))
+                                (t1 - t0) * 1000, row, sql=select_sql))
     finally:
         conn.close()
 
     total_ms = (time.perf_counter() - total_start) * 1000
     diverged = steps[1]["result"] != steps[2]["result"].split(" ")[0]
+    if diverged:
+        interp = ("The primary and replica returned different results -- the nodes "
+                  "have DIVERGED. During a partition, the primary accepted the write "
+                  "(availability) but the replica cannot see it (no consistency). "
+                  "This is the CA trade-off in action.")
+    else:
+        interp = ("Both nodes returned the same result -- the system is CONSISTENT. "
+                  "With replication active, writes propagate quickly enough that "
+                  "both nodes agree. No partition means no CA trade-off.")
     return {
         "pattern": "cap", "steps": steps, "total_ms": round(total_ms, 2),
         "outcome": "DIVERGED (partition active)" if diverged else "CONSISTENT",
+        "interpretation": interp,
     }
 
 
@@ -523,8 +613,21 @@ def views_create(_body):
             cur.execute("SELECT COUNT(*) AS cnt FROM enrollment_summary")
             cnt = cur.fetchone()["cnt"]
             t1 = time.perf_counter()
+        create_sql = ("CREATE TABLE enrollment_summary AS "
+                      "SELECT s.student_id, s.name, s.major, "
+                      "c.code AS course_code, c.title AS course_title, "
+                      "e.enrolled_at "
+                      "FROM enrollments e "
+                      "JOIN students s ON e.student_id = s.student_id "
+                      "JOIN courses c ON e.course_id = c.course_id")
         return {"action": "CREATE VIEW", "result": "CREATED",
-                "rows": cnt, "latency_ms": round((t1 - t0) * 1000, 2)}
+                "rows": cnt, "latency_ms": round((t1 - t0) * 1000, 2),
+                "sql": create_sql,
+                "interpretation": (
+                    f"Pre-computed {cnt} rows into a flat table by joining "
+                    f"students, courses, and enrollments once. Future reads "
+                    f"hit this single table instead of computing the 3-table "
+                    f"JOIN every time -- a classic space-for-time trade-off.")}
     finally:
         conn.close()
 
@@ -562,9 +665,14 @@ def views_query_join(_body):
             """)
             rows = cur.fetchall()
             t1 = time.perf_counter()
+            join_sql = ("SELECT s.name, s.major, c.code, c.title, e.enrolled_at "
+                        "FROM enrollments e "
+                        "JOIN students s ON e.student_id = s.student_id "
+                        "JOIN courses c ON e.course_id = c.course_id "
+                        "ORDER BY s.name")
             steps.append(step_entry(seq, "SELECT with 3-table JOIN", "primary",
                                     "OK", (t1 - t0) * 1000,
-                                    {"row_count": len(rows)}))
+                                    {"row_count": len(rows)}, sql=join_sql))
             seq += 1
 
             # Get EXPLAIN
@@ -578,12 +686,23 @@ def views_query_join(_body):
             plan = cur.fetchall()
             t1 = time.perf_counter()
             tables_scanned = len(plan)
+            explain_join_sql = ("EXPLAIN SELECT s.name, s.major, c.code, c.title, "
+                                "e.enrolled_at FROM enrollments e "
+                                "JOIN students s ON e.student_id = s.student_id "
+                                "JOIN courses c ON e.course_id = c.course_id")
             steps.append(step_entry(seq, "EXPLAIN (tables scanned)", "primary",
-                                    f"{tables_scanned} tables", (t1 - t0) * 1000))
+                                    f"{tables_scanned} tables", (t1 - t0) * 1000,
+                                    sql=explain_join_sql))
 
         total_ms = (time.perf_counter() - total_start) * 1000
         return {"pattern": "views-join", "steps": steps,
-                "total_ms": round(total_ms, 2), "row_count": len(rows)}
+                "total_ms": round(total_ms, 2), "row_count": len(rows),
+                "interpretation": (
+                    f"The 3-table JOIN scanned {tables_scanned} tables to produce "
+                    f"{len(rows)} rows in {round(total_ms, 1)}ms. Each query "
+                    f"recomputes the join at read time. With more data or complex "
+                    f"joins, this cost grows -- materialized views trade storage "
+                    f"for faster reads.")}
     finally:
         conn.close()
 
@@ -605,20 +724,35 @@ def views_query_view(_body):
             cur.execute("SELECT * FROM enrollment_summary ORDER BY name")
             rows = cur.fetchall()
             t1 = time.perf_counter()
+            view_sql = "SELECT * FROM enrollment_summary ORDER BY name"
+            query_ms = (t1 - t0) * 1000
             steps.append(step_entry(1, "SELECT from materialized view", "primary",
-                                    "OK", (t1 - t0) * 1000,
-                                    {"row_count": len(rows)}))
+                                    "OK", query_ms,
+                                    {"row_count": len(rows)}, sql=view_sql))
 
         total_ms = (time.perf_counter() - total_start) * 1000
         return {"pattern": "views-view", "steps": steps,
-                "total_ms": round(total_ms, 2), "row_count": len(rows)}
+                "total_ms": round(total_ms, 2), "row_count": len(rows),
+                "interpretation": (
+                    f"Reading {len(rows)} rows from the pre-computed table took "
+                    f"{round(query_ms, 2)}ms -- no joins needed. Compare this "
+                    f"with the JOIN query to see the speed difference. The "
+                    f"trade-off: this data is a snapshot and may become stale "
+                    f"when the source tables change.")}
     finally:
         conn.close()
 
 
 def views_refresh(_body):
     """Refresh the materialized view (drop + recreate)."""
-    return views_create(_body)
+    result = views_create(_body)
+    if "interpretation" in result:
+        result["interpretation"] = (
+            "The materialized view was dropped and recreated with current data. "
+            "Any changes made to students, courses, or enrollments since the last "
+            "refresh are now reflected. In production, refreshes are scheduled "
+            "periodically -- the interval determines how stale the data can get.")
+    return result
 
 
 # ---- Vertical Scalability Tab ----
@@ -633,7 +767,12 @@ def vertical_set_buffer(body):
             cur.execute(f"SET GLOBAL innodb_buffer_pool_size = {size}")
         t1 = time.perf_counter()
         return {"action": "SET BUFFER POOL", "size": size,
-                "latency_ms": round((t1 - t0) * 1000, 2)}
+                "latency_ms": round((t1 - t0) * 1000, 2),
+                "sql": f"SET GLOBAL innodb_buffer_pool_size = {size}",
+                "interpretation": (
+                    f"Buffer pool resized to {size}. A larger pool keeps more "
+                    f"data pages in memory, reducing disk reads and improving "
+                    f"query latency -- this is vertical scaling in action.")}
     except pymysql.MySQLError as exc:
         return {"error": str(exc)}
     finally:
@@ -680,9 +819,30 @@ def vertical_benchmark(body):
         p95 = round(sorted(latencies)[int(len(latencies) * 0.95)], 2)
         qps = round(count / ((time.perf_counter() - total_start)), 1)
 
+        bench_sql = ("SELECT * FROM access_log WHERE student_id = ? "
+                     f"AND resource = ? (x{count})")
+        if hit_ratio >= 99:
+            interp = (f"Buffer hit ratio is {hit_ratio}% -- nearly all reads served "
+                      f"from memory ({read_requests} memory reads vs {disk_reads} "
+                      f"disk reads). The buffer pool is large enough to cache the "
+                      f"working set, so adding more memory would yield diminishing "
+                      f"returns.")
+        elif hit_ratio >= 90:
+            interp = (f"Buffer hit ratio is {hit_ratio}% -- most reads come from "
+                      f"memory but {disk_reads} still hit disk. Increasing the "
+                      f"buffer pool size would push more pages into cache and "
+                      f"reduce average latency.")
+        else:
+            interp = (f"Buffer hit ratio is only {hit_ratio}% -- {disk_reads} out "
+                      f"of {read_requests} reads went to disk. The buffer pool is "
+                      f"too small to hold the working set. Increasing memory "
+                      f"(vertical scaling) would significantly improve throughput.")
+
         total_ms = (time.perf_counter() - total_start) * 1000
         return {
             "pattern": "vertical", "total_ms": round(total_ms, 2),
+            "sql": bench_sql,
+            "interpretation": interp,
             "stats": {
                 "queries": count,
                 "avg_latency_ms": avg_latency,

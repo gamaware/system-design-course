@@ -36,9 +36,10 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   line-height: 1.5;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 h2 {
@@ -86,6 +87,7 @@ h3 {
 .tab:hover {
   background: var(--color-bg-elevated);
   color: var(--color-text);
+  transform: translateY(-1px);
 }
 
 .tab.active {
@@ -99,6 +101,7 @@ h3 {
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
 .main-area {
@@ -172,6 +175,48 @@ h3 {
   0% { transform: scale(1); }
   50% { transform: scale(1.03); }
   100% { transform: scale(1); }
+}
+
+@keyframes arrow-glow {
+  0% { filter: none; opacity: 0.6; }
+  30% { filter: drop-shadow(0 0 8px currentColor); opacity: 1; }
+  100% { filter: drop-shadow(0 0 3px currentColor); opacity: 0.9; }
+}
+
+.arrow-active {
+  animation: arrow-glow 1s ease-out;
+}
+
+.travel-dot {
+  transition: opacity 0.15s ease;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { r: 5; opacity: 0.8; }
+  50% { r: 8; opacity: 1; }
+}
+
+/* --- Tooltips (JS-driven, fixed positioning) --- */
+.tooltip-popup {
+  position: fixed;
+  z-index: 9999;
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  border: 1px solid #475569;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  max-width: 300px;
+}
+
+.tooltip-popup.visible {
+  opacity: 1;
 }
 
 .latency-label {
@@ -439,18 +484,64 @@ h3 {
 .bottom-bar {
   background: var(--color-bg-surface);
   border-top: 1px solid var(--color-border);
-  padding: 0.75rem 1rem;
+  padding: 0 1rem 0.5rem;
   height: 260px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.resize-handle {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  cursor: ns-resize;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resize-handle::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.resize-handle:hover::after {
+  background: var(--color-primary);
+  width: 64px;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
 }
 
 .event-log {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  max-height: 150px;
+  flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  min-height: 0;
+  padding: 4px 8px;
+}
+
+.event-log:empty::before {
+  content: 'Operations will appear here as you interact with the visualizer...';
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-size: 0.8rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  display: block;
 }
 
 .log-entry {
@@ -507,12 +598,31 @@ h3 {
 .bottom-split {
   display: flex;
   gap: 1rem;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 0.5rem;
 }
 
 .event-log-container {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #0a0e17;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.event-log-container h3 {
+  padding: 6px 12px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
 }
 
 /* --- SQL Console --- */
@@ -523,8 +633,9 @@ h3 {
   flex-direction: column;
   background: #0a0e17;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .console-header {
@@ -601,6 +712,16 @@ h3 {
   color: #a3e635;
 }
 
+.console-output:empty::before {
+  content: 'SQL queries from button clicks and manual commands appear here...';
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-size: 0.8rem;
+  padding: 1rem 0;
+  display: block;
+}
+
 .console-input-row {
   display: flex;
   align-items: center;
@@ -667,6 +788,19 @@ h3 {
   color: #94a3b8;
   font-size: 0.7rem;
   margin-bottom: 4px;
+}
+
+/* Interpretation box in result panel */
+.result-interpretation {
+  margin-top: 0.75rem;
+  padding: 10px 14px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-left: 3px solid #3b82f6;
+  border-radius: var(--radius);
+  color: #93c5fd;
+  font-size: 0.8rem;
+  line-height: 1.6;
 }
 
 .console-result-table th {

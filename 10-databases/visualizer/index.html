@@ -9,14 +9,14 @@
   <body>
     <header class="tab-bar">
       <div class="tab-group">
-        <button class="tab active" data-tab="replication">Replication</button>
-        <button class="tab" data-tab="consistency">Consistency (ACID)</button>
-        <button class="tab" data-tab="schema">Schema &amp; Indexing</button>
-        <button class="tab" data-tab="cap">CAP Theorem</button>
-        <button class="tab" data-tab="views">Materialized Views</button>
-        <button class="tab" data-tab="vertical">Vertical Scaling</button>
+        <button class="tab active" data-tab="replication" data-tooltip="Write to primary, read from replica">Replication</button>
+        <button class="tab" data-tab="consistency" data-tooltip="ACID transactions with commit/rollback">Consistency (ACID)</button>
+        <button class="tab" data-tab="schema" data-tooltip="EXPLAIN query plans, add/drop indexes">Schema &amp; Indexing</button>
+        <button class="tab" data-tab="cap" data-tooltip="Simulate network partition, observe divergence">CAP Theorem</button>
+        <button class="tab" data-tab="views" data-tooltip="Compare JOINs vs pre-computed views">Materialized Views</button>
+        <button class="tab" data-tab="vertical" data-tooltip="Tune buffer pool size, benchmark queries">Vertical Scaling</button>
       </div>
-      <button id="btn-reset-db" class="btn btn-reset" title="Reset database to initial state">Reset DB</button>
+      <button id="btn-reset-db" class="btn btn-reset" data-tooltip="Restore original 10 students, 4 courses, drop indexes" title="Reset database to initial state">Reset DB</button>
     </header>
 
     <div id="pattern-description" class="pattern-description">
@@ -161,7 +161,7 @@
                 <option>Engineering</option>
               </select>
             </div>
-            <button id="repl-write" class="btn btn-primary">Write &amp; Read</button>
+            <button id="repl-write" class="btn btn-primary" data-tooltip="INSERT on primary, then SELECT from replica to test replication">Write &amp; Read</button>
           </div>
 
           <!-- Consistency controls -->
@@ -184,7 +184,7 @@
                 <option>CS201</option><option>MATH101</option>
               </select>
             </div>
-            <button id="tx-transfer" class="btn btn-primary">Transfer Enrollment</button>
+            <button id="tx-transfer" class="btn btn-primary" data-tooltip="Move student between courses in an ACID transaction">Transfer Enrollment</button>
           </div>
 
           <!-- Schema controls -->
@@ -197,25 +197,25 @@
               <label for="idx-resource">Resource</label>
               <input type="text" id="idx-resource" value="resource-10" />
             </div>
-            <button id="idx-explain" class="btn btn-primary">Run EXPLAIN</button>
-            <button id="idx-add" class="btn btn-secondary">Add Index</button>
-            <button id="idx-drop" class="btn btn-danger">Drop Index</button>
+            <button id="idx-explain" class="btn btn-primary" data-tooltip="Show MySQL query plan: rows scanned, index used">Run EXPLAIN</button>
+            <button id="idx-add" class="btn btn-secondary" data-tooltip="Create composite index on (student_id, resource)">Add Index</button>
+            <button id="idx-drop" class="btn btn-danger" data-tooltip="Remove the composite index">Drop Index</button>
           </div>
 
           <!-- CAP Theorem controls -->
           <div id="controls-cap" class="controls">
-            <button id="cap-stop" class="btn btn-danger">Stop Replication</button>
-            <button id="cap-start" class="btn btn-secondary">Start Replication</button>
-            <button id="cap-test" class="btn btn-primary">Write &amp; Compare</button>
+            <button id="cap-stop" class="btn btn-danger" data-tooltip="STOP REPLICA -- simulate network partition">Stop Replication</button>
+            <button id="cap-start" class="btn btn-secondary" data-tooltip="START REPLICA -- recover from partition">Start Replication</button>
+            <button id="cap-test" class="btn btn-primary" data-tooltip="INSERT on primary, read from both, compare results">Write &amp; Compare</button>
           </div>
 
           <!-- Materialized Views controls -->
           <div id="controls-views" class="controls">
-            <button id="views-create" class="btn btn-primary">Create View</button>
-            <button id="views-drop" class="btn btn-danger">Drop View</button>
-            <button id="views-join" class="btn btn-secondary">Query with JOINs</button>
-            <button id="views-view" class="btn btn-secondary">Query from View</button>
-            <button id="views-refresh" class="btn btn-secondary">Refresh View</button>
+            <button id="views-create" class="btn btn-primary" data-tooltip="CREATE TABLE ... AS SELECT (pre-compute the JOIN)">Create View</button>
+            <button id="views-drop" class="btn btn-danger" data-tooltip="DROP TABLE enrollment_summary">Drop View</button>
+            <button id="views-join" class="btn btn-secondary" data-tooltip="SELECT with 3-table JOIN (students+enrollments+courses)">Query with JOINs</button>
+            <button id="views-view" class="btn btn-secondary" data-tooltip="SELECT from the pre-computed flat table">Query from View</button>
+            <button id="views-refresh" class="btn btn-secondary" data-tooltip="Drop and recreate the view with latest data">Refresh View</button>
           </div>
 
           <!-- Vertical Scaling controls -->
@@ -229,8 +229,8 @@
                 <option value="268435456">256 MB</option>
               </select>
             </div>
-            <button id="vert-set" class="btn btn-secondary">Set Buffer</button>
-            <button id="vert-bench" class="btn btn-primary">Run Benchmark (200 queries)</button>
+            <button id="vert-set" class="btn btn-secondary" data-tooltip="SET GLOBAL innodb_buffer_pool_size">Set Buffer</button>
+            <button id="vert-bench" class="btn btn-primary" data-tooltip="Run 200 random queries and measure latency + hit ratio">Run Benchmark (200 queries)</button>
           </div>
         </section>
 
@@ -287,9 +287,10 @@
     </div>
 
     <footer class="bottom-bar">
+      <div class="resize-handle" id="resize-handle"></div>
       <div class="bottom-split">
         <div class="event-log-container">
-          <h3>Event Log</h3>
+          <h3>Event Log <span style="font-weight:400;font-size:0.7rem;color:var(--color-text-muted)">-- every database operation with timing</span></h3>
           <div id="event-log" class="event-log"></div>
         </div>
 
@@ -312,6 +313,7 @@
       </div>
     </footer>
 
+    <div id="tooltip-popup" class="tooltip-popup"></div>
     <script src="app.js"></script>
   </body>
 </html>
