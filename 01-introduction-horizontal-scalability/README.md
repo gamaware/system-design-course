@@ -57,6 +57,8 @@ Class-ready diagrams (SVG editable + PNG) in [`diagrams/`](./diagrams/):
 |---|---|
 | [Arquitectura del lab](./diagrams/lab01-arquitectura.png) | VPC (3 AZ), ALB, ECS Fargate cluster with the three services, Cloud Map `service.local`, CloudWatch → Target Tracking alarms → Application Auto Scaling loop, CDK stacks. |
 | [Escalado manual: CLI vs. CDK](./diagrams/lab01-escalado-manual-cdk.png) | Imperative `aws ecs update-service --desired-count` (drift) vs. declarative change of `desired_count` in `ecsdemo-frontend/cdk/app.py` + `cdk diff` / `cdk deploy`. |
+| [Ciclo de vida de AWS CDK](./diagrams/cdk-ciclo-de-vida.png) | What CDK is (constructs L1/L2/L3, app → stacks) and the lifecycle `init → bootstrap → synth → diff → deploy → iterate → destroy`, with the lab's exact commands and typical errors. |
+| [Cómo decide el autoscaling](./diagrams/autoscaling-como-decide.png) | The target-tracking "thermostat": CPU metric → AlarmHigh/AlarmLow → `new = ceil(tasks × CPU / target)` → desiredCount within min/max; measured timeline and the four knobs in `app.py`. |
 | [Flujo de escalado: manual vs. autoscaling](./diagrams/lab01-flujo-escalado.png) | Step-by-step manual scale-out/scale-in with measured timings, the CPU target-tracking feedback loop (AlarmHigh / AlarmLow), and lessons learned (sustained load, target vs. saturation plateau). |
 
 ![Lab 01 architecture](./diagrams/lab01-arquitectura.png)
