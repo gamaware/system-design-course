@@ -205,7 +205,9 @@ class BaseVPCStack(Stack):
             vpc = self.vpc,
             role = role,
             user_data=ec2.UserData.custom(user_data),
-            security_group=self.services_3000_sec_group
+            security_group=self.services_3000_sec_group,
+            # Propagate stack tags to the root EBS volume at launch (required by tag-enforcement SCPs)
+            propagate_tags_to_volume_on_creation=True
         )
 
         # App Mesh Configuration
