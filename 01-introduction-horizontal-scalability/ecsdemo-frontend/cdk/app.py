@@ -96,9 +96,11 @@ class FrontendService(Stack):
            max_capacity=10
         )
 
+        # NOTE: the single-threaded Rails frontend on 0.25 vCPU saturates at ~50% average CPU
+        # (it alternates 0/100%), so a 50% target never triggers AlarmHigh. 30% makes the demo scale.
         self.autoscale.scale_on_cpu_utilization(
            "CPUAutoscaling",
-           target_utilization_percent=50,
+           target_utilization_percent=30,
            scale_in_cooldown=Duration.seconds(30),
            scale_out_cooldown=Duration.seconds(30)
         )
