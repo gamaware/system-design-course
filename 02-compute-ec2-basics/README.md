@@ -39,6 +39,17 @@ in this course.
 - Scalable - easily increase or decrease capacity
 - Integrated with other AWS services
 
+## Diagrams (ES)
+
+Class diagrams for the virtualization topic (SVG editable + PNG) in [`diagrams/`](./diagrams/), based on the two IBM Technology videos used in class:
+
+| Diagram | What it shows |
+|---|---|
+| [¿Qué es la virtualización?](./diagrams/computo-virtualizacion.png) | Definition, On‑Prem (1 server = 1 OS = 1 app) vs. one physical host running independent VMs on a hypervisor, VM portability, and the three benefits (cost, agility, downtime). Based on [Virtualization Explained](https://www.youtube.com/watch?v=FZR0rG3HKIk). |
+| [¿Qué es un hypervisor?](./diagrams/computo-hypervisores.png) | Compute host (CPU/RAM/Network + storage) sliced into vCPU/vRAM/vNIC per VM, isolation between VMs, the three storage paths (EBS / Instance Store / EFS‑FSx), Type 1 vs Type 2 with products, multitenancy and how it maps to EC2 in the labs. Based on [What is a Hypervisor?](https://www.youtube.com/watch?v=LMAEbB2a50M). |
+
+![Virtualization](./diagrams/computo-virtualizacion.png)
+
 ## Lab Structure
 
 This lab is divided into 9 tasks that build upon each other. Complete each task before moving to the next one.
