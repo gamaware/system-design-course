@@ -12,3 +12,31 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  # Python (CDK apps) — lab 01
+  - package-ecosystem: "pip"
+    directories:
+      - "/01-introduction-horizontal-scalability"
+      - "/01-introduction-horizontal-scalability/ecsdemo-platform/cdk"
+      - "/01-introduction-horizontal-scalability/ecsdemo-frontend/cdk"
+      - "/01-introduction-horizontal-scalability/ecsdemo-nodejs/cdk"
+      - "/01-introduction-horizontal-scalability/ecsdemo-crystal/cdk"
+    schedule:
+      interval: "monthly"
+    groups:
+      aws-cdk:
+        patterns: ["aws-cdk-lib", "constructs"]
+
+  # Node demo app — lab 01
+  - package-ecosystem: "npm"
+    directory: "/01-introduction-horizontal-scalability/ecsdemo-nodejs"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+
+  # Ruby demo app — lab 01 (legacy Rails 4.2; PRs need manual review)
+  - package-ecosystem: "bundler"
+    directory: "/01-introduction-horizontal-scalability/ecsdemo-frontend"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
