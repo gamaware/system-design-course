@@ -7,16 +7,16 @@
     <marker id="ao" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/></marker>
   </defs>
   <rect width="1200" height="840" fill="#ffffff"/>
-  <text x="24" y="38" font-size="18" fill="#111827" text-anchor="start" font-weight="700">Módulo 2 · Cómputo — ¿Qué es un hypervisor y para qué sirve?</text>
-  <text x="24" y="56" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Basado en “What is a Hypervisor?” (IBM Technology)</text>
-  <text x="1176" y="38" font-size="12" fill="#6b7280" text-anchor="end" font-weight="400">ITESO · Diseño de Sistemas Escalables</text>
+  <text x="24" y="38" font-size="18" fill="#111827" text-anchor="start" font-weight="700">Module 2 · Compute — What is a hypervisor and what is it for?</text>
+  <text x="24" y="56" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Based on “What is a Hypervisor?” (IBM Technology)</text>
+  <text x="1176" y="38" font-size="12" fill="#6b7280" text-anchor="end" font-weight="400">ITESO · Scalable Systems Design</text>
   <rect x="24" y="70" width="700" height="720" rx="10" ry="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="44" y="94" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Cómo funciona</text>
-  <text x="160" y="94" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">de abajo hacia arriba: host → hypervisor → VMs</text>
+  <text x="44" y="94" font-size="14" fill="#111827" text-anchor="start" font-weight="700">How it works</text>
+  <text x="160" y="94" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">bottom-up: host → hypervisor → VMs</text>
   <text x="44" y="114" font-size="11" fill="#111827" text-anchor="start" font-weight="700">VSI / VM 1…n</text>
-  <text x="128" y="114" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">· se agregan VMs hasta saturar el host</text>
+  <text x="128" y="114" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">· VMs are added until the host is saturated</text>
   <line x1="440" y1="110" x2="466" y2="110" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="6,4"/>
-  <text x="654" y="114" font-size="10" fill="#b91c1c" text-anchor="end" font-weight="600">línea de demarcación · aislamiento</text>
+  <text x="654" y="114" font-size="10" fill="#b91c1c" text-anchor="end" font-weight="600">demarcation line · isolation</text>
   <line x1="189" y1="122" x2="189" y2="240" stroke="#dc2626" stroke-width="3" stroke-dasharray="7,5"/>
   <line x1="349" y1="122" x2="349" y2="240" stroke="#dc2626" stroke-width="3" stroke-dasharray="7,5"/>
   <line x1="509" y1="122" x2="509" y2="240" stroke="#dc2626" stroke-width="3" stroke-dasharray="7,5"/>
@@ -25,56 +25,56 @@
   <path d="M 429,300 L 429,234" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#ag)"/>
   <path d="M 589,300 L 589,234" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#ag)"/>
   <rect x="289.0" y="260" width="120" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="349" y="272" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">rebanadas → cada VM</text>
+  <text x="349" y="272" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">slices → each VM</text>
   <rect x="44" y="125" width="130" height="105" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="54" y="147" font-size="11" fill="#111827" text-anchor="start" font-weight="700">VSI / VM 1</text>
   <text x="54" y="164" font-size="10" fill="#374151" text-anchor="start" font-weight="400">Linux + apps</text>
-  <text x="54" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">SO propio · aislada</text>
+  <text x="54" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">Own OS · isolated</text>
   <rect x="50.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="69" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vCPU</text>
   <rect x="90.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="109" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vRAM</text>
   <rect x="130.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="149" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vNIC</text>
-  <text x="54" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">recursos virtuales</text>
+  <text x="54" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">virtual resources</text>
   <rect x="204" y="125" width="130" height="105" rx="8" ry="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
   <rect x="286.0" y="129" width="44" height="16" rx="8" ry="8" fill="#ea580c" stroke="#ea580c" stroke-width="1"/>
-  <text x="308" y="140.5" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="600">tu VM</text>
+  <text x="308" y="140.5" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="600">your VM</text>
   <text x="214" y="147" font-size="11" fill="#9a3412" text-anchor="start" font-weight="700">VSI / VM 2</text>
   <text x="214" y="164" font-size="10" fill="#374151" text-anchor="start" font-weight="400">Windows + apps</text>
-  <text x="214" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">SO propio · aislada</text>
+  <text x="214" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">Own OS · isolated</text>
   <rect x="210.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="229" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vCPU</text>
   <rect x="250.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="269" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vRAM</text>
   <rect x="290.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="309" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vNIC</text>
-  <text x="214" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">recursos virtuales</text>
+  <text x="214" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">virtual resources</text>
   <rect x="364" y="125" width="130" height="105" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="374" y="147" font-size="11" fill="#111827" text-anchor="start" font-weight="700">VSI / VM 3</text>
   <text x="374" y="164" font-size="10" fill="#374151" text-anchor="start" font-weight="400">Linux + apps</text>
-  <text x="374" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">SO propio · aislada</text>
+  <text x="374" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">Own OS · isolated</text>
   <rect x="370.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="389" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vCPU</text>
   <rect x="410.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="429" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vRAM</text>
   <rect x="450.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="469" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vNIC</text>
-  <text x="374" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">recursos virtuales</text>
+  <text x="374" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">virtual resources</text>
   <rect x="524" y="125" width="130" height="105" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="534" y="147" font-size="11" fill="#111827" text-anchor="start" font-weight="700">VSI / VM 4</text>
   <text x="534" y="164" font-size="10" fill="#374151" text-anchor="start" font-weight="400">Unix + apps</text>
-  <text x="534" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">SO propio · aislada</text>
+  <text x="534" y="178" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">Own OS · isolated</text>
   <rect x="530.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="549" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vCPU</text>
   <rect x="570.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="589" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vRAM</text>
   <rect x="610.0" y="196" width="38" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
   <text x="629" y="207.5" font-size="9.5" fill="#15803d" text-anchor="middle" font-weight="600">vNIC</text>
-  <text x="534" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">recursos virtuales</text>
+  <text x="534" y="224" font-size="9.5" fill="#6b7280" text-anchor="start" font-weight="400">virtual resources</text>
   <rect x="44" y="300" width="610" height="56" rx="8" ry="8" fill="#ffedd5" stroke="#f97316" stroke-width="2"/>
   <text x="349" y="321" font-size="13" fill="#9a3412" text-anchor="middle" font-weight="700">Hypervisor</text>
-  <text x="349" y="341" font-size="10.5" fill="#9a3412" text-anchor="middle" font-weight="400">software que virtualiza el host: divide la CPU, “rebana” la RAM, reparte la red</text>
+  <text x="349" y="341" font-size="10.5" fill="#9a3412" text-anchor="middle" font-weight="400">software that virtualizes the host: splits the CPU, “slices” the RAM, shares the network</text>
   <path d="M 128,460 L 128,358" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#ag)"/>
   <rect x="94.0" y="397" width="68" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
   <text x="128" y="409" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">CPU → vCPU</text>
@@ -85,16 +85,16 @@
   <rect x="384.5" y="397" width="91" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
   <text x="430" y="409" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">Network → vNIC</text>
   <rect x="44" y="426" width="470" height="130" rx="10" ry="10" fill="#ffffff" stroke="#6b7280" stroke-width="1.5"/>
-  <text x="60" y="446" font-size="12" fill="#111827" text-anchor="start" font-weight="700">Compute host (servidor físico)</text>
+  <text x="60" y="446" font-size="12" fill="#111827" text-anchor="start" font-weight="700">Compute host (physical server)</text>
   <rect x="60" y="460" width="136" height="80" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="128" y="492" font-size="12" fill="#1e40af" text-anchor="middle" font-weight="700">CPU</text>
-  <text x="128" y="510" font-size="10" fill="#374151" text-anchor="middle" font-weight="400">procesar</text>
+  <text x="128" y="510" font-size="10" fill="#374151" text-anchor="middle" font-weight="400">process</text>
   <rect x="211" y="460" width="136" height="80" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="279" y="492" font-size="12" fill="#1e40af" text-anchor="middle" font-weight="700">RAM</text>
-  <text x="279" y="510" font-size="10" fill="#374151" text-anchor="middle" font-weight="400">memoria de corto plazo</text>
+  <text x="279" y="510" font-size="10" fill="#374151" text-anchor="middle" font-weight="400">short-term memory</text>
   <rect x="362" y="460" width="136" height="80" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="430" y="492" font-size="12" fill="#1e40af" text-anchor="middle" font-weight="700">Network</text>
-  <text x="430" y="510" font-size="10" fill="#374151" text-anchor="middle" font-weight="400">enviar datos</text>
+  <text x="430" y="510" font-size="10" fill="#374151" text-anchor="middle" font-weight="400">send data</text>
   <rect x="120" y="468" width="16" height="16" rx="2" fill="none" stroke="#2563eb" stroke-width="1.5"/>
   <rect x="125" y="473" width="6" height="6" fill="#2563eb"/>
   <rect x="270" y="468" width="4" height="16" rx="1" fill="#2563eb"/>
@@ -106,9 +106,9 @@
   <path d="M 546,452 A 44,10 0 0 0 634,452 L 634,528 A 44,10 0 0 1 546,528 Z" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
   <ellipse cx="590" cy="452" rx="44" ry="10" fill="#e5e7eb" stroke="#6b7280" stroke-width="1.5"/>
   <text x="590" y="494" font-size="12" fill="#111827" text-anchor="middle" font-weight="700">Storage</text>
-  <text x="590" y="510" font-size="9.5" fill="#6b7280" text-anchor="middle" font-weight="400">disco / NAS / NFS</text>
-  <text x="590" y="554" font-size="9.5" fill="#6b7280" text-anchor="middle" font-weight="400">no siempre lo virtualiza</text>
-  <text x="590" y="566" font-size="9.5" fill="#6b7280" text-anchor="middle" font-weight="400">el hypervisor</text>
+  <text x="590" y="510" font-size="9.5" fill="#6b7280" text-anchor="middle" font-weight="400">disk / NAS / NFS</text>
+  <text x="590" y="554" font-size="9.5" fill="#6b7280" text-anchor="middle" font-weight="400">not always virtualized</text>
+  <text x="590" y="566" font-size="9.5" fill="#6b7280" text-anchor="middle" font-weight="400">by the hypervisor</text>
   <path d="M 546,490 L 500,490" fill="none" stroke="#9ca3af" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#agr)"/>
   <circle cx="523" cy="478" r="9" fill="#6b7280"/>
   <text x="523" y="481.5" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
@@ -118,17 +118,17 @@
   <path d="M 634,478 L 680,478 L 680,178 L 658,178" fill="none" stroke="#9ca3af" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#agr)"/>
   <circle cx="680" cy="328" r="9" fill="#6b7280"/>
   <text x="680" y="331.5" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
-  <text x="44" y="598" font-size="12" fill="#111827" text-anchor="start" font-weight="700">Tres rutas para conectar storage a una VM</text>
+  <text x="44" y="598" font-size="12" fill="#111827" text-anchor="start" font-weight="700">Three paths to attach storage to a VM</text>
   <rect x="44" y="610" width="196" height="72" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <circle cx="44" cy="610" r="9" fill="#6b7280"/>
   <text x="44" y="613.5" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
   <text x="142" y="634" font-size="10" fill="#374151" text-anchor="middle" font-weight="600">Storage → Network → Hypervisor → VM</text>
   <rect x="94.0" y="650" width="96" height="16" rx="8" ry="8" fill="#f9fafb" stroke="#9ca3af" stroke-width="1"/>
-  <text x="142" y="661.5" font-size="9.5" fill="#374151" text-anchor="middle" font-weight="600">NAS · en AWS: EBS</text>
+  <text x="142" y="661.5" font-size="9.5" fill="#374151" text-anchor="middle" font-weight="600">NAS · on AWS: EBS</text>
   <rect x="251" y="610" width="196" height="72" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <circle cx="251" cy="610" r="9" fill="#6b7280"/>
   <text x="251" y="613.5" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
-  <text x="349" y="634" font-size="10" fill="#374151" text-anchor="middle" font-weight="600">Storage local → Hypervisor → VM</text>
+  <text x="349" y="634" font-size="10" fill="#374151" text-anchor="middle" font-weight="600">Local storage → Hypervisor → VM</text>
   <rect x="294.0" y="650" width="110" height="16" rx="8" ry="8" fill="#f9fafb" stroke="#9ca3af" stroke-width="1"/>
   <text x="349" y="661.5" font-size="9.5" fill="#374151" text-anchor="middle" font-weight="600">DAS · Instance Store</text>
   <rect x="458" y="610" width="196" height="72" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
@@ -136,13 +136,13 @@
   <text x="458" y="613.5" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
   <text x="556" y="634" font-size="10" fill="#374151" text-anchor="middle" font-weight="600">NFS → Network → vNIC → VM</text>
   <rect x="472.0" y="650" width="168" height="16" rx="8" ry="8" fill="#f9fafb" stroke="#9ca3af" stroke-width="1"/>
-  <text x="556" y="661.5" font-size="9.5" fill="#374151" text-anchor="middle" font-weight="600">salta al hypervisor · EFS / FSx</text>
+  <text x="556" y="661.5" font-size="9.5" fill="#374151" text-anchor="middle" font-weight="600">bypasses the hypervisor · EFS / FSx</text>
   <line x1="44" y1="712" x2="704" y2="712" stroke="#d1d5db" stroke-width="1"/>
-  <text x="44" y="736" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">Sin hypervisor: 1 caja = 1 usuario. Con hypervisor: 1 caja = N VMs aisladas → multitenancy.</text>
-  <text x="44" y="754" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">El hypervisor es la “capa mágica”: virtualización → multitenancy → cómputo barato.</text>
+  <text x="44" y="736" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">Without a hypervisor: 1 box = 1 user. With a hypervisor: 1 box = N isolated VMs → multitenancy.</text>
+  <text x="44" y="754" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">The hypervisor is the “magic layer”: virtualization → multitenancy → cheap compute.</text>
   <rect x="748" y="70" width="428" height="210" rx="10" ry="10" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="764" y="94" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Tipo 1 · Bare-metal</text>
-  <text x="910" y="94" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">hypervisor directo sobre el hardware</text>
+  <text x="764" y="94" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Type 1 · Bare-metal</text>
+  <text x="910" y="94" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">hypervisor directly on the hardware</text>
   <rect x="764" y="110" width="150" height="24" rx="4" ry="4" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
   <rect x="770" y="114" width="42" height="16" rx="3" ry="3" fill="#ffffff" stroke="#9ca3af" stroke-width="1"/>
   <text x="791" y="125.5" font-size="9" fill="#374151" text-anchor="middle" font-weight="600">VM</text>
@@ -155,18 +155,18 @@
   <rect x="764" y="166" width="150" height="24" rx="4" ry="4" fill="#e5e7eb" stroke="#6b7280" stroke-width="1.5"/>
   <text x="839" y="182" font-size="10" fill="#374151" text-anchor="middle" font-weight="600">Hardware</text>
   <rect x="925.0" y="110" width="150" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
-  <text x="1000" y="121.5" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">menor latencia</text>
+  <text x="1000" y="121.5" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">lower latency</text>
   <rect x="925.0" y="134" width="150" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
-  <text x="1000" y="145.5" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">más seguro</text>
+  <text x="1000" y="145.5" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">more secure</text>
   <rect x="925.0" y="158" width="150" height="16" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
-  <text x="1000" y="169.5" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">el más usado en nube</text>
+  <text x="1000" y="169.5" font-size="10" fill="#15803d" text-anchor="middle" font-weight="600">most used in the cloud</text>
   <text x="930" y="204" font-size="10.5" fill="#374151" text-anchor="start" font-weight="400">VMware ESXi · Hyper-V · KVM · Xen</text>
   <rect x="764" y="222" width="396" height="42" rx="6" ry="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="776" y="240" font-size="10.5" fill="#1e40af" text-anchor="start" font-weight="600">AWS EC2 usa el hypervisor Nitro (basado en KVM), tipo 1.</text>
-  <text x="776" y="256" font-size="10" fill="#1e40af" text-anchor="start" font-weight="400">Azure VMs corren sobre Hyper-V.</text>
+  <text x="776" y="240" font-size="10.5" fill="#1e40af" text-anchor="start" font-weight="600">AWS EC2 uses the Nitro hypervisor (KVM-based), type 1.</text>
+  <text x="776" y="256" font-size="10" fill="#1e40af" text-anchor="start" font-weight="400">Azure VMs run on Hyper-V.</text>
   <rect x="748" y="296" width="428" height="190" rx="10" ry="10" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="764" y="320" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Tipo 2 · Hosted</text>
-  <text x="880" y="320" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">hypervisor como app sobre el SO anfitrión</text>
+  <text x="764" y="320" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Type 2 · Hosted</text>
+  <text x="880" y="320" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">hypervisor as an app on the host OS</text>
   <rect x="764" y="336" width="150" height="24" rx="4" ry="4" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
   <rect x="770" y="340" width="42" height="16" rx="3" ry="3" fill="#ffffff" stroke="#9ca3af" stroke-width="1"/>
   <text x="791" y="351.5" font-size="9" fill="#374151" text-anchor="middle" font-weight="600">VM</text>
@@ -177,37 +177,37 @@
   <rect x="764" y="364" width="150" height="24" rx="4" ry="4" fill="#ffedd5" stroke="#f97316" stroke-width="1.5"/>
   <text x="839" y="380" font-size="10" fill="#9a3412" text-anchor="middle" font-weight="700">Hypervisor</text>
   <rect x="764" y="392" width="150" height="24" rx="4" ry="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
-  <text x="839" y="408" font-size="10" fill="#991b1b" text-anchor="middle" font-weight="600">SO anfitrión</text>
+  <text x="839" y="408" font-size="10" fill="#991b1b" text-anchor="middle" font-weight="600">Host OS</text>
   <rect x="764" y="420" width="150" height="24" rx="4" ry="4" fill="#e5e7eb" stroke="#6b7280" stroke-width="1.5"/>
   <text x="839" y="436" font-size="10" fill="#374151" text-anchor="middle" font-weight="600">Hardware</text>
   <rect x="925.0" y="336" width="150" height="16" rx="8" ry="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
-  <text x="1000" y="347.5" font-size="10" fill="#991b1b" text-anchor="middle" font-weight="600">mayor latencia</text>
+  <text x="1000" y="347.5" font-size="10" fill="#991b1b" text-anchor="middle" font-weight="600">higher latency</text>
   <rect x="925.0" y="360" width="150" height="16" rx="8" ry="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
-  <text x="1000" y="371.5" font-size="10" fill="#991b1b" text-anchor="middle" font-weight="600">uso personal / dev</text>
+  <text x="1000" y="371.5" font-size="10" fill="#991b1b" text-anchor="middle" font-weight="600">personal use / dev</text>
   <text x="930" y="404" font-size="10.5" fill="#374151" text-anchor="start" font-weight="400">VirtualBox · VMware Workstation</text>
   <text x="930" y="420" font-size="10.5" fill="#374151" text-anchor="start" font-weight="400">Parallels · VMware Fusion</text>
-  <text x="930" y="466" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">capa extra = más latencia</text>
+  <text x="930" y="466" font-size="10" fill="#6b7280" text-anchor="start" font-weight="400">extra layer = more latency</text>
   <rect x="748" y="502" width="428" height="288" rx="10" ry="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="764" y="526" font-size="14" fill="#1e3a8a" text-anchor="start" font-weight="700">Para qué sirve (en el curso)</text>
-  <text x="764" y="550" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">Multitenancy: muchos clientes en el mismo host sin verse</text>
-  <text x="764" y="567" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">entre sí → cómputo barato.</text>
+  <text x="764" y="526" font-size="14" fill="#1e3a8a" text-anchor="start" font-weight="700">What it is for (in this course)</text>
+  <text x="764" y="550" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">Multitenancy: many customers on the same host without</text>
+  <text x="764" y="567" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">seeing each other → cheap compute.</text>
   <rect x="812.0" y="578" width="300" height="16" rx="8" ry="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1"/>
-  <text x="962" y="589.5" font-size="10" fill="#1e40af" text-anchor="middle" font-weight="600">host ≈ $5,000 / mes   vs   VM ≈ $50 / mes (o gratis)</text>
-  <text x="764" y="614" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">Cada instancia EC2 / Azure VM que lanzas en los labs es</text>
-  <text x="764" y="631" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">una VM aislada sobre un hypervisor tipo 1:</text>
+  <text x="962" y="589.5" font-size="10" fill="#1e40af" text-anchor="middle" font-weight="600">host ≈ $5,000 / month   vs   VM ≈ $50 / month (or free)</text>
+  <text x="764" y="614" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">Every EC2 instance / Azure VM you launch in the labs is</text>
+  <text x="764" y="631" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">an isolated VM on a type 1 hypervisor:</text>
   <rect x="797.0" y="642" width="330" height="16" rx="8" ry="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1"/>
   <text x="962" y="653.5" font-size="10" fill="#1e40af" text-anchor="middle" font-weight="600">Lab 1 EC2 · HAProxy · BIND · Keycloak · VPC · Docker</text>
-  <text x="764" y="678" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">El “tipo de instancia” (t3.micro, m5.large…) = cuántas</text>
-  <text x="764" y="695" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">rebanadas de CPU / RAM te tocan del host.</text>
-  <text x="764" y="718" font-size="10.5" fill="#1e40af" text-anchor="start" font-weight="600">Aislamiento + reparto de recursos = tecnología clave para la nube.</text>
+  <text x="764" y="678" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">The “instance type” (t3.micro, m5.large…) = how many</text>
+  <text x="764" y="695" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">slices of the host's CPU / RAM you get.</text>
+  <text x="764" y="718" font-size="10.5" fill="#1e40af" text-anchor="start" font-weight="600">Isolation + resource sharing = key technology for the cloud.</text>
   <line x1="24" y1="818" x2="52" y2="818" stroke="#16a34a" stroke-width="2" marker-end="url(#ag)"/>
-  <text x="58" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Recurso virtualizado (CPU → vCPU…)</text>
+  <text x="58" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Virtualized resource (CPU → vCPU…)</text>
   <rect x="280" y="811" width="28" height="14" rx="3" ry="3" fill="#ffedd5" stroke="#f97316" stroke-width="1.5"/>
-  <text x="314" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Hypervisor / tu VM</text>
+  <text x="314" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Hypervisor / your VM</text>
   <line x1="470" y1="818" x2="498" y2="818" stroke="#dc2626" stroke-width="3" stroke-dasharray="7,5"/>
-  <text x="504" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Aislamiento (línea de demarcación)</text>
+  <text x="504" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Isolation (demarcation line)</text>
   <line x1="720" y1="818" x2="748" y2="818" stroke="#9ca3af" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#agr)"/>
-  <text x="754" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Rutas de storage ① ② ③</text>
+  <text x="754" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Storage paths ① ② ③</text>
   <rect x="940" y="811" width="28" height="14" rx="3" ry="3" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="974" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Hardware físico (host)</text>
+  <text x="974" y="822" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Physical hardware (host)</text>
 </svg>

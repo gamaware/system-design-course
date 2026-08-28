@@ -7,53 +7,53 @@
     <marker id="ag" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#059669"/></marker>
   </defs>
   <rect width="1200" height="820" fill="#ffffff"/>
-  <text x="24" y="38" font-size="18" fill="#111827" text-anchor="start" font-weight="700">Lab 01 · Escalado manual: CLI (imperativo) vs. CDK (declarativo, IaC)</text>
-  <text x="1176" y="38" font-size="12" fill="#6b7280" text-anchor="end" font-weight="400">ITESO · Diseño de Sistemas Escalables</text>
+  <text x="24" y="38" font-size="18" fill="#111827" text-anchor="start" font-weight="700">Lab 01 · Manual scaling: CLI (imperative) vs. CDK (declarative, IaC)</text>
+  <text x="1176" y="38" font-size="12" fill="#6b7280" text-anchor="end" font-weight="400">ITESO · Scalable Systems Design</text>
   <rect x="24" y="64" width="560" height="616" rx="10" ry="10" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="44" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Vía CLI · imperativo (cambio fuera del código)</text>
+  <text x="44" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Via CLI · imperative (change outside the code)</text>
   <path d="M 204,170 L 204,198" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <rect x="214" y="176.0" width="107" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="218" y="188.0" font-size="11" fill="#2563eb" text-anchor="start" font-weight="400">llamada a la API</text>
+  <text x="218" y="188.0" font-size="11" fill="#2563eb" text-anchor="start" font-weight="400">API call</text>
   <path d="M 204,244 L 204,272" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#ao)"/>
   <rect x="214" y="250.0" width="76" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="218" y="262.0" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">control ECS</text>
+  <text x="218" y="262.0" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">ECS control</text>
   <path d="M 204,318 L 204,346" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <rect x="214" y="324.0" width="63" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="218" y="336.0" font-size="11" fill="#2563eb" text-anchor="start" font-weight="400">resultado</text>
+  <text x="218" y="336.0" font-size="11" fill="#2563eb" text-anchor="start" font-weight="400">result</text>
   <rect x="44" y="108" width="320" height="62" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="204.0" y="126" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">1 · aws ecs update-service</text>
   <text x="204.0" y="141" font-size="10.5" fill="#1e40af" text-anchor="middle" font-weight="600" font-family="'SF Mono', Menlo, Consolas, monospace">--cluster container-demo --service ecsdemo-frontend</text>
   <text x="204.0" y="156" font-size="10.5" fill="#1e40af" text-anchor="middle" font-weight="600" font-family="'SF Mono', Menlo, Consolas, monospace">--desired-count 5</text>
   <rect x="44" y="198" width="320" height="46" rx="8" ry="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="204.0" y="216" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">2 · ECS API cambia desiredCount</text>
-  <text x="204.0" y="231" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">del servicio (efecto inmediato)</text>
+  <text x="204.0" y="216" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">2 · ECS API changes desiredCount</text>
+  <text x="204.0" y="231" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">of the service (immediate effect)</text>
   <rect x="44" y="272" width="320" height="46" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="204.0" y="290" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">3 · Scheduler lanza / detiene tareas</text>
-  <text x="204.0" y="305" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">ALB registra targets / hace draining</text>
+  <text x="204.0" y="290" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">3 · Scheduler starts / stops tasks</text>
+  <text x="204.0" y="305" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">ALB registers / drains targets</text>
   <rect x="44" y="346" width="320" height="46" rx="8" ry="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="204.0" y="364" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">4 · Estado real: 5 tareas</text>
-  <text x="204.0" y="379" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">el código CDK sigue diciendo desired_count=3</text>
+  <text x="204.0" y="364" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">4 · Actual state: 5 tasks</text>
+  <text x="204.0" y="379" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">the CDK code still says desired_count=3</text>
   <rect x="44" y="416" width="520" height="68" rx="6" ry="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
   <text x="54" y="434" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ Drift</text>
-  <text x="54" y="452" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">El siguiente cdk deploy regresa el servicio a lo que dice el código.</text>
-  <text x="54" y="467" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Útil para emergencias y demos; no para cambios permanentes.</text>
-  <text x="44" y="520" font-size="11.5" fill="#374151" text-anchor="start" font-weight="700">Drift = código ≠ realidad</text>
+  <text x="54" y="452" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">The next cdk deploy returns the service to what the code says.</text>
+  <text x="54" y="467" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Useful for emergencies and demos; not for permanent changes.</text>
+  <text x="44" y="520" font-size="11.5" fill="#374151" text-anchor="start" font-weight="700">Drift = code ≠ reality</text>
   <path d="M 154,584 L 154,626 L 454,626 L 454,584" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ap)"/>
   <rect x="196" y="617" width="216" height="18" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="304" y="630" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="600">cdk deploy reescribe desiredCount=3</text>
+  <text x="304" y="630" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="600">cdk deploy rewrites desiredCount=3</text>
   <rect x="44" y="536" width="220" height="48" rx="8" ry="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="154.0" y="554" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">Código · cdk/app.py</text>
+  <text x="154.0" y="554" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">Code · cdk/app.py</text>
   <text x="154.0" y="569" font-size="10.5" fill="#1e40af" text-anchor="middle" font-weight="600" font-family="'SF Mono', Menlo, Consolas, monospace">desired_count=3,</text>
   <rect x="344" y="536" width="220" height="48" rx="8" ry="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="454.0" y="554" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">Estado real · ECS</text>
-  <text x="454.0" y="569" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">desiredCount=5 · 5 tareas</text>
+  <text x="454.0" y="554" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">Actual state · ECS</text>
+  <text x="454.0" y="569" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">desiredCount=5 · 5 tasks</text>
   <text x="304" y="568" font-size="22" fill="#ea580c" text-anchor="middle" font-weight="700">≠</text>
   <rect x="616" y="64" width="560" height="616" rx="10" ry="10" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="636" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Vía CDK · declarativo (el código es la fuente de verdad)</text>
+  <text x="636" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Via CDK · declarative (the code is the source of truth)</text>
   <path d="M 786,166 L 786,190" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <path d="M 786,232 L 786,256" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <rect x="796" y="236.0" width="101" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="800" y="248.0" font-size="11" fill="#2563eb" text-anchor="start" font-weight="400">revisar cambios</text>
+  <text x="800" y="248.0" font-size="11" fill="#2563eb" text-anchor="start" font-weight="400">review changes</text>
   <path d="M 786,298 L 786,322" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#ap)"/>
   <rect x="796" y="302.0" width="101" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
   <text x="800" y="314.0" font-size="11" fill="#7c3aed" text-anchor="start" font-weight="400">synth → cdk.out</text>
@@ -62,11 +62,11 @@
   <text x="800" y="380.0" font-size="11" fill="#7c3aed" text-anchor="start" font-weight="400">UPDATE stack</text>
   <path d="M 786,430 L 786,454" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#ao)"/>
   <rect x="796" y="434.0" width="76" height="16" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="800" y="446.0" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">control ECS</text>
+  <text x="800" y="446.0" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">ECS control</text>
   <path d="M 786,496 L 786,520" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <rect x="636" y="108" width="300" height="58" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="786.0" y="126" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">1 · Editar ecsdemo-frontend/cdk/app.py</text>
-  <text x="786.0" y="141" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">línea 73: desired_count=3 ⟶ 5</text>
+  <text x="786.0" y="126" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">1 · Edit ecsdemo-frontend/cdk/app.py</text>
+  <text x="786.0" y="141" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">line 73: desired_count=3 ⟶ 5</text>
   <text x="786.0" y="156" font-size="10.5" fill="#1e40af" text-anchor="middle" font-weight="600" font-family="'SF Mono', Menlo, Consolas, monospace">desired_count=5,</text>
   <rect x="636" y="190" width="300" height="42" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="786.0" y="208" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">2 · cdk diff --profile isg-dev</text>
@@ -75,55 +75,55 @@
   <text x="786.0" y="274" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">3 · cdk deploy --profile isg-dev</text>
   <text x="786.0" y="289" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">--tags Team=… --tags Owner=…</text>
   <rect x="636" y="322" width="300" height="42" rx="8" ry="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
-  <text x="786.0" y="340" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">4 · CDK sintetiza → CloudFormation UPDATE</text>
+  <text x="786.0" y="340" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">4 · CDK synthesizes → CloudFormation UPDATE</text>
   <text x="786.0" y="355" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">stack ecsworkshop-frontend</text>
   <rect x="636" y="388" width="300" height="42" rx="8" ry="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="786.0" y="406" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">5 · CloudFormation actualiza el servicio</text>
+  <text x="786.0" y="406" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">5 · CloudFormation updates the service</text>
   <text x="786.0" y="421" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">AWS::ECS::Service (DesiredCount=5)</text>
   <rect x="636" y="454" width="300" height="42" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="786.0" y="472" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">6 · ECS lanza tareas · ALB health checks</text>
+  <text x="786.0" y="472" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">6 · ECS starts tasks · ALB health checks</text>
   <text x="786.0" y="487" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">5/5 healthy</text>
   <rect x="636" y="520" width="300" height="42" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="786.0" y="538" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">7 · git commit</text>
-  <text x="786.0" y="553" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">el cambio queda versionado y reproducible</text>
+  <text x="786.0" y="553" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">the change is versioned and reproducible</text>
   <rect x="956" y="108" width="200" height="100" rx="6" ry="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
-  <text x="966" y="126" font-size="11.5" fill="#166534" text-anchor="start" font-weight="700">✔ Sin drift</text>
-  <text x="966" y="144" font-size="11" fill="#166534" text-anchor="start" font-weight="400">Infraestructura = código.</text>
-  <text x="966" y="159" font-size="11" fill="#166534" text-anchor="start" font-weight="400">Mismo camino para min/max</text>
-  <text x="966" y="174" font-size="11" fill="#166534" text-anchor="start" font-weight="400">(líneas 95–96) y el target</text>
-  <text x="966" y="189" font-size="11" fill="#166534" text-anchor="start" font-weight="400">de CPU (línea 101).</text>
+  <text x="966" y="126" font-size="11.5" fill="#166534" text-anchor="start" font-weight="700">✔ No drift</text>
+  <text x="966" y="144" font-size="11" fill="#166534" text-anchor="start" font-weight="400">Infrastructure = code.</text>
+  <text x="966" y="159" font-size="11" fill="#166534" text-anchor="start" font-weight="400">Same path for min/max</text>
+  <text x="966" y="174" font-size="11" fill="#166534" text-anchor="start" font-weight="400">(lines 95–96) and the CPU</text>
+  <text x="966" y="189" font-size="11" fill="#166534" text-anchor="start" font-weight="400">target (line 101).</text>
   <rect x="956" y="232" width="200" height="115" rx="6" ry="6" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="966" y="250" font-size="11.5" fill="#374151" text-anchor="start" font-weight="700">UPDATE incremental</text>
-  <text x="966" y="268" font-size="11" fill="#374151" text-anchor="start" font-weight="400">cdk deploy solo cambia lo que</text>
-  <text x="966" y="283" font-size="11" fill="#374151" text-anchor="start" font-weight="400">difiere (~2–3 min). Las tareas</text>
-  <text x="966" y="298" font-size="11" fill="#374151" text-anchor="start" font-weight="400">existentes no se reinician si</text>
-  <text x="966" y="313" font-size="11" fill="#374151" text-anchor="start" font-weight="400">solo cambia DesiredCount.</text>
+  <text x="966" y="268" font-size="11" fill="#374151" text-anchor="start" font-weight="400">cdk deploy only changes what</text>
+  <text x="966" y="283" font-size="11" fill="#374151" text-anchor="start" font-weight="400">differs (~2–3 min). Existing tasks</text>
+  <text x="966" y="298" font-size="11" fill="#374151" text-anchor="start" font-weight="400">are not restarted if</text>
+  <text x="966" y="313" font-size="11" fill="#374151" text-anchor="start" font-weight="400">only DesiredCount changes.</text>
   <text x="966" y="328" font-size="11" fill="#374151" text-anchor="start" font-weight="400"></text>
   <rect x="956" y="371" width="200" height="100" rx="6" ry="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="966" y="389" font-size="11.5" fill="#1e3a8a" text-anchor="start" font-weight="700">Flujo de revisión</text>
-  <text x="966" y="407" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">Editar → cdk diff → PR →</text>
+  <text x="966" y="389" font-size="11.5" fill="#1e3a8a" text-anchor="start" font-weight="700">Review flow</text>
+  <text x="966" y="407" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">Edit → cdk diff → PR →</text>
   <text x="966" y="422" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">cdk deploy → commit.</text>
-  <text x="966" y="437" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">El diff es la evidencia de</text>
-  <text x="966" y="452" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">lo que va a cambiar.</text>
+  <text x="966" y="437" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">The diff is the evidence of</text>
+  <text x="966" y="452" font-size="11" fill="#1e3a8a" text-anchor="start" font-weight="400">what is going to change.</text>
   <path d="M 956,150 L 946,150 L 946,137 L 938,137" fill="none" stroke="#059669" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ag)"/>
   <rect x="24" y="696" width="1152" height="92" rx="10" ry="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="44" y="716" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Cuándo usar cada uno</text>
+  <text x="44" y="716" font-size="14" fill="#111827" text-anchor="start" font-weight="700">When to use each</text>
   <rect x="40" y="726" width="360" height="54" rx="6" ry="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="50" y="744" font-size="11" fill="#111827" text-anchor="start" font-weight="700">CLI (imperativo)</text>
-  <text x="50" y="759" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">demos en clase, incidentes,</text>
-  <text x="50" y="772" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">experimentos rápidos</text>
+  <text x="50" y="744" font-size="11" fill="#111827" text-anchor="start" font-weight="700">CLI (imperative)</text>
+  <text x="50" y="759" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">class demos, incidents,</text>
+  <text x="50" y="772" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">quick experiments</text>
   <rect x="416" y="726" width="360" height="54" rx="6" ry="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
-  <text x="426" y="744" font-size="11" fill="#111827" text-anchor="start" font-weight="700">CDK (declarativo)</text>
-  <text x="426" y="759" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">cambios permanentes, revisiones en PR,</text>
-  <text x="426" y="772" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">ambientes reproducibles</text>
+  <text x="426" y="744" font-size="11" fill="#111827" text-anchor="start" font-weight="700">CDK (declarative)</text>
+  <text x="426" y="759" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">permanent changes, PR reviews,</text>
+  <text x="426" y="772" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">reproducible environments</text>
   <rect x="792" y="726" width="360" height="54" rx="6" ry="6" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="802" y="744" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Regla</text>
-  <text x="802" y="759" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">si lo hiciste por CLI, refléjalo en el código</text>
-  <text x="802" y="772" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">o el próximo deploy lo deshace</text>
+  <text x="802" y="744" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Rule</text>
+  <text x="802" y="759" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">if you did it via CLI, reflect it in the code</text>
+  <text x="802" y="772" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">or the next deploy undoes it</text>
   <line x1="24" y1="806" x2="52" y2="806" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ab)"/>
-  <text x="58" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Flujo principal / comando</text>
+  <text x="58" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Main flow / command</text>
   <line x1="238" y1="806" x2="266" y2="806" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ap)"/>
-  <text x="272" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Sintetiza / despliega (CDK → CloudFormation)</text>
+  <text x="272" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Synthesize / deploy (CDK → CloudFormation)</text>
   <line x1="566" y1="806" x2="594" y2="806" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ao)"/>
   <text x="600" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Control (ECS API / CloudFormation)</text>
 </svg>

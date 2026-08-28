@@ -8,10 +8,10 @@
     <marker id="agr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/></marker>
   </defs>
   <rect width="1200" height="820" fill="#ffffff"/>
-  <text x="24" y="38" font-size="18" fill="#111827" text-anchor="start" font-weight="700">Lab 01 · Escalado en ECS Fargate: manual vs. autoscaling</text>
-  <text x="1176" y="38" font-size="12" fill="#6b7280" text-anchor="end" font-weight="400">ITESO · Diseño de Sistemas Escalables</text>
+  <text x="24" y="38" font-size="18" fill="#111827" text-anchor="start" font-weight="700">Lab 01 · Scaling on ECS Fargate: manual vs. autoscaling</text>
+  <text x="1176" y="38" font-size="12" fill="#6b7280" text-anchor="end" font-weight="400">ITESO · Scalable Systems Design</text>
   <rect x="24" y="64" width="560" height="616" rx="10" ry="10" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="44" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Escalado manual (desiredCount)</text>
+  <text x="44" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Manual scaling (desiredCount)</text>
   <path d="M 194.0,150 L 194.0,174" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <path d="M 194.0,216 L 194.0,240" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <path d="M 194.0,282 L 194.0,306" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
@@ -20,45 +20,45 @@
   <path d="M 194.0,480 L 194.0,504" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <path d="M 194.0,546 L 194.0,570" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <rect x="44" y="108" width="300" height="42" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="194.0" y="126" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">1 · Estado inicial</text>
-  <text x="194.0" y="142" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">3 tareas · 3/3 targets healthy</text>
+  <text x="194.0" y="126" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">1 · Initial state</text>
+  <text x="194.0" y="142" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">3 tasks · 3/3 targets healthy</text>
   <rect x="44" y="174" width="300" height="42" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="194.0" y="192" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">2 · aws ecs update-service</text>
   <text x="194.0" y="208" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400" font-family="'SF Mono', Menlo, Consolas, monospace">--desired-count 5</text>
   <rect x="44" y="240" width="300" height="42" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="194.0" y="258" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">3 · ECS scheduler lanza 2 tareas Fargate</text>
+  <text x="194.0" y="258" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">3 · ECS scheduler starts 2 Fargate tasks</text>
   <text x="194.0" y="274" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">PENDING → RUNNING</text>
   <rect x="44" y="306" width="300" height="42" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="194.0" y="324" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">4 · ALB registra los targets</text>
-  <text x="194.0" y="340" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">health check cada 30 s → healthy</text>
+  <text x="194.0" y="324" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">4 · ALB registers the targets</text>
+  <text x="194.0" y="340" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">health check every 30 s → healthy</text>
   <rect x="44" y="372" width="300" height="42" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="194.0" y="390" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">5 · 5/5 healthy · ~4–5 min · HTTP 200</text>
-  <text x="194.0" y="406" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">scale-out completo</text>
+  <text x="194.0" y="406" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">full scale-out</text>
   <rect x="44" y="438" width="300" height="42" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
   <text x="194.0" y="456" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">6 · aws ecs update-service</text>
   <text x="194.0" y="472" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400" font-family="'SF Mono', Menlo, Consolas, monospace">--desired-count 1</text>
   <rect x="44" y="504" width="300" height="42" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="194.0" y="522" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">7 · ECS detiene 4 tareas · ALB draining</text>
-  <text x="194.0" y="538" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">de conexiones (deregistration delay)</text>
+  <text x="194.0" y="522" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">7 · ECS stops 4 tasks · ALB draining</text>
+  <text x="194.0" y="538" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">connection draining (deregistration delay)</text>
   <rect x="44" y="570" width="300" height="42" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="194.0" y="588" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">8 · 1/1 healthy · ~16 s</text>
-  <text x="194.0" y="604" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">sigue respondiendo HTTP 200</text>
+  <text x="194.0" y="604" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">keeps responding HTTP 200</text>
   <path d="M 354,110 L 354,220 M 354,290 L 354,414" fill="none" stroke="#2563eb" stroke-width="1" stroke-dasharray="3,3"/>
   <text transform="translate(357,255) rotate(-90)" font-size="10" fill="#2563eb" text-anchor="middle" font-weight="600">scale-out</text>
   <path d="M 354,438 L 354,510 M 354,570 L 354,612" fill="none" stroke="#2563eb" stroke-width="1" stroke-dasharray="3,3"/>
   <text transform="translate(357,540) rotate(-90)" font-size="10" fill="#2563eb" text-anchor="middle" font-weight="600">scale-in</text>
   <rect x="364" y="108" width="200" height="96" rx="6" ry="6" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="374" y="126" font-size="11.5" fill="#374151" text-anchor="start" font-weight="700">Scale-in vs. scale-out</text>
-  <text x="374" y="144" font-size="11" fill="#374151" text-anchor="start" font-weight="400">Scale-in es rápido (segundos).</text>
-  <text x="374" y="159" font-size="11" fill="#374151" text-anchor="start" font-weight="400">Scale-out tarda minutos:</text>
-  <text x="374" y="174" font-size="11" fill="#374151" text-anchor="start" font-weight="400">pull de imagen + arranque</text>
+  <text x="374" y="144" font-size="11" fill="#374151" text-anchor="start" font-weight="400">Scale-in is fast (seconds).</text>
+  <text x="374" y="159" font-size="11" fill="#374151" text-anchor="start" font-weight="400">Scale-out takes minutes:</text>
+  <text x="374" y="174" font-size="11" fill="#374151" text-anchor="start" font-weight="400">image pull + startup</text>
   <text x="374" y="189" font-size="11" fill="#374151" text-anchor="start" font-weight="400">+ health checks.</text>
   <rect x="364" y="232" width="200" height="206" rx="6" ry="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="374" y="250" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ Autoscaling activo</text>
-  <text x="374" y="268" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Si el autoscaling está activo, la</text>
-  <text x="374" y="283" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">alarma AlarmLow revierte el cambio</text>
-  <text x="374" y="298" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">manual (5 → 4 → 3).</text>
-  <text x="374" y="313" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Suspender con:</text>
+  <text x="374" y="250" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ Autoscaling active</text>
+  <text x="374" y="268" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">If autoscaling is active, the</text>
+  <text x="374" y="283" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">AlarmLow alarm reverts the</text>
+  <text x="374" y="298" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">manual change (5 → 4 → 3).</text>
+  <text x="374" y="313" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Suspend with:</text>
   <text x="374" y="328" font-size="10" fill="#9a3412" text-anchor="start" font-weight="400" font-family="'SF Mono', Menlo, Consolas, monospace">application-autoscaling</text>
   <text x="374" y="343" font-size="10" fill="#9a3412" text-anchor="start" font-weight="400" font-family="'SF Mono', Menlo, Consolas, monospace"> register-scalable-target</text>
   <text x="374" y="358" font-size="10" fill="#9a3412" text-anchor="start" font-weight="400" font-family="'SF Mono', Menlo, Consolas, monospace"> --suspended-state</text>
@@ -66,7 +66,7 @@
   <text x="374" y="388" font-size="10" fill="#9a3412" text-anchor="start" font-weight="400" font-family="'SF Mono', Menlo, Consolas, monospace"> DynamicScalingOutSuspended=true</text>
   <path d="M 364,300 L 348,300 L 348,372 L 346,372" fill="none" stroke="#ea580c" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ao)"/>
   <rect x="616" y="64" width="560" height="616" rx="10" ry="10" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="636" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">Autoscaling por CPU (Target Tracking)</text>
+  <text x="636" y="90" font-size="15" fill="#111827" text-anchor="start" font-weight="700">CPU-based autoscaling (Target Tracking)</text>
   <path d="M 734,148 L 734,196" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
   <path d="M 734,244 L 734,292" fill="none" stroke="#059669" stroke-width="1.5" marker-end="url(#ag)"/>
   <path d="M 734,340 L 734,388" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ao)"/>
@@ -79,9 +79,9 @@
   <text x="728" y="170" font-size="11" fill="#2563eb" text-anchor="end" font-weight="400">requests</text>
   <rect x="640" y="254" width="92" height="32" rx="3" fill="#ffffff" opacity="0.95"/>
   <text x="728" y="266" font-size="11" fill="#059669" text-anchor="end" font-weight="400">CPUUtilization</text>
-  <text x="728" y="281" font-size="11" fill="#059669" text-anchor="end" font-weight="400">cada 1 min</text>
+  <text x="728" y="281" font-size="11" fill="#059669" text-anchor="end" font-weight="400">every 1 min</text>
   <rect x="742" y="354" width="96" height="18" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="746" y="366" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">evalúa periodos</text>
+  <text x="746" y="366" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">evaluates periods</text>
   <rect x="870" y="392" width="42" height="18" rx="3" fill="#ffffff" opacity="0.95"/>
   <text x="891.0" y="404" font-size="11" fill="#ea580c" text-anchor="middle" font-weight="600">ALARM</text>
   <rect x="1054" y="292" width="96" height="48" rx="3" fill="#ffffff" opacity="0.95"/>
@@ -89,18 +89,18 @@
   <text x="1058" y="319" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">count to N</text>
   <text x="1058" y="334" font-size="11" fill="#ea580c" text-anchor="start" font-weight="400">+ cooldown 30 s</text>
   <rect x="836" y="248" width="110" height="64" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="891.0" y="260" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="600">nuevas tareas</text>
-  <text x="891.0" y="275" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="400">reparten la carga</text>
-  <text x="891.0" y="290" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="400">CPU promedio</text>
-  <text x="891.0" y="305" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="400">baja al target</text>
+  <text x="891.0" y="260" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="600">new tasks</text>
+  <text x="891.0" y="275" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="400">share the load</text>
+  <text x="891.0" y="290" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="400">average CPU</text>
+  <text x="891.0" y="305" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="400">drops to target</text>
   <rect x="955" y="530" width="186" height="17" rx="3" fill="#ffffff" opacity="0.95"/>
-  <text x="1048.0" y="542" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">scale-in gradual hasta min = 1</text>
+  <text x="1048.0" y="542" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">gradual scale-in down to min = 1</text>
   <rect x="636" y="104" width="196" height="44" rx="8" ry="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="734.0" y="122" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">Generador de carga</text>
-  <text x="734.0" y="138" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">ab -c 60 ×4 · dentro de la VPC</text>
+  <text x="734.0" y="122" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">Load generator</text>
+  <text x="734.0" y="138" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">ab -c 60 ×4 · inside the VPC</text>
   <rect x="636" y="196" width="196" height="48" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="734.0" y="214" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">ALB → ecsdemo-frontend</text>
-  <text x="734.0" y="230" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">1 tarea · 0.25 vCPU</text>
+  <text x="734.0" y="230" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">1 task · 0.25 vCPU</text>
   <rect x="636" y="292" width="196" height="48" rx="8" ry="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="734.0" y="310" font-size="12" fill="#111827" text-anchor="middle" font-weight="600">CloudWatch Metrics</text>
   <text x="734.0" y="326" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="400">CPUUtilization (avg)</text>
@@ -119,48 +119,48 @@
   <rect x="956" y="258" width="90" height="16" rx="8" ry="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
   <text x="1001" y="270" font-size="10" fill="#1e40af" text-anchor="middle" font-weight="600">min 1 · max 10</text>
   <rect x="950" y="452" width="196" height="76" rx="6" ry="6" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="960" y="470" font-size="11.5" fill="#374151" text-anchor="start" font-weight="700">Target tracking = termostato</text>
-  <text x="960" y="488" font-size="11" fill="#374151" text-anchor="start" font-weight="400">No fija un número de tareas:</text>
-  <text x="960" y="503" font-size="11" fill="#374151" text-anchor="start" font-weight="400">mantiene la métrica cerca</text>
-  <text x="960" y="518" font-size="11" fill="#374151" text-anchor="start" font-weight="400">del objetivo (target).</text>
+  <text x="960" y="470" font-size="11.5" fill="#374151" text-anchor="start" font-weight="700">Target tracking = thermostat</text>
+  <text x="960" y="488" font-size="11" fill="#374151" text-anchor="start" font-weight="400">It does not set a task count:</text>
+  <text x="960" y="503" font-size="11" fill="#374151" text-anchor="start" font-weight="400">keeps the metric close to</text>
+  <text x="960" y="518" font-size="11" fill="#374151" text-anchor="start" font-weight="400">the target value.</text>
   <rect x="636" y="566" width="250" height="110" rx="6" ry="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="646" y="584" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ La carga debe ser sostenida</text>
-  <text x="646" y="602" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Si el generador se cae (p. ej. ab sin</text>
-  <text x="646" y="617" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">-r aborta con el primer error 502), el</text>
-  <text x="646" y="632" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">CPU baja y la alarma nunca acumula</text>
-  <text x="646" y="647" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">sus 3 minutos por encima del target.</text>
+  <text x="646" y="584" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ Load must be sustained</text>
+  <text x="646" y="602" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">If the generator dies (e.g. ab without</text>
+  <text x="646" y="617" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">-r aborts on the first 502 error), the</text>
+  <text x="646" y="632" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">CPU drops and the alarm never accumulates</text>
+  <text x="646" y="647" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">its 3 minutes above the target.</text>
   <rect x="896" y="566" width="250" height="110" rx="6" ry="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="906" y="584" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ Target vs. meseta de saturación</text>
-  <text x="906" y="602" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">App de 1 hilo en 0.25 vCPU se satura</text>
-  <text x="906" y="617" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">alternando 0/100 % → promedio ≈ 50 %.</text>
-  <text x="906" y="632" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">Con target 50 % la alarma nunca dispara.</text>
-  <text x="906" y="647" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">En el lab usa target 30 % (o mide</text>
-  <text x="906" y="662" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">primero la meseta de tu app).</text>
+  <text x="906" y="584" font-size="11.5" fill="#9a3412" text-anchor="start" font-weight="700">⚠ Target vs. saturation plateau</text>
+  <text x="906" y="602" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">A 1-thread app on 0.25 vCPU saturates</text>
+  <text x="906" y="617" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">alternating 0/100 % → average ≈ 50 %.</text>
+  <text x="906" y="632" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">With a 50 % target the alarm never fires.</text>
+  <text x="906" y="647" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">In the lab use a 30 % target (or measure</text>
+  <text x="906" y="662" font-size="11" fill="#9a3412" text-anchor="start" font-weight="400">your app's plateau first).</text>
   <rect x="24" y="696" width="1152" height="92" rx="10" ry="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
-  <text x="44" y="716" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Lecciones aprendidas</text>
+  <text x="44" y="716" font-size="14" fill="#111827" text-anchor="start" font-weight="700">Lessons learned</text>
   <rect x="40" y="726" width="216" height="54" rx="6" ry="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="50" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Scale-out ≠ instantáneo</text>
-  <text x="50" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">cuenta arranque + health check</text>
+  <text x="50" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Scale-out ≠ instantaneous</text>
+  <text x="50" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">includes startup + health check</text>
   <rect x="266" y="726" width="216" height="54" rx="6" ry="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="276" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Manual vs. automático</text>
-  <text x="276" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">se pelean: uno u otro</text>
+  <text x="276" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Manual vs. automatic</text>
+  <text x="276" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">fight each other: one or the other</text>
   <rect x="492" y="726" width="216" height="54" rx="6" ry="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="502" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Carga en la misma VPC</text>
-  <text x="502" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">una laptop no satura</text>
+  <text x="502" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Load inside the same VPC</text>
+  <text x="502" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">a laptop does not saturate</text>
   <rect x="718" y="726" width="216" height="54" rx="6" ry="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="728" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Observa 3 cosas a la vez</text>
-  <text x="728" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">métrica, alarma, escalado</text>
+  <text x="728" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Watch 3 things at once</text>
+  <text x="728" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">metric, alarm, scaling</text>
   <rect x="944" y="726" width="216" height="54" rx="6" ry="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="954" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Mide antes de fijar el target</text>
-  <text x="954" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">objetivo &lt; meseta de saturación</text>
+  <text x="954" y="748" font-size="11" fill="#111827" text-anchor="start" font-weight="700">Measure before setting the target</text>
+  <text x="954" y="766" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="400">target &lt; saturation plateau</text>
   <line x1="24" y1="806" x2="52" y2="806" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ab)"/>
-  <text x="58" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Flujo principal / comando</text>
+  <text x="58" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Main flow / command</text>
   <line x1="242.0" y1="806" x2="270.0" y2="806" stroke="#059669" stroke-width="1.5" marker-end="url(#ag)"/>
-  <text x="276.0" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Métrica</text>
+  <text x="276.0" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Metric</text>
   <line x1="344.8" y1="806" x2="372.8" y2="806" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ao)"/>
-  <text x="378.8" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Trigger / alarma</text>
+  <text x="378.8" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Trigger / alarm</text>
   <line x1="505.20000000000005" y1="806" x2="533.2" y2="806" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ap)"/>
   <text x="539.2" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Feedback loop</text>
   <line x1="646.4000000000001" y1="806" x2="674.4000000000001" y2="806" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#agr)"/>
-  <text x="680.4000000000001" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Scale-in (asíncrono)</text>
+  <text x="680.4000000000001" y="810" font-size="11" fill="#6b7280" text-anchor="start" font-weight="400">Scale-in (asynchronous)</text>
 </svg>
