@@ -21,16 +21,17 @@ for i in {1..10}; do
 done
 
 echo ""
-echo "Test 2: Different IPs should distribute across backends"
+echo "Test 2: Different source IPs are hashed independently"
 echo ""
-for ip in "192.168.1.10" "192.168.1.20" "192.168.1.30"; do
-    echo "IP $ip:"
+
+for ip in "127.0.0.2" "127.0.0.3" "127.0.0.4"; do
+    echo "Source IP $ip:"
     for i in {1..3}; do
-        curl -s -H "X-Forwarded-For: $ip" http://localhost:8080 | grep -o "Backend [0-9]"
+        curl -s --interface "$ip" http://127.0.0.1:8080 | grep -o "Backend [0-9]"
     done
     echo "---"
 done
 
 echo ""
-echo "Analysis: Same IP = same backend, different IPs = different backends."
+echo "Analysis: Same source IP should consistently map to the same backend."
 echo "========================================="
