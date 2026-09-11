@@ -136,6 +136,9 @@ dig -x 1.1.1.1
 dig github.com A +short
 
 # AAAA record - IPv6 address
+dig google.com AAAA +short
+
+# Note: not every domain has IPv6 — this one returns empty output, and that IS the answer
 dig github.com AAAA +short
 
 # MX record - Mail servers
@@ -151,7 +154,8 @@ dig github.com TXT +short
 ### Task 2.2: Full DNS Information
 
 ```bash
-# Get all information about a domain
+# Ask for "all" records - modern resolvers minimize ANY (RFC 8482),
+# so expect a partial answer (often a single record) instead of everything
 dig github.com ANY
 
 # Trace the full DNS resolution path
@@ -231,7 +235,7 @@ options {
 };
 
 zone "test.local" IN {
-    type master;
+    type primary;
     file "/var/named/test.local.db";
 };
 EOF
@@ -249,7 +253,7 @@ EOF
 **`zone` section:**
 
 - Defines a DNS zone this server manages
-- `type master` - This server is authoritative for this zone
+- `type primary` - This server is authoritative for this zone (older configs use the legacy name `type master`)
 - `file` - Zone file containing DNS records
 
 ### Task 4.3: Create Zone File
