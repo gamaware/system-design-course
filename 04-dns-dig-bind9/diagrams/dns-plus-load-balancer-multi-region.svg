@@ -8,33 +8,33 @@
   </defs>
   <rect width="960" height="860" fill="#0a1628"/>
   <rect width="960" height="860" fill="url(#grid)" opacity="0.6"/>
-  <text x="30" y="38" font-size="18" font-weight="700" fill="#ffffff">DNS + balanceador de carga: el patrón real (multi-región)</text>
+  <text x="30" y="38" font-size="18" font-weight="700" fill="#ffffff">DNS + load balancer: the real pattern (multi-region)</text>
   <rect x="415" y="90" width="130" height="44" rx="2" ry="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
-  <text x="480.0" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#caf0f8">Usuario</text>
-  <text x="480.0" y="128" text-anchor="middle" font-size="12" fill="#90e0ef">www.tienda.com</text>
+  <text x="480.0" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#caf0f8">User</text>
+  <text x="480.0" y="128" text-anchor="middle" font-size="12" fill="#90e0ef">www.shop.com</text>
   <rect x="250" y="254" width="460" height="62" rx="2" ry="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
   <text x="480.0" y="274" text-anchor="middle" font-size="13" font-weight="700" fill="#caf0f8">Route 53 (DNS)</text>
-  <text x="480.0" y="292" text-anchor="middle" font-size="12" fill="#90e0ef">elige la REGIÓN: latencia / geolocalización / failover</text>
+  <text x="480.0" y="292" text-anchor="middle" font-size="12" fill="#90e0ef">picks the REGION: latency / geolocation / failover</text>
   <text x="480.0" y="308" text-anchor="middle" font-size="12" fill="#90e0ef">health checks · TTL 60 s</text>
   <polyline points="460,134 460,254" fill="none" stroke="#00b4d8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
-  <rect x="302.0" y="189.0" width="152.0" height="18" fill="#0d1f3c" opacity="0.95"/>
-  <text x="450" y="201.0" text-anchor="end" font-size="12" fill="#48cae4">1 · ¿www.tienda.com?</text>
+  <rect x="324.0" y="189.0" width="130.0" height="18" fill="#0d1f3c" opacity="0.95"/>
+  <text x="450" y="201.0" text-anchor="end" font-size="12" fill="#48cae4">1 · www.shop.com?</text>
   <polyline points="500,254 500,134" fill="none" stroke="#06d6a0" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-green)"/>
-  <rect x="506.0" y="189.0" width="238.4" height="18" fill="#0d1f3c" opacity="0.95"/>
-  <text x="510" y="201.0" text-anchor="start" font-size="12" fill="#06d6a0">2 · IP del ALB más cercano (TTL)</text>
+  <rect x="506.0" y="189.0" width="205.0" height="18" fill="#0d1f3c" opacity="0.95"/>
+  <text x="510" y="201.0" text-anchor="start" font-size="12" fill="#06d6a0">2 · IP of the nearest ALB (TTL)</text>
   <polyline points="415,112 45,112 45,493 117.5,493" fill="none" stroke="#00b4d8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
-  <rect x="164.8" y="103.0" width="130.4" height="18" fill="#0d1f3c" opacity="0.95"/>
-  <text x="230" y="115.0" text-anchor="middle" font-size="12" fill="#48cae4">3 · HTTPS a la IP</text>
+  <rect x="157.0" y="103.0" width="146.0" height="18" fill="#0d1f3c" opacity="0.95"/>
+  <text x="230" y="115.0" text-anchor="middle" font-size="12" fill="#48cae4">3 · HTTPS to the IP</text>
   <polyline points="692.5,316 692.5,462" fill="none" stroke="#00b4d8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-cyan)"/>
   <rect x="698.0" y="374.0" width="173.6" height="34" fill="#0d1f3c" opacity="0.95"/>
-  <text x="702" y="386.0" text-anchor="start" font-size="12" fill="#48cae4">failover si us-east-1</text>
-  <text x="702" y="402.0" text-anchor="start" font-size="12" fill="#48cae4">no pasa el health check</text>
+  <text x="702" y="386.0" text-anchor="start" font-size="12" fill="#48cae4">failover if us-east-1</text>
+  <text x="702" y="402.0" text-anchor="start" font-size="12" fill="#48cae4">fails its health check</text>
   <rect x="70" y="436" width="395" height="250" rx="2" fill="none" stroke="#00b4d8" stroke-width="1" stroke-dasharray="6,3"/>
   <text x="78" y="452" font-size="12" fill="#00b4d8" letter-spacing="0.05em">us-east-1</text>
   <rect x="117.5" y="462" width="300" height="62" rx="2" ry="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
   <text x="267.5" y="482" text-anchor="middle" font-size="13" font-weight="700" fill="#caf0f8">ALB / HAProxy</text>
-  <text x="267.5" y="500" text-anchor="middle" font-size="12" fill="#90e0ef">elige la INSTANCIA: capa 7,</text>
-  <text x="267.5" y="516" text-anchor="middle" font-size="12" fill="#90e0ef">health checks en segundos, persistencia</text>
+  <text x="267.5" y="500" text-anchor="middle" font-size="12" fill="#90e0ef">picks the INSTANCE: layer 7,</text>
+  <text x="267.5" y="516" text-anchor="middle" font-size="12" fill="#90e0ef">health checks in seconds, persistence</text>
   <rect x="84.0" y="584" width="367" height="88" rx="2" fill="none" stroke="#00b4d8" stroke-width="1" stroke-dasharray="6,3"/>
   <text x="92.0" y="664" font-size="12" fill="#00b4d8" letter-spacing="0.05em">Auto Scaling group</text>
   <rect x="100.5" y="604" width="64" height="40" rx="2" ry="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
@@ -51,15 +51,15 @@
   <polyline points="402.5,524 402.5,604" fill="none" stroke="#f77f00" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-orange)"/>
   <line x1="394.5" y1="558" x2="410.5" y2="574" stroke="#f77f00" stroke-width="2"/>
   <line x1="410.5" y1="558" x2="394.5" y2="574" stroke="#f77f00" stroke-width="2"/>
-  <rect x="87.5" y="549.0" width="116.0" height="34" fill="#0d1f3c" opacity="0.95"/>
-  <text x="145.5" y="561.0" text-anchor="middle" font-size="12" fill="#48cae4">4 · petición al</text>
-  <text x="145.5" y="577.0" text-anchor="middle" font-size="12" fill="#48cae4">backend sano</text>
+  <rect x="83.5" y="549.0" width="124.0" height="34" fill="#0d1f3c" opacity="0.95"/>
+  <text x="145.5" y="561.0" text-anchor="middle" font-size="12" fill="#48cae4">4 · request to a</text>
+  <text x="145.5" y="577.0" text-anchor="middle" font-size="12" fill="#48cae4">healthy backend</text>
   <rect x="495" y="436" width="395" height="250" rx="2" fill="none" stroke="#00b4d8" stroke-width="1" stroke-dasharray="6,3"/>
   <text x="503" y="452" font-size="12" fill="#00b4d8" letter-spacing="0.05em">eu-west-1</text>
   <rect x="542.5" y="462" width="300" height="62" rx="2" ry="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
   <text x="692.5" y="482" text-anchor="middle" font-size="13" font-weight="700" fill="#caf0f8">ALB / HAProxy</text>
-  <text x="692.5" y="500" text-anchor="middle" font-size="12" fill="#90e0ef">elige la INSTANCIA: capa 7,</text>
-  <text x="692.5" y="516" text-anchor="middle" font-size="12" fill="#90e0ef">health checks en segundos, persistencia</text>
+  <text x="692.5" y="500" text-anchor="middle" font-size="12" fill="#90e0ef">picks the INSTANCE: layer 7,</text>
+  <text x="692.5" y="516" text-anchor="middle" font-size="12" fill="#90e0ef">health checks in seconds, persistence</text>
   <rect x="509.0" y="584" width="367" height="88" rx="2" fill="none" stroke="#00b4d8" stroke-width="1" stroke-dasharray="6,3"/>
   <text x="517.0" y="664" font-size="12" fill="#00b4d8" letter-spacing="0.05em">Auto Scaling group</text>
   <rect x="525.5" y="604" width="64" height="40" rx="2" ry="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
@@ -75,19 +75,19 @@
   <circle cx="845.5" cy="624" r="4" fill="#06d6a0"/>
   <polyline points="827.5,524 827.5,604" fill="none" stroke="#00b4d8" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
   <rect x="30" y="716" width="900" height="60" rx="2" fill="#0d1f3c" stroke="#00b4d8" stroke-width="1"/>
-  <text x="480" y="740" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">DNS decide a qué región va el usuario y tarda minutos en reaccionar (TTL).</text>
-  <text x="480" y="764" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">El balanceador decide a qué servidor va cada petición y reacciona en segundos.</text>
-  <text x="30" y="800" font-size="12" fill="#00b4d8" letter-spacing="0.05em">LEYENDA</text>
+  <text x="480" y="740" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">DNS decides which region the user goes to; it takes minutes to react (TTL).</text>
+  <text x="480" y="764" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">The load balancer decides which server gets each request; it reacts in seconds.</text>
+  <text x="30" y="800" font-size="12" fill="#00b4d8" letter-spacing="0.05em">LEGEND</text>
   <line x1="30" y1="812" x2="56" y2="812" stroke="#00b4d8" stroke-width="1.5"/>
-  <text x="62" y="816" font-size="12" fill="#90e0ef">petición / consulta</text>
+  <text x="62" y="816" font-size="12" fill="#90e0ef">request / query</text>
   <line x1="230" y1="812" x2="256" y2="812" stroke="#06d6a0" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="262" y="816" font-size="12" fill="#90e0ef">respuesta DNS (IP+TTL)</text>
+  <text x="262" y="816" font-size="12" fill="#90e0ef">DNS response (IP+TTL)</text>
   <line x1="450" y1="812" x2="476" y2="812" stroke="#00b4d8" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="482" y="816" font-size="12" fill="#90e0ef">failover DNS</text>
+  <text x="482" y="816" font-size="12" fill="#90e0ef">DNS failover</text>
   <line x1="30" y1="832" x2="56" y2="832" stroke="#f77f00" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="62" y="836" font-size="12" fill="#90e0ef">retirado por health check</text>
+  <text x="62" y="836" font-size="12" fill="#90e0ef">removed by health check</text>
   <circle cx="275" cy="832" r="4" fill="#06d6a0"/>
-  <text x="294" y="836" font-size="12" fill="#90e0ef">sano</text>
+  <text x="294" y="836" font-size="12" fill="#90e0ef">healthy</text>
   <circle cx="360" cy="832" r="4" fill="#f77f00"/>
-  <text x="379" y="836" font-size="12" fill="#90e0ef">fuera</text>
+  <text x="379" y="836" font-size="12" fill="#90e0ef">out</text>
 </svg>
