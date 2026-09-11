@@ -49,19 +49,37 @@ graph TB
 
 ```
 
-## Diagrams
+## Class Diagrams
 
-Class-ready diagrams (editable SVG + PNG) in [`diagrams/`](./diagrams/):
+Reference diagrams from class, covering the concepts this lab exercises. PNGs below are the versions shown in class; editable SVG sources live in [`diagrams/`](./diagrams/).
 
 | Diagram | What it shows |
 |---|---|
-| [Lab architecture](./diagrams/lab01-architecture.png) | VPC (3 AZs), ALB, ECS Fargate cluster with the three services, Cloud Map `service.local`, the CloudWatch → target-tracking alarms → Application Auto Scaling loop, and the CDK stacks. |
-| [Manual scaling: CLI vs. CDK](./diagrams/lab01-manual-scaling-cli-vs-cdk.png) | Imperative `aws ecs update-service --desired-count` (drift) vs. declaratively changing `desired_count` in `ecsdemo-frontend/cdk/app.py` + `cdk diff` / `cdk deploy`. |
-| [AWS CDK lifecycle](./diagrams/cdk-lifecycle.png) | What CDK is (L1/L2/L3 constructs, app → stacks) and the lifecycle `init → bootstrap → synth → diff → deploy → iterate → destroy`, with the lab's exact commands and typical errors. |
-| [How autoscaling decides](./diagrams/autoscaling-how-it-decides.png) | The target-tracking "thermostat": CPU metric → AlarmHigh/AlarmLow → `new = ceil(tasks × CPU / target)` → desiredCount within min/max; measured timeline and the four knobs in `app.py`. |
-| [Scaling flow: manual vs. autoscaling](./diagrams/lab01-scaling-flow.png) | Step-by-step manual scale-out/scale-in with measured timings, the CPU target-tracking feedback loop (AlarmHigh / AlarmLow), and lessons learned (sustained load, target vs. saturation plateau). |
+| [Lab architecture](./diagrams/class-lab01-architecture.png) | VPC (3 AZs), ALB, ECS Fargate cluster with the three services, Cloud Map `service.local`, the CloudWatch → target-tracking alarms → Application Auto Scaling loop, and the CDK stacks. |
+| [Manual scaling: CLI vs. CDK](./diagrams/class-manual-scaling-cli-vs-cdk.png) | Imperative `aws ecs update-service --desired-count` (drift) vs. declaratively changing `desired_count` in `ecsdemo-frontend/cdk/app.py` + `cdk diff` / `cdk deploy`. |
+| [AWS CDK lifecycle](./diagrams/class-cdk-lifecycle.png) | What CDK is (L1/L2/L3 constructs, app → stacks) and the lifecycle `init → bootstrap → synth → diff → deploy → iterate → destroy`, with the lab's exact commands and typical errors. |
+| [How autoscaling decides](./diagrams/class-autoscaling-how-it-decides.png) | The target-tracking "thermostat": CPU metric → AlarmHigh/AlarmLow → `new = ceil(tasks × CPU / target)` → desiredCount within min/max; measured timeline and the four knobs in `app.py`. |
+| [Scaling flow: manual vs. autoscaling](./diagrams/class-scaling-flow-manual-vs-autoscaling.png) | Step-by-step manual scale-out/scale-in with measured timings, the CPU target-tracking feedback loop (AlarmHigh / AlarmLow), and lessons learned (sustained load, target vs. saturation plateau). |
 
-![Lab 01 architecture](./diagrams/lab01-architecture.png)
+![Lab 01 architecture (ECS Fargate + ALB)](./diagrams/class-lab01-architecture.png)
+
+VPC with 3 AZs, ALB, Fargate cluster with the three services, Cloud Map, and the CloudWatch → alarms → Application Auto Scaling loop.
+
+![Manual scaling: CLI vs. CDK](./diagrams/class-manual-scaling-cli-vs-cdk.png)
+
+Changing `desiredCount` with the CLI (imperative, causes drift) vs. changing it in code and running `cdk deploy` (declarative).
+
+![Scaling flow: manual vs. autoscaling](./diagrams/class-scaling-flow-manual-vs-autoscaling.png)
+
+Manual scaling steps with measured timings, the target-tracking loop (AlarmHigh / AlarmLow), and lessons learned.
+
+![AWS CDK: what it is and its lifecycle](./diagrams/class-cdk-lifecycle.png)
+
+Constructs, app → stacks, and the `init → bootstrap → synth → diff → deploy → iterate → destroy` cycle with the lab's commands.
+
+![ECS Auto Scaling: how it decides task count](./diagrams/class-autoscaling-how-it-decides.png)
+
+The CPU thermostat: metric → alarms → `new = ceil(tasks × CPU / target)` → desiredCount within min/max, and the knobs in code.
 
 ## Prerequisites
 

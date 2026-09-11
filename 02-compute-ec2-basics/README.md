@@ -39,16 +39,18 @@ in this course.
 - Scalable - easily increase or decrease capacity
 - Integrated with other AWS services
 
-## Diagrams
+## Class Diagrams
 
-Class diagrams for the virtualization topic (editable SVG + PNG) in [`diagrams/`](./diagrams/):
+Reference diagrams from class, covering the concepts this lab exercises (editable SVG + PNG in [`diagrams/`](./diagrams/)):
 
 | Diagram | What it shows |
 |---|---|
 | [What is virtualization?](./diagrams/compute-virtualization.png) | Definition, On‑Prem (1 server = 1 OS = 1 app) vs. one physical host running independent VMs on a hypervisor, VM portability, and the three benefits (cost, agility, downtime). |
 | [What is a hypervisor?](./diagrams/compute-hypervisors.png) | Compute host (CPU/RAM/Network + storage) sliced into vCPU/vRAM/vNIC per VM, isolation between VMs, the three storage paths (EBS / Instance Store / EFS‑FSx), Type 1 vs. Type 2 with products, multitenancy and how it maps to EC2 in the labs. |
 
-![Virtualization](./diagrams/compute-virtualization.png)
+![What is virtualization: on-prem vs virtualized host with VMs on a hypervisor](./diagrams/compute-virtualization.png)
+
+![How hypervisors work: resource slicing, VM isolation, storage paths, and Type 1 vs Type 2](./diagrams/compute-hypervisors.png)
 
 ## Lab Structure
 

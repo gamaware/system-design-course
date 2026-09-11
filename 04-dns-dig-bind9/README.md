@@ -11,6 +11,25 @@ This hands-on lab teaches DNS fundamentals through practical exercises using `di
 Students will learn how DNS works, explore different DNS record types, configure a DNS server,
 and understand DNS-based load balancing.
 
+## Class Diagrams
+
+Reference diagrams from class, covering the concepts this lab exercises.
+
+![DNS name resolution flow](diagrams/dns-resolution-flow.png)
+
+*Step-by-step DNS resolution: user, local cache, recursive resolver, root, TLD, and authoritative servers, followed by the final HTTP request.*
+
+![DNS vs. load balancer comparison](diagrams/dns-vs-load-balancer.png)
+
+*When to use each: decision granularity, reaction speed, health checks, persistence, and scope.*
+
+![DNS plus load balancer multi-region pattern](diagrams/dns-plus-load-balancer-multi-region.png)
+
+*The real-world pattern: DNS (Route 53) picks the region, the load balancer (ALB/HAProxy) picks the instance.*
+
+▶ [Explore the interactive diagram](https://spruce-frost-hy26.here.now/?theme=dark) (zoom, search, trace animation, export).
+SVG versions of the comparison and multi-region diagrams are available in [diagrams/](diagrams/).
+
 ## Learning Objectives
 
 - Understand how DNS translates domain names to IP addresses
