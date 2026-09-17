@@ -57,11 +57,12 @@ jobs:
           # being mistaken for "no open PRs".
           pr_list=$(
             gh pr list --repo "$REPO" --state open --limit 100 \
-              --json number,author,headRefName,isDraft,isCrossRepository,headRepositoryOwner \
+              --json number,author,headRefName,baseRefName,headRefOid,isDraft,isCrossRepository,headRepositoryOwner \
               --jq '.[]
                 | select(.isDraft | not)
                 | select(.isCrossRepository | not)
                 | select(.headRepositoryOwner.login == env.OWNER)
+                | select(.baseRefName == "main")
                 | select(
                     ((.author.login | sub("^app/"; "")) == "dependabot")
                     or (
@@ -69,7 +70,7 @@ jobs:
                       and (.author.login == env.OWNER)
                     )
                   )
-                | .number'
+                | "\(.number) \(.headRefOid)"'
           )
           mapfile -t candidates <<< "$pr_list"
           if [ "${#candidates[@]}" -eq 1 ] && [ -z "${candidates[0]}" ]; then
@@ -84,7 +85,15 @@ jobs:
           merged=0
           skipped=0
 
-          for number in "${candidates[@]}"; do
+          for entry in "${candidates[@]}"; do
+            number="${entry%% *}"
+            head_sha="${entry##* }"
+            if [[ ! "$head_sha" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::PR #$number: missing head SHA in '$entry', skipping"
+              skipped=$((skipped + 1))
+              continue
+            fi
+
             if ! state=$(gh pr view "$number" --repo "$REPO" \
               --json mergeStateStatus --jq '.mergeStateStatus'); then
               echo "PR #$number: could not read merge state, skipping"
@@ -101,22 +110,36 @@ jobs:
               BEHIND)
                 echo "PR #$number: behind base, requesting branch update"
                 gh pr update-branch "$number" --repo "$REPO" \
-                  || echo "PR #$number: branch update failed, will retry next run"
+                  || echo "::warning::PR #$number: branch update failed, will retry next run"
+                skipped=$((skipped + 1))
+                continue
+                ;;
+              CLEAN|BLOCKED|UNSTABLE|HAS_HOOKS)
+                ;;
+              *)
+                # UNKNOWN (mergeability still being computed) or anything new.
+                echo "PR #$number: merge state $state, skipping"
                 skipped=$((skipped + 1))
                 continue
                 ;;
             esac
 
-            # gh pr checks exits non-zero when checks fail or are pending;
-            # the JSON is still printed, so keep the output and drop the exit
-            # code. Treat empty output as "no checks" so the guard below skips.
+            # gh pr checks exits non-zero on API errors or when no checks exist
+            # (with --json it exits 0 for failing or pending checks). Keep the
+            # output, drop the exit code, and treat empty output as "no checks"
+            # so the guard below skips.
+            checks_err="${RUNNER_TEMP:-/tmp}/pr-checks-$number.err"
             summary=$(gh pr checks "$number" --repo "$REPO" --json bucket \
               --jq '[
                 length,
                 ([.[] | select(.bucket == "fail" or .bucket == "cancel")] | length),
                 ([.[] | select(.bucket == "pending")] | length)
-              ] | @tsv' 2>/dev/null) || true
+              ] | @tsv' 2>"$checks_err") || true
             if [ -z "$summary" ]; then
+              # Distinguish a real API/auth failure from "no checks reported".
+              if [ -s "$checks_err" ] && ! grep -qi "no checks" "$checks_err"; then
+                echo "::warning::PR #$number: gh pr checks failed: $(head -n 1 "$checks_err")"
+              fi
               summary=$'0\t0\t0'
             fi
             IFS=$'\t' read -r total fail pending <<< "$summary"
@@ -140,8 +163,15 @@ jobs:
             fi
 
             echo "PR #$number: all $total check(s) green, merging"
-            if gh pr merge "$number" --repo "$REPO" --squash --admin --delete-branch; then
+            # Bind the merge to the head captured before the checks were
+            # inspected; if the head moved since then, the merge is refused.
+            if gh pr merge "$number" --repo "$REPO" --squash --admin --delete-branch \
+                --match-head-commit "$head_sha"; then
               merged=$((merged + 1))
+              # main has moved: stop here so every remaining candidate is
+              # re-evaluated against the new base on the next run.
+              echo "Merged one PR; remaining candidates are re-evaluated next run."
+              break
             else
               echo "::warning::PR #$number: merge failed"
               skipped=$((skipped + 1))
