@@ -11,6 +11,26 @@ This hands-on lab teaches DNS fundamentals through practical exercises using `di
 Students will learn how DNS works, explore different DNS record types, configure a DNS server,
 and understand DNS-based load balancing.
 
+## Class Diagrams
+
+Reference diagrams from class, covering the concepts this lab exercises.
+
+![DNS name resolution flow](diagrams/dns-resolution-flow.png)
+
+*Step-by-step DNS resolution: user, local cache, recursive resolver, root, TLD, and authoritative servers,
+followed by the final HTTP request.*
+
+![DNS vs. load balancer comparison](diagrams/dns-vs-load-balancer.png)
+
+*When to use each: decision granularity, reaction speed, health checks, persistence, and scope.*
+
+![DNS plus load balancer multi-region pattern](diagrams/dns-plus-load-balancer-multi-region.png)
+
+*The real-world pattern: DNS (Route 53) picks the region, the load balancer (ALB/HAProxy) picks the instance.*
+
+▶ [Explore the interactive diagram](https://spruce-frost-hy26.here.now/?theme=dark) (zoom, search, trace animation, export).
+SVG versions of the comparison and multi-region diagrams are available in [diagrams/](diagrams/).
+
 ## Learning Objectives
 
 - Understand how DNS translates domain names to IP addresses
@@ -136,6 +156,9 @@ dig -x 1.1.1.1
 dig github.com A +short
 
 # AAAA record - IPv6 address
+dig google.com AAAA +short
+
+# Note: not every domain has IPv6 — this one returns empty output, and that IS the answer
 dig github.com AAAA +short
 
 # MX record - Mail servers
@@ -151,7 +174,8 @@ dig github.com TXT +short
 ### Task 2.2: Full DNS Information
 
 ```bash
-# Get all information about a domain
+# Ask for "all" records - modern resolvers minimize ANY (RFC 8482),
+# so expect a partial answer (often a single record) instead of everything
 dig github.com ANY
 
 # Trace the full DNS resolution path
@@ -231,7 +255,7 @@ options {
 };
 
 zone "test.local" IN {
-    type master;
+    type primary;
     file "/var/named/test.local.db";
 };
 EOF
@@ -249,7 +273,7 @@ EOF
 **`zone` section:**
 
 - Defines a DNS zone this server manages
-- `type master` - This server is authoritative for this zone
+- `type primary` - This server is authoritative for this zone (older configs use the legacy name `type master`)
 - `file` - Zone file containing DNS records
 
 ### Task 4.3: Create Zone File
