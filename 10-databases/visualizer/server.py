@@ -784,7 +784,6 @@ def vertical_benchmark(body):
     count = int(body.get("count", 200))
     conn = get_conn(PRIMARY_HOST)
     try:
-        steps = []
         total_start = time.perf_counter()
         latencies = []
 
@@ -794,7 +793,7 @@ def vertical_benchmark(body):
 
         with conn.cursor() as cur:
             import random
-            for i in range(count):
+            for _ in range(count):
                 sid = random.randint(1, 10)
                 rid = f"resource-{random.randint(1, 50)}"
                 t0 = time.perf_counter()
@@ -817,7 +816,7 @@ def vertical_benchmark(body):
         hit_ratio = round((1 - disk_reads / max(read_requests, 1)) * 100, 1)
         avg_latency = round(sum(latencies) / len(latencies), 2)
         p95 = round(sorted(latencies)[int(len(latencies) * 0.95)], 2)
-        qps = round(count / ((time.perf_counter() - total_start)), 1)
+        qps = round(count / (time.perf_counter() - total_start), 1)
 
         bench_sql = ("SELECT * FROM access_log WHERE student_id = ? "
                      f"AND resource = ? (x{count})")
