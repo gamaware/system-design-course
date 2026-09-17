@@ -1,17 +1,17 @@
-/* global document, setTimeout */
+/* global setTimeout */
 
 // Module-specific JavaScript for the Proxies presentation.
 
 function highlightTier(btn, tierClass) {
-  var section = btn.closest('section');
+  const section = btn.closest('section');
   if (!section) return;
-  var svg = section.querySelector('svg');
+  const svg = section.querySelector('svg');
   if (!svg) return;
-  var tiers = svg.querySelectorAll('.arch-tier');
+  const tiers = svg.querySelectorAll('.arch-tier');
   tiers.forEach(function (t) {
     t.setAttribute('opacity', t.classList.contains(tierClass) ? '1' : '0.25');
   });
-  var descs = section.querySelectorAll('.tier-desc');
+  const descs = section.querySelectorAll('.tier-desc');
   descs.forEach(function (d) {
     d.style.display = d.dataset.tier === tierClass ? 'block' : 'none';
   });
@@ -23,3 +23,5 @@ function highlightTier(btn, tierClass) {
 }
 
 window.PRES_CONFIG = {};
+
+window.highlightTier = highlightTier;

@@ -31,4 +31,5 @@ and Python code.
 
 - Third-party files in `ecsdemo-*/` directories (AWS demo apps, not our code).
 - Placeholder READMEs in modules 07-16 (content under development).
-- The `verify=False` in Python code for self-signed certificates (intentional for labs).
+- Lab `06-security-https-oauth2-keycloak` trusts a self-signed certificate through the
+  `KEYCLOAK_CA_BUNDLE` environment variable (intentional; the lab explains why `verify=False` is unsafe).

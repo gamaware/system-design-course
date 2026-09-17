@@ -31,6 +31,8 @@ The repository uses `pre-commit` with the following hooks:
 - **quality-checks.yml**: Markdown linting, link checking, ShellCheck, YAML linting,
   repository structure validation, and README quality checks.
 - **update-pre-commit-hooks.yml**: Weekly auto-update of pre-commit hook versions via PR.
+- **auto-merge-bot-prs.yml**: Hourly scheduled job that squash-merges Dependabot and
+  pre-commit update PRs with admin bypass once all checks are green.
 
 ### Linting policy
 
