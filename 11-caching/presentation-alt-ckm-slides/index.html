@@ -17,19 +17,33 @@
     <style>
       /* ============ CKM DESIGN ENHANCEMENTS ============ */
       :root {
-        --color-primary: #00D4FF;
-        --color-secondary: #FF00AA;
-        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+        --color-primary: #00d4ff;
+        --color-secondary: #ff00aa;
+        --primitive-gradient-primary: linear-gradient(135deg, #00d4ff, #00ff88);
       }
-      .reveal h1, .reveal h2 {
+      .reveal h1,
+      .reveal h2 {
         background: var(--primitive-gradient-primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      .card { transition: all 0.3s ease; }
-      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
-      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+      .card {
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
+      }
+      .progress-bar-top {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--primitive-gradient-primary);
+        transition: width 0.3s;
+        z-index: 9999;
+      }
     </style>
     <script>
       (function () {
@@ -53,7 +67,33 @@
         EN
       </button>
       <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        <select
+          id="theme-select"
+          onchange="applyThemePreset(this.value)"
+          style="
+            font-size: 11px;
+            padding: 4px 8px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+          "
+        >
+          <option value="custom-dark">Custom Dark</option>
+          <option value="bold-signal">Bold Signal</option>
+          <option value="electric-studio">Electric Studio</option>
+          <option value="creative-voltage">Creative Voltage</option>
+          <option value="dark-botanical">Dark Botanical</option>
+          <option value="notebook-tabs">Notebook Tabs</option>
+          <option value="pastel-geometry">Pastel Geometry</option>
+          <option value="split-pastel">Split Pastel</option>
+          <option value="neon-cyber">Neon Cyber</option>
+          <option value="terminal-green">Terminal Green</option>
+          <option value="swiss-modern">Swiss Modern</option>
+          <option value="paper-ink">Paper &amp; Ink</option>
+        </select>
         &#9790;
       </button>
     </div>
@@ -75,12 +115,7 @@
                   stroke="var(--primary)"
                   stroke-width="2.5"
                 >
-                  <animate
-                    attributeName="ry"
-                    values="13;15;13"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
+                  <animate attributeName="ry" values="13;15;13" dur="2s" repeatCount="indefinite" />
                 </ellipse>
                 <path
                   d="M18,30 v55 c0,7.2 18.8,13 42,13s42,-5.8 42,-13v-55"
@@ -207,9 +242,7 @@
               </h4>
               <p>
                 <span class="lang-en">Stale data, thundering herd, LRU/LFU</span
-                ><span class="lang-es"
-                  >Datos obsoletos, thundering herd, LRU/LFU</span
-                >
+                ><span class="lang-es">Datos obsoletos, thundering herd, LRU/LFU</span>
               </p>
             </div>
             <div class="card float-in border-purple">
@@ -219,9 +252,7 @@
               </h4>
               <p>
                 <span class="lang-en">CDN caching, multi-tier, Redis vs Memcached</span
-                ><span class="lang-es"
-                  >Cach&eacute; CDN, multi-nivel, Redis vs Memcached</span
-                >
+                ><span class="lang-es">Cach&eacute; CDN, multi-nivel, Redis vs Memcached</span>
               </p>
             </div>
           </div>
@@ -235,11 +266,11 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >Every request needs to be fast. Caching reduces load on databases and
-              cuts latency.</span
+              >Every request needs to be fast. Caching reduces load on databases and cuts
+              latency.</span
             ><span class="lang-es"
-              >Cada solicitud necesita ser r&aacute;pida. El cach&eacute; reduce la
-              carga en bases de datos y disminuye la latencia.</span
+              >Cada solicitud necesita ser r&aacute;pida. El cach&eacute; reduce la carga en bases
+              de datos y disminuye la latencia.</span
             >
           </p>
           <div class="grid-3">
@@ -275,23 +306,20 @@
                 <span class="lang-en"
                   >Caching creates breathing room for slower backend systems.</span
                 ><span class="lang-es"
-                  >El cach&eacute; crea espacio para sistemas backend m&aacute;s
-                  lentos.</span
+                  >El cach&eacute; crea espacio para sistemas backend m&aacute;s lentos.</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >By storing frequently accessed data closer to the consumer, caches
-                    reduce redundant database queries, lower network round-trips, and
-                    absorb traffic spikes that would otherwise overwhelm the origin
-                    server.</span
+                    >By storing frequently accessed data closer to the consumer, caches reduce
+                    redundant database queries, lower network round-trips, and absorb traffic spikes
+                    that would otherwise overwhelm the origin server.</span
                   ><span class="lang-es"
-                    >Al almacenar datos frecuentemente accedidos m&aacute;s cerca del
-                    consumidor, los cach&eacute;s reducen consultas redundantes a la
-                    base de datos, disminuyen viajes de red y absorben picos de
-                    tr&aacute;fico que de otra forma abrumar&iacute;an al servidor
-                    origen.</span
+                    >Al almacenar datos frecuentemente accedidos m&aacute;s cerca del consumidor,
+                    los cach&eacute;s reducen consultas redundantes a la base de datos, disminuyen
+                    viajes de red y absorben picos de tr&aacute;fico que de otra forma
+                    abrumar&iacute;an al servidor origen.</span
                   >
                 </p>
               </div>
@@ -307,14 +335,12 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >A distributed cache spreads data across multiple nodes, providing
-              shared access for all application servers with high availability and
-              horizontal scalability.</span
+              >A distributed cache spreads data across multiple nodes, providing shared access for
+              all application servers with high availability and horizontal scalability.</span
             ><span class="lang-es"
               >Un cach&eacute; distribuido reparte datos entre m&uacute;ltiples nodos,
-              proporcionando acceso compartido para todos los servidores de
-              aplicaci&oacute;n con alta disponibilidad y escalabilidad
-              horizontal.</span
+              proporcionando acceso compartido para todos los servidores de aplicaci&oacute;n con
+              alta disponibilidad y escalabilidad horizontal.</span
             >
           </p>
           <div class="diagram-container">
@@ -585,12 +611,11 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >Every write goes through the cache before hitting the database.
-              The cache is always consistent with the source of truth.</span
+              >Every write goes through the cache before hitting the database. The cache is always
+              consistent with the source of truth.</span
             ><span class="lang-es"
-              >Cada escritura pasa por el cach&eacute; antes de llegar a la base de
-              datos. El cach&eacute; siempre es consistente con la fuente de
-              verdad.</span
+              >Cada escritura pasa por el cach&eacute; antes de llegar a la base de datos. El
+              cach&eacute; siempre es consistente con la fuente de verdad.</span
             >
           </p>
           <div class="diagram-container">
@@ -664,12 +689,7 @@
                   <mpath href="#path-wt-app-cache" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-wt-app-cache"
-                d="M220,87 L350,87"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-wt-app-cache" d="M220,87 L350,87" fill="none" stroke="none" />
 
               <!-- Cache cylinder -->
               <ellipse
@@ -727,12 +747,7 @@
                   <mpath href="#path-wt-cache-db" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-wt-cache-db"
-                d="M490,87 L620,87"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-wt-cache-db" d="M490,87 L620,87" fill="none" stroke="none" />
 
               <!-- Database cylinder -->
               <ellipse
@@ -762,23 +777,11 @@
               </text>
 
               <!-- Labels -->
-              <text
-                x="305"
-                y="145"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="9"
-              >
+              <text x="305" y="145" text-anchor="middle" fill="var(--muted)" font-size="9">
                 <tspan class="lang-en">1. App writes to cache</tspan>
                 <tspan class="lang-es">1. App escribe en cach&eacute;</tspan>
               </text>
-              <text
-                x="575"
-                y="145"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="9"
-              >
+              <text x="575" y="145" text-anchor="middle" fill="var(--muted)" font-size="9">
                 <tspan class="lang-en">2. Cache writes to DB</tspan>
                 <tspan class="lang-es">2. Cach&eacute; escribe en BD</tspan>
               </text>
@@ -786,13 +789,9 @@
           </div>
           <div class="grid-2" style="margin-top: 8px">
             <div class="card float-in border-green expandable">
-              <h4>
-                <span class="lang-en">Benefits</span
-                ><span class="lang-es">Beneficios</span>
-              </h4>
+              <h4><span class="lang-en">Benefits</span><span class="lang-es">Beneficios</span></h4>
               <p>
-                <span class="lang-en"
-                  >Strong consistency, always trust the cache</span
+                <span class="lang-en">Strong consistency, always trust the cache</span
                 ><span class="lang-es"
                   >Consistencia fuerte, siempre conf&iacute;a en el cach&eacute;</span
                 >
@@ -800,45 +799,37 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >The cache always has the latest data because every write updates
-                    it first. Read operations never return stale data. This simplifies
-                    application logic since there is no need for cache invalidation
-                    strategies.</span
+                    >The cache always has the latest data because every write updates it first. Read
+                    operations never return stale data. This simplifies application logic since
+                    there is no need for cache invalidation strategies.</span
                   ><span class="lang-es"
-                    >El cach&eacute; siempre tiene los datos m&aacute;s recientes
-                    porque cada escritura lo actualiza primero. Las operaciones de
-                    lectura nunca devuelven datos obsoletos. Esto simplifica la
-                    l&oacute;gica de la aplicaci&oacute;n ya que no se necesitan
-                    estrategias de invalidaci&oacute;n.</span
+                    >El cach&eacute; siempre tiene los datos m&aacute;s recientes porque cada
+                    escritura lo actualiza primero. Las operaciones de lectura nunca devuelven datos
+                    obsoletos. Esto simplifica la l&oacute;gica de la aplicaci&oacute;n ya que no se
+                    necesitan estrategias de invalidaci&oacute;n.</span
                   >
                 </p>
               </div>
             </div>
             <div class="card float-in border-orange expandable">
               <h4>
-                <span class="lang-en">Trade-offs</span
-                ><span class="lang-es">Compensaciones</span>
+                <span class="lang-en">Trade-offs</span><span class="lang-es">Compensaciones</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Slower writes, write amplification</span
-                ><span class="lang-es"
-                  >Escrituras lentas, amplificaci&oacute;n de escritura</span
-                >
+                <span class="lang-en">Slower writes, write amplification</span
+                ><span class="lang-es">Escrituras lentas, amplificaci&oacute;n de escritura</span>
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Every write must complete in two systems (cache + database) before
-                    returning success. This doubles write latency and creates a
-                    bottleneck if the database is slow. Also causes write amplification
-                    for data that is rarely read.</span
+                    >Every write must complete in two systems (cache + database) before returning
+                    success. This doubles write latency and creates a bottleneck if the database is
+                    slow. Also causes write amplification for data that is rarely read.</span
                   ><span class="lang-es"
-                    >Cada escritura debe completarse en dos sistemas (cach&eacute; +
-                    base de datos) antes de retornar &eacute;xito. Esto duplica la
-                    latencia de escritura y crea un cuello de botella si la base de
-                    datos es lenta. Tambi&eacute;n causa amplificaci&oacute;n de
-                    escritura para datos que rara vez se leen.</span
+                    >Cada escritura debe completarse en dos sistemas (cach&eacute; + base de datos)
+                    antes de retornar &eacute;xito. Esto duplica la latencia de escritura y crea un
+                    cuello de botella si la base de datos es lenta. Tambi&eacute;n causa
+                    amplificaci&oacute;n de escritura para datos que rara vez se leen.</span
                   >
                 </p>
               </div>
@@ -854,12 +845,11 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >The most common approach. Writes go directly to the database;
-              the cache loads data on read miss.</span
+              >The most common approach. Writes go directly to the database; the cache loads data on
+              read miss.</span
             ><span class="lang-es"
-              >El enfoque m&aacute;s com&uacute;n. Las escrituras van directo a la
-              base de datos; el cach&eacute; carga datos en caso de fallo de
-              lectura.</span
+              >El enfoque m&aacute;s com&uacute;n. Las escrituras van directo a la base de datos; el
+              cach&eacute; carga datos en caso de fallo de lectura.</span
             >
           </p>
           <div class="diagram-container">
@@ -1030,12 +1020,7 @@
                   <mpath href="#path-ca-r2" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-ca-r2"
-                d="M220,80 L220,105 L340,105"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-ca-r2" d="M220,80 L220,105 L340,105" fill="none" stroke="none" />
 
               <!-- Step 2 badge -->
               <circle cx="270" cy="98" r="9" fill="var(--error)" opacity="0.9" />
@@ -1191,12 +1176,7 @@
                   <mpath href="#path-ca-w1" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-ca-w1"
-                d="M580,55 L580,100 L690,100"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-ca-w1" d="M580,55 L580,100 L690,100" fill="none" stroke="none" />
 
               <!-- Step 1 badge (write) -->
               <circle cx="615" cy="75" r="9" fill="var(--warning)" opacity="0.9" />
@@ -1348,42 +1328,34 @@
           </div>
           <div class="grid-2" style="margin-top: 8px">
             <div class="card float-in border-green expandable">
-              <h4>
-                <span class="lang-en">Benefits</span
-                ><span class="lang-es">Beneficios</span>
-              </h4>
+              <h4><span class="lang-en">Benefits</span><span class="lang-es">Beneficios</span></h4>
               <p>
-                <span class="lang-en"
-                  >Reduces cache pollution, lower write load on cache</span
+                <span class="lang-en">Reduces cache pollution, lower write load on cache</span
                 ><span class="lang-es"
-                  >Reduce la contaminaci&oacute;n del cach&eacute;, menor carga de
-                  escritura</span
+                  >Reduce la contaminaci&oacute;n del cach&eacute;, menor carga de escritura</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Only data that is actually read gets cached, avoiding storage
-                    waste on rarely accessed items. Writes are fast because they only
-                    hit the database. Good for read-heavy workloads where not all data
-                    needs to be cached.</span
+                    >Only data that is actually read gets cached, avoiding storage waste on rarely
+                    accessed items. Writes are fast because they only hit the database. Good for
+                    read-heavy workloads where not all data needs to be cached.</span
                   ><span class="lang-es"
-                    >Solo los datos que realmente se leen se almacenan en cach&eacute;,
-                    evitando desperdiciar almacenamiento en elementos poco accedidos.
-                    Las escrituras son r&aacute;pidas porque solo llegan a la base de
-                    datos. Bueno para cargas de trabajo intensivas en lectura.</span
+                    >Solo los datos que realmente se leen se almacenan en cach&eacute;, evitando
+                    desperdiciar almacenamiento en elementos poco accedidos. Las escrituras son
+                    r&aacute;pidas porque solo llegan a la base de datos. Bueno para cargas de
+                    trabajo intensivas en lectura.</span
                   >
                 </p>
               </div>
             </div>
             <div class="card float-in border-orange expandable">
               <h4>
-                <span class="lang-en">Trade-offs</span
-                ><span class="lang-es">Compensaciones</span>
+                <span class="lang-en">Trade-offs</span><span class="lang-es">Compensaciones</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >First read causes a miss, stale data window</span
+                <span class="lang-en">First read causes a miss, stale data window</span
                 ><span class="lang-es"
                   >Primera lectura causa un fallo, ventana de datos obsoletos</span
                 >
@@ -1391,16 +1363,15 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Cold start problem: the first request for any key always hits
-                    the database. After a write, the cache entry is deleted, so the
-                    next read will have increased latency. There is a brief window
-                    where the cache may serve stale data if invalidation is
-                    delayed.</span
+                    >Cold start problem: the first request for any key always hits the database.
+                    After a write, the cache entry is deleted, so the next read will have increased
+                    latency. There is a brief window where the cache may serve stale data if
+                    invalidation is delayed.</span
                   ><span class="lang-es"
-                    >Problema de arranque en fr&iacute;o: la primera solicitud para
-                    cualquier clave siempre llega a la base de datos. Despu&eacute;s
-                    de una escritura, la entrada del cach&eacute; se elimina, por lo
-                    que la siguiente lectura tendr&aacute; mayor latencia.</span
+                    >Problema de arranque en fr&iacute;o: la primera solicitud para cualquier clave
+                    siempre llega a la base de datos. Despu&eacute;s de una escritura, la entrada
+                    del cach&eacute; se elimina, por lo que la siguiente lectura tendr&aacute; mayor
+                    latencia.</span
                   >
                 </p>
               </div>
@@ -1416,12 +1387,11 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >The cache becomes the primary write target. The database lags behind,
-              receiving batched writes asynchronously.</span
+              >The cache becomes the primary write target. The database lags behind, receiving
+              batched writes asynchronously.</span
             ><span class="lang-es"
-              >El cach&eacute; se convierte en el destino principal de escritura. La
-              base de datos queda rezagada, recibiendo escrituras por lotes de forma
-              as&iacute;ncrona.</span
+              >El cach&eacute; se convierte en el destino principal de escritura. La base de datos
+              queda rezagada, recibiendo escrituras por lotes de forma as&iacute;ncrona.</span
             >
           </p>
           <div class="diagram-container">
@@ -1506,12 +1476,7 @@
                   <mpath href="#path-wb-app-cache" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-wb-app-cache"
-                d="M220,87 L350,87"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-wb-app-cache" d="M220,87 L350,87" fill="none" stroke="none" />
 
               <!-- ACK label (immediate) -->
               <text
@@ -1581,12 +1546,7 @@
                   <mpath href="#path-wb-cache-db" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-wb-cache-db"
-                d="M490,87 L620,87"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-wb-cache-db" d="M490,87 L620,87" fill="none" stroke="none" />
 
               <!-- Async / Batch label -->
               <text
@@ -1629,23 +1589,11 @@
               </text>
 
               <!-- Labels -->
-              <text
-                x="305"
-                y="150"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="9"
-              >
+              <text x="305" y="150" text-anchor="middle" fill="var(--muted)" font-size="9">
                 <tspan class="lang-en">1. App writes to cache only</tspan>
                 <tspan class="lang-es">1. App escribe solo en cach&eacute;</tspan>
               </text>
-              <text
-                x="575"
-                y="150"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="9"
-              >
+              <text x="575" y="150" text-anchor="middle" fill="var(--muted)" font-size="9">
                 <tspan class="lang-en">2. Cache batches writes to DB later</tspan>
                 <tspan class="lang-es">2. Cach&eacute; env&iacute;a lotes a BD</tspan>
               </text>
@@ -1653,13 +1601,9 @@
           </div>
           <div class="grid-2" style="margin-top: 8px">
             <div class="card float-in border-green expandable">
-              <h4>
-                <span class="lang-en">Benefits</span
-                ><span class="lang-es">Beneficios</span>
-              </h4>
+              <h4><span class="lang-en">Benefits</span><span class="lang-es">Beneficios</span></h4>
               <p>
-                <span class="lang-en"
-                  >Fastest write latency, reduces DB write load</span
+                <span class="lang-en">Fastest write latency, reduces DB write load</span
                 ><span class="lang-es"
                   >Menor latencia de escritura, reduce carga de escritura en BD</span
                 >
@@ -1667,48 +1611,43 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Writes return immediately after updating the cache, without
-                    waiting for the database. Multiple writes to the same key can be
-                    coalesced into a single database write. Ideal for bursty traffic
-                    patterns like game state updates or real-time analytics
-                    counters.</span
+                    >Writes return immediately after updating the cache, without waiting for the
+                    database. Multiple writes to the same key can be coalesced into a single
+                    database write. Ideal for bursty traffic patterns like game state updates or
+                    real-time analytics counters.</span
                   ><span class="lang-es"
-                    >Las escrituras retornan inmediatamente despu&eacute;s de
-                    actualizar el cach&eacute;, sin esperar a la base de datos.
-                    M&uacute;ltiples escrituras a la misma clave pueden consolidarse
-                    en una sola escritura a la BD. Ideal para patrones de
-                    tr&aacute;fico en r&aacute;fagas como actualizaciones de estado
-                    de juegos o contadores de anal&iacute;tica.</span
+                    >Las escrituras retornan inmediatamente despu&eacute;s de actualizar el
+                    cach&eacute;, sin esperar a la base de datos. M&uacute;ltiples escrituras a la
+                    misma clave pueden consolidarse en una sola escritura a la BD. Ideal para
+                    patrones de tr&aacute;fico en r&aacute;fagas como actualizaciones de estado de
+                    juegos o contadores de anal&iacute;tica.</span
                   >
                 </p>
               </div>
             </div>
             <div class="card float-in border-orange expandable">
               <h4>
-                <span class="lang-en">Trade-offs</span
-                ><span class="lang-es">Compensaciones</span>
+                <span class="lang-en">Trade-offs</span><span class="lang-es">Compensaciones</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Risk of data loss, harder consistency guarantees</span
+                <span class="lang-en">Risk of data loss, harder consistency guarantees</span
                 ><span class="lang-es"
-                  >Riesgo de p&eacute;rdida de datos, garant&iacute;as de
-                  consistencia m&aacute;s dif&iacute;ciles</span
+                  >Riesgo de p&eacute;rdida de datos, garant&iacute;as de consistencia m&aacute;s
+                  dif&iacute;ciles</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >If the cache crashes before flushing to the database, uncommitted
-                    writes are lost. Requires cache replication or write-ahead logging
-                    to mitigate. The database may serve stale data if read directly.
-                    Debugging is harder because the source of truth is split between
-                    cache and database.</span
+                    >If the cache crashes before flushing to the database, uncommitted writes are
+                    lost. Requires cache replication or write-ahead logging to mitigate. The
+                    database may serve stale data if read directly. Debugging is harder because the
+                    source of truth is split between cache and database.</span
                   ><span class="lang-es"
-                    >Si el cach&eacute; falla antes de vaciar a la base de datos, las
-                    escrituras no confirmadas se pierden. Requiere replicaci&oacute;n
-                    del cach&eacute; o registro de escritura anticipada. La base de
-                    datos puede servir datos obsoletos si se lee directamente.</span
+                    >Si el cach&eacute; falla antes de vaciar a la base de datos, las escrituras no
+                    confirmadas se pierden. Requiere replicaci&oacute;n del cach&eacute; o registro
+                    de escritura anticipada. La base de datos puede servir datos obsoletos si se lee
+                    directamente.</span
                   >
                 </p>
               </div>
@@ -1726,24 +1665,20 @@
             <thead>
               <tr>
                 <th>
-                  <span class="lang-en">Strategy</span
-                  ><span class="lang-es">Estrategia</span>
+                  <span class="lang-en">Strategy</span><span class="lang-es">Estrategia</span>
                 </th>
                 <th>
-                  <span class="lang-en">Consistency</span
-                  ><span class="lang-es">Consistencia</span>
+                  <span class="lang-en">Consistency</span><span class="lang-es">Consistencia</span>
                 </th>
                 <th>
                   <span class="lang-en">Write Speed</span
                   ><span class="lang-es">Vel. Escritura</span>
                 </th>
                 <th>
-                  <span class="lang-en">Read Speed</span
-                  ><span class="lang-es">Vel. Lectura</span>
+                  <span class="lang-en">Read Speed</span><span class="lang-es">Vel. Lectura</span>
                 </th>
                 <th>
-                  <span class="lang-en">Best For</span
-                  ><span class="lang-es">Ideal Para</span>
+                  <span class="lang-en">Best For</span><span class="lang-es">Ideal Para</span>
                 </th>
               </tr>
             </thead>
@@ -1765,9 +1700,7 @@
                 <td><span class="badge badge-orange">Cold start</span></td>
                 <td>
                   <span class="lang-en">General purpose, read-heavy apps</span
-                  ><span class="lang-es"
-                    >Prop&oacute;sito general, apps de lectura</span
-                  >
+                  ><span class="lang-es">Prop&oacute;sito general, apps de lectura</span>
                 </td>
               </tr>
               <tr>
@@ -1777,20 +1710,15 @@
                 <td><span class="badge badge-green">Fast</span></td>
                 <td>
                   <span class="lang-en">Game state, analytics, counters</span
-                  ><span class="lang-es"
-                    >Estado de juegos, anal&iacute;tica, contadores</span
-                  >
+                  ><span class="lang-es">Estado de juegos, anal&iacute;tica, contadores</span>
                 </td>
               </tr>
             </tbody>
           </table>
           <p style="text-align: center; margin-top: 12px">
             <span class="badge badge-blue"
-              ><span class="lang-en"
-                >Cache-aside is the most widely adopted strategy</span
-              ><span class="lang-es"
-                >Cache-aside es la estrategia m&aacute;s adoptada</span
-              ></span
+              ><span class="lang-en">Cache-aside is the most widely adopted strategy</span
+              ><span class="lang-es">Cache-aside es la estrategia m&aacute;s adoptada</span></span
             >
           </p>
         </section>
@@ -1803,12 +1731,11 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >Distributed caches introduce coordination problems that must be
-              addressed at the application or infrastructure level.</span
+              >Distributed caches introduce coordination problems that must be addressed at the
+              application or infrastructure level.</span
             ><span class="lang-es"
-              >Los cach&eacute;s distribuidos introducen problemas de
-              coordinaci&oacute;n que deben abordarse a nivel de aplicaci&oacute;n o
-              infraestructura.</span
+              >Los cach&eacute;s distribuidos introducen problemas de coordinaci&oacute;n que deben
+              abordarse a nivel de aplicaci&oacute;n o infraestructura.</span
             >
           </p>
           <div class="grid-2">
@@ -1818,25 +1745,21 @@
                 ><span class="lang-es">Lecturas Obsoletas</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Client reads from a cache node not yet updated</span
+                <span class="lang-en">Client reads from a cache node not yet updated</span
                 ><span class="lang-es"
-                  >El cliente lee de un nodo de cach&eacute; a&uacute;n no
-                  actualizado</span
+                  >El cliente lee de un nodo de cach&eacute; a&uacute;n no actualizado</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >After a write, other cache nodes may still hold the old value
-                    until invalidation propagates. This window can range from
-                    milliseconds to seconds depending on the invalidation
-                    mechanism.</span
+                    >After a write, other cache nodes may still hold the old value until
+                    invalidation propagates. This window can range from milliseconds to seconds
+                    depending on the invalidation mechanism.</span
                   ><span class="lang-es"
-                    >Despu&eacute;s de una escritura, otros nodos de cach&eacute;
-                    pueden a&uacute;n contener el valor anterior hasta que se propague
-                    la invalidaci&oacute;n. Esta ventana puede ir de milisegundos a
-                    segundos.</span
+                    >Despu&eacute;s de una escritura, otros nodos de cach&eacute; pueden a&uacute;n
+                    contener el valor anterior hasta que se propague la invalidaci&oacute;n. Esta
+                    ventana puede ir de milisegundos a segundos.</span
                   >
                 </p>
               </div>
@@ -1847,8 +1770,7 @@
                 ><span class="lang-es">Actualizaciones Concurrentes</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Two services write to the same key from different nodes</span
+                <span class="lang-en">Two services write to the same key from different nodes</span
                 ><span class="lang-es"
                   >Dos servicios escriben la misma clave desde diferentes nodos</span
                 >
@@ -1856,15 +1778,13 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Without distributed locking or optimistic concurrency control,
-                    the last writer wins. This can lead to lost updates where one
-                    service overwrites changes made by another. Solutions include
-                    versioned keys and compare-and-swap operations.</span
+                    >Without distributed locking or optimistic concurrency control, the last writer
+                    wins. This can lead to lost updates where one service overwrites changes made by
+                    another. Solutions include versioned keys and compare-and-swap operations.</span
                   ><span class="lang-es"
-                    >Sin bloqueo distribuido o control de concurrencia
-                    optimista, gana el &uacute;ltimo escritor. Esto puede llevar a
-                    actualizaciones perdidas. Las soluciones incluyen claves
-                    versionadas y operaciones compare-and-swap.</span
+                    >Sin bloqueo distribuido o control de concurrencia optimista, gana el
+                    &uacute;ltimo escritor. Esto puede llevar a actualizaciones perdidas. Las
+                    soluciones incluyen claves versionadas y operaciones compare-and-swap.</span
                   >
                 </p>
               </div>
@@ -1878,23 +1798,20 @@
                 <span class="lang-en"
                   >Service updates DB but fails to invalidate all cache nodes</span
                 ><span class="lang-es"
-                  >El servicio actualiza BD pero falla al invalidar todos los
-                  nodos</span
+                  >El servicio actualiza BD pero falla al invalidar todos los nodos</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Network partitions or service failures can prevent invalidation
-                    messages from reaching all cache nodes. Some nodes serve stale
-                    data while others are current. TTL-based expiration provides a
-                    safety net for eventual consistency.</span
+                    >Network partitions or service failures can prevent invalidation messages from
+                    reaching all cache nodes. Some nodes serve stale data while others are current.
+                    TTL-based expiration provides a safety net for eventual consistency.</span
                   ><span class="lang-es"
-                    >Particiones de red o fallas de servicio pueden impedir que los
-                    mensajes de invalidaci&oacute;n lleguen a todos los nodos.
-                    Algunos nodos sirven datos obsoletos mientras otros est&aacute;n
-                    actualizados. La expiraci&oacute;n basada en TTL proporciona una
-                    red de seguridad.</span
+                    >Particiones de red o fallas de servicio pueden impedir que los mensajes de
+                    invalidaci&oacute;n lleguen a todos los nodos. Algunos nodos sirven datos
+                    obsoletos mientras otros est&aacute;n actualizados. La expiraci&oacute;n basada
+                    en TTL proporciona una red de seguridad.</span
                   >
                 </p>
               </div>
@@ -1905,25 +1822,20 @@
                 ><span class="lang-es">Retrasos de Red</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Pub/sub message meant to trigger cache update gets lost</span
-                ><span class="lang-es"
-                  >Mensaje pub/sub para actualizar cach&eacute; se pierde</span
-                >
+                <span class="lang-en">Pub/sub message meant to trigger cache update gets lost</span
+                ><span class="lang-es">Mensaje pub/sub para actualizar cach&eacute; se pierde</span>
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Event-driven invalidation relies on message delivery guarantees.
-                    If the message broker drops a message or the subscriber is
-                    temporarily down, the cache remains stale. Combine with TTL
-                    expiration as a fallback mechanism.</span
+                    >Event-driven invalidation relies on message delivery guarantees. If the message
+                    broker drops a message or the subscriber is temporarily down, the cache remains
+                    stale. Combine with TTL expiration as a fallback mechanism.</span
                   ><span class="lang-es"
-                    >La invalidaci&oacute;n basada en eventos depende de
-                    garant&iacute;as de entrega de mensajes. Si el broker pierde un
-                    mensaje o el suscriptor est&aacute; temporalmente ca&iacute;do,
-                    el cach&eacute; permanece obsoleto. Combina con expiraci&oacute;n
-                    TTL como mecanismo de respaldo.</span
+                    >La invalidaci&oacute;n basada en eventos depende de garant&iacute;as de entrega
+                    de mensajes. Si el broker pierde un mensaje o el suscriptor est&aacute;
+                    temporalmente ca&iacute;do, el cach&eacute; permanece obsoleto. Combina con
+                    expiraci&oacute;n TTL como mecanismo de respaldo.</span
                   >
                 </p>
               </div>
@@ -1939,11 +1851,11 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >When a popular cache entry expires, thousands of clients simultaneously
-              hammer the backend database.</span
+              >When a popular cache entry expires, thousands of clients simultaneously hammer the
+              backend database.</span
             ><span class="lang-es"
-              >Cuando una entrada popular del cach&eacute; expira, miles de clientes
-              golpean simult&aacute;neamente la base de datos backend.</span
+              >Cuando una entrada popular del cach&eacute; expira, miles de clientes golpean
+              simult&aacute;neamente la base de datos backend.</span
             >
           </p>
           <div class="diagram-container">
@@ -2059,13 +1971,7 @@
               </text>
 
               <!-- Dots indicating more clients -->
-              <text
-                x="60"
-                y="185"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="14"
-              >
+              <text x="60" y="185" text-anchor="middle" fill="var(--muted)" font-size="14">
                 &middot;&middot;&middot;
               </text>
 
@@ -2085,12 +1991,7 @@
                   <mpath href="#path-th-c1" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-th-c1"
-                d="M100,30 L280,95"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-th-c1" d="M100,30 L280,95" fill="none" stroke="none" />
 
               <line
                 x1="100"
@@ -2107,12 +2008,7 @@
                   <mpath href="#path-th-c2" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-th-c2"
-                d="M100,70 L280,100"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-th-c2" d="M100,70 L280,100" fill="none" stroke="none" />
 
               <line
                 x1="100"
@@ -2129,12 +2025,7 @@
                   <mpath href="#path-th-c3" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-th-c3"
-                d="M100,110 L280,105"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-th-c3" d="M100,110 L280,105" fill="none" stroke="none" />
 
               <line
                 x1="100"
@@ -2151,12 +2042,7 @@
                   <mpath href="#path-th-c4" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-th-c4"
-                d="M100,150 L280,110"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-th-c4" d="M100,150 L280,110" fill="none" stroke="none" />
 
               <!-- Cache with X (expired) -->
               <ellipse
@@ -2245,13 +2131,7 @@
                 <tspan class="lang-en">App Server</tspan>
                 <tspan class="lang-es">Servidor de App</tspan>
               </text>
-              <text
-                x="350"
-                y="118"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="350" y="118" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">overwhelmed!</tspan>
                 <tspan class="lang-es">&iexcl;sobrecargado!</tspan>
               </text>
@@ -2272,12 +2152,7 @@
                   <mpath href="#path-th-app-db" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-th-app-db"
-                d="M420,105 L550,105"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-th-app-db" d="M420,105 L550,105" fill="none" stroke="none" />
 
               <!-- Database -->
               <ellipse
@@ -2341,13 +2216,7 @@
               >
                 STAMPEDE
               </text>
-              <text
-                x="770"
-                y="52"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="770" y="52" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">All miss at the same time</tspan>
                 <tspan class="lang-es">Todos fallan al mismo tiempo</tspan>
               </text>
@@ -2355,37 +2224,29 @@
           </div>
           <div style="margin-top: 8px">
             <div class="card float-in border-blue expandable">
-              <h4>
-                <span class="lang-en">Solutions</span
-                ><span class="lang-es">Soluciones</span>
-              </h4>
+              <h4><span class="lang-en">Solutions</span><span class="lang-es">Soluciones</span></h4>
               <p>
                 <span class="lang-en"
-                  >Request coalescing, staggered TTLs, probabilistic early
-                  refresh</span
+                  >Request coalescing, staggered TTLs, probabilistic early refresh</span
                 ><span class="lang-es"
-                  >Coalescencia de solicitudes, TTLs escalonados, refresco
-                  temprano probabil&iacute;stico</span
+                  >Coalescencia de solicitudes, TTLs escalonados, refresco temprano
+                  probabil&iacute;stico</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    ><b>Request coalescing</b> (singleflight): only one goroutine
-                    fetches from the database; others wait for its result.
-                    <b>Staggered TTLs</b>: add random jitter to expiration times so
-                    keys do not expire simultaneously.
-                    <b>Probabilistic early refresh</b>: refresh the key before
-                    expiration based on a probability that increases as TTL approaches
-                    zero.</span
+                    ><b>Request coalescing</b> (singleflight): only one goroutine fetches from the
+                    database; others wait for its result. <b>Staggered TTLs</b>: add random jitter
+                    to expiration times so keys do not expire simultaneously.
+                    <b>Probabilistic early refresh</b>: refresh the key before expiration based on a
+                    probability that increases as TTL approaches zero.</span
                   ><span class="lang-es"
-                    ><b>Coalescencia de solicitudes</b>: solo una goroutine consulta
-                    la BD; las dem&aacute;s esperan su resultado.
-                    <b>TTLs escalonados</b>: agregar jitter aleatorio a los tiempos de
-                    expiraci&oacute;n para que las claves no expiren
-                    simult&aacute;neamente.
-                    <b>Refresco temprano probabil&iacute;stico</b>: refrescar la clave
-                    antes de la expiraci&oacute;n basado en una probabilidad que
+                    ><b>Coalescencia de solicitudes</b>: solo una goroutine consulta la BD; las
+                    dem&aacute;s esperan su resultado. <b>TTLs escalonados</b>: agregar jitter
+                    aleatorio a los tiempos de expiraci&oacute;n para que las claves no expiren
+                    simult&aacute;neamente. <b>Refresco temprano probabil&iacute;stico</b>:
+                    refrescar la clave antes de la expiraci&oacute;n basado en una probabilidad que
                     aumenta conforme el TTL se acerca a cero.</span
                   >
                 </p>
@@ -2402,37 +2263,32 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >When cache memory is full, eviction policies decide which entries to
-              remove to make room for new data.</span
+              >When cache memory is full, eviction policies decide which entries to remove to make
+              room for new data.</span
             ><span class="lang-es"
-              >Cuando la memoria del cach&eacute; est&aacute; llena, las
-              pol&iacute;ticas de desalojo deciden qu&eacute; entradas eliminar para
-              hacer espacio a nuevos datos.</span
+              >Cuando la memoria del cach&eacute; est&aacute; llena, las pol&iacute;ticas de
+              desalojo deciden qu&eacute; entradas eliminar para hacer espacio a nuevos datos.</span
             >
           </p>
           <div class="grid-2">
             <div class="card float-in border-blue expandable">
               <h4>LRU (Least Recently Used)</h4>
               <p>
-                <span class="lang-en"
-                  >Evicts the item not accessed for the longest time</span
-                ><span class="lang-es"
-                  >Desaloja el elemento no accedido por m&aacute;s tiempo</span
-                >
+                <span class="lang-en">Evicts the item not accessed for the longest time</span
+                ><span class="lang-es">Desaloja el elemento no accedido por m&aacute;s tiempo</span>
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >The most common default policy. Maintains a doubly-linked list
-                    ordered by access time. Works well for most workloads because
-                    recently accessed data is likely to be accessed again. Redis uses
-                    an approximated LRU with sampling for efficiency.</span
+                    >The most common default policy. Maintains a doubly-linked list ordered by
+                    access time. Works well for most workloads because recently accessed data is
+                    likely to be accessed again. Redis uses an approximated LRU with sampling for
+                    efficiency.</span
                   ><span class="lang-es"
-                    >La pol&iacute;tica predeterminada m&aacute;s com&uacute;n.
-                    Mantiene una lista doblemente enlazada ordenada por tiempo de
-                    acceso. Funciona bien para la mayor&iacute;a de las cargas de
-                    trabajo. Redis usa un LRU aproximado con muestreo para
-                    eficiencia.</span
+                    >La pol&iacute;tica predeterminada m&aacute;s com&uacute;n. Mantiene una lista
+                    doblemente enlazada ordenada por tiempo de acceso. Funciona bien para la
+                    mayor&iacute;a de las cargas de trabajo. Redis usa un LRU aproximado con
+                    muestreo para eficiencia.</span
                   >
                 </p>
               </div>
@@ -2440,25 +2296,21 @@
             <div class="card float-in border-green expandable">
               <h4>LFU (Least Frequently Used)</h4>
               <p>
-                <span class="lang-en"
-                  >Evicts the item accessed fewest times overall</span
-                ><span class="lang-es"
-                  >Desaloja el elemento accedido menos veces en total</span
-                >
+                <span class="lang-en">Evicts the item accessed fewest times overall</span
+                ><span class="lang-es">Desaloja el elemento accedido menos veces en total</span>
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Better for skewed access distributions where a small set of keys
-                    receives the majority of requests. Tracks access frequency with
-                    counters. Drawback: new items start with low frequency and may be
-                    evicted prematurely. Redis LFU uses a logarithmic counter with
-                    decay to handle this.</span
+                    >Better for skewed access distributions where a small set of keys receives the
+                    majority of requests. Tracks access frequency with counters. Drawback: new items
+                    start with low frequency and may be evicted prematurely. Redis LFU uses a
+                    logarithmic counter with decay to handle this.</span
                   ><span class="lang-es"
-                    >Mejor para distribuciones de acceso sesgadas donde un
-                    peque&ntilde;o conjunto de claves recibe la mayor&iacute;a de las
-                    solicitudes. Rastrea la frecuencia de acceso con contadores. Redis
-                    LFU usa un contador logar&iacute;tmico con decaimiento.</span
+                    >Mejor para distribuciones de acceso sesgadas donde un peque&ntilde;o conjunto
+                    de claves recibe la mayor&iacute;a de las solicitudes. Rastrea la frecuencia de
+                    acceso con contadores. Redis LFU usa un contador logar&iacute;tmico con
+                    decaimiento.</span
                   >
                 </p>
               </div>
@@ -2466,26 +2318,23 @@
             <div class="card float-in border-orange expandable">
               <h4>FIFO (First In, First Out)</h4>
               <p>
-                <span class="lang-en"
-                  >Evicts the oldest entries regardless of access patterns</span
+                <span class="lang-en">Evicts the oldest entries regardless of access patterns</span
                 ><span class="lang-es"
-                  >Desaloja las entradas m&aacute;s antiguas sin importar patrones de
-                  acceso</span
+                  >Desaloja las entradas m&aacute;s antiguas sin importar patrones de acceso</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >The simplest eviction strategy. Uses a queue: first item in is the
-                    first to be evicted. Does not consider access frequency or recency,
-                    which makes it suboptimal for most real-world workloads. Useful
-                    when entries have uniform access probability or as a baseline for
-                    comparison.</span
+                    >The simplest eviction strategy. Uses a queue: first item in is the first to be
+                    evicted. Does not consider access frequency or recency, which makes it
+                    suboptimal for most real-world workloads. Useful when entries have uniform
+                    access probability or as a baseline for comparison.</span
                   ><span class="lang-es"
-                    >La estrategia de desalojo m&aacute;s simple. Usa una cola: el
-                    primer elemento en entrar es el primero en salir. No considera
-                    frecuencia ni recencia de acceso, lo que la hace suboptimal para la
-                    mayor&iacute;a de las cargas de trabajo reales.</span
+                    >La estrategia de desalojo m&aacute;s simple. Usa una cola: el primer elemento
+                    en entrar es el primero en salir. No considera frecuencia ni recencia de acceso,
+                    lo que la hace suboptimal para la mayor&iacute;a de las cargas de trabajo
+                    reales.</span
                   >
                 </p>
               </div>
@@ -2493,27 +2342,25 @@
             <div class="card float-in border-purple expandable">
               <h4>TTL (Time to Live)</h4>
               <p>
-                <span class="lang-en"
-                  >Entries expire after a fixed duration automatically</span
+                <span class="lang-en">Entries expire after a fixed duration automatically</span
                 ><span class="lang-es"
-                  >Las entradas expiran autom&aacute;ticamente despu&eacute;s de una
-                  duraci&oacute;n fija</span
+                  >Las entradas expiran autom&aacute;ticamente despu&eacute;s de una duraci&oacute;n
+                  fija</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Not a traditional eviction policy, but essential for cache
-                    freshness. Each key gets an expiration timestamp. After the TTL
-                    elapses, the key is removed (or lazily cleaned up on next access).
-                    Combine with LRU or LFU for a robust eviction strategy. Short TTLs
-                    improve freshness but increase cache misses.</span
+                    >Not a traditional eviction policy, but essential for cache freshness. Each key
+                    gets an expiration timestamp. After the TTL elapses, the key is removed (or
+                    lazily cleaned up on next access). Combine with LRU or LFU for a robust eviction
+                    strategy. Short TTLs improve freshness but increase cache misses.</span
                   ><span class="lang-es"
-                    >No es una pol&iacute;tica de desalojo tradicional, pero es
-                    esencial para la frescura del cach&eacute;. Cada clave obtiene una
-                    marca de tiempo de expiraci&oacute;n. Combina con LRU o LFU para
-                    una estrategia de desalojo robusta. TTLs cortos mejoran la frescura
-                    pero aumentan los fallos de cach&eacute;.</span
+                    >No es una pol&iacute;tica de desalojo tradicional, pero es esencial para la
+                    frescura del cach&eacute;. Cada clave obtiene una marca de tiempo de
+                    expiraci&oacute;n. Combina con LRU o LFU para una estrategia de desalojo
+                    robusta. TTLs cortos mejoran la frescura pero aumentan los fallos de
+                    cach&eacute;.</span
                   >
                 </p>
               </div>
@@ -2529,10 +2376,10 @@
               <h4>Redis</h4>
               <ul>
                 <li>
-                  <span class="lang-en">Rich data structures (lists, sets, hashes, sorted sets)</span
+                  <span class="lang-en"
+                    >Rich data structures (lists, sets, hashes, sorted sets)</span
                   ><span class="lang-es"
-                    >Estructuras de datos ricas (listas, conjuntos, hashes, sorted
-                    sets)</span
+                    >Estructuras de datos ricas (listas, conjuntos, hashes, sorted sets)</span
                   >
                 </li>
                 <li>
@@ -2541,15 +2388,11 @@
                 </li>
                 <li>
                   <span class="lang-en">Replication + Redis Cluster for sharding</span
-                  ><span class="lang-es"
-                    >Replicaci&oacute;n + Redis Cluster para sharding</span
-                  >
+                  ><span class="lang-es">Replicaci&oacute;n + Redis Cluster para sharding</span>
                 </li>
                 <li>
                   <span class="lang-en">Lua scripting for atomic operations</span
-                  ><span class="lang-es"
-                    >Scripting Lua para operaciones at&oacute;micas</span
-                  >
+                  ><span class="lang-es">Scripting Lua para operaciones at&oacute;micas</span>
                 </li>
                 <li>
                   <span class="lang-en">Pub/Sub messaging built-in</span
@@ -2563,15 +2406,14 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Best for: session stores, leaderboards, rate limiting, real-time
-                    analytics, message queues, and any use case requiring complex data
-                    manipulation. The rich data types eliminate the need for
-                    serialization/deserialization in many scenarios.</span
+                    >Best for: session stores, leaderboards, rate limiting, real-time analytics,
+                    message queues, and any use case requiring complex data manipulation. The rich
+                    data types eliminate the need for serialization/deserialization in many
+                    scenarios.</span
                   ><span class="lang-es"
                     >Ideal para: almac&eacute;n de sesiones, tablas de clasificaci&oacute;n,
-                    limitaci&oacute;n de tasa, anal&iacute;tica en tiempo real, colas
-                    de mensajes y cualquier caso que requiera manipulaci&oacute;n
-                    compleja de datos.</span
+                    limitaci&oacute;n de tasa, anal&iacute;tica en tiempo real, colas de mensajes y
+                    cualquier caso que requiera manipulaci&oacute;n compleja de datos.</span
                   >
                 </p>
               </div>
@@ -2595,9 +2437,7 @@
                 </li>
                 <li>
                   <span class="lang-en">No persistence (pure in-memory)</span
-                  ><span class="lang-es"
-                    >Sin persistencia (puramente en memoria)</span
-                  >
+                  ><span class="lang-es">Sin persistencia (puramente en memoria)</span>
                 </li>
                 <li>
                   <span class="lang-en">Simpler operational model</span
@@ -2606,23 +2446,21 @@
                 <li>
                   <span class="lang-en">Client-side sharding via consistent hashing</span
                   ><span class="lang-es"
-                    >Sharding del lado del cliente v&iacute;a hashing
-                    consistente</span
+                    >Sharding del lado del cliente v&iacute;a hashing consistente</span
                   >
                 </li>
               </ul>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Best for: simple object caching, HTML fragment caching, and
-                    scenarios where the cache is purely ephemeral. When you only need
-                    to store and retrieve serialized blobs and want maximum simplicity
-                    with minimal memory overhead.</span
+                    >Best for: simple object caching, HTML fragment caching, and scenarios where the
+                    cache is purely ephemeral. When you only need to store and retrieve serialized
+                    blobs and want maximum simplicity with minimal memory overhead.</span
                   ><span class="lang-es"
-                    >Ideal para: cach&eacute; simple de objetos, cach&eacute; de
-                    fragmentos HTML y escenarios donde el cach&eacute; es puramente
-                    ef&iacute;mero. Cuando solo necesitas almacenar y recuperar blobs
-                    serializados con m&iacute;nima complejidad.</span
+                    >Ideal para: cach&eacute; simple de objetos, cach&eacute; de fragmentos HTML y
+                    escenarios donde el cach&eacute; es puramente ef&iacute;mero. Cuando solo
+                    necesitas almacenar y recuperar blobs serializados con m&iacute;nima
+                    complejidad.</span
                   >
                 </p>
               </div>
@@ -2630,11 +2468,10 @@
           </div>
           <p style="text-align: center; margin-top: 10px">
             <span class="badge badge-blue"
-              ><span class="lang-en"
-                >Redis is the default choice for most modern applications</span
+              ><span class="lang-en">Redis is the default choice for most modern applications</span
               ><span class="lang-es"
-                >Redis es la opci&oacute;n predeterminada para la mayor&iacute;a de
-                aplicaciones modernas</span
+                >Redis es la opci&oacute;n predeterminada para la mayor&iacute;a de aplicaciones
+                modernas</span
               ></span
             >
           </p>
@@ -2648,12 +2485,12 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >CDN for static assets, application cache for dynamic data. Each layer
-              absorbs traffic before it reaches the next.</span
+              >CDN for static assets, application cache for dynamic data. Each layer absorbs traffic
+              before it reaches the next.</span
             ><span class="lang-es"
-              >CDN para activos est&aacute;ticos, cach&eacute; de aplicaci&oacute;n
-              para datos din&aacute;micos. Cada capa absorbe tr&aacute;fico antes de
-              que llegue a la siguiente.</span
+              >CDN para activos est&aacute;ticos, cach&eacute; de aplicaci&oacute;n para datos
+              din&aacute;micos. Cada capa absorbe tr&aacute;fico antes de que llegue a la
+              siguiente.</span
             >
           </p>
           <div class="diagram-container">
@@ -2681,22 +2518,10 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text
-                x="60"
-                y="95"
-                text-anchor="middle"
-                fill="var(--primary)"
-                font-size="22"
-              >
+              <text x="60" y="95" text-anchor="middle" fill="var(--primary)" font-size="22">
                 &#127760;
               </text>
-              <text
-                x="60"
-                y="115"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="60" y="115" text-anchor="middle" fill="var(--muted)" font-size="8">
                 Users
               </text>
 
@@ -2716,12 +2541,7 @@
                   <mpath href="#path-arch-1" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-arch-1"
-                d="M90,100 L155,100"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-arch-1" d="M90,100 L155,100" fill="none" stroke="none" />
 
               <!-- CDN -->
               <rect
@@ -2744,23 +2564,11 @@
               >
                 CDN
               </text>
-              <text
-                x="210"
-                y="108"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="210" y="108" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">Static assets</tspan>
                 <tspan class="lang-es">Activos est&aacute;ticos</tspan>
               </text>
-              <text
-                x="210"
-                y="120"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="7"
-              >
+              <text x="210" y="120" text-anchor="middle" fill="var(--muted)" font-size="7">
                 CloudFront / Cloudflare
               </text>
 
@@ -2780,12 +2588,7 @@
                   <mpath href="#path-arch-2" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-arch-2"
-                d="M265,100 L330,100"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-arch-2" d="M265,100 L330,100" fill="none" stroke="none" />
 
               <!-- Load Balancer -->
               <rect
@@ -2809,13 +2612,7 @@
                 <tspan class="lang-en">Load Balancer</tspan>
                 <tspan class="lang-es">Balanceador</tspan>
               </text>
-              <text
-                x="380"
-                y="108"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="380" y="108" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">Distributes traffic</tspan>
                 <tspan class="lang-es">Distribuye tr&aacute;fico</tspan>
               </text>
@@ -2836,12 +2633,7 @@
                   <mpath href="#path-arch-3" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-arch-3"
-                d="M430,100 L495,100"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-arch-3" d="M430,100 L495,100" fill="none" stroke="none" />
 
               <!-- Application Server -->
               <rect
@@ -2865,13 +2657,7 @@
                 <tspan class="lang-en">App Server</tspan>
                 <tspan class="lang-es">Servidor App</tspan>
               </text>
-              <text
-                x="550"
-                y="108"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="550" y="108" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">Business logic</tspan>
                 <tspan class="lang-es">L&oacute;gica de negocio</tspan>
               </text>
@@ -2892,12 +2678,7 @@
                   <mpath href="#path-arch-4" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-arch-4"
-                d="M550,127 L550,195"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-arch-4" d="M550,127 L550,195" fill="none" stroke="none" />
 
               <!-- Cache (Redis cylinder) -->
               <ellipse
@@ -2925,13 +2706,7 @@
               >
                 Redis Cache
               </text>
-              <text
-                x="550"
-                y="246"
-                text-anchor="middle"
-                fill="var(--muted)"
-                font-size="8"
-              >
+              <text x="550" y="246" text-anchor="middle" fill="var(--muted)" font-size="8">
                 <tspan class="lang-en">Dynamic data</tspan>
                 <tspan class="lang-es">Datos din&aacute;micos</tspan>
               </text>
@@ -2952,12 +2727,7 @@
                   <mpath href="#path-arch-5" />
                 </animateMotion>
               </circle>
-              <path
-                id="path-arch-5"
-                d="M605,100 L700,100"
-                fill="none"
-                stroke="none"
-              />
+              <path id="path-arch-5" d="M605,100 L700,100" fill="none" stroke="none" />
 
               <!-- Database cylinder -->
               <ellipse
@@ -3030,28 +2800,25 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >High-traffic applications with mixed static and dynamic
-                  content</span
+                  >High-traffic applications with mixed static and dynamic content</span
                 ><span class="lang-es"
-                  >Aplicaciones de alto tr&aacute;fico con contenido est&aacute;tico
-                  y din&aacute;mico mixto</span
+                  >Aplicaciones de alto tr&aacute;fico con contenido est&aacute;tico y
+                  din&aacute;mico mixto</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >The CDN handles images, CSS, JavaScript, and other static assets
-                    at the edge, close to users. The application-level cache (Redis)
-                    stores frequently accessed database results, API responses, and
-                    session data. Together, they reduce origin server load by
-                    90%+.</span
+                    >The CDN handles images, CSS, JavaScript, and other static assets at the edge,
+                    close to users. The application-level cache (Redis) stores frequently accessed
+                    database results, API responses, and session data. Together, they reduce origin
+                    server load by 90%+.</span
                   ><span class="lang-es"
-                    >El CDN maneja im&aacute;genes, CSS, JavaScript y otros activos
-                    est&aacute;ticos en el borde, cerca de los usuarios. El
-                    cach&eacute; a nivel de aplicaci&oacute;n (Redis) almacena
-                    resultados de BD frecuentemente accedidos, respuestas de API y
-                    datos de sesi&oacute;n. Juntos, reducen la carga del servidor
-                    origen en 90%+.</span
+                    >El CDN maneja im&aacute;genes, CSS, JavaScript y otros activos est&aacute;ticos
+                    en el borde, cerca de los usuarios. El cach&eacute; a nivel de aplicaci&oacute;n
+                    (Redis) almacena resultados de BD frecuentemente accedidos, respuestas de API y
+                    datos de sesi&oacute;n. Juntos, reducen la carga del servidor origen en
+                    90%+.</span
                   >
                 </p>
               </div>
@@ -3065,25 +2832,22 @@
                 <span class="lang-en"
                   >CDN: CloudFront, Cloudflare. App cache: Redis, Memcached.</span
                 ><span class="lang-es"
-                  >CDN: CloudFront, Cloudflare. App cach&eacute;: Redis,
-                  Memcached.</span
+                  >CDN: CloudFront, Cloudflare. App cach&eacute;: Redis, Memcached.</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >CloudFront integrates natively with AWS services (S3, ALB, API
-                    Gateway). Cloudflare offers a simpler setup with DDoS protection
-                    included. For the application layer, Redis is preferred for its
-                    rich data structures, while Memcached is simpler for pure
-                    key-value caching.</span
+                    >CloudFront integrates natively with AWS services (S3, ALB, API Gateway).
+                    Cloudflare offers a simpler setup with DDoS protection included. For the
+                    application layer, Redis is preferred for its rich data structures, while
+                    Memcached is simpler for pure key-value caching.</span
                   ><span class="lang-es"
-                    >CloudFront se integra nativamente con servicios AWS (S3, ALB, API
-                    Gateway). Cloudflare ofrece una configuraci&oacute;n m&aacute;s
-                    simple con protecci&oacute;n DDoS incluida. Para la capa de
-                    aplicaci&oacute;n, Redis es preferido por sus estructuras de datos
-                    ricas, mientras que Memcached es m&aacute;s simple para
-                    cach&eacute; puro clave-valor.</span
+                    >CloudFront se integra nativamente con servicios AWS (S3, ALB, API Gateway).
+                    Cloudflare ofrece una configuraci&oacute;n m&aacute;s simple con
+                    protecci&oacute;n DDoS incluida. Para la capa de aplicaci&oacute;n, Redis es
+                    preferido por sus estructuras de datos ricas, mientras que Memcached es
+                    m&aacute;s simple para cach&eacute; puro clave-valor.</span
                   >
                 </p>
               </div>
@@ -3093,10 +2857,7 @@
 
         <!-- ========== SLIDE 13: SUMMARY ========== -->
         <section>
-          <h2>
-            <span class="lang-en">Summary</span
-            ><span class="lang-es">Resumen</span>
-          </h2>
+          <h2><span class="lang-en">Summary</span><span class="lang-es">Resumen</span></h2>
           <div class="grid-3">
             <div class="card float-in border-blue">
               <h4>
@@ -3105,46 +2866,43 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >Write-through for consistency, cache-aside for efficiency,
-                  write-back for speed. Choose based on your read/write ratio and
-                  consistency requirements.</span
+                  >Write-through for consistency, cache-aside for efficiency, write-back for speed.
+                  Choose based on your read/write ratio and consistency requirements.</span
                 ><span class="lang-es"
-                  >Write-through para consistencia, cache-aside para eficiencia,
-                  write-back para velocidad. Elige seg&uacute;n tu ratio de
-                  lectura/escritura y requisitos de consistencia.</span
+                  >Write-through para consistencia, cache-aside para eficiencia, write-back para
+                  velocidad. Elige seg&uacute;n tu ratio de lectura/escritura y requisitos de
+                  consistencia.</span
                 >
               </p>
             </div>
             <div class="card float-in border-green">
               <h4>
-                <span class="lang-en">Consistency</span
-                ><span class="lang-es">Consistencia</span>
+                <span class="lang-en">Consistency</span><span class="lang-es">Consistencia</span>
               </h4>
               <p>
                 <span class="lang-en"
-                  >Distributed caches need invalidation strategies, pub/sub
-                  notifications, or versioned keys. TTL expiration provides a safety
-                  net for eventual consistency.</span
+                  >Distributed caches need invalidation strategies, pub/sub notifications, or
+                  versioned keys. TTL expiration provides a safety net for eventual
+                  consistency.</span
                 ><span class="lang-es"
-                  >Los cach&eacute;s distribuidos necesitan estrategias de
-                  invalidaci&oacute;n, notificaciones pub/sub o claves versionadas.
-                  La expiraci&oacute;n TTL proporciona una red de seguridad.</span
+                  >Los cach&eacute;s distribuidos necesitan estrategias de invalidaci&oacute;n,
+                  notificaciones pub/sub o claves versionadas. La expiraci&oacute;n TTL proporciona
+                  una red de seguridad.</span
                 >
               </p>
             </div>
             <div class="card float-in border-orange">
               <h4>
-                <span class="lang-en">Architecture</span
-                ><span class="lang-es">Arquitectura</span>
+                <span class="lang-en">Architecture</span><span class="lang-es">Arquitectura</span>
               </h4>
               <p>
                 <span class="lang-en"
-                  >Layer caches at CDN, application, and database levels. Each tier
-                  absorbs traffic and reduces load on the layers behind it.</span
+                  >Layer caches at CDN, application, and database levels. Each tier absorbs traffic
+                  and reduces load on the layers behind it.</span
                 ><span class="lang-es"
-                  >Coloca cach&eacute;s en capas CDN, aplicaci&oacute;n y base de
-                  datos. Cada nivel absorbe tr&aacute;fico y reduce la carga en las
-                  capas detr&aacute;s de &eacute;l.</span
+                  >Coloca cach&eacute;s en capas CDN, aplicaci&oacute;n y base de datos. Cada nivel
+                  absorbe tr&aacute;fico y reduce la carga en las capas detr&aacute;s de
+                  &eacute;l.</span
                 >
               </p>
             </div>
@@ -3155,25 +2913,12 @@
         <section>
           <div class="qa-center">
             <h1 style="font-size: 2.2em; margin-bottom: 10px">
-              <span class="lang-en">Questions?</span
-              ><span class="lang-es">&iquest;Preguntas?</span>
+              <span class="lang-en">Questions?</span><span class="lang-es">&iquest;Preguntas?</span>
             </h1>
             <div class="diagram-container" style="margin: 10px 0">
               <svg width="80" height="80" viewBox="0 0 80 80">
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="35"
-                  fill="none"
-                  stroke="var(--primary)"
-                  stroke-width="2"
-                >
-                  <animate
-                    attributeName="r"
-                    values="33;37;33"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
+                <circle cx="40" cy="40" r="35" fill="none" stroke="var(--primary)" stroke-width="2">
+                  <animate attributeName="r" values="33;37;33" dur="2s" repeatCount="indefinite" />
                 </circle>
                 <text
                   x="40"
@@ -3188,8 +2933,7 @@
               </svg>
             </div>
             <p style="font-size: 0.82em; color: var(--muted)">
-              <span class="lang-en"
-                >Scalable System Design &mdash; Module 11</span
+              <span class="lang-en">Scalable System Design &mdash; Module 11</span
               ><span class="lang-es"
                 >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 11</span
               >
@@ -3208,14 +2952,240 @@
     <script src="slides.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
     <script src="../../shared/presentation/presenter.js"></script>
-      <script>
-    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
-    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
-    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
-    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
-    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
-    setTimeout(updateProgressBar,500);
+    <script>
+      var THEME_PRESETS = {
+        'custom-dark': {
+          bg: '#0d1117',
+          surface: '#161b22',
+          border: '#30363d',
+          text: '#e6edf3',
+          heading: '#ffffff',
+          muted: '#8b949e',
+          primary: '#58a6ff',
+          secondary: '#79c0ff',
+          mint: '#56d364',
+          warning: '#d29922',
+          error: '#f85149',
+          purple: '#bc8cff',
+          gold: '#e3b341',
+          gradient: 'linear-gradient(135deg, #58a6ff, #56d364)',
+        },
+        'bold-signal': {
+          bg: '#1a1a1a',
+          surface: '#2d2d2d',
+          border: '#444',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#9e9e9e',
+          primary: '#FF5722',
+          secondary: '#FF8A65',
+          mint: '#4CAF50',
+          warning: '#FFC107',
+          error: '#f44336',
+          purple: '#9C27B0',
+          gold: '#FFB300',
+          gradient: 'linear-gradient(135deg, #FF5722, #FF8A65)',
+        },
+        'electric-studio': {
+          bg: '#0a0a0a',
+          surface: '#1a1a1a',
+          border: '#333',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#888',
+          primary: '#4361ee',
+          secondary: '#3a86ff',
+          mint: '#06d6a0',
+          warning: '#ffd166',
+          error: '#ef476f',
+          purple: '#7209b7',
+          gold: '#f4a261',
+          gradient: 'linear-gradient(135deg, #4361ee, #3a86ff)',
+        },
+        'creative-voltage': {
+          bg: '#1a1a2e',
+          surface: '#252547',
+          border: '#3a3a5c',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#8888aa',
+          primary: '#0066ff',
+          secondary: '#d4ff00',
+          mint: '#00ff88',
+          warning: '#ffcc00',
+          error: '#ff4444',
+          purple: '#aa44ff',
+          gold: '#ffaa00',
+          gradient: 'linear-gradient(135deg, #0066ff, #d4ff00)',
+        },
+        'dark-botanical': {
+          bg: '#0f0f0f',
+          surface: '#1a1a1a',
+          border: '#2a2a2a',
+          text: '#e8e4df',
+          heading: '#ffffff',
+          muted: '#9a9590',
+          primary: '#d4a574',
+          secondary: '#c9b896',
+          mint: '#7daa6d',
+          warning: '#d4a574',
+          error: '#c97b7b',
+          purple: '#a889bd',
+          gold: '#c9b896',
+          gradient: 'linear-gradient(135deg, #d4a574, #e8b4b8)',
+        },
+        'notebook-tabs': {
+          bg: '#f8f6f1',
+          surface: '#ffffff',
+          border: '#d0d0c8',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#666',
+          primary: '#2d5016',
+          secondary: '#98d4bb',
+          mint: '#2d5016',
+          warning: '#c49b1a',
+          error: '#c44536',
+          purple: '#7b5ea7',
+          gold: '#c49b1a',
+          gradient: 'linear-gradient(135deg, #98d4bb, #c7b8ea)',
+        },
+        'pastel-geometry': {
+          bg: '#faf9f7',
+          surface: '#ffffff',
+          border: '#e0ddd8',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#666',
+          primary: '#5a7c6a',
+          secondary: '#f0b4d4',
+          mint: '#5a7c6a',
+          warning: '#c49b1a',
+          error: '#c44536',
+          purple: '#9b8dc4',
+          gold: '#c49b1a',
+          gradient: 'linear-gradient(135deg, #5a7c6a, #9b8dc4)',
+        },
+        'split-pastel': {
+          bg: '#f5e6dc',
+          surface: '#ffffff',
+          border: '#e0d5cc',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#777',
+          primary: '#6b4c9a',
+          secondary: '#e88d67',
+          mint: '#5a9a6b',
+          warning: '#d4a030',
+          error: '#c44536',
+          purple: '#6b4c9a',
+          gold: '#d4a030',
+          gradient: 'linear-gradient(135deg, #6b4c9a, #e88d67)',
+        },
+        'neon-cyber': {
+          bg: '#0a0f1c',
+          surface: '#111827',
+          border: '#1e293b',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#9ca3af',
+          primary: '#00ffcc',
+          secondary: '#ff00aa',
+          mint: '#00ff88',
+          warning: '#fbbf24',
+          error: '#ef4444',
+          purple: '#a855f7',
+          gold: '#f59e0b',
+          gradient: 'linear-gradient(135deg, #00ffcc, #ff00aa)',
+        },
+        'terminal-green': {
+          bg: '#0d1117',
+          surface: '#161b22',
+          border: '#30363d',
+          text: '#c9d1d9',
+          heading: '#c9d1d9',
+          muted: '#8b949e',
+          primary: '#39d353',
+          secondary: '#238636',
+          mint: '#39d353',
+          warning: '#d29922',
+          error: '#f85149',
+          purple: '#bc8cff',
+          gold: '#e3b341',
+          gradient: 'linear-gradient(135deg, #39d353, #238636)',
+        },
+        'swiss-modern': {
+          bg: '#ffffff',
+          surface: '#f5f5f5',
+          border: '#e0e0e0',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#666',
+          primary: '#ff0000',
+          secondary: '#cc0000',
+          mint: '#00aa55',
+          warning: '#ff8800',
+          error: '#ff0000',
+          purple: '#6600cc',
+          gold: '#cc8800',
+          gradient: 'linear-gradient(135deg, #ff0000, #cc0000)',
+        },
+        'paper-ink': {
+          bg: '#f4f1ea',
+          surface: '#ffffff',
+          border: '#d8d3cb',
+          text: '#2c2c2c',
+          heading: '#2c2c2c',
+          muted: '#8b8b8b',
+          primary: '#2c2c2c',
+          secondary: '#8b7355',
+          mint: '#5a7a5a',
+          warning: '#8b7355',
+          error: '#8b4040',
+          purple: '#6b5b8b',
+          gold: '#8b7355',
+          gradient: 'linear-gradient(135deg, #2c2c2c, #8b7355)',
+        },
+      };
+      function applyThemePreset(n) {
+        var t = THEME_PRESETS[n];
+        if (!t) return;
+        var s = document.documentElement.style;
+        s.setProperty('--bg', t.bg);
+        s.setProperty('--surface', t.surface);
+        s.setProperty('--card-border', t.border);
+        s.setProperty('--text', t.text);
+        s.setProperty('--heading', t.heading);
+        s.setProperty('--muted', t.muted);
+        s.setProperty('--primary', t.primary);
+        s.setProperty('--secondary', t.secondary);
+        s.setProperty('--mint', t.mint);
+        s.setProperty('--warning', t.warning);
+        s.setProperty('--error', t.error);
+        s.setProperty('--purple', t.purple);
+        s.setProperty('--gold', t.gold);
+        s.setProperty('--primitive-gradient-primary', t.gradient);
+        document.body.style.background = t.bg;
+        var v = document.querySelector('.reveal-viewport');
+        if (v) v.style.background = t.bg;
+        localStorage.setItem('pres-theme-preset', n);
+        var sel = document.getElementById('theme-select');
+        if (sel) sel.value = n;
+      }
+      (function () {
+        var s = localStorage.getItem('pres-theme-preset');
+        if (s && THEME_PRESETS[s]) applyThemePreset(s);
+      })();
+      function updateProgressBar() {
+        var b = document.getElementById('progressBarTop');
+        if (b && typeof Reveal !== 'undefined')
+          b.style.width = ((Reveal.getIndices().h + 1) / Reveal.getTotalSlides()) * 100 + '%';
+      }
+      if (typeof Reveal !== 'undefined') {
+        Reveal.on('slidechanged', updateProgressBar);
+        Reveal.on('ready', updateProgressBar);
+      }
+      setTimeout(updateProgressBar, 500);
     </script>
-
-</body>
+  </body>
 </html>

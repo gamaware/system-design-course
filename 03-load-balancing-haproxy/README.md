@@ -11,6 +11,21 @@ This hands-on lab demonstrates multiple load balancing algorithms using HAProxy 
 will configure and test different balancing strategies, understand health checks, and observe
 failover behavior.
 
+## Class Diagrams
+
+Reference diagrams from class, covering the concepts this lab exercises.
+
+![HAProxy load balancing lab topology: client through security group to an EC2 instance running HAProxy, distributing traffic to 3 active backends with 2 backups](diagrams/haproxy-load-balancing-overview.png)
+
+Lab topology (client → security group → EC2 running HAProxy → 3 active backends + 2 backups),
+with load balancing algorithms, health checks and failover, Layer 4 vs Layer 7, and single
+points of failure.
+
+▶ [Explore the interactive diagram](https://silken-urchin-y7aj.here.now/?theme=dark)
+(zoom, search, trace animation, export) — also included as
+[diagrams/haproxy-load-balancing-overview.html](diagrams/haproxy-load-balancing-overview.html)
+to open locally in a browser.
+
 ## Learning Objectives
 
 - Configure HAProxy as a load balancer
