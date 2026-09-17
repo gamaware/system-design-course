@@ -3,6 +3,7 @@
 import contextlib
 import json
 import os
+import random
 import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from socketserver import ThreadingMixIn
@@ -15,6 +16,16 @@ MYSQL_USER = os.environ.get("MYSQL_USER", "root")
 MYSQL_PASS = os.environ.get("MYSQL_PASS", "rootpass")
 MYSQL_DB = os.environ.get("MYSQL_DB", "university")
 
+# Demo-data generator for the benchmark tab. The values are not secrets, but
+# SystemRandom keeps the OS entropy source so no PRNG seed is ever involved.
+_rng = random.SystemRandom()
+
+# innodb_buffer_pool_size bounds accepted by the vertical scaling tab (bytes).
+BUFFER_POOL_MIN = 16 * 1024 * 1024
+BUFFER_POOL_MAX = 1024 * 1024 * 1024
+
+BENCH_SQL = "SELECT * FROM access_log WHERE student_id = %s AND resource = %s"
+
 
 def get_conn(host):
     """Return a MySQL connection to the specified host."""
@@ -23,6 +34,16 @@ def get_conn(host):
         database=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor,
         autocommit=True,
     )
+
+
+def render_sql(cur, query, args):
+    """Return the exact statement the driver sends for a parameterised query.
+
+    The visualizer shows every statement in its SQL console. Rendering the
+    display string through the driver (instead of formatting it by hand)
+    guarantees the console shows the same escaped SQL that was executed.
+    """
+    return cur.mogrify(query, args)
 
 
 def step_entry(seq, action, target, result, latency_ms, data=None, sql=None):
@@ -49,17 +70,16 @@ def replication_write(body):
     total_start = time.perf_counter()
     seq = 1
 
-    insert_sql = f"INSERT INTO students (name, email, major) VALUES ('{name}', '{email}', '{major}')"
+    insert_query = "INSERT INTO students (name, email, major) VALUES (%s, %s, %s)"
+    insert_args = (name, email, major)
     conn = get_conn(PRIMARY_HOST)
     try:
         t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute(
-                "INSERT INTO students (name, email, major) VALUES (%s, %s, %s)",
-                (name, email, major),
-            )
+            cur.execute(insert_query, insert_args)
             new_id = cur.lastrowid
-        t1 = time.perf_counter()
+            t1 = time.perf_counter()
+            insert_sql = render_sql(cur, insert_query, insert_args)
         steps.append(step_entry(seq, "INSERT", "primary", "OK",
                                 (t1 - t0) * 1000, {"student_id": new_id},
                                 sql=insert_sql))
@@ -67,14 +87,15 @@ def replication_write(body):
     finally:
         conn.close()
 
-    select_sql = f"SELECT * FROM students WHERE student_id = {new_id}"
+    select_query = "SELECT * FROM students WHERE student_id = %s"
     conn = get_conn(REPLICA_HOST)
     try:
         t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM students WHERE student_id = %s", (new_id,))
+            cur.execute(select_query, (new_id,))
             row = cur.fetchone()
-        t1 = time.perf_counter()
+            t1 = time.perf_counter()
+            select_sql = render_sql(cur, select_query, (new_id,))
         found = row is not None
         steps.append(step_entry(
             seq, "SELECT", "replica",
@@ -167,11 +188,10 @@ def consistency_transfer(body):
             to_id = to_row["course_id"]
 
             # Delete old enrollment
-            delete_sql = (f"DELETE FROM enrollments WHERE student_id = {student_id} "
-                          f"AND course_id = {from_id}")
+            delete_query = "DELETE FROM enrollments WHERE student_id = %s AND course_id = %s"
+            delete_sql = render_sql(cur, delete_query, (student_id, from_id))
             t0 = time.perf_counter()
-            cur.execute("DELETE FROM enrollments WHERE student_id = %s AND course_id = %s",
-                        (student_id, from_id))
+            cur.execute(delete_query, (student_id, from_id))
             affected = cur.rowcount
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"DELETE enrollment ({from_course})", "primary",
@@ -181,11 +201,11 @@ def consistency_transfer(body):
             seq += 1
 
             # Update from-course count
-            update_from_sql = (f"UPDATE courses SET enrolled = enrolled - 1 "
-                               f"WHERE course_id = {from_id} AND enrolled > 0")
+            update_from_query = ("UPDATE courses SET enrolled = enrolled - 1 "
+                                 "WHERE course_id = %s AND enrolled > 0")
+            update_from_sql = render_sql(cur, update_from_query, (from_id,))
             t0 = time.perf_counter()
-            cur.execute("UPDATE courses SET enrolled = enrolled - 1 WHERE course_id = %s AND enrolled > 0",
-                        (from_id,))
+            cur.execute(update_from_query, (from_id,))
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"UPDATE {from_course} enrolled-1", "primary", "OK",
                                     (t1 - t0) * 1000,
@@ -193,12 +213,11 @@ def consistency_transfer(body):
             seq += 1
 
             # Insert new enrollment
-            insert_sql = (f"INSERT INTO enrollments (student_id, course_id) "
-                          f"VALUES ({student_id}, {to_id})")
+            insert_query = "INSERT INTO enrollments (student_id, course_id) VALUES (%s, %s)"
+            insert_sql = render_sql(cur, insert_query, (student_id, to_id))
             t0 = time.perf_counter()
             try:
-                cur.execute("INSERT INTO enrollments (student_id, course_id) VALUES (%s, %s)",
-                            (student_id, to_id))
+                cur.execute(insert_query, (student_id, to_id))
                 t1 = time.perf_counter()
                 steps.append(step_entry(seq, f"INSERT enrollment ({to_course})", "primary", "OK",
                                         (t1 - t0) * 1000, sql=insert_sql))
@@ -222,11 +241,10 @@ def consistency_transfer(body):
             seq += 1
 
             # Update to-course count
-            update_to_sql = (f"UPDATE courses SET enrolled = enrolled + 1 "
-                             f"WHERE course_id = {to_id}")
+            update_to_query = "UPDATE courses SET enrolled = enrolled + 1 WHERE course_id = %s"
+            update_to_sql = render_sql(cur, update_to_query, (to_id,))
             t0 = time.perf_counter()
-            cur.execute("UPDATE courses SET enrolled = enrolled + 1 WHERE course_id = %s",
-                        (to_id,))
+            cur.execute(update_to_query, (to_id,))
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"UPDATE {to_course} enrolled+1", "primary", "OK",
                                     (t1 - t0) * 1000,
@@ -267,34 +285,29 @@ def schema_explain(body):
     total_start = time.perf_counter()
     seq = 1
 
-    explain_sql = (f"EXPLAIN SELECT * FROM access_log WHERE student_id = {student_id} "
-                   f"AND resource = '{resource}'")
-    count_sql = (f"SELECT COUNT(*) AS cnt FROM access_log WHERE student_id = {student_id} "
-                 f"AND resource = '{resource}'")
+    explain_query = "EXPLAIN SELECT * FROM access_log WHERE student_id = %s AND resource = %s"
+    count_query = "SELECT COUNT(*) AS cnt FROM access_log WHERE student_id = %s AND resource = %s"
+    args = (student_id, resource)
 
     conn = get_conn(PRIMARY_HOST)
     try:
         with conn.cursor() as cur:
             # Run EXPLAIN
             t0 = time.perf_counter()
-            cur.execute(
-                "EXPLAIN SELECT * FROM access_log WHERE student_id = %s AND resource = %s",
-                (student_id, resource),
-            )
+            cur.execute(explain_query, args)
             plan = cur.fetchone()
             t1 = time.perf_counter()
+            explain_sql = render_sql(cur, explain_query, args)
             steps.append(step_entry(seq, "EXPLAIN", "primary", "OK",
                                     (t1 - t0) * 1000, plan, sql=explain_sql))
             seq += 1
 
             # Run actual query with timing
             t0 = time.perf_counter()
-            cur.execute(
-                "SELECT COUNT(*) as cnt FROM access_log WHERE student_id = %s AND resource = %s",
-                (student_id, resource),
-            )
+            cur.execute(count_query, args)
             result = cur.fetchone()
             t1 = time.perf_counter()
+            count_sql = render_sql(cur, count_query, args)
             steps.append(step_entry(seq, "SELECT COUNT(*)", "primary", "OK",
                                     (t1 - t0) * 1000, result, sql=count_sql))
 
@@ -526,16 +539,15 @@ def cap_test_divergence(body):
     seq = 1
 
     # Write to primary
-    insert_sql = (f"INSERT INTO students (name, email, major) "
-                  f"VALUES ('{name}', '{email}', 'CAP Test')")
+    insert_query = "INSERT INTO students (name, email, major) VALUES (%s, %s, 'CAP Test')"
     conn = get_conn(PRIMARY_HOST)
     try:
         t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO students (name, email, major) VALUES (%s, %s, 'CAP Test')",
-                        (name, email))
+            cur.execute(insert_query, (name, email))
             new_id = cur.lastrowid
-        t1 = time.perf_counter()
+            t1 = time.perf_counter()
+            insert_sql = render_sql(cur, insert_query, (name, email))
         steps.append(step_entry(seq, "INSERT", "primary", "OK",
                                 (t1 - t0) * 1000, {"student_id": new_id},
                                 sql=insert_sql))
@@ -544,14 +556,15 @@ def cap_test_divergence(body):
         conn.close()
 
     # Read from primary (should always have it)
+    select_query = "SELECT * FROM students WHERE student_id = %s"
     conn = get_conn(PRIMARY_HOST)
     try:
         t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM students WHERE student_id = %s", (new_id,))
+            cur.execute(select_query, (new_id,))
             row = cur.fetchone()
-        t1 = time.perf_counter()
-        select_sql = f"SELECT * FROM students WHERE student_id = {new_id}"
+            t1 = time.perf_counter()
+            select_sql = render_sql(cur, select_query, (new_id,))
         steps.append(step_entry(seq, "SELECT (primary)", "primary",
                                 "FOUND" if row else "NOT FOUND",
                                 (t1 - t0) * 1000, row, sql=select_sql))
@@ -564,7 +577,7 @@ def cap_test_divergence(body):
     try:
         t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM students WHERE student_id = %s", (new_id,))
+            cur.execute(select_query, (new_id,))
             row = cur.fetchone()
         t1 = time.perf_counter()
         found = row is not None
@@ -758,19 +771,30 @@ def views_refresh(_body):
 # ---- Vertical Scalability Tab ----
 
 def vertical_set_buffer(body):
-    """Set InnoDB buffer pool size."""
-    size = body.get("size", "64M")
+    """Set InnoDB buffer pool size (bytes, within the lab's safe range)."""
+    try:
+        size = int(body.get("size", 64 * 1024 * 1024))
+    except (TypeError, ValueError, OverflowError):
+        return {"error": "size must be an integer number of bytes"}
+    if not BUFFER_POOL_MIN <= size <= BUFFER_POOL_MAX:
+        return {"error": f"size must be between {BUFFER_POOL_MIN} and {BUFFER_POOL_MAX} bytes"}
+
+    # MySQL does not accept server-side bind parameters in SET GLOBAL. pymysql
+    # interpolates %s on the client, so the int() conversion and range check
+    # above are what make this statement safe, not the placeholder itself.
+    set_query = "SET GLOBAL innodb_buffer_pool_size = %s"
     conn = get_conn(PRIMARY_HOST)
     try:
         t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute(f"SET GLOBAL innodb_buffer_pool_size = {size}")
-        t1 = time.perf_counter()
+            cur.execute(set_query, (size,))
+            t1 = time.perf_counter()
+            set_sql = render_sql(cur, set_query, (size,))
         return {"action": "SET BUFFER POOL", "size": size,
                 "latency_ms": round((t1 - t0) * 1000, 2),
-                "sql": f"SET GLOBAL innodb_buffer_pool_size = {size}",
+                "sql": set_sql,
                 "interpretation": (
-                    f"Buffer pool resized to {size}. A larger pool keeps more "
+                    f"Buffer pool resized to {size // (1024 * 1024)} MB. A larger pool keeps more "
                     f"data pages in memory, reducing disk reads and improving "
                     f"query latency -- this is vertical scaling in action.")}
     except pymysql.MySQLError as exc:
@@ -792,14 +816,11 @@ def vertical_benchmark(body):
             cur.execute("FLUSH STATUS")
 
         with conn.cursor() as cur:
-            import random
             for _ in range(count):
-                sid = random.randint(1, 10)
-                rid = f"resource-{random.randint(1, 50)}"
+                sid = _rng.randint(1, 10)
+                rid = f"resource-{_rng.randint(1, 50)}"
                 t0 = time.perf_counter()
-                cur.execute(
-                    "SELECT * FROM access_log WHERE student_id = %s AND resource = %s",
-                    (sid, rid))
+                cur.execute(BENCH_SQL, (sid, rid))
                 cur.fetchall()
                 t1 = time.perf_counter()
                 latencies.append((t1 - t0) * 1000)
@@ -818,8 +839,6 @@ def vertical_benchmark(body):
         p95 = round(sorted(latencies)[int(len(latencies) * 0.95)], 2)
         qps = round(count / (time.perf_counter() - total_start), 1)
 
-        bench_sql = ("SELECT * FROM access_log WHERE student_id = ? "
-                     f"AND resource = ? (x{count})")
         if hit_ratio >= 99:
             interp = (f"Buffer hit ratio is {hit_ratio}% -- nearly all reads served "
                       f"from memory ({read_requests} memory reads vs {disk_reads} "
@@ -840,7 +859,7 @@ def vertical_benchmark(body):
         total_ms = (time.perf_counter() - total_start) * 1000
         return {
             "pattern": "vertical", "total_ms": round(total_ms, 2),
-            "sql": bench_sql,
+            "sql": BENCH_SQL,
             "interpretation": interp,
             "stats": {
                 "queries": count,
@@ -966,5 +985,5 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 if __name__ == "__main__":
     print("Database scalability visualizer listening on :8080")
-    server = ThreadingHTTPServer(("0.0.0.0", 8080), Handler)  # noqa: S104
+    server = ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
     server.serve_forever()

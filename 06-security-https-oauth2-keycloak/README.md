@@ -296,7 +296,8 @@ mkdir -p ~/keycloak_certs && cd ~/keycloak_certs
 
 # Generate private key and certificate
 openssl req -newkey rsa:2048 -nodes -keyout tls.key -x509 -days 365 \
-  -out tls.crt -subj "/CN=$KEYCLOAK_DNS"
+  -out tls.crt -subj "/CN=$KEYCLOAK_DNS" \
+  -addext "subjectAltName=DNS:$KEYCLOAK_DNS"
 
 # Verify files were created
 ls -lh
@@ -311,6 +312,9 @@ ls -lh
 - `-days 365` - Certificate valid for 1 year
 - `-out tls.crt` - Output file for certificate
 - `-subj "/CN=$KEYCLOAK_DNS"` - Certificate Common Name (must match hostname)
+- `-addext "subjectAltName=DNS:$KEYCLOAK_DNS"` - Subject Alternative Name. Modern TLS clients
+  (browsers, Python `requests`) ignore the Common Name and only match the hostname against the SAN,
+  so without it the Flask API in Task 8 cannot verify the certificate
 
 **Files Created:**
 
@@ -751,13 +755,22 @@ ls -lh app.py
 
 The `app.py` file creates a REST API with three endpoints that demonstrate OAuth 2.0 authentication:
 
-#### 1. Configuration (Lines 1-12)
+#### 1. Configuration (Lines 1-30)
 
 - Reads `KEYCLOAK_DNS` and `CLIENT_SECRET` from environment variables
 - Builds the Keycloak introspection URL dynamically
 - Sets the client ID to "OAuth-Client"
+- Reads `KEYCLOAK_CA_BUNDLE`, the path to the certificate that `requests` should trust when it
+  connects to Keycloak. When unset, `requests` uses the public CA bundle it ships with (the `certifi`
+  package), not the operating system trust store, so a certificate that only the OS trusts still fails
 
-#### 2. Token Verification Function (Lines 14-40)
+**Why not `verify=False`?** A common shortcut for self-signed certificates is to disable TLS
+verification in the client. That turns HTTPS into an unauthenticated tunnel: any host on the network
+path can present its own certificate, answer the introspection call, and tell the API that a forged
+token is valid. Verification is what ties the encrypted connection to the *real* Keycloak, so the
+right fix for a self-signed certificate is to trust that specific certificate, not to stop checking.
+
+#### 2. Token Verification Function (Lines 32-70)
 
 ```python
 def verify_token(token):
@@ -806,6 +819,9 @@ source ~/myenv/bin/activate
 # Export environment variables (required for app.py)
 export KEYCLOAK_DNS
 export CLIENT_SECRET
+
+# Trust the self-signed certificate from Task 2 instead of disabling verification
+export KEYCLOAK_CA_BUNDLE=$HOME/keycloak_certs/tls.crt
 
 # Navigate to the lab directory
 cd ~/system-design-course/06-security-https-oauth2-keycloak/
@@ -945,17 +961,26 @@ echo "=== SSL Certificate Verification ==="
 echo | openssl s_client -connect $KEYCLOAK_DNS:8443 -servername $KEYCLOAK_DNS 2>/dev/null | \
   openssl x509 -noout -text | grep -A 2 "Subject:"
 
-echo -e "\n=== Test with strict SSL validation ==="
-curl -X GET "https://$KEYCLOAK_DNS:8443/realms/OAuth-Demo/.well-known/openid-configuration" \
-  --cacert ~/keycloak_certs/tls.crt -w "\nHTTP Status: %{http_code}\n" || \
-  echo "SSL validation failed (expected with self-signed certificate)"
+echo -e "\n=== Strict validation with the system trust store (expected to fail) ==="
+curl -sS -o /dev/null -w "HTTP Status: %{http_code}\n" \
+  "https://$KEYCLOAK_DNS:8443/realms/OAuth-Demo/.well-known/openid-configuration" || \
+  echo "Verification failed: the system trust store does not know this self-signed certificate"
+
+echo -e "\n=== Strict validation trusting the lab certificate (expected to succeed) ==="
+curl -sS -o /dev/null -w "HTTP Status: %{http_code}\n" \
+  --cacert ~/keycloak_certs/tls.crt \
+  "https://$KEYCLOAK_DNS:8443/realms/OAuth-Demo/.well-known/openid-configuration"
 ```
 
 **SSL Verification:**
 
-- Certificate subject should match `$KEYCLOAK_DNS`
-- Strict validation fails with self-signed certificates (expected)
-- In production, use certificates from trusted CA (Let's Encrypt, DigiCert, etc.)
+- Certificate subject and SAN should match `$KEYCLOAK_DNS`
+- Without `--cacert`, strict validation fails: no public CA signed this certificate (expected)
+- With `--cacert ~/keycloak_certs/tls.crt`, validation succeeds with HTTP 200. This is the same explicit
+  trust the Flask API uses through `KEYCLOAK_CA_BUNDLE`, and it is only possible because the certificate
+  carries the hostname as a SAN (Step 2.1)
+- In production, use certificates from trusted CA (Let's Encrypt, DigiCert, etc.) so no client needs a
+  private trust file
 
 ### Step 10.2: Test Token Expiration
 
@@ -1035,6 +1060,10 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 
 - Expose client secrets in frontend code
 - Use self-signed certificates in production
+- Disable TLS verification (`verify=False`) to work around certificate errors - trust the specific
+  certificate instead, as `KEYCLOAK_CA_BUNDLE` does in this lab
+- Run Flask with the debugger enabled outside a private lab - it exposes an interactive Python
+  console to anyone who can trigger an error
 - Store tokens in localStorage (use httpOnly cookies)
 - Skip token validation
 - Use overly long token lifespans
@@ -1063,6 +1092,23 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 - Check container is running: `sudo docker ps`
 - Verify DNS is correct: `echo $KEYCLOAK_DNS`
 - Try accessing via public IP instead of DNS
+
+### Flask Cannot Verify the Keycloak Certificate
+
+**Problem:** The terminal where you started `app.py` shows
+`Error connecting to Keycloak: ... certificate verify failed` and `/secure-data` returns 403
+
+**Solution:**
+
+- If Flask exits at startup with `KEYCLOAK_CA_BUNDLE is set to ... but no such file exists`, the path is
+  wrong: check `echo $KEYCLOAK_CA_BUNDLE` and `ls -l "$KEYCLOAK_CA_BUNDLE"`, then start Flask again
+- Check the certificate carries the hostname as a SAN:
+  `openssl x509 -in ~/keycloak_certs/tls.crt -noout -ext subjectAltName`.
+  If it prints nothing, regenerate it with Step 2.1, remove the old container with
+  `sudo docker rm -f keycloak`, and run the Task 4 command again so Keycloak loads the new certificate
+- Confirm `KEYCLOAK_DNS` matches the name in the certificate: `echo $KEYCLOAK_DNS`
+- Flask prints the full error to its terminal and never returns it to the client: the API answers 403
+  whenever it cannot confirm the token, whether the token is bad or Keycloak is unreachable
 
 ### Token Validation Fails
 
