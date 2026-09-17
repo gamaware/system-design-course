@@ -164,6 +164,14 @@ Semgrep static analysis and Trivy vulnerability scanning.
 
 Weekly auto-update of pre-commit hook versions via PR.
 
+### auto-merge-bot-prs.yml
+
+Hourly scheduled job that squash-merges open Dependabot and pre-commit update PRs
+with admin bypass once every check on the PR is green and none is pending.
+It skips drafts, fork PRs, conflicting PRs, PRs with no reported checks, and PRs from
+any other author. It uses the `PRE_COMMIT_PAT` secret because GitHub rejects
+self-approval, so a review-based auto-merge could never satisfy the CODEOWNERS rule.
+
 ### Dependabot
 
 Monitors GitHub Actions dependencies weekly.
@@ -211,7 +219,7 @@ structure persists across semesters. Reference `docs/adr/README.md` for the full
 - **Topics**: system-design, aws, docker, kubernetes, scalability, cloud-computing, labs,
   haproxy, dns, load-balancing, oauth2, keycloak
 - **Merge strategy**: Squash only, PR title used as commit title
-- **Auto merge**: Enabled (useful for Dependabot PRs)
+- **Auto merge**: Enabled (bot PRs are merged by the scheduled `auto-merge-bot-prs.yml` workflow)
 - **Delete branch on merge**: Enabled
 - **Wiki**: Disabled (content lives in repo)
 - **Projects**: Disabled (not in use)
