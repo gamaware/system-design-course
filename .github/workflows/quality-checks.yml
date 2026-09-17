@@ -169,13 +169,18 @@ jobs:
 
       - name: Install zizmor
         run: |
-          tmpdir="$(mktemp -d)"
-          curl -fsL https://github.com/woodruffw/zizmor/releases/latest/download/zizmor-x86_64-unknown-linux-gnu.tar.gz \
-            | tar xz -C "$tmpdir"
-          sudo mv "$tmpdir/zizmor" /usr/local/bin/zizmor
+          ZIZMOR_VERSION="1.23.1"
+          ZIZMOR_BASE="https://github.com/woodruffw/zizmor/releases"
+          ZIZMOR_TAR="zizmor-x86_64-unknown-linux-gnu.tar.gz"
+          curl -sL "${ZIZMOR_BASE}/download/v${ZIZMOR_VERSION}/${ZIZMOR_TAR}" \
+            -o /tmp/zizmor.tar.gz
+          mkdir -p /tmp/zizmor-extract
+          tar -xzf /tmp/zizmor.tar.gz -C /tmp/zizmor-extract
+          find /tmp/zizmor-extract -name zizmor -type f -exec sudo mv {} /usr/local/bin/zizmor \;
+          chmod +x /usr/local/bin/zizmor
 
       - name: Run zizmor
-        run: zizmor .github/workflows/
+        run: zizmor --config zizmor.yml .github/workflows/
 
   python-lint:
     name: Python Linting
@@ -215,29 +220,30 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install linters
-        run: npm install -g eslint prettier htmlhint stylelint stylelint-config-standard
-
       - name: Run ESLint
         run: |
-          find . -name '*.js' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
-            -exec eslint {} +
+          npx --yes eslint .
 
       - name: Run Prettier check
         run: |
           find . \( -name '*.js' -o -name '*.html' -o -name '*.css' \) \
             ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
-            -exec prettier --check {} +
+            -exec npx --yes prettier --check {} +
 
       - name: Run HTMLHint
         run: |
           find . -name '*.html' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
-            -exec htmlhint {} +
+            -exec npx --yes htmlhint {} +
 
       - name: Run Stylelint
         run: |
+          # stylelint resolves "extends" from the config directory, so point
+          # config-basedir at the npx cache where the shared config is installed.
+          stylelint_bin=$(npx --yes --package stylelint --package stylelint-config-standard -- \
+            sh -c 'command -v stylelint')
+          basedir=$(dirname "$(dirname "$stylelint_bin")")
           find . -name '*.css' ! -path '*/ecsdemo-*' ! -path '*/node_modules/*' \
-            -exec stylelint {} +
+            -exec "$stylelint_bin" --config-basedir "$basedir" {} +
 
   prose-lint:
     name: Prose Linting (Vale)
