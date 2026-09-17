@@ -167,10 +167,19 @@ Weekly auto-update of pre-commit hook versions via PR.
 ### auto-merge-bot-prs.yml
 
 Hourly scheduled job that squash-merges open Dependabot and pre-commit update PRs
-with admin bypass once every check on the PR is green and none is pending.
-It skips drafts, fork PRs, conflicting PRs, PRs with no reported checks, and PRs from
-any other author. It uses the `PRE_COMMIT_PAT` secret because GitHub rejects
-self-approval, so a review-based auto-merge could never satisfy the CODEOWNERS rule.
+with admin bypass once every reported check is green, none is pending, and at least
+one check actually passed (an all-skipped run is not evidence). It skips drafts,
+fork PRs, PRs from any other author, conflicting PRs, PRs whose mergeability is still
+being computed, PRs with changes requested by a reviewer, and PRs with no reported
+checks. The merge is bound to the inspected head commit, and the job merges at most
+one PR per run so the remaining candidates are re-evaluated against the moved base.
+It uses the `PRE_COMMIT_PAT` secret because GitHub rejects self-approval, so a
+review-based auto-merge could never satisfy the CODEOWNERS rule.
+
+This job and the pre-commit update job run in the `automation` environment so the
+secret is read inside a job environment (zizmor `secrets-outside-env`). The
+environment carries no protection rules and must stay that way: required reviewers
+or a wait timer on it would stall both jobs.
 
 ### Dependabot
 
@@ -219,7 +228,7 @@ structure persists across semesters. Reference `docs/adr/README.md` for the full
 - **Topics**: system-design, aws, docker, kubernetes, scalability, cloud-computing, labs,
   haproxy, dns, load-balancing, oauth2, keycloak
 - **Merge strategy**: Squash only, PR title used as commit title
-- **Auto merge**: Enabled (bot PRs are merged by the scheduled `auto-merge-bot-prs.yml` workflow)
+- **Auto merge**: Enabled (GitHub setting; bot PRs are merged directly by the `auto-merge-bot-prs.yml` job)
 - **Delete branch on merge**: Enabled
 - **Wiki**: Disabled (content lives in repo)
 - **Projects**: Disabled (not in use)
