@@ -21,8 +21,10 @@ Lab topology (client → security group → EC2 running HAProxy → 3 active bac
 with load balancing algorithms, health checks and failover, Layer 4 vs Layer 7, and single
 points of failure.
 
-▶ [Explore the interactive diagram](https://silken-urchin-y7aj.here.now/?theme=dark) (zoom, search, trace animation, export) —
-also included as [diagrams/haproxy-load-balancing-overview.html](diagrams/haproxy-load-balancing-overview.html) to open locally in a browser.
+▶ [Explore the interactive diagram](https://silken-urchin-y7aj.here.now/?theme=dark)
+(zoom, search, trace animation, export) — also included as
+[diagrams/haproxy-load-balancing-overview.html](diagrams/haproxy-load-balancing-overview.html)
+to open locally in a browser.
 
 ## Learning Objectives
 

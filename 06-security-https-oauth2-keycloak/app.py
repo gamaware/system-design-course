@@ -13,6 +13,22 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET', '')
 KEYCLOAK_INTROSPECT_URL = f"https://{KEYCLOAK_DNS}:8443/realms/OAuth-Demo/protocol/openid-connect/token/introspect"
 CLIENT_ID = "OAuth-Client"
 
+# TLS verification for the Keycloak connection.
+# Keycloak in this lab uses a self-signed certificate, so the system CA store
+# cannot validate it. Instead of disabling verification (verify=False), which
+# would let anyone on the network impersonate Keycloak and approve forged
+# tokens, point KEYCLOAK_CA_BUNDLE at the certificate you generated in Task 2.
+# When the variable is unset, requests falls back to the public CA bundle it
+# ships with (the certifi package, not the operating system trust store),
+# which is the right default for a certificate issued by a public CA.
+KEYCLOAK_CA_BUNDLE = os.getenv('KEYCLOAK_CA_BUNDLE') or True
+if KEYCLOAK_CA_BUNDLE is not True and not os.path.isfile(KEYCLOAK_CA_BUNDLE):
+    raise SystemExit(
+        f"KEYCLOAK_CA_BUNDLE is set to {KEYCLOAK_CA_BUNDLE!r} but no such file exists. "
+        "Point it at the certificate generated in Task 2, for example: "
+        "export KEYCLOAK_CA_BUNDLE=$HOME/keycloak_certs/tls.crt"
+    )
+
 def verify_token(token):
     """
     Verify token using Keycloak introspection endpoint.
@@ -35,7 +51,7 @@ def verify_token(token):
             KEYCLOAK_INTROSPECT_URL,
             data=data,
             headers=headers,
-            verify=False,
+            verify=KEYCLOAK_CA_BUNDLE,
             timeout=10
         )
         response_json = response.json()
@@ -48,7 +64,8 @@ def verify_token(token):
             return response_json
         return None
 
-    except requests.exceptions.RequestException as e:
+    except (requests.exceptions.RequestException, OSError) as e:
+        # OSError covers CA bundle problems raised before the request is sent.
         print(f"Error connecting to Keycloak: {e}")
         return None
 
@@ -118,4 +135,8 @@ if __name__ == '__main__':
     print("Starting Flask API...")
     print(f"Keycloak URL: {KEYCLOAK_INTROSPECT_URL}")
     print(f"Client ID: {CLIENT_ID}")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print(f"CA bundle: {'requests default (certifi)' if KEYCLOAK_CA_BUNDLE is True else KEYCLOAK_CA_BUNDLE}")
+    # The Werkzeug debugger exposes an interactive Python console on any
+    # unhandled exception, so it must never be on by default. Set
+    # FLASK_DEBUG=1 explicitly to enable it on a private lab instance.
+    app.run(host='0.0.0.0', port=5000, debug=os.getenv('FLASK_DEBUG', '0') == '1')

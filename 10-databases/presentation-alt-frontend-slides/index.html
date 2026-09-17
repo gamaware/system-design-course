@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -29,8 +29,8 @@
         --border-glow: rgba(0, 255, 204, 0.15);
 
         /* Typography — clamp() */
-        --font-display: "Clash Display", sans-serif;
-        --font-body: "Satoshi", sans-serif;
+        --font-display: 'Clash Display', sans-serif;
+        --font-body: 'Satoshi', sans-serif;
         --title-size: clamp(2rem, 6vw, 5rem);
         --subtitle-size: clamp(0.875rem, 2vw, 1.25rem);
 
@@ -56,130 +56,140 @@
          =========================================== */
 
       /* 1. Lock html/body to viewport */
-      html, body {
-          height: 100%;
-          overflow-x: hidden;
+      html,
+      body {
+        height: 100%;
+        overflow-x: hidden;
       }
 
       html {
-          scroll-snap-type: y mandatory;
-          scroll-behavior: smooth;
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
       }
 
       /* 2. Each slide = exact viewport height */
       .slide {
-          width: 100vw;
-          height: 100vh;
-          height: 100dvh;
-          overflow: hidden;
-          scroll-snap-align: start;
-          display: flex;
-          flex-direction: column;
-          position: relative;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        position: relative;
       }
 
       /* 3. Content container with flex for centering */
       .slide-content {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          max-height: 100%;
-          overflow: hidden;
-          padding: var(--slide-padding);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-height: 100%;
+        overflow: hidden;
+        padding: var(--slide-padding);
       }
 
       /* 4. ALL typography uses clamp() for responsive scaling */
       :root {
-          --title-size: clamp(1.5rem, 5vw, 4rem);
-          --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
-          --h3-size: clamp(1rem, 2.5vw, 1.75rem);
-          --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
-          --small-size: clamp(0.65rem, 1vw, 0.875rem);
-          --slide-padding: clamp(1rem, 4vw, 4rem);
-          --content-gap: clamp(0.5rem, 2vw, 2rem);
-          --element-gap: clamp(0.25rem, 1vw, 1rem);
+        --title-size: clamp(1.5rem, 5vw, 4rem);
+        --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+        --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+        --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+        --small-size: clamp(0.65rem, 1vw, 0.875rem);
+        --slide-padding: clamp(1rem, 4vw, 4rem);
+        --content-gap: clamp(0.5rem, 2vw, 2rem);
+        --element-gap: clamp(0.25rem, 1vw, 1rem);
       }
 
       /* 5. Cards/containers use viewport-relative max sizes */
-      .card, .container, .content-box {
-          max-width: min(90vw, 1000px);
-          max-height: min(80vh, 700px);
+      .card,
+      .container,
+      .content-box {
+        max-width: min(90vw, 1000px);
+        max-height: min(80vh, 700px);
       }
 
       /* 6. Lists auto-scale with viewport */
-      .feature-list, .bullet-list {
-          gap: clamp(0.4rem, 1vh, 1rem);
+      .feature-list,
+      .bullet-list {
+        gap: clamp(0.4rem, 1vh, 1rem);
       }
 
-      .feature-list li, .bullet-list li {
-          font-size: var(--body-size);
-          line-height: 1.4;
+      .feature-list li,
+      .bullet-list li {
+        font-size: var(--body-size);
+        line-height: 1.4;
       }
 
       /* 7. Grids adapt to available space */
       .grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-          gap: clamp(0.5rem, 1.5vw, 1rem);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+        gap: clamp(0.5rem, 1.5vw, 1rem);
       }
 
       /* 8. Images constrained to viewport */
-      img, .image-container {
-          max-width: 100%;
-          max-height: min(50vh, 400px);
-          object-fit: contain;
+      img,
+      .image-container {
+        max-width: 100%;
+        max-height: min(50vh, 400px);
+        object-fit: contain;
       }
 
       /* Responsive breakpoints */
       @media (max-height: 700px) {
-          :root {
-              --slide-padding: clamp(0.75rem, 3vw, 2rem);
-              --content-gap: clamp(0.4rem, 1.5vw, 1rem);
-              --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
-              --h2-size: clamp(1rem, 3vw, 1.75rem);
-          }
+        :root {
+          --slide-padding: clamp(0.75rem, 3vw, 2rem);
+          --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+          --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+          --h2-size: clamp(1rem, 3vw, 1.75rem);
+        }
       }
 
       @media (max-height: 600px) {
-          :root {
-              --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
-              --content-gap: clamp(0.3rem, 1vw, 0.75rem);
-              --title-size: clamp(1.1rem, 4vw, 2rem);
-              --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
-          }
-          .nav-dots, .keyboard-hint, .decorative {
-              display: none;
-          }
+        :root {
+          --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+          --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+          --title-size: clamp(1.1rem, 4vw, 2rem);
+          --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+        }
+        .nav-dots,
+        .keyboard-hint,
+        .decorative {
+          display: none;
+        }
       }
 
       @media (max-height: 500px) {
-          :root {
-              --slide-padding: clamp(0.4rem, 2vw, 1rem);
-              --title-size: clamp(1rem, 3.5vw, 1.5rem);
-              --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
-              --body-size: clamp(0.65rem, 1vw, 0.85rem);
-          }
+        :root {
+          --slide-padding: clamp(0.4rem, 2vw, 1rem);
+          --title-size: clamp(1rem, 3.5vw, 1.5rem);
+          --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
+          --body-size: clamp(0.65rem, 1vw, 0.85rem);
+        }
       }
 
       @media (max-width: 600px) {
-          :root {
-              --title-size: clamp(1.25rem, 7vw, 2.5rem);
-          }
-          .grid {
-              grid-template-columns: 1fr;
-          }
+        :root {
+          --title-size: clamp(1.25rem, 7vw, 2.5rem);
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
       }
 
       /* Reduced motion */
       @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after {
-              animation-duration: 0.01ms !important;
-              transition-duration: 0.2s !important;
-          }
-          html {
-              scroll-behavior: auto;
-          }
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.2s !important;
+        }
+        html {
+          scroll-behavior: auto;
+        }
       }
 
       /* ===========================================
@@ -198,7 +208,7 @@
 
       /* Scanline overlay on every slide */
       .slide::before {
-        content: "";
+        content: '';
         position: absolute;
         inset: 0;
         background: repeating-linear-gradient(
@@ -214,18 +224,12 @@
 
       /* Grid background on every slide */
       .slide::after {
-        content: "";
+        content: '';
         position: absolute;
         inset: 0;
-        background-image: linear-gradient(
-            rgba(0, 255, 204, 0.03) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            90deg,
-            rgba(0, 255, 204, 0.03) 1px,
-            transparent 1px
-          );
+        background-image:
+          linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
         background-size: 60px 60px;
         pointer-events: none;
         z-index: 0;
@@ -244,7 +248,8 @@
         font-size: var(--title-size);
         font-weight: 700;
         color: #fff;
-        text-shadow: 0 0 40px var(--accent-cyan-glow),
+        text-shadow:
+          0 0 40px var(--accent-cyan-glow),
           0 0 80px rgba(0, 255, 204, 0.15);
         line-height: 1.1;
       }
@@ -287,7 +292,8 @@
       .reveal {
         opacity: 0;
         transform: translateY(30px);
-        transition: opacity var(--duration-normal) var(--ease-out-expo),
+        transition:
+          opacity var(--duration-normal) var(--ease-out-expo),
           transform var(--duration-normal) var(--ease-out-expo);
       }
 
@@ -297,18 +303,31 @@
       }
 
       /* Stagger children */
-      .reveal:nth-child(1) { transition-delay: 0.1s; }
-      .reveal:nth-child(2) { transition-delay: 0.2s; }
-      .reveal:nth-child(3) { transition-delay: 0.3s; }
-      .reveal:nth-child(4) { transition-delay: 0.4s; }
-      .reveal:nth-child(5) { transition-delay: 0.5s; }
-      .reveal:nth-child(6) { transition-delay: 0.6s; }
+      .reveal:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .reveal:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      .reveal:nth-child(3) {
+        transition-delay: 0.3s;
+      }
+      .reveal:nth-child(4) {
+        transition-delay: 0.4s;
+      }
+      .reveal:nth-child(5) {
+        transition-delay: 0.5s;
+      }
+      .reveal:nth-child(6) {
+        transition-delay: 0.6s;
+      }
 
       /* Scale-in for cards */
       .reveal-scale {
         opacity: 0;
         transform: scale(0.9);
-        transition: opacity 0.6s var(--ease-out-expo),
+        transition:
+          opacity 0.6s var(--ease-out-expo),
           transform 0.6s var(--ease-out-expo);
       }
       .slide.visible .reveal-scale {
@@ -320,7 +339,8 @@
       .reveal-blur {
         opacity: 0;
         filter: blur(10px);
-        transition: opacity 0.8s var(--ease-out-expo),
+        transition:
+          opacity 0.8s var(--ease-out-expo),
           filter 0.8s var(--ease-out-expo);
       }
       .slide.visible .reveal-blur {
@@ -337,12 +357,16 @@
         border-radius: 12px;
         padding: clamp(0.75rem, 2vw, 1.5rem);
         backdrop-filter: blur(8px);
-        transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s,
+          transform 0.3s;
       }
 
       .neon-card:hover {
         border-color: var(--accent-cyan);
-        box-shadow: 0 0 20px var(--accent-cyan-glow),
+        box-shadow:
+          0 0 20px var(--accent-cyan-glow),
           inset 0 0 20px rgba(0, 255, 204, 0.05);
         transform: translateY(-2px);
       }
@@ -367,7 +391,8 @@
       }
       .neon-card.magenta:hover {
         border-color: var(--accent-magenta);
-        box-shadow: 0 0 20px var(--accent-magenta-glow),
+        box-shadow:
+          0 0 20px var(--accent-magenta-glow),
           inset 0 0 20px rgba(255, 0, 170, 0.05);
       }
 
@@ -427,11 +452,7 @@
         top: 0;
         left: 0;
         height: 3px;
-        background: linear-gradient(
-          90deg,
-          var(--accent-cyan),
-          var(--accent-magenta)
-        );
+        background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
         z-index: 1000;
         width: 0%;
         transition: width 0.3s ease;
@@ -519,11 +540,7 @@
         transform: translateX(-50%);
         width: 100%;
         height: 75%;
-        background: linear-gradient(
-          180deg,
-          rgba(0, 255, 204, 0.15),
-          rgba(0, 255, 204, 0.05)
-        );
+        background: linear-gradient(180deg, rgba(0, 255, 204, 0.15), rgba(0, 255, 204, 0.05));
         border-left: 2px solid var(--accent-cyan);
         border-right: 2px solid var(--accent-cyan);
         box-shadow: 0 0 30px var(--accent-cyan-glow);
@@ -541,12 +558,9 @@
 
       .db-cylinder .cyl-top {
         top: 0;
-        background: linear-gradient(
-          180deg,
-          rgba(0, 255, 204, 0.2),
-          rgba(0, 255, 204, 0.08)
-        );
-        box-shadow: 0 0 25px var(--accent-cyan-glow),
+        background: linear-gradient(180deg, rgba(0, 255, 204, 0.2), rgba(0, 255, 204, 0.08));
+        box-shadow:
+          0 0 25px var(--accent-cyan-glow),
           inset 0 0 15px rgba(0, 255, 204, 0.1);
         animation: cylinderPulse 3s ease-in-out infinite;
       }
@@ -566,18 +580,45 @@
         opacity: 0.3;
         animation: dataFlow 2s ease-in-out infinite;
       }
-      .db-cylinder .data-line:nth-child(4) { top: 40%; animation-delay: 0s; }
-      .db-cylinder .data-line:nth-child(5) { top: 52%; animation-delay: 0.4s; }
-      .db-cylinder .data-line:nth-child(6) { top: 64%; animation-delay: 0.8s; }
+      .db-cylinder .data-line:nth-child(4) {
+        top: 40%;
+        animation-delay: 0s;
+      }
+      .db-cylinder .data-line:nth-child(5) {
+        top: 52%;
+        animation-delay: 0.4s;
+      }
+      .db-cylinder .data-line:nth-child(6) {
+        top: 64%;
+        animation-delay: 0.8s;
+      }
 
       @keyframes cylinderPulse {
-        0%, 100% { box-shadow: 0 0 25px var(--accent-cyan-glow), inset 0 0 15px rgba(0, 255, 204, 0.1); }
-        50% { box-shadow: 0 0 40px var(--accent-cyan-glow), inset 0 0 25px rgba(0, 255, 204, 0.2); }
+        0%,
+        100% {
+          box-shadow:
+            0 0 25px var(--accent-cyan-glow),
+            inset 0 0 15px rgba(0, 255, 204, 0.1);
+        }
+        50% {
+          box-shadow:
+            0 0 40px var(--accent-cyan-glow),
+            inset 0 0 25px rgba(0, 255, 204, 0.2);
+        }
       }
 
       @keyframes dataFlow {
-        0%, 100% { opacity: 0.2; width: 50%; left: 25%; }
-        50% { opacity: 0.6; width: 70%; left: 15%; }
+        0%,
+        100% {
+          opacity: 0.2;
+          width: 50%;
+          left: 25%;
+        }
+        50% {
+          opacity: 0.6;
+          width: 70%;
+          left: 15%;
+        }
       }
 
       /* ===========================================
@@ -638,7 +679,9 @@
         font-family: var(--font-display);
         font-weight: 700;
         font-size: var(--h3-size);
-        transition: transform 0.3s, box-shadow 0.3s;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
       }
 
       .venn-circle.c-circle {
@@ -670,16 +713,31 @@
       }
 
       @keyframes vennPulse1 {
-        0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); }
-        50% { box-shadow: 0 0 40px rgba(0, 255, 204, 0.4); }
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(0, 255, 204, 0.4);
+        }
       }
       @keyframes vennPulse2 {
-        0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 170, 0.2); }
-        50% { box-shadow: 0 0 40px rgba(255, 0, 170, 0.4); }
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(255, 0, 170, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(255, 0, 170, 0.4);
+        }
       }
       @keyframes vennPulse3 {
-        0%, 100% { box-shadow: 0 0 20px rgba(124, 92, 255, 0.2); }
-        50% { box-shadow: 0 0 40px rgba(124, 92, 255, 0.4); }
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(124, 92, 255, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(124, 92, 255, 0.4);
+        }
       }
 
       /* ===========================================
@@ -735,7 +793,7 @@
       }
 
       .side-panel.cyan-panel ul li::before {
-        content: ">";
+        content: '>';
         position: absolute;
         left: 0;
         color: var(--accent-cyan);
@@ -743,7 +801,7 @@
       }
 
       .side-panel.magenta-panel ul li::before {
-        content: ">";
+        content: '>';
         position: absolute;
         left: 0;
         color: var(--accent-magenta);
@@ -804,7 +862,9 @@
         text-align: center;
         padding: 4px;
         z-index: 2;
-        transition: border-color 0.3s, box-shadow 0.3s;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
       }
 
       .hub-node:hover {
@@ -814,12 +874,32 @@
       }
 
       /* Position 6 nodes around the center */
-      .hub-node:nth-child(2) { top: 0;   left: 50%; transform: translate(-50%, 0); }
-      .hub-node:nth-child(3) { top: 15%; right: 0; }
-      .hub-node:nth-child(4) { bottom: 15%; right: 0; }
-      .hub-node:nth-child(5) { bottom: 0; left: 50%; transform: translate(-50%, 0); }
-      .hub-node:nth-child(6) { bottom: 15%; left: 0; }
-      .hub-node:nth-child(7) { top: 15%; left: 0; }
+      .hub-node:nth-child(2) {
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+      .hub-node:nth-child(3) {
+        top: 15%;
+        right: 0;
+      }
+      .hub-node:nth-child(4) {
+        bottom: 15%;
+        right: 0;
+      }
+      .hub-node:nth-child(5) {
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+      .hub-node:nth-child(6) {
+        bottom: 15%;
+        left: 0;
+      }
+      .hub-node:nth-child(7) {
+        top: 15%;
+        left: 0;
+      }
 
       /* Connecting lines (via SVG overlay) */
       .hub-lines {
@@ -926,7 +1006,9 @@
         align-items: center;
         justify-content: center;
         font-size: clamp(1.5rem, 3vw, 2.5rem);
-        transition: border-color 0.3s, box-shadow 0.3s;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
       }
 
       .server-box:nth-child(1) .server-icon {
@@ -1005,8 +1087,13 @@
       }
 
       @keyframes arrowPulse {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
       /* ===========================================
@@ -1049,11 +1136,7 @@
         font-size: clamp(6rem, 20vw, 16rem);
         font-weight: 700;
         color: transparent;
-        background: linear-gradient(
-          135deg,
-          var(--accent-cyan),
-          var(--accent-magenta)
-        );
+        background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
         -webkit-background-clip: text;
         background-clip: text;
         text-shadow: none;
@@ -1064,7 +1147,8 @@
       }
 
       @keyframes qaPulse {
-        0%, 100% {
+        0%,
+        100% {
           filter: drop-shadow(0 0 40px var(--accent-cyan-glow))
             drop-shadow(0 0 60px var(--accent-magenta-glow));
         }
@@ -1184,7 +1268,9 @@
         border-radius: 10px;
         padding: clamp(0.5rem, 1.5vw, 1rem);
         text-align: center;
-        transition: border-color 0.3s, box-shadow 0.3s;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
       }
 
       .engine-card:hover {
@@ -1270,15 +1356,19 @@
     <canvas id="particleCanvas" aria-hidden="true"></canvas>
 
     <!-- Progress bar -->
-    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <div
+      class="progress-bar"
+      role="progressbar"
+      aria-valuenow="0"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    ></div>
 
     <!-- Navigation dots -->
     <nav class="nav-dots" aria-label="Slide navigation"></nav>
 
     <!-- Keyboard hint -->
-    <div class="keyboard-hint decorative">
-      <kbd>&#8593;</kbd> <kbd>&#8595;</kbd> navigate
-    </div>
+    <div class="keyboard-hint decorative"><kbd>&#8593;</kbd> <kbd>&#8595;</kbd> navigate</div>
 
     <!-- ============================
          SLIDE 0: TITLE
@@ -1295,7 +1385,7 @@
         </div>
         <h1 class="reveal">Scalable Databases</h1>
         <p class="subtitle reveal">ITESO ESI3901C &mdash; Module 10</p>
-        <p class="reveal" style="color: var(--text-secondary); font-size: var(--small-size);">
+        <p class="reveal" style="color: var(--text-secondary); font-size: var(--small-size)">
           Prof. Jorge A. Garcia Martinez
         </p>
       </div>
@@ -1416,8 +1506,16 @@
     <section class="slide" aria-label="CAP Theorem">
       <div class="slide-content">
         <h2 class="reveal">CAP Theorem</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--element-gap);">
-          A distributed system can guarantee at most <strong style="color:#fff;">two of three</strong> properties simultaneously.
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--element-gap);
+          "
+        >
+          A distributed system can guarantee at most
+          <strong style="color: #fff">two of three</strong> properties simultaneously.
         </p>
         <div class="venn-container reveal-scale">
           <div class="venn">
@@ -1438,17 +1536,22 @@
         <h2 class="reveal">CAP Properties</h2>
         <div class="grid-3 reveal">
           <div class="neon-card cyan">
-            <div class="card-icon" style="color: var(--accent-cyan);">C</div>
+            <div class="card-icon" style="color: var(--accent-cyan)">C</div>
             <h3>Consistency</h3>
-            <p>Every read returns the most recent write. All nodes see the same data at the same time.</p>
+            <p>
+              Every read returns the most recent write. All nodes see the same data at the same
+              time.
+            </p>
           </div>
           <div class="neon-card magenta">
-            <div class="card-icon" style="color: var(--accent-magenta);">A</div>
+            <div class="card-icon" style="color: var(--accent-magenta)">A</div>
             <h3>Availability</h3>
-            <p>Every request receives a response (success or failure), even if some nodes are down.</p>
+            <p>
+              Every request receives a response (success or failure), even if some nodes are down.
+            </p>
           </div>
-          <div class="neon-card" style="border-color: rgba(124,92,255,0.2);">
-            <div class="card-icon" style="color: #7c5cff;">P</div>
+          <div class="neon-card" style="border-color: rgba(124, 92, 255, 0.2)">
+            <div class="card-icon" style="color: #7c5cff">P</div>
             <h3>Partition Tolerance</h3>
             <p>System continues operating despite network partitions between nodes.</p>
           </div>
@@ -1467,30 +1570,50 @@
           <div class="neon-card cyan">
             <h3>CP</h3>
             <p>Consistency + Partition Tolerance</p>
-            <p style="margin-top: 0.5em; color: var(--accent-cyan); font-size: var(--small-size);">
+            <p style="margin-top: 0.5em; color: var(--accent-cyan); font-size: var(--small-size)">
               MongoDB, HBase, Redis
             </p>
-            <p style="font-size: clamp(0.55rem,0.8vw,0.7rem); color: var(--text-secondary); margin-top: 0.3em;">
+            <p
+              style="
+                font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+                color: var(--text-secondary);
+                margin-top: 0.3em;
+              "
+            >
               Sacrifices availability during partitions
             </p>
           </div>
           <div class="neon-card magenta">
             <h3>AP</h3>
             <p>Availability + Partition Tolerance</p>
-            <p style="margin-top: 0.5em; color: var(--accent-magenta); font-size: var(--small-size);">
+            <p
+              style="margin-top: 0.5em; color: var(--accent-magenta); font-size: var(--small-size)"
+            >
               Cassandra, DynamoDB, CouchDB
             </p>
-            <p style="font-size: clamp(0.55rem,0.8vw,0.7rem); color: var(--text-secondary); margin-top: 0.3em;">
+            <p
+              style="
+                font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+                color: var(--text-secondary);
+                margin-top: 0.3em;
+              "
+            >
               Sacrifices consistency (eventual)
             </p>
           </div>
-          <div class="neon-card" style="border-color: rgba(124,92,255,0.2);">
+          <div class="neon-card" style="border-color: rgba(124, 92, 255, 0.2)">
             <h3>CA</h3>
             <p>Consistency + Availability</p>
-            <p style="margin-top: 0.5em; color: #7c5cff; font-size: var(--small-size);">
+            <p style="margin-top: 0.5em; color: #7c5cff; font-size: var(--small-size)">
               PostgreSQL, MySQL (single-node)
             </p>
-            <p style="font-size: clamp(0.55rem,0.8vw,0.7rem); color: var(--text-secondary); margin-top: 0.3em;">
+            <p
+              style="
+                font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+                color: var(--text-secondary);
+                margin-top: 0.3em;
+              "
+            >
               Only possible without network partitions
             </p>
           </div>
@@ -1549,22 +1672,42 @@
         <h2 class="reveal">ACID Properties</h2>
         <div class="grid-4 reveal">
           <div class="neon-card cyan">
-            <div class="card-icon" style="color: var(--accent-cyan); font-family: var(--font-display); font-weight:700;">A</div>
+            <div
+              class="card-icon"
+              style="color: var(--accent-cyan); font-family: var(--font-display); font-weight: 700"
+            >
+              A
+            </div>
             <h3>Atomicity</h3>
             <p>All operations in a transaction succeed or all fail. No partial updates.</p>
           </div>
           <div class="neon-card cyan">
-            <div class="card-icon" style="color: var(--accent-cyan); font-family: var(--font-display); font-weight:700;">C</div>
+            <div
+              class="card-icon"
+              style="color: var(--accent-cyan); font-family: var(--font-display); font-weight: 700"
+            >
+              C
+            </div>
             <h3>Consistency</h3>
             <p>A transaction brings the database from one valid state to another.</p>
           </div>
           <div class="neon-card cyan">
-            <div class="card-icon" style="color: var(--accent-cyan); font-family: var(--font-display); font-weight:700;">I</div>
+            <div
+              class="card-icon"
+              style="color: var(--accent-cyan); font-family: var(--font-display); font-weight: 700"
+            >
+              I
+            </div>
             <h3>Isolation</h3>
             <p>Concurrent transactions do not interfere with each other.</p>
           </div>
           <div class="neon-card cyan">
-            <div class="card-icon" style="color: var(--accent-cyan); font-family: var(--font-display); font-weight:700;">D</div>
+            <div
+              class="card-icon"
+              style="color: var(--accent-cyan); font-family: var(--font-display); font-weight: 700"
+            >
+              D
+            </div>
             <h3>Durability</h3>
             <p>Committed transactions persist even after system failures.</p>
           </div>
@@ -1581,19 +1724,55 @@
         <h2 class="reveal">BASE Properties</h2>
         <div class="grid-3 reveal">
           <div class="neon-card magenta">
-            <div class="card-icon" style="color: var(--accent-magenta); font-family: var(--font-display); font-weight:700;">BA</div>
+            <div
+              class="card-icon"
+              style="
+                color: var(--accent-magenta);
+                font-family: var(--font-display);
+                font-weight: 700;
+              "
+            >
+              BA
+            </div>
             <h3>Basically Available</h3>
-            <p>The system guarantees availability per the CAP theorem. Partial failures do not cause total system failure.</p>
+            <p>
+              The system guarantees availability per the CAP theorem. Partial failures do not cause
+              total system failure.
+            </p>
           </div>
           <div class="neon-card magenta">
-            <div class="card-icon" style="color: var(--accent-magenta); font-family: var(--font-display); font-weight:700;">S</div>
+            <div
+              class="card-icon"
+              style="
+                color: var(--accent-magenta);
+                font-family: var(--font-display);
+                font-weight: 700;
+              "
+            >
+              S
+            </div>
             <h3>Soft State</h3>
-            <p>The system state may change over time, even without new input, due to eventual consistency propagation.</p>
+            <p>
+              The system state may change over time, even without new input, due to eventual
+              consistency propagation.
+            </p>
           </div>
           <div class="neon-card magenta">
-            <div class="card-icon" style="color: var(--accent-magenta); font-family: var(--font-display); font-weight:700;">E</div>
+            <div
+              class="card-icon"
+              style="
+                color: var(--accent-magenta);
+                font-family: var(--font-display);
+                font-weight: 700;
+              "
+            >
+              E
+            </div>
             <h3>Eventually Consistent</h3>
-            <p>The system will become consistent over time, given no new updates. Reads may return stale data temporarily.</p>
+            <p>
+              The system will become consistent over time, given no new updates. Reads may return
+              stale data temporarily.
+            </p>
           </div>
         </div>
       </div>
@@ -1606,13 +1785,13 @@
     <section class="slide" aria-label="ACID vs BASE Comparison">
       <div class="slide-content">
         <h2 class="reveal">ACID vs BASE</h2>
-        <div class="reveal" style="overflow:auto; max-height: min(60vh, 500px);">
+        <div class="reveal" style="overflow: auto; max-height: min(60vh, 500px)">
           <table class="compare-table">
             <thead>
               <tr>
                 <th>Aspect</th>
-                <th style="color: var(--accent-cyan);">ACID</th>
-                <th style="color: var(--accent-magenta);">BASE</th>
+                <th style="color: var(--accent-cyan)">ACID</th>
+                <th style="color: var(--accent-magenta)">BASE</th>
               </tr>
             </thead>
             <tbody>
@@ -1688,28 +1867,53 @@
     <section class="slide" aria-label="Indexing">
       <div class="slide-content">
         <h2 class="reveal">Indexing</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Indexes create a lookup structure so the database avoids full table scans.
         </p>
         <div class="side-by-side reveal">
           <div class="side-panel">
-            <h3 style="color: var(--accent-magenta); border-color: var(--accent-magenta);">Without Index</h3>
+            <h3 style="color: var(--accent-magenta); border-color: var(--accent-magenta)">
+              Without Index
+            </h3>
             <div class="index-column">
               <div class="index-row">&#128269; Scan row 1</div>
               <div class="index-row">&#128269; Scan row 2</div>
               <div class="index-row">&#128269; Scan row 3</div>
               <div class="index-row">&#128269; ...</div>
               <div class="index-row">&#128269; Scan row N</div>
-              <p style="color: var(--accent-magenta); font-size: var(--small-size); margin-top: 0.5em;">O(n) full table scan</p>
+              <p
+                style="
+                  color: var(--accent-magenta);
+                  font-size: var(--small-size);
+                  margin-top: 0.5em;
+                "
+              >
+                O(n) full table scan
+              </p>
             </div>
           </div>
           <div class="side-panel">
-            <h3 style="color: var(--accent-cyan); border-color: var(--accent-cyan);">With Index (B-Tree)</h3>
+            <h3 style="color: var(--accent-cyan); border-color: var(--accent-cyan)">
+              With Index (B-Tree)
+            </h3>
             <div class="index-column">
               <div class="index-row"><span class="index-highlight">Root</span></div>
-              <div class="index-row" style="padding-left: 1em;"><span class="index-highlight">&#8627;</span> Branch</div>
-              <div class="index-row" style="padding-left: 2em;"><span class="index-highlight">&#8627;</span> Leaf &#8594; Row</div>
-              <p style="color: var(--accent-cyan); font-size: var(--small-size); margin-top: 0.5em;">O(log n) direct lookup</p>
+              <div class="index-row" style="padding-left: 1em">
+                <span class="index-highlight">&#8627;</span> Branch
+              </div>
+              <div class="index-row" style="padding-left: 2em">
+                <span class="index-highlight">&#8627;</span> Leaf &#8594; Row
+              </div>
+              <p style="color: var(--accent-cyan); font-size: var(--small-size); margin-top: 0.5em">
+                O(log n) direct lookup
+              </p>
             </div>
           </div>
         </div>
@@ -1723,7 +1927,14 @@
     <section class="slide" aria-label="Vertical Scaling">
       <div class="slide-content">
         <h2 class="reveal">Vertical Scaling</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Add more CPU, RAM, and storage to a single server.
         </p>
         <div class="server-progression reveal-scale">
@@ -1734,7 +1945,7 @@
               <span class="neon-badge cyan">2 vCPU / 4 GB</span>
             </div>
           </div>
-          <div class="flow-arrow" style="align-self:center;">&#8594;</div>
+          <div class="flow-arrow" style="align-self: center">&#8594;</div>
           <div class="server-box">
             <div class="server-icon">&#128421;</div>
             <div class="server-label">
@@ -1742,7 +1953,7 @@
               <span class="neon-badge cyan">8 vCPU / 32 GB</span>
             </div>
           </div>
-          <div class="flow-arrow" style="align-self:center;">&#8594;</div>
+          <div class="flow-arrow" style="align-self: center">&#8594;</div>
           <div class="server-box">
             <div class="server-icon">&#128421;</div>
             <div class="server-label">
@@ -1751,7 +1962,10 @@
             </div>
           </div>
         </div>
-        <p class="reveal" style="text-align:center; font-size: var(--small-size); color: var(--accent-magenta);">
+        <p
+          class="reveal"
+          style="text-align: center; font-size: var(--small-size); color: var(--accent-magenta)"
+        >
           Limitation: Hardware has an upper ceiling. Single point of failure.
         </p>
       </div>
@@ -1764,23 +1978,39 @@
     <section class="slide" aria-label="Caching">
       <div class="slide-content">
         <h2 class="reveal">Caching</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Store frequently accessed data in fast, in-memory storage to reduce database load.
         </p>
         <div class="triangle-layout reveal-scale">
           <div class="triangle-top">
             <div class="flow-box accent-cyan">&#128187; Application</div>
           </div>
-          <div class="flow-row" style="gap: clamp(0.5rem,1vw,1rem);">
+          <div class="flow-row" style="gap: clamp(0.5rem, 1vw, 1rem)">
             <div class="flow-arrow">&#8601;</div>
             <div class="flow-arrow">&#8600;</div>
           </div>
           <div class="triangle-bottom">
-            <div class="flow-box" style="border-color: var(--accent-magenta); color: var(--accent-magenta);">
-              &#9889; Cache<br /><span style="font-size: var(--small-size); color: var(--text-secondary);">Redis / Memcached</span>
+            <div
+              class="flow-box"
+              style="border-color: var(--accent-magenta); color: var(--accent-magenta)"
+            >
+              &#9889; Cache<br /><span
+                style="font-size: var(--small-size); color: var(--text-secondary)"
+                >Redis / Memcached</span
+              >
             </div>
             <div class="flow-box">
-              &#128451; Database<br /><span style="font-size: var(--small-size); color: var(--text-secondary);">PostgreSQL / MySQL</span>
+              &#128451; Database<br /><span
+                style="font-size: var(--small-size); color: var(--text-secondary)"
+                >PostgreSQL / MySQL</span
+              >
             </div>
           </div>
         </div>
@@ -1794,30 +2024,49 @@
     <section class="slide" aria-label="Replication">
       <div class="slide-content">
         <h2 class="reveal">Replication</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Leader-Follower pattern: writes go to the leader, reads from followers.
         </p>
         <div class="replication-layout reveal-scale">
           <div class="leader-box">
-            <div style="font-size: clamp(1.5rem,3vw,2.5rem);">&#128451;</div>
-            <div style="font-family: var(--font-display); font-weight: 600; color: var(--accent-cyan);">Leader</div>
-            <div style="font-size: var(--small-size); color: var(--text-secondary);">Reads + Writes</div>
+            <div style="font-size: clamp(1.5rem, 3vw, 2.5rem)">&#128451;</div>
+            <div
+              style="font-family: var(--font-display); font-weight: 600; color: var(--accent-cyan)"
+            >
+              Leader
+            </div>
+            <div style="font-size: var(--small-size); color: var(--text-secondary)">
+              Reads + Writes
+            </div>
           </div>
           <div class="data-arrow">
             <div class="arrow-line"></div>
-            <div class="arrow-line" style="animation-delay: 0.5s;"></div>
-            <div class="arrow-line" style="animation-delay: 1s;"></div>
-            <span style="font-size: var(--small-size);">replication</span>
+            <div class="arrow-line" style="animation-delay: 0.5s"></div>
+            <div class="arrow-line" style="animation-delay: 1s"></div>
+            <span style="font-size: var(--small-size)">replication</span>
           </div>
           <div class="follower-group">
             <div class="follower-box">
-              &#128451; Follower 1<br /><span style="font-size: clamp(0.55rem,0.8vw,0.65rem);">Read-only</span>
+              &#128451; Follower 1<br /><span style="font-size: clamp(0.55rem, 0.8vw, 0.65rem)"
+                >Read-only</span
+              >
             </div>
             <div class="follower-box">
-              &#128451; Follower 2<br /><span style="font-size: clamp(0.55rem,0.8vw,0.65rem);">Read-only</span>
+              &#128451; Follower 2<br /><span style="font-size: clamp(0.55rem, 0.8vw, 0.65rem)"
+                >Read-only</span
+              >
             </div>
             <div class="follower-box">
-              &#128451; Follower 3<br /><span style="font-size: clamp(0.55rem,0.8vw,0.65rem);">Read-only</span>
+              &#128451; Follower 3<br /><span style="font-size: clamp(0.55rem, 0.8vw, 0.65rem)"
+                >Read-only</span
+              >
             </div>
           </div>
         </div>
@@ -1831,11 +2080,26 @@
     <section class="slide" aria-label="Sharding">
       <div class="slide-content">
         <h2 class="reveal">Sharding</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Partition data across multiple databases by a shard key.
         </p>
-        <div class="reveal" style="display:flex; flex-direction:column; align-items:center; gap: var(--content-gap);">
-          <div class="flow-box accent-cyan" style="width: clamp(160px, 30vw, 300px);">
+        <div
+          class="reveal"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--content-gap);
+          "
+        >
+          <div class="flow-box accent-cyan" style="width: clamp(160px, 30vw, 300px)">
             &#128451; Full Dataset (Users A-Z)
           </div>
           <div class="flow-arrow">&#8595;</div>
@@ -1854,7 +2118,15 @@
             </div>
           </div>
         </div>
-        <p class="reveal" style="text-align:center; font-size: var(--small-size); color: var(--text-secondary); margin-top: var(--element-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            margin-top: var(--element-gap);
+          "
+        >
           Each shard handles a subset of the total data, enabling horizontal scaling.
         </p>
       </div>
@@ -1870,28 +2142,30 @@
         <div class="side-by-side reveal">
           <div class="side-panel cyan-panel">
             <h3>Normalized</h3>
-            <div class="neon-card" style="font-size: var(--small-size);">
-              <strong style="color:var(--accent-cyan);">users</strong><br />
+            <div class="neon-card" style="font-size: var(--small-size)">
+              <strong style="color: var(--accent-cyan)">users</strong><br />
               id | name | dept_id
             </div>
-            <div class="neon-card" style="font-size: var(--small-size);">
-              <strong style="color:var(--accent-cyan);">departments</strong><br />
+            <div class="neon-card" style="font-size: var(--small-size)">
+              <strong style="color: var(--accent-cyan)">departments</strong><br />
               id | dept_name
             </div>
-            <p style="font-size: var(--small-size); color: var(--accent-cyan);">
+            <p style="font-size: var(--small-size); color: var(--accent-cyan)">
               Requires JOIN to get dept_name
             </p>
           </div>
           <div class="side-panel magenta-panel">
             <h3>Denormalized</h3>
-            <div class="neon-card magenta" style="font-size: var(--small-size);">
-              <strong style="color:var(--accent-magenta);">users</strong><br />
+            <div class="neon-card magenta" style="font-size: var(--small-size)">
+              <strong style="color: var(--accent-magenta)">users</strong><br />
               id | name | dept_id | dept_name
             </div>
-            <p style="font-size: var(--small-size); color: var(--accent-magenta); margin-top: 0.5em;">
+            <p
+              style="font-size: var(--small-size); color: var(--accent-magenta); margin-top: 0.5em"
+            >
               No JOIN needed &mdash; faster reads
             </p>
-            <p style="font-size: clamp(0.55rem,0.8vw,0.65rem); color: var(--text-secondary);">
+            <p style="font-size: clamp(0.55rem, 0.8vw, 0.65rem); color: var(--text-secondary)">
               Tradeoff: data redundancy, harder updates
             </p>
           </div>
@@ -1906,7 +2180,14 @@
     <section class="slide" aria-label="Amazon RDS">
       <div class="slide-content">
         <h2 class="reveal">Amazon RDS</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Managed relational database service &mdash; AWS handles the heavy lifting.
         </p>
         <div class="grid-3 reveal">
@@ -1929,7 +2210,7 @@
             </div>
           </div>
         </div>
-        <div class="grid-4 reveal" style="margin-top: var(--element-gap);">
+        <div class="grid-4 reveal" style="margin-top: var(--element-gap)">
           <div class="neon-card">
             <h3>&#128260; Automated Patching</h3>
             <p>OS and engine updates applied automatically</p>
@@ -1999,7 +2280,14 @@
     <section class="slide" aria-label="Amazon DynamoDB">
       <div class="slide-content">
         <h2 class="reveal">Amazon DynamoDB</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           Fully managed NoSQL key-value and document database.
         </p>
         <div class="grid-3 reveal">
@@ -2016,7 +2304,7 @@
             <p>Automatically adjusts throughput capacity based on traffic patterns.</p>
           </div>
         </div>
-        <div class="grid-3 reveal" style="margin-top: var(--element-gap);">
+        <div class="grid-3 reveal" style="margin-top: var(--element-gap)">
           <div class="neon-card">
             <h3>&#9889; Single-digit ms</h3>
             <p>Consistent low-latency at any scale</p>
@@ -2073,19 +2361,28 @@
       <div class="slide-content">
         <h2 class="reveal">Architecture: Three-Tier</h2>
         <div class="tier-stack reveal-scale">
-          <div class="tier-block" style="border-color: var(--accent-cyan);">
-            <span style="color:var(--accent-cyan);">&#127760;</span> Presentation Tier
-            <div style="font-size: var(--small-size); color: var(--text-secondary);">Web browser, mobile app</div>
+          <div class="tier-block" style="border-color: var(--accent-cyan)">
+            <span style="color: var(--accent-cyan)">&#127760;</span> Presentation Tier
+            <div style="font-size: var(--small-size); color: var(--text-secondary)">
+              Web browser, mobile app
+            </div>
           </div>
           <div class="tier-connector"></div>
-          <div class="tier-block" style="border-color: var(--accent-magenta);">
-            <span style="color:var(--accent-magenta);">&#9881;</span> Application Tier
-            <div style="font-size: var(--small-size); color: var(--text-secondary);">Business logic, API (EC2, ECS)</div>
+          <div class="tier-block" style="border-color: var(--accent-magenta)">
+            <span style="color: var(--accent-magenta)">&#9881;</span> Application Tier
+            <div style="font-size: var(--small-size); color: var(--text-secondary)">
+              Business logic, API (EC2, ECS)
+            </div>
           </div>
-          <div class="tier-connector" style="background: linear-gradient(180deg, var(--accent-magenta), transparent);"></div>
-          <div class="tier-block" style="border-color: #7c5cff;">
-            <span style="color:#7c5cff;">&#128451;</span> Database Tier
-            <div style="font-size: var(--small-size); color: var(--text-secondary);">RDS, Aurora, DynamoDB</div>
+          <div
+            class="tier-connector"
+            style="background: linear-gradient(180deg, var(--accent-magenta), transparent)"
+          ></div>
+          <div class="tier-block" style="border-color: #7c5cff">
+            <span style="color: #7c5cff">&#128451;</span> Database Tier
+            <div style="font-size: var(--small-size); color: var(--text-secondary)">
+              RDS, Aurora, DynamoDB
+            </div>
           </div>
         </div>
       </div>
@@ -2098,23 +2395,26 @@
     <section class="slide" aria-label="Serverless Architecture">
       <div class="slide-content">
         <h2 class="reveal">Architecture: Serverless</h2>
-        <p class="reveal" style="text-align:center; color: var(--text-secondary); margin-bottom: var(--content-gap);">
+        <p
+          class="reveal"
+          style="
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--content-gap);
+          "
+        >
           No servers to manage. Pay only for what you consume.
         </p>
         <div class="flow-row reveal-scale">
-          <div class="flow-box accent-cyan">
-            &#127760;<br />API Gateway
-          </div>
+          <div class="flow-box accent-cyan">&#127760;<br />API Gateway</div>
           <div class="flow-arrow">&#8594;</div>
-          <div class="flow-box accent-magenta">
-            &#9889;<br />Lambda
-          </div>
+          <div class="flow-box accent-magenta">&#9889;<br />Lambda</div>
           <div class="flow-arrow">&#8594;</div>
-          <div class="flow-box" style="border-color: #7c5cff; color: #7c5cff;">
+          <div class="flow-box" style="border-color: #7c5cff; color: #7c5cff">
             &#128451;<br />DynamoDB
           </div>
         </div>
-        <div class="grid-3 reveal" style="margin-top: var(--content-gap);">
+        <div class="grid-3 reveal" style="margin-top: var(--content-gap)">
           <div class="neon-card">
             <h3>&#128176; Cost Efficient</h3>
             <p>Pay-per-request pricing, no idle costs</p>
@@ -2140,19 +2440,28 @@
         <h2 class="reveal">Key Takeaways</h2>
         <div class="grid-3 reveal">
           <div class="neon-card cyan">
-            <div class="card-icon" style="color:var(--accent-cyan);">&#128218;</div>
+            <div class="card-icon" style="color: var(--accent-cyan)">&#128218;</div>
             <h3>Know Your Data Model</h3>
-            <p>SQL for structured relationships, NoSQL for flexible schemas. CAP theorem guides your tradeoffs.</p>
+            <p>
+              SQL for structured relationships, NoSQL for flexible schemas. CAP theorem guides your
+              tradeoffs.
+            </p>
           </div>
           <div class="neon-card magenta">
-            <div class="card-icon" style="color:var(--accent-magenta);">&#128200;</div>
+            <div class="card-icon" style="color: var(--accent-magenta)">&#128200;</div>
             <h3>Scale Progressively</h3>
-            <p>Start with indexing and caching. Add replication for read scaling. Shard when you outgrow a single node.</p>
+            <p>
+              Start with indexing and caching. Add replication for read scaling. Shard when you
+              outgrow a single node.
+            </p>
           </div>
-          <div class="neon-card" style="border-color: rgba(124,92,255,0.2);">
-            <div class="card-icon" style="color:#7c5cff;">&#9729;</div>
+          <div class="neon-card" style="border-color: rgba(124, 92, 255, 0.2)">
+            <div class="card-icon" style="color: #7c5cff">&#9729;</div>
             <h3>Leverage Managed Services</h3>
-            <p>AWS RDS and DynamoDB handle the operational burden so you can focus on application logic.</p>
+            <p>
+              AWS RDS and DynamoDB handle the operational burden so you can focus on application
+              logic.
+            </p>
           </div>
         </div>
       </div>
@@ -2165,8 +2474,10 @@
     <section class="slide title-slide" aria-label="Questions and Answers">
       <div class="slide-content">
         <div class="qa-mark reveal-scale">?</div>
-        <h2 class="reveal" style="color: #fff; text-shadow: 0 0 30px var(--accent-cyan-glow);">Questions?</h2>
-        <p class="reveal" style="color: var(--text-secondary); font-size: var(--subtitle-size);">
+        <h2 class="reveal" style="color: #fff; text-shadow: 0 0 30px var(--accent-cyan-glow)">
+          Questions?
+        </h2>
+        <p class="reveal" style="color: var(--text-secondary); font-size: var(--subtitle-size)">
           Let's discuss scalable database design
         </p>
       </div>
@@ -2179,7 +2490,7 @@
     <script>
       class SlidePresentation {
         constructor() {
-          this.slides = document.querySelectorAll(".slide");
+          this.slides = document.querySelectorAll('.slide');
           this.currentSlide = 0;
           this.isScrolling = false;
 
@@ -2199,7 +2510,7 @@
             (entries) => {
               entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                  entry.target.classList.add("visible");
+                  entry.target.classList.add('visible');
                   /* Update current slide index */
                   const idx = Array.from(this.slides).indexOf(entry.target);
                   if (idx !== -1) {
@@ -2210,7 +2521,7 @@
                 }
               });
             },
-            { threshold: 0.5 }
+            { threshold: 0.5 },
           );
 
           this.slides.forEach((slide) => observer.observe(slide));
@@ -2218,26 +2529,26 @@
 
         /* --- Keyboard navigation: arrows, space, page up/down --- */
         setupKeyboardNav() {
-          document.addEventListener("keydown", (e) => {
+          document.addEventListener('keydown', (e) => {
             switch (e.key) {
-              case "ArrowDown":
-              case "ArrowRight":
-              case " ":
-              case "PageDown":
+              case 'ArrowDown':
+              case 'ArrowRight':
+              case ' ':
+              case 'PageDown':
                 e.preventDefault();
                 this.goToSlide(this.currentSlide + 1);
                 break;
-              case "ArrowUp":
-              case "ArrowLeft":
-              case "PageUp":
+              case 'ArrowUp':
+              case 'ArrowLeft':
+              case 'PageUp':
                 e.preventDefault();
                 this.goToSlide(this.currentSlide - 1);
                 break;
-              case "Home":
+              case 'Home':
                 e.preventDefault();
                 this.goToSlide(0);
                 break;
-              case "End":
+              case 'End':
                 e.preventDefault();
                 this.goToSlide(this.slides.length - 1);
                 break;
@@ -2250,76 +2561,88 @@
           let touchStartY = 0;
           let touchStartX = 0;
 
-          document.addEventListener("touchstart", (e) => {
-            touchStartY = e.touches[0].clientY;
-            touchStartX = e.touches[0].clientX;
-          }, { passive: true });
+          document.addEventListener(
+            'touchstart',
+            (e) => {
+              touchStartY = e.touches[0].clientY;
+              touchStartX = e.touches[0].clientX;
+            },
+            { passive: true },
+          );
 
-          document.addEventListener("touchend", (e) => {
-            const deltaY = touchStartY - e.changedTouches[0].clientY;
-            const deltaX = touchStartX - e.changedTouches[0].clientX;
+          document.addEventListener(
+            'touchend',
+            (e) => {
+              const deltaY = touchStartY - e.changedTouches[0].clientY;
+              const deltaX = touchStartX - e.changedTouches[0].clientX;
 
-            /* Only navigate if vertical swipe is dominant and significant */
-            if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
-              if (deltaY > 0) {
-                this.goToSlide(this.currentSlide + 1);
-              } else {
-                this.goToSlide(this.currentSlide - 1);
+              /* Only navigate if vertical swipe is dominant and significant */
+              if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                if (deltaY > 0) {
+                  this.goToSlide(this.currentSlide + 1);
+                } else {
+                  this.goToSlide(this.currentSlide - 1);
+                }
               }
-            }
-          }, { passive: true });
+            },
+            { passive: true },
+          );
         }
 
         /* --- Mouse wheel navigation with debounce --- */
         setupWheelNav() {
           let lastWheel = 0;
-          document.addEventListener("wheel", (e) => {
-            const now = Date.now();
-            if (now - lastWheel < 800) return;
-            lastWheel = now;
+          document.addEventListener(
+            'wheel',
+            (e) => {
+              const now = Date.now();
+              if (now - lastWheel < 800) return;
+              lastWheel = now;
 
-            if (e.deltaY > 0) {
-              this.goToSlide(this.currentSlide + 1);
-            } else if (e.deltaY < 0) {
-              this.goToSlide(this.currentSlide - 1);
-            }
-          }, { passive: true });
+              if (e.deltaY > 0) {
+                this.goToSlide(this.currentSlide + 1);
+              } else if (e.deltaY < 0) {
+                this.goToSlide(this.currentSlide - 1);
+              }
+            },
+            { passive: true },
+          );
         }
 
         /* --- Progress bar --- */
         setupProgressBar() {
-          this.progressBar = document.querySelector(".progress-bar");
+          this.progressBar = document.querySelector('.progress-bar');
         }
 
         updateProgressBar() {
           if (!this.progressBar) return;
           const pct = (this.currentSlide / (this.slides.length - 1)) * 100;
-          this.progressBar.style.width = pct + "%";
-          this.progressBar.setAttribute("aria-valuenow", Math.round(pct));
+          this.progressBar.style.width = pct + '%';
+          this.progressBar.setAttribute('aria-valuenow', Math.round(pct));
         }
 
         /* --- Navigation dots --- */
         setupNavDots() {
-          this.navDotsContainer = document.querySelector(".nav-dots");
+          this.navDotsContainer = document.querySelector('.nav-dots');
           /* Clear existing dots to prevent duplicates */
-          this.navDotsContainer.innerHTML = "";
+          this.navDotsContainer.innerHTML = '';
 
           this.slides.forEach((_, i) => {
-            const dot = document.createElement("button");
-            dot.classList.add("nav-dot");
-            dot.setAttribute("aria-label", "Go to slide " + (i + 1));
-            if (i === 0) dot.classList.add("active");
-            dot.addEventListener("click", () => this.goToSlide(i));
+            const dot = document.createElement('button');
+            dot.classList.add('nav-dot');
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => this.goToSlide(i));
             this.navDotsContainer.appendChild(dot);
           });
 
-          this.navDots = this.navDotsContainer.querySelectorAll(".nav-dot");
+          this.navDots = this.navDotsContainer.querySelectorAll('.nav-dot');
         }
 
         updateNavDots() {
           if (!this.navDots) return;
           this.navDots.forEach((dot, i) => {
-            dot.classList.toggle("active", i === this.currentSlide);
+            dot.classList.toggle('active', i === this.currentSlide);
           });
         }
 
@@ -2327,23 +2650,21 @@
         goToSlide(index) {
           if (index < 0 || index >= this.slides.length) return;
           this.currentSlide = index;
-          this.slides[index].scrollIntoView({ behavior: "smooth" });
+          this.slides[index].scrollIntoView({ behavior: 'smooth' });
           this.updateNavDots();
           this.updateProgressBar();
         }
 
         /* --- Particle background (canvas) --- */
         setupParticles() {
-          const canvas = document.getElementById("particleCanvas");
+          const canvas = document.getElementById('particleCanvas');
           if (!canvas) return;
-          const ctx = canvas.getContext("2d");
+          const ctx = canvas.getContext('2d');
           let particles = [];
           const PARTICLE_COUNT = 60;
 
           /* Check reduced motion preference */
-          const reducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-          ).matches;
+          const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           if (reducedMotion) return;
 
           function resize() {
@@ -2351,7 +2672,7 @@
             canvas.height = window.innerHeight;
           }
           resize();
-          window.addEventListener("resize", resize);
+          window.addEventListener('resize', resize);
 
           /* Initialize particles */
           for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -2380,7 +2701,7 @@
 
               ctx.beginPath();
               ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-              ctx.fillStyle = "rgba(0, 255, 204, " + p.opacity + ")";
+              ctx.fillStyle = 'rgba(0, 255, 204, ' + p.opacity + ')';
               ctx.fill();
             });
 
@@ -2394,8 +2715,7 @@
                   ctx.beginPath();
                   ctx.moveTo(particles[i].x, particles[i].y);
                   ctx.lineTo(particles[j].x, particles[j].y);
-                  ctx.strokeStyle =
-                    "rgba(0, 255, 204, " + (1 - dist / 150) * 0.08 + ")";
+                  ctx.strokeStyle = 'rgba(0, 255, 204, ' + (1 - dist / 150) * 0.08 + ')';
                   ctx.lineWidth = 0.5;
                   ctx.stroke();
                 }
@@ -2410,14 +2730,14 @@
 
         /* --- Counter animations for stat values --- */
         setupCounterAnimations() {
-          const counters = document.querySelectorAll("[data-target]");
+          const counters = document.querySelectorAll('[data-target]');
           const counterObserver = new IntersectionObserver(
             (entries) => {
               entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                   const el = entry.target;
-                  const target = parseInt(el.getAttribute("data-target"), 10);
-                  const suffix = el.getAttribute("data-suffix") || "";
+                  const target = parseInt(el.getAttribute('data-target'), 10);
+                  const suffix = el.getAttribute('data-suffix') || '';
                   let current = 0;
                   const increment = Math.max(1, Math.floor(target / 40));
                   const timer = setInterval(() => {
@@ -2432,7 +2752,7 @@
                 }
               });
             },
-            { threshold: 0.5 }
+            { threshold: 0.5 },
           );
 
           counters.forEach((c) => counterObserver.observe(c));
@@ -2440,7 +2760,7 @@
       }
 
       /* Initialize presentation when DOM is ready */
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener('DOMContentLoaded', () => {
         new SlidePresentation();
       });
     </script>
