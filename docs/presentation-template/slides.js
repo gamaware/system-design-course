@@ -1,5 +1,3 @@
-/* global document */
-
 // Module-specific JavaScript for this presentation.
 // The shared presenter.js provides: applyTheme, toggleTheme, toggleLang,
 // initParticles, animateCounter, triggerCounters, animateSlideElements,
