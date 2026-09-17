@@ -17,7 +17,8 @@ Reference diagrams from class, covering the concepts this lab exercises.
 
 ![DNS name resolution flow](diagrams/dns-resolution-flow.png)
 
-*Step-by-step DNS resolution: user, local cache, recursive resolver, root, TLD, and authoritative servers, followed by the final HTTP request.*
+*Step-by-step DNS resolution: user, local cache, recursive resolver, root, TLD, and authoritative servers,
+followed by the final HTTP request.*
 
 ![DNS vs. load balancer comparison](diagrams/dns-vs-load-balancer.png)
 

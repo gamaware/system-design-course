@@ -44,7 +44,7 @@ in this course.
 Reference diagrams from class, covering the concepts this lab exercises (editable SVG + PNG in [`diagrams/`](./diagrams/)):
 
 | Diagram | What it shows |
-|---|---|
+| --- | --- |
 | [What is virtualization?](./diagrams/compute-virtualization.png) | Definition, On‑Prem (1 server = 1 OS = 1 app) vs. one physical host running independent VMs on a hypervisor, VM portability, and the three benefits (cost, agility, downtime). |
 | [What is a hypervisor?](./diagrams/compute-hypervisors.png) | Compute host (CPU/RAM/Network + storage) sliced into vCPU/vRAM/vNIC per VM, isolation between VMs, the three storage paths (EBS / Instance Store / EFS‑FSx), Type 1 vs. Type 2 with products, multitenancy and how it maps to EC2 in the labs. |
 

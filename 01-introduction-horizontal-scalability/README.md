@@ -51,10 +51,11 @@ graph TB
 
 ## Class Diagrams
 
-Reference diagrams from class, covering the concepts this lab exercises. PNGs below are the versions shown in class; editable SVG sources live in [`diagrams/`](./diagrams/).
+Reference diagrams from class, covering the concepts this lab exercises.
+PNGs below are the versions shown in class; editable SVG sources live in [`diagrams/`](./diagrams/).
 
 | Diagram | What it shows |
-|---|---|
+| --- | --- |
 | [Lab architecture](./diagrams/class-lab01-architecture.png) | VPC (3 AZs), ALB, ECS Fargate cluster with the three services, Cloud Map `service.local`, the CloudWatch → target-tracking alarms → Application Auto Scaling loop, and the CDK stacks. |
 | [Manual scaling: CLI vs. CDK](./diagrams/class-manual-scaling-cli-vs-cdk.png) | Imperative `aws ecs update-service --desired-count` (drift) vs. declaratively changing `desired_count` in `ecsdemo-frontend/cdk/app.py` + `cdk diff` / `cdk deploy`. |
 | [AWS CDK lifecycle](./diagrams/class-cdk-lifecycle.png) | What CDK is (L1/L2/L3 constructs, app → stacks) and the lifecycle `init → bootstrap → synth → diff → deploy → iterate → destroy`, with the lab's exact commands and typical errors. |
@@ -63,7 +64,8 @@ Reference diagrams from class, covering the concepts this lab exercises. PNGs be
 
 ![Lab 01 architecture (ECS Fargate + ALB)](./diagrams/class-lab01-architecture.png)
 
-VPC with 3 AZs, ALB, Fargate cluster with the three services, Cloud Map, and the CloudWatch → alarms → Application Auto Scaling loop.
+VPC with 3 AZs, ALB, Fargate cluster with the three services, Cloud Map,
+and the CloudWatch → alarms → Application Auto Scaling loop.
 
 ![Manual scaling: CLI vs. CDK](./diagrams/class-manual-scaling-cli-vs-cdk.png)
 
@@ -79,7 +81,8 @@ Constructs, app → stacks, and the `init → bootstrap → synth → diff → d
 
 ![ECS Auto Scaling: how it decides task count](./diagrams/class-autoscaling-how-it-decides.png)
 
-The CPU thermostat: metric → alarms → `new = ceil(tasks × CPU / target)` → desiredCount within min/max, and the knobs in code.
+The CPU thermostat: metric → alarms → `new = ceil(tasks × CPU / target)` → desiredCount within min/max,
+and the knobs in code.
 
 ## Prerequisites
 
