@@ -54,3 +54,6 @@ function highlightTier(btn, tierClass) {
 }
 
 window.PRES_CONFIG = {};
+
+window.updateVScale = updateVScale;
+window.highlightTier = highlightTier;

@@ -144,7 +144,6 @@ const EXPLANATIONS = {
 };
 
 let animating = false;
-let pollTimer = null;
 
 function $(sel) { return document.querySelector(sel); }
 function $$(sel) { return document.querySelectorAll(sel); }
@@ -823,7 +822,7 @@ function initTabs() {
 
 // --- SQL Console ---
 
-let consoleHistory = [];
+const consoleHistory = [];
 let consoleHistoryIndex = -1;
 
 async function doSqlExec() {
@@ -996,7 +995,7 @@ function initButtons() {
 
 function startPolling() {
   updateSidebar();
-  pollTimer = setInterval(updateSidebar, POLL_INTERVAL_MS);
+  setInterval(updateSidebar, POLL_INTERVAL_MS);
 }
 
 // --- Tooltips (JS-driven, fixed positioning) ---

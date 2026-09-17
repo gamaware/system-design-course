@@ -153,6 +153,7 @@ h3 {
 
 .arrow-active {
   opacity: 1;
+  animation: arrow-glow 1s ease-out;
 }
 
 .arrow-success {
@@ -178,22 +179,37 @@ h3 {
 }
 
 @keyframes arrow-glow {
-  0% { filter: none; opacity: 0.6; }
-  30% { filter: drop-shadow(0 0 8px currentColor); opacity: 1; }
-  100% { filter: drop-shadow(0 0 3px currentColor); opacity: 0.9; }
-}
+  0% {
+    filter: none;
+    opacity: 0.6;
+  }
 
-.arrow-active {
-  animation: arrow-glow 1s ease-out;
+  30% {
+    filter: drop-shadow(0 0 8px currentcolor);
+    opacity: 1;
+  }
+
+  100% {
+    filter: drop-shadow(0 0 3px currentcolor);
+    opacity: 0.9;
+  }
 }
 
 .travel-dot {
-  transition: opacity 0.15s ease;
+  transition: opacity 0.2s;
 }
 
 @keyframes dot-pulse {
-  0%, 100% { r: 5; opacity: 0.8; }
-  50% { r: 8; opacity: 1; }
+  0%,
+  100% {
+    r: 5;
+    opacity: 0.8;
+  }
+
+  50% {
+    r: 8;
+    opacity: 1;
+  }
 }
 
 /* --- Tooltips (JS-driven, fixed positioning) --- */
@@ -207,7 +223,7 @@ h3 {
   font-size: 0.75rem;
   font-family: var(--font-sans);
   border: 1px solid #475569;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 50%);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s ease;
@@ -223,10 +239,6 @@ h3 {
   fill: #94a3b8;
   font-size: 11px;
   font-family: var(--font-mono);
-}
-
-.travel-dot {
-  transition: opacity 0.2s;
 }
 
 /* --- Controls Panel --- */
@@ -402,7 +414,7 @@ h3 {
 
 .explanation-step.active {
   border-left-color: var(--color-success);
-  background: rgba(34, 197, 94, 0.05);
+  background: rgb(34 197 94 / 5%);
 }
 
 .explanation-step h4 {
@@ -518,7 +530,7 @@ h3 {
 .resize-handle:hover::after {
   background: var(--color-primary);
   width: 64px;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 8px rgb(59 130 246 / 30%);
 }
 
 .event-log {
@@ -552,7 +564,7 @@ h3 {
 }
 
 .log-entry:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgb(255 255 255 / 2%);
 }
 
 .log-time {
@@ -612,16 +624,16 @@ h3 {
   min-height: 0;
   background: #0a0e17;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(255 255 255 / 10%);
   overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 30%);
 }
 
 .event-log-container h3 {
   padding: 6px 12px;
   margin: 0;
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgb(255 255 255 / 6%);
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
   font-size: 0.8rem;
 }
 
@@ -633,9 +645,9 @@ h3 {
   flex-direction: column;
   background: #0a0e17;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(255 255 255 / 10%);
   overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 30%);
 }
 
 .console-header {
@@ -643,7 +655,7 @@ h3 {
   align-items: center;
   gap: 0.75rem;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(255 255 255 / 3%);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -727,7 +739,7 @@ h3 {
   align-items: center;
   gap: 0;
   border-top: 1px solid var(--color-border);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgb(255 255 255 / 2%);
 }
 
 .console-prompt {
@@ -741,7 +753,7 @@ h3 {
 
 .console-input-row input {
   flex: 1;
-  padding: 8px 8px;
+  padding: 8px;
   border: none;
   background: transparent;
   color: var(--color-text);
@@ -771,8 +783,8 @@ h3 {
 }
 
 .console-result-table th {
-  background: var(--color-bg-elevated);
-  color: var(--color-text-muted);
+  background: rgb(163 230 53 / 8%);
+  color: #a3e635;
 }
 
 .console-query {
@@ -794,18 +806,13 @@ h3 {
 .result-interpretation {
   margin-top: 0.75rem;
   padding: 10px 14px;
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.25);
+  background: rgb(59 130 246 / 8%);
+  border: 1px solid rgb(59 130 246 / 25%);
   border-left: 3px solid #3b82f6;
   border-radius: var(--radius);
   color: #93c5fd;
   font-size: 0.8rem;
   line-height: 1.6;
-}
-
-.console-result-table th {
-  color: #a3e635;
-  background: rgba(163, 230, 53, 0.08);
 }
 
 .console-result-table td {
