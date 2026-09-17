@@ -6,14 +6,11 @@ const POLL_INTERVAL_MS = 3000;
 const MAX_LOG_ENTRIES = 100;
 
 const PATTERN_DESCRIPTIONS = {
-  replication:
-    'Write to primary, read from replica. Observe replication lag in real time.',
+  replication: 'Write to primary, read from replica. Observe replication lag in real time.',
   consistency:
     'Transfer enrollment between courses inside an ACID transaction. Observe commit or rollback.',
-  schema:
-    'Run EXPLAIN to see query plans. Add/drop indexes and compare rows scanned.',
-  cap:
-    'Stop replication to simulate a network partition. Write data and observe divergence between primary and replica.',
+  schema: 'Run EXPLAIN to see query plans. Add/drop indexes and compare rows scanned.',
+  cap: 'Stop replication to simulate a network partition. Write data and observe divergence between primary and replica.',
   views:
     'Compare expensive multi-table JOINs vs a pre-computed materialized view. See the read-speed vs write-cost trade-off.',
   vertical:
@@ -145,9 +142,15 @@ const EXPLANATIONS = {
 
 let animating = false;
 
-function $(sel) { return document.querySelector(sel); }
-function $$(sel) { return document.querySelectorAll(sel); }
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function $(sel) {
+  return document.querySelector(sel);
+}
+function $$(sel) {
+  return document.querySelectorAll(sel);
+}
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
 
 async function apiPost(url, body) {
   const res = await fetch(url, {
@@ -164,7 +167,7 @@ function logSqlToConsole(result) {
   const output = $('#console-output');
   const steps = result.steps || [];
 
-  steps.forEach(step => {
+  steps.forEach((step) => {
     if (!step.sql) return;
     const qDiv = document.createElement('div');
     qDiv.className = 'console-query';
@@ -172,10 +175,12 @@ function logSqlToConsole(result) {
     output.appendChild(qDiv);
 
     const rDiv = document.createElement('div');
-    rDiv.className = step.result.toLowerCase().includes('error') ||
+    rDiv.className =
+      step.result.toLowerCase().includes('error') ||
       step.result.toLowerCase().includes('not found') ||
       step.result.toLowerCase().includes('stale')
-      ? 'console-error' : 'console-meta';
+        ? 'console-error'
+        : 'console-meta';
     rDiv.textContent = `-- ${step.result} (${step.latency_ms}ms)`;
     output.appendChild(rDiv);
   });
@@ -189,20 +194,22 @@ async function apiGet(url) {
 }
 
 function setButtonsDisabled(d) {
-  $$('button').forEach(b => { b.disabled = d; });
+  $$('button').forEach((b) => {
+    b.disabled = d;
+  });
 }
 
 function clearAnimations() {
-  $$('.arrow').forEach(a => {
+  $$('.arrow').forEach((a) => {
     a.classList.remove('arrow-active', 'arrow-success', 'arrow-op', 'arrow-error');
   });
-  $$('.travel-dot').forEach(d => d.setAttribute('opacity', '0'));
-  $$('.latency-group').forEach(g => {
+  $$('.travel-dot').forEach((d) => d.setAttribute('opacity', '0'));
+  $$('.latency-group').forEach((g) => {
     g.setAttribute('opacity', '0');
     const t = g.querySelector('.latency-label');
     if (t) t.textContent = '';
   });
-  $$('.node-badge').forEach(b => b.setAttribute('opacity', '0'));
+  $$('.node-badge').forEach((b) => b.setAttribute('opacity', '0'));
 }
 
 // --- Arrow Animation ---
@@ -250,8 +257,8 @@ function logEvent(step) {
 
   const time = new Date().toLocaleTimeString('en-US', { hour12: false });
   const targetCls = step.target === 'primary' ? 'primary' : 'replica';
-  const resultCls = step.result === 'OK' || step.result === 'FOUND' ||
-    step.result === 'COMMITTED' ? 'ok' : 'error';
+  const resultCls =
+    step.result === 'OK' || step.result === 'FOUND' || step.result === 'COMMITTED' ? 'ok' : 'error';
 
   entry.innerHTML =
     `<span class="log-time">${time}</span>` +
@@ -278,12 +285,15 @@ function showExplanation(tab) {
     return;
   }
 
-  container.innerHTML = items.map((item, i) =>
-    `<div class="explanation-step" id="exp-step-${i}">
+  container.innerHTML = items
+    .map(
+      (item, i) =>
+        `<div class="explanation-step" id="exp-step-${i}">
       <h4>${item.title}</h4>
       <p>${item.detail}</p>
-    </div>`
-  ).join('');
+    </div>`,
+    )
+    .join('');
   panel.classList.remove('hidden');
 }
 
@@ -330,12 +340,11 @@ async function updateSidebar() {
     const state = await apiGet('/api/db/state');
 
     $('#stat-io').textContent = state.replica?.io_running || '--';
-    $('#stat-io').className = 'stat-value ' +
-      (state.replica?.io_running === 'Yes' ? 'ok' : 'warn');
+    $('#stat-io').className = 'stat-value ' + (state.replica?.io_running === 'Yes' ? 'ok' : 'warn');
 
     $('#stat-sql').textContent = state.replica?.sql_running || '--';
-    $('#stat-sql').className = 'stat-value ' +
-      (state.replica?.sql_running === 'Yes' ? 'ok' : 'warn');
+    $('#stat-sql').className =
+      'stat-value ' + (state.replica?.sql_running === 'Yes' ? 'ok' : 'warn');
 
     const lag = state.replica?.lag;
     $('#stat-lag').textContent = lag !== null && lag !== undefined ? lag : '--';
@@ -347,12 +356,15 @@ async function updateSidebar() {
 
     // Courses
     const courseList = $('#course-list');
-    courseList.innerHTML = (state.primary?.courses || []).map(c =>
-      `<li class="course-item">
+    courseList.innerHTML = (state.primary?.courses || [])
+      .map(
+        (c) =>
+          `<li class="course-item">
         <span class="course-code">${c.code}</span>
         <span class="course-enrolled">${c.enrolled} enrolled</span>
-      </li>`
-    ).join('');
+      </li>`,
+      )
+      .join('');
 
     // Indexes
     const indexes = state.primary?.indexes || [];
@@ -374,8 +386,8 @@ async function doReplication() {
 
   const name = $('#repl-name').value || 'Test Student';
   const major = $('#repl-major').value;
-  const email = name.toLowerCase().replace(/\s+/g, '.') +
-    Math.floor(Math.random() * 9999) + '@university.edu';
+  const email =
+    name.toLowerCase().replace(/\s+/g, '.') + Math.floor(Math.random() * 9999) + '@university.edu';
 
   const result = await apiPost('/api/replication/write', { name, email, major });
 
@@ -392,12 +404,22 @@ async function doReplication() {
     logEvent(step);
 
     if (step.action === 'INSERT') {
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, 'arrow-op');
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        'arrow-op',
+      );
     } else if (step.action === 'SELECT') {
       const cls = step.result === 'FOUND' ? 'arrow-success' : 'arrow-error';
-      await animateArrow('arrow-app-replica', 'dot-app-replica',
-        'latency-app-replica', step.latency_ms, cls);
+      await animateArrow(
+        'arrow-app-replica',
+        'dot-app-replica',
+        'latency-app-replica',
+        step.latency_ms,
+        cls,
+      );
     }
     await sleep(STEP_PAUSE_MS);
   }
@@ -406,9 +428,9 @@ async function doReplication() {
   showResult(
     lastStep.data?.lag_seconds === 0 ? 'REPLICATED' : 'LAG DETECTED',
     result.total_ms,
-    result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
+    result.steps.map((s) => ({ action: s.action, result: s.result, ms: s.latency_ms })),
     lastStep.data?.lag_seconds === 0 ? 'committed' : 'rolled-back',
-    result
+    result,
   );
 
   await updateSidebar();
@@ -430,7 +452,9 @@ async function doTransfer() {
   const toCourse = $('#tx-to').value;
 
   const result = await apiPost('/api/consistency/transfer', {
-    student_id: studentId, from_course: fromCourse, to_course: toCourse,
+    student_id: studentId,
+    from_course: fromCourse,
+    to_course: toCourse,
   });
 
   if (result.error) {
@@ -446,24 +470,44 @@ async function doTransfer() {
 
     if (step.action === 'BEGIN') {
       highlightExpStep(0);
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, 'arrow-op');
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        'arrow-op',
+      );
     } else if (step.action.startsWith('DELETE') || step.action.startsWith('UPDATE')) {
       if (expIdx < 1) expIdx = 1;
       highlightExpStep(expIdx);
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, 'arrow-op');
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        'arrow-op',
+      );
     } else if (step.action.startsWith('INSERT')) {
       expIdx = 2;
       highlightExpStep(2);
       const cls = step.result === 'OK' ? 'arrow-success' : 'arrow-error';
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, cls);
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        cls,
+      );
     } else if (step.action === 'COMMIT' || step.action === 'ROLLBACK') {
       highlightExpStep(3);
       const cls = step.action === 'COMMIT' ? 'arrow-success' : 'arrow-error';
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, cls);
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        cls,
+      );
     }
     await sleep(STEP_PAUSE_MS / 2);
   }
@@ -472,9 +516,9 @@ async function doTransfer() {
   showResult(
     result.outcome,
     result.total_ms,
-    result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
+    result.steps.map((s) => ({ action: s.action, result: s.result, ms: s.latency_ms })),
     committed ? 'committed' : 'rolled-back',
-    result
+    result,
   );
 
   await updateSidebar();
@@ -495,14 +539,20 @@ async function doExplain() {
   const resource = $('#idx-resource').value;
 
   const result = await apiPost('/api/schema/explain', {
-    student_id: studentId, resource,
+    student_id: studentId,
+    resource,
   });
 
   highlightExpStep(0);
   for (const step of result.steps) {
     logEvent(step);
-    await animateArrow('arrow-app-primary', 'dot-app-primary',
-      'latency-app-primary', step.latency_ms, 'arrow-op');
+    await animateArrow(
+      'arrow-app-primary',
+      'dot-app-primary',
+      'latency-app-primary',
+      step.latency_ms,
+      'arrow-op',
+    );
     await sleep(STEP_PAUSE_MS);
   }
 
@@ -515,7 +565,7 @@ async function doExplain() {
     result.total_ms,
     plan,
     rows > 1000 ? 'rolled-back' : 'committed',
-    result
+    result,
   );
 
   await updateSidebar();
@@ -525,15 +575,23 @@ async function doExplain() {
 
 async function doAddIndex() {
   const result = await apiPost('/api/schema/add-index', {});
-  logEvent({ action: 'CREATE INDEX', target: 'primary',
-    result: result.result, latency_ms: result.latency_ms });
+  logEvent({
+    action: 'CREATE INDEX',
+    target: 'primary',
+    result: result.result,
+    latency_ms: result.latency_ms,
+  });
   await updateSidebar();
 }
 
 async function doDropIndex() {
   const result = await apiPost('/api/schema/drop-index', {});
-  logEvent({ action: 'DROP INDEX', target: 'primary',
-    result: result.result, latency_ms: result.latency_ms });
+  logEvent({
+    action: 'DROP INDEX',
+    target: 'primary',
+    result: result.result,
+    latency_ms: result.latency_ms,
+  });
   await updateSidebar();
 }
 
@@ -541,31 +599,47 @@ async function doDropIndex() {
 
 async function doCapStop() {
   const result = await apiPost('/api/cap/stop-replication', {});
-  logEvent({ action: 'STOP REPLICA', target: 'replica',
-    result: result.result, latency_ms: result.latency_ms });
+  logEvent({
+    action: 'STOP REPLICA',
+    target: 'replica',
+    result: result.result,
+    latency_ms: result.latency_ms,
+  });
   showExplanation('cap');
   highlightExpStep(0);
   // Visual: grey out replica node
   const replicaRect = document.querySelector('#node-replica rect');
   if (replicaRect) replicaRect.style.opacity = '0.4';
-  showResult('PARTITION ACTIVE', result.latency_ms,
+  showResult(
+    'PARTITION ACTIVE',
+    result.latency_ms,
     { message: 'Replication stopped. Replica will not receive new writes.' },
-    'rolled-back', result);
+    'rolled-back',
+    result,
+  );
   await updateSidebar();
 }
 
 async function doCapStart() {
   const result = await apiPost('/api/cap/start-replication', {});
-  logEvent({ action: 'START REPLICA', target: 'replica',
-    result: result.result, latency_ms: result.latency_ms });
+  logEvent({
+    action: 'START REPLICA',
+    target: 'replica',
+    result: result.result,
+    latency_ms: result.latency_ms,
+  });
   showExplanation('cap');
   highlightExpStep(2);
   // Visual: restore replica node
   const replicaRect = document.querySelector('#node-replica rect');
   if (replicaRect) replicaRect.style.opacity = '1';
-  showResult('PARTITION RECOVERED', result.latency_ms,
+  showResult(
+    'PARTITION RECOVERED',
+    result.latency_ms,
     { message: 'Replication resumed. Replica is catching up.' },
-    'committed', result);
+    'committed',
+    result,
+  );
   await updateSidebar();
 }
 
@@ -591,17 +665,32 @@ async function doCapTest() {
     logEvent(step);
     if (step.action === 'INSERT') {
       highlightExpStep(0);
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, 'arrow-op');
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        'arrow-op',
+      );
     } else if (step.action === 'SELECT (primary)') {
       highlightExpStep(1);
-      await animateArrow('arrow-app-primary', 'dot-app-primary',
-        'latency-app-primary', step.latency_ms, 'arrow-success');
+      await animateArrow(
+        'arrow-app-primary',
+        'dot-app-primary',
+        'latency-app-primary',
+        step.latency_ms,
+        'arrow-success',
+      );
     } else if (step.action === 'SELECT (replica)') {
       highlightExpStep(1);
       const cls = step.result.includes('stale') ? 'arrow-error' : 'arrow-success';
-      await animateArrow('arrow-app-replica', 'dot-app-replica',
-        'latency-app-replica', step.latency_ms, cls);
+      await animateArrow(
+        'arrow-app-replica',
+        'dot-app-replica',
+        'latency-app-replica',
+        step.latency_ms,
+        cls,
+      );
     }
     await sleep(STEP_PAUSE_MS);
   }
@@ -610,9 +699,9 @@ async function doCapTest() {
   showResult(
     result.outcome,
     result.total_ms,
-    result.steps.map(s => ({ action: s.action, result: s.result, ms: s.latency_ms })),
+    result.steps.map((s) => ({ action: s.action, result: s.result, ms: s.latency_ms })),
     diverged ? 'rolled-back' : 'committed',
-    result
+    result,
   );
 
   await updateSidebar();
@@ -624,23 +713,32 @@ async function doCapTest() {
 
 async function doViewsCreate() {
   const result = await apiPost('/api/views/create', {});
-  logEvent({ action: 'CREATE VIEW', target: 'primary',
-    result: result.result || 'ERROR', latency_ms: result.latency_ms || 0 });
+  logEvent({
+    action: 'CREATE VIEW',
+    target: 'primary',
+    result: result.result || 'ERROR',
+    latency_ms: result.latency_ms || 0,
+  });
   showExplanation('views');
   highlightExpStep(1);
   showResult(
     result.error ? 'ERROR' : `VIEW CREATED (${result.rows} rows)`,
-    result.latency_ms || 0, result,
+    result.latency_ms || 0,
+    result,
     result.error ? 'rolled-back' : 'committed',
-    result
+    result,
   );
   await updateSidebar();
 }
 
 async function doViewsDrop() {
   const result = await apiPost('/api/views/drop', {});
-  logEvent({ action: 'DROP VIEW', target: 'primary',
-    result: result.result, latency_ms: result.latency_ms });
+  logEvent({
+    action: 'DROP VIEW',
+    target: 'primary',
+    result: result.result,
+    latency_ms: result.latency_ms,
+  });
   await updateSidebar();
 }
 
@@ -656,17 +754,26 @@ async function doViewsJoin() {
 
   for (const step of result.steps) {
     logEvent(step);
-    await animateArrow('arrow-app-primary', 'dot-app-primary',
-      'latency-app-primary', step.latency_ms, 'arrow-op');
+    await animateArrow(
+      'arrow-app-primary',
+      'dot-app-primary',
+      'latency-app-primary',
+      step.latency_ms,
+      'arrow-op',
+    );
     await sleep(STEP_PAUSE_MS / 2);
   }
 
   showResult(
     `JOIN: ${result.row_count} rows`,
-    result.total_ms, result.steps.map(s => ({
-      action: s.action, result: s.result, ms: s.latency_ms,
-    })), 'committed',
-    result
+    result.total_ms,
+    result.steps.map((s) => ({
+      action: s.action,
+      result: s.result,
+      ms: s.latency_ms,
+    })),
+    'committed',
+    result,
   );
 
   animating = false;
@@ -692,16 +799,25 @@ async function doViewsView() {
 
   for (const step of result.steps) {
     logEvent(step);
-    await animateArrow('arrow-app-primary', 'dot-app-primary',
-      'latency-app-primary', step.latency_ms, 'arrow-success');
+    await animateArrow(
+      'arrow-app-primary',
+      'dot-app-primary',
+      'latency-app-primary',
+      step.latency_ms,
+      'arrow-success',
+    );
   }
 
   showResult(
     `VIEW: ${result.row_count} rows`,
-    result.total_ms, result.steps.map(s => ({
-      action: s.action, result: s.result, ms: s.latency_ms,
-    })), 'committed',
-    result
+    result.total_ms,
+    result.steps.map((s) => ({
+      action: s.action,
+      result: s.result,
+      ms: s.latency_ms,
+    })),
+    'committed',
+    result,
   );
 
   animating = false;
@@ -710,15 +826,20 @@ async function doViewsView() {
 
 async function doViewsRefresh() {
   const result = await apiPost('/api/views/refresh', {});
-  logEvent({ action: 'REFRESH VIEW', target: 'primary',
-    result: result.result || 'ERROR', latency_ms: result.latency_ms || 0 });
+  logEvent({
+    action: 'REFRESH VIEW',
+    target: 'primary',
+    result: result.result || 'ERROR',
+    latency_ms: result.latency_ms || 0,
+  });
   showExplanation('views');
   highlightExpStep(2);
   showResult(
     result.error ? 'ERROR' : `VIEW REFRESHED (${result.rows} rows)`,
-    result.latency_ms || 0, result,
+    result.latency_ms || 0,
+    result,
     result.error ? 'rolled-back' : 'committed',
-    result
+    result,
   );
 }
 
@@ -728,8 +849,12 @@ async function doVerticalSet() {
   const size = $('#vert-buffer').value;
   const label = $('#vert-buffer').options[$('#vert-buffer').selectedIndex].text;
   const result = await apiPost('/api/vertical/set-buffer', { size });
-  logEvent({ action: `SET BUFFER ${label}`, target: 'primary',
-    result: result.error ? 'ERROR' : 'OK', latency_ms: result.latency_ms || 0 });
+  logEvent({
+    action: `SET BUFFER ${label}`,
+    target: 'primary',
+    result: result.error ? 'ERROR' : 'OK',
+    latency_ms: result.latency_ms || 0,
+  });
   showExplanation('vertical');
   highlightExpStep(0);
   if (result.error) {
@@ -758,8 +883,13 @@ async function doVerticalBench() {
 
   // Animate a few representative arrows
   for (let i = 0; i < 3; i++) {
-    await animateArrow('arrow-app-primary', 'dot-app-primary',
-      'latency-app-primary', result.stats.avg_latency_ms, 'arrow-op');
+    await animateArrow(
+      'arrow-app-primary',
+      'dot-app-primary',
+      'latency-app-primary',
+      result.stats.avg_latency_ms,
+      'arrow-op',
+    );
     await sleep(100);
   }
 
@@ -778,7 +908,7 @@ async function doVerticalBench() {
       disk_reads: s.disk_reads,
     },
     s.buffer_hit_ratio > 90 ? 'committed' : 'rolled-back',
-    result
+    result,
   );
 
   await updateSidebar();
@@ -790,8 +920,7 @@ async function doVerticalBench() {
 
 async function doReset() {
   const result = await apiPost('/api/db/reset', {});
-  logEvent({ action: 'RESET DB', target: 'primary',
-    result: result.result || 'OK', latency_ms: 0 });
+  logEvent({ action: 'RESET DB', target: 'primary', result: result.result || 'OK', latency_ms: 0 });
   await updateSidebar();
   $('#result-panel').classList.add('hidden');
   $('#explanation-panel').classList.add('hidden');
@@ -801,12 +930,12 @@ async function doReset() {
 // --- Init ---
 
 function initTabs() {
-  $$('.tab').forEach(tab => {
+  $$('.tab').forEach((tab) => {
     tab.addEventListener('click', () => {
-      $$('.tab').forEach(t => t.classList.remove('active'));
+      $$('.tab').forEach((t) => t.classList.remove('active'));
       tab.classList.add('active');
       const target = tab.dataset.tab;
-      $$('.controls').forEach(p => {
+      $$('.controls').forEach((p) => {
         p.classList.toggle('active', p.id === `controls-${target}`);
       });
       const desc = $('#pattern-description');
@@ -856,7 +985,7 @@ async function doSqlExec() {
     table.className = 'console-result-table';
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    result.columns.forEach(col => {
+    result.columns.forEach((col) => {
       const th = document.createElement('th');
       th.textContent = col;
       headerRow.appendChild(th);
@@ -868,7 +997,7 @@ async function doSqlExec() {
     const maxRows = Math.min(result.rows.length, 20);
     for (let i = 0; i < maxRows; i++) {
       const tr = document.createElement('tr');
-      result.columns.forEach(col => {
+      result.columns.forEach((col) => {
         const td = document.createElement('td');
         td.textContent = result.rows[i][col] ?? 'NULL';
         tr.appendChild(td);
@@ -881,14 +1010,12 @@ async function doSqlExec() {
     const meta = document.createElement('div');
     meta.className = 'console-meta';
     const truncated = result.rows.length > 20 ? ` (showing 20 of ${result.rows.length})` : '';
-    meta.textContent =
-      `${result.row_count} row(s)${truncated} in ${result.latency_ms}ms`;
+    meta.textContent = `${result.row_count} row(s)${truncated} in ${result.latency_ms}ms`;
     output.appendChild(meta);
   } else {
     const metaDiv = document.createElement('div');
     metaDiv.className = 'console-meta';
-    metaDiv.textContent =
-      `${result.affected_rows} row(s) affected in ${result.latency_ms}ms`;
+    metaDiv.textContent = `${result.affected_rows} row(s) affected in ${result.latency_ms}ms`;
     output.appendChild(metaDiv);
   }
 
@@ -911,9 +1038,7 @@ function initConsole() {
     if (e.key === 'Enter') {
       doSqlExec();
     } else if (e.key === 'ArrowUp' && consoleHistory.length > 0) {
-      consoleHistoryIndex = Math.min(
-        consoleHistoryIndex + 1, consoleHistory.length - 1
-      );
+      consoleHistoryIndex = Math.min(consoleHistoryIndex + 1, consoleHistory.length - 1);
       $('#console-input').value = consoleHistory[consoleHistoryIndex];
     } else if (e.key === 'ArrowDown') {
       consoleHistoryIndex = Math.max(consoleHistoryIndex - 1, -1);
@@ -923,9 +1048,9 @@ function initConsole() {
   });
 
   // Target toggle buttons
-  $$('.target-btn').forEach(btn => {
+  $$('.target-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      $$('.target-btn').forEach(b => b.classList.remove('active'));
+      $$('.target-btn').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       const target = btn.dataset.target;
       const prompt = $('.console-prompt');

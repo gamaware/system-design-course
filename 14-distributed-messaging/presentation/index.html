@@ -66,12 +66,7 @@
                 </rect>
                 <!-- Message blocks flowing through -->
                 <rect x="30" y="40" width="16" height="20" rx="3" fill="var(--mint)" opacity="0.85">
-                  <animate
-                    attributeName="x"
-                    values="30;110;30"
-                    dur="3s"
-                    repeatCount="indefinite"
-                  />
+                  <animate attributeName="x" values="30;110;30" dur="3s" repeatCount="indefinite" />
                   <animate
                     attributeName="opacity"
                     values="0.85;0.4;0.85"
@@ -101,15 +96,7 @@
                     repeatCount="indefinite"
                   />
                 </rect>
-                <rect
-                  x="80"
-                  y="40"
-                  width="16"
-                  height="20"
-                  rx="3"
-                  fill="var(--gold)"
-                  opacity="0.8"
-                >
+                <rect x="80" y="40" width="16" height="20" rx="3" fill="var(--gold)" opacity="0.8">
                   <animate
                     attributeName="x"
                     values="80;110;80"
@@ -221,11 +208,10 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >Think of a coffee shop: orders are placed, queued, and fulfilled
-              independently.</span
+              >Think of a coffee shop: orders are placed, queued, and fulfilled independently.</span
             ><span class="lang-es"
-              >Piensa en una cafeter&iacute;a: los pedidos se toman, se encolan y se
-              preparan de forma independiente.</span
+              >Piensa en una cafeter&iacute;a: los pedidos se toman, se encolan y se preparan de
+              forma independiente.</span
             >
           </p>
           <div class="diagram-container">
@@ -254,7 +240,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="90" y="72" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+              <text
+                x="90"
+                y="72"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Cashier</tspan>
                 <tspan class="lang-es">Cajero</tspan>
               </text>
@@ -287,13 +280,28 @@
                 stroke="var(--mint)"
                 stroke-width="2"
               />
-              <text x="295" y="40" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">
+              <text
+                x="295"
+                y="40"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="10"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Order Queue</tspan>
                 <tspan class="lang-es">Cola de Pedidos</tspan>
               </text>
               <!-- Message blocks in Queue 1 -->
               <rect x="240" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.6" />
-              <rect x="264" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.45" />
+              <rect
+                x="264"
+                y="58"
+                width="18"
+                height="22"
+                rx="3"
+                fill="var(--mint)"
+                opacity="0.45"
+              />
               <rect x="288" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.3" />
               <rect x="312" y="58" width="18" height="22" rx="3" fill="var(--mint)" opacity="0.2" />
               <!-- Arrow: Queue 1 -> Barista -->
@@ -321,7 +329,14 @@
                 stroke="var(--purple)"
                 stroke-width="2"
               />
-              <text x="500" y="72" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="600">
+              <text
+                x="500"
+                y="72"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="12"
+                font-weight="600"
+              >
                 Barista
               </text>
               <text x="500" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">
@@ -353,13 +368,28 @@
                 stroke="var(--gold)"
                 stroke-width="2"
               />
-              <text x="690" y="40" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">
+              <text
+                x="690"
+                y="40"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="10"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Pickup</tspan>
                 <tspan class="lang-es">Entrega</tspan>
               </text>
               <!-- Message blocks in Queue 2 -->
               <rect x="650" y="58" width="18" height="22" rx="3" fill="var(--gold)" opacity="0.5" />
-              <rect x="674" y="58" width="18" height="22" rx="3" fill="var(--gold)" opacity="0.35" />
+              <rect
+                x="674"
+                y="58"
+                width="18"
+                height="22"
+                rx="3"
+                fill="var(--gold)"
+                opacity="0.35"
+              />
               <!-- Arrow: Queue 2 -> Customer -->
               <line
                 x1="742"
@@ -382,7 +412,14 @@
                 stroke="var(--gold)"
                 stroke-width="2"
               />
-              <text x="817" y="72" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+              <text
+                x="817"
+                y="72"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Customer</tspan>
                 <tspan class="lang-es">Cliente</tspan>
               </text>
@@ -399,8 +436,7 @@
                 ><span class="lang-es">La Analog&iacute;a de Starbucks</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Like Starbucks, each step operates independently.</span
+                <span class="lang-en">Like Starbucks, each step operates independently.</span
                 ><span class="lang-es"
                   >Como en Starbucks, cada paso opera de forma independiente.</span
                 >
@@ -408,17 +444,15 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >The cashier does not wait for the barista to finish before taking the
-                    next order. The barista does not wait for the customer to pick up. Each
-                    stage works at its own pace, buffered by queues. This is exactly how
-                    message queues decouple producers and consumers in distributed
-                    systems.</span
+                    >The cashier does not wait for the barista to finish before taking the next
+                    order. The barista does not wait for the customer to pick up. Each stage works
+                    at its own pace, buffered by queues. This is exactly how message queues decouple
+                    producers and consumers in distributed systems.</span
                   ><span class="lang-es"
-                    >El cajero no espera a que el barista termine para tomar el siguiente
-                    pedido. El barista no espera a que el cliente recoja. Cada etapa trabaja
-                    a su propio ritmo, amortiguada por colas. As&iacute; es exactamente como
-                    las colas de mensajes desacoplan productores y consumidores en sistemas
-                    distribuidos.</span
+                    >El cajero no espera a que el barista termine para tomar el siguiente pedido. El
+                    barista no espera a que el cliente recoja. Cada etapa trabaja a su propio ritmo,
+                    amortiguada por colas. As&iacute; es exactamente como las colas de mensajes
+                    desacoplan productores y consumidores en sistemas distribuidos.</span
                   >
                 </p>
               </div>
@@ -448,7 +482,14 @@
                 </marker>
               </defs>
               <!-- Left: Synchronous -->
-              <text x="200" y="20" text-anchor="middle" fill="var(--error)" font-size="14" font-weight="600">
+              <text
+                x="200"
+                y="20"
+                text-anchor="middle"
+                fill="var(--error)"
+                font-size="14"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Synchronous</tspan>
                 <tspan class="lang-es">S&iacute;ncrono</tspan>
               </text>
@@ -463,7 +504,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="90" y="65" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="500">
+              <text
+                x="90"
+                y="65"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Service A</tspan>
                 <tspan class="lang-es">Servicio A</tspan>
               </text>
@@ -492,35 +540,21 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="280" y="65" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="500">
+              <text
+                x="280"
+                y="65"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Service B</tspan>
                 <tspan class="lang-es">Servicio B</tspan>
               </text>
               <!-- Blocking arrow B -> C -->
-              <line
-                x1="332"
-                y1="55"
-                x2="370"
-                y2="55"
-                stroke="var(--error)"
-                stroke-width="2"
-              />
-              <line
-                x1="370"
-                y1="55"
-                x2="370"
-                y2="110"
-                stroke="var(--error)"
-                stroke-width="2"
-              />
-              <line
-                x1="370"
-                y1="110"
-                x2="230"
-                y2="110"
-                stroke="var(--error)"
-                stroke-width="2"
-              />
+              <line x1="332" y1="55" x2="370" y2="55" stroke="var(--error)" stroke-width="2" />
+              <line x1="370" y1="55" x2="370" y2="110" stroke="var(--error)" stroke-width="2" />
+              <line x1="370" y1="110" x2="230" y2="110" stroke="var(--error)" stroke-width="2" />
               <line
                 x1="230"
                 y1="110"
@@ -548,7 +582,14 @@
               </text>
 
               <!-- Right: Asynchronous -->
-              <text x="670" y="20" text-anchor="middle" fill="var(--mint)" font-size="14" font-weight="600">
+              <text
+                x="670"
+                y="20"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="14"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Asynchronous</tspan>
                 <tspan class="lang-es">As&iacute;ncrono</tspan>
               </text>
@@ -563,7 +604,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="540" y="65" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="500">
+              <text
+                x="540"
+                y="65"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Producer</tspan>
                 <tspan class="lang-es">Productor</tspan>
               </text>
@@ -592,7 +640,14 @@
                 stroke="var(--mint)"
                 stroke-width="2"
               />
-              <text x="695" y="55" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">
+              <text
+                x="695"
+                y="55"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="10"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Queue</tspan>
                 <tspan class="lang-es">Cola</tspan>
               </text>
@@ -625,7 +680,14 @@
                 stroke="var(--purple)"
                 stroke-width="2"
               />
-              <text x="830" y="65" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="500">
+              <text
+                x="830"
+                y="65"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Consumer</tspan>
                 <tspan class="lang-es">Consumidor</tspan>
               </text>
@@ -663,16 +725,16 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >In synchronous communication, if Service B is slow or down, Service A
-                    is blocked. With a message queue, the producer publishes and moves on.
-                    The consumer processes at its own pace. This improves resilience,
-                    throughput, and allows independent scaling of each component.</span
+                    >In synchronous communication, if Service B is slow or down, Service A is
+                    blocked. With a message queue, the producer publishes and moves on. The consumer
+                    processes at its own pace. This improves resilience, throughput, and allows
+                    independent scaling of each component.</span
                   ><span class="lang-es"
-                    >En comunicaci&oacute;n s&iacute;ncrona, si el Servicio B est&aacute;
-                    lento o ca&iacute;do, el Servicio A se bloquea. Con una cola de mensajes,
-                    el productor publica y contin&uacute;a. El consumidor procesa a su propio
-                    ritmo. Esto mejora la resiliencia, el rendimiento y permite escalar cada
-                    componente de forma independiente.</span
+                    >En comunicaci&oacute;n s&iacute;ncrona, si el Servicio B est&aacute; lento o
+                    ca&iacute;do, el Servicio A se bloquea. Con una cola de mensajes, el productor
+                    publica y contin&uacute;a. El consumidor procesa a su propio ritmo. Esto mejora
+                    la resiliencia, el rendimiento y permite escalar cada componente de forma
+                    independiente.</span
                   >
                 </p>
               </div>
@@ -688,13 +750,9 @@
           </h2>
           <div class="grid-2">
             <div class="card float-in border-blue expandable">
-              <h4>
-                <span class="lang-en">Fan-Out</span
-                ><span class="lang-es">Fan-Out</span>
-              </h4>
+              <h4><span class="lang-en">Fan-Out</span><span class="lang-es">Fan-Out</span></h4>
               <p>
-                <span class="lang-en"
-                  >One message triggers multiple consumers simultaneously.</span
+                <span class="lang-en">One message triggers multiple consumers simultaneously.</span
                 ><span class="lang-es"
                   >Un mensaje activa m&uacute;ltiples consumidores simult&aacute;neamente.</span
                 >
@@ -702,14 +760,14 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >A single event like &ldquo;order placed&rdquo; can fan out to
-                    notifications, analytics, inventory, and billing services. Each consumer
-                    receives a copy of the message and processes it independently.</span
+                    >A single event like &ldquo;order placed&rdquo; can fan out to notifications,
+                    analytics, inventory, and billing services. Each consumer receives a copy of the
+                    message and processes it independently.</span
                   ><span class="lang-es"
                     >Un solo evento como &ldquo;pedido realizado&rdquo; puede distribuirse a
-                    servicios de notificaciones, anal&iacute;tica, inventario y
-                    facturaci&oacute;n. Cada consumidor recibe una copia del mensaje y lo
-                    procesa de forma independiente.</span
+                    servicios de notificaciones, anal&iacute;tica, inventario y facturaci&oacute;n.
+                    Cada consumidor recibe una copia del mensaje y lo procesa de forma
+                    independiente.</span
                   >
                 </p>
               </div>
@@ -720,8 +778,7 @@
                 ><span class="lang-es">Procesamiento As&iacute;ncrono</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Producers do not wait for consumers to finish.</span
+                <span class="lang-en">Producers do not wait for consumers to finish.</span
                 ><span class="lang-es"
                   >Los productores no esperan a que los consumidores terminen.</span
                 >
@@ -729,44 +786,41 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Heavy tasks like image processing, email sending, or report generation
-                    are offloaded to background workers. The API responds immediately while
-                    the work happens asynchronously, improving user experience and
-                    throughput.</span
+                    >Heavy tasks like image processing, email sending, or report generation are
+                    offloaded to background workers. The API responds immediately while the work
+                    happens asynchronously, improving user experience and throughput.</span
                   ><span class="lang-es"
-                    >Tareas pesadas como procesamiento de im&aacute;genes, env&iacute;o de
-                    correos o generaci&oacute;n de reportes se delegan a workers en segundo
-                    plano. La API responde de inmediato mientras el trabajo ocurre de forma
-                    as&iacute;ncrona, mejorando la experiencia y el rendimiento.</span
+                    >Tareas pesadas como procesamiento de im&aacute;genes, env&iacute;o de correos o
+                    generaci&oacute;n de reportes se delegan a workers en segundo plano. La API
+                    responde de inmediato mientras el trabajo ocurre de forma as&iacute;ncrona,
+                    mejorando la experiencia y el rendimiento.</span
                   >
                 </p>
               </div>
             </div>
             <div class="card float-in border-orange expandable">
               <h4>
-                <span class="lang-en">Decoupling</span
-                ><span class="lang-es">Desacoplamiento</span>
+                <span class="lang-en">Decoupling</span><span class="lang-es">Desacoplamiento</span>
               </h4>
               <p>
                 <span class="lang-en"
                   >Services evolve independently without breaking each other.</span
                 ><span class="lang-es"
-                  >Los servicios evolucionan independientemente sin romperse entre
-                  s&iacute;.</span
+                  >Los servicios evolucionan independientemente sin romperse entre s&iacute;.</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Producers and consumers only need to agree on the message format. They
-                    can be written in different languages, deployed on different schedules,
-                    and scaled independently. Adding a new consumer requires zero changes to
-                    the producer.</span
+                    >Producers and consumers only need to agree on the message format. They can be
+                    written in different languages, deployed on different schedules, and scaled
+                    independently. Adding a new consumer requires zero changes to the
+                    producer.</span
                   ><span class="lang-es"
                     >Productores y consumidores solo necesitan acordar el formato del mensaje.
                     Pueden estar escritos en diferentes lenguajes, desplegados en diferentes
-                    calendarios y escalados independientemente. Agregar un nuevo consumidor
-                    no requiere cambios en el productor.</span
+                    calendarios y escalados independientemente. Agregar un nuevo consumidor no
+                    requiere cambios en el productor.</span
                   >
                 </p>
               </div>
@@ -777,23 +831,20 @@
                 ><span class="lang-es">Persistencia de Mensajes</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Messages survive crashes and restarts.</span
-                ><span class="lang-es"
-                  >Los mensajes sobreviven a ca&iacute;das y reinicios.</span
-                >
+                <span class="lang-en">Messages survive crashes and restarts.</span
+                ><span class="lang-es">Los mensajes sobreviven a ca&iacute;das y reinicios.</span>
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Durable queues store messages on disk. If a consumer crashes, messages
-                    remain in the queue and are redelivered when it recovers. This guarantees
-                    at-least-once delivery and prevents data loss during outages.</span
+                    >Durable queues store messages on disk. If a consumer crashes, messages remain
+                    in the queue and are redelivered when it recovers. This guarantees at-least-once
+                    delivery and prevents data loss during outages.</span
                   ><span class="lang-es"
-                    >Las colas durables almacenan mensajes en disco. Si un consumidor falla,
-                    los mensajes permanecen en la cola y se reenv&iacute;an cuando se
-                    recupera. Esto garantiza entrega al-menos-una-vez y previene
-                    p&eacute;rdida de datos durante interrupciones.</span
+                    >Las colas durables almacenan mensajes en disco. Si un consumidor falla, los
+                    mensajes permanecen en la cola y se reenv&iacute;an cuando se recupera. Esto
+                    garantiza entrega al-menos-una-vez y previene p&eacute;rdida de datos durante
+                    interrupciones.</span
                   >
                 </p>
               </div>
@@ -833,7 +884,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="105" y="102" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+              <text
+                x="105"
+                y="102"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Producer</tspan>
                 <tspan class="lang-es">Productor</tspan>
               </text>
@@ -866,7 +924,14 @@
                 stroke="var(--mint)"
                 stroke-width="2"
               />
-              <text x="350" y="100" text-anchor="middle" fill="var(--mint)" font-size="12" font-weight="600">
+              <text
+                x="350"
+                y="100"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Message Queue</tspan>
                 <tspan class="lang-es">Cola de Mensajes</tspan>
               </text>
@@ -874,10 +939,42 @@
                 Fan-Out Exchange
               </text>
               <!-- Message blocks in queue -->
-              <rect x="295" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.5" />
-              <rect x="314" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.4" />
-              <rect x="333" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.3" />
-              <rect x="352" y="122" width="14" height="12" rx="2" fill="var(--mint)" opacity="0.25" />
+              <rect
+                x="295"
+                y="122"
+                width="14"
+                height="12"
+                rx="2"
+                fill="var(--mint)"
+                opacity="0.5"
+              />
+              <rect
+                x="314"
+                y="122"
+                width="14"
+                height="12"
+                rx="2"
+                fill="var(--mint)"
+                opacity="0.4"
+              />
+              <rect
+                x="333"
+                y="122"
+                width="14"
+                height="12"
+                rx="2"
+                fill="var(--mint)"
+                opacity="0.3"
+              />
+              <rect
+                x="352"
+                y="122"
+                width="14"
+                height="12"
+                rx="2"
+                fill="var(--mint)"
+                opacity="0.25"
+              />
               <!-- Arrow Queue -> Consumer 1 (top) -->
               <line
                 x1="422"
@@ -975,7 +1072,14 @@
                 stroke="var(--purple)"
                 stroke-width="2"
               />
-              <text x="680" y="45" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="500">
+              <text
+                x="680"
+                y="45"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Notifications</tspan>
                 <tspan class="lang-es">Notificaciones</tspan>
               </text>
@@ -990,7 +1094,14 @@
                 stroke="var(--gold)"
                 stroke-width="2"
               />
-              <text x="680" y="110" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="500">
+              <text
+                x="680"
+                y="110"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Analytics</tspan>
                 <tspan class="lang-es">Anal&iacute;tica</tspan>
               </text>
@@ -1005,7 +1116,14 @@
                 stroke="var(--error)"
                 stroke-width="2"
               />
-              <text x="680" y="180" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="500">
+              <text
+                x="680"
+                y="180"
+                text-anchor="middle"
+                fill="var(--error)"
+                font-size="11"
+                font-weight="500"
+              >
                 Logging
               </text>
             </svg>
@@ -1020,25 +1138,22 @@
                 <span class="lang-en"
                   >Fan-out distributes a single message to all subscribed consumers.</span
                 ><span class="lang-es"
-                  >Fan-out distribuye un solo mensaje a todos los consumidores
-                  suscritos.</span
+                  >Fan-out distribuye un solo mensaje a todos los consumidores suscritos.</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >When an order is placed, the notification service sends an email, the
-                    analytics service records the event, and the logging service stores an
-                    audit trail. The producer only sends one message. Adding a new consumer
-                    (e.g., fraud detection) requires no changes to the producer or existing
-                    consumers.</span
+                    >When an order is placed, the notification service sends an email, the analytics
+                    service records the event, and the logging service stores an audit trail. The
+                    producer only sends one message. Adding a new consumer (e.g., fraud detection)
+                    requires no changes to the producer or existing consumers.</span
                   ><span class="lang-es"
-                    >Cuando se realiza un pedido, el servicio de notificaciones env&iacute;a
-                    un correo, el servicio de anal&iacute;tica registra el evento y el
-                    servicio de logging almacena una traza de auditor&iacute;a. El productor
-                    solo env&iacute;a un mensaje. Agregar un nuevo consumidor (ej.,
-                    detecci&oacute;n de fraude) no requiere cambios en el productor ni en los
-                    consumidores existentes.</span
+                    >Cuando se realiza un pedido, el servicio de notificaciones env&iacute;a un
+                    correo, el servicio de anal&iacute;tica registra el evento y el servicio de
+                    logging almacena una traza de auditor&iacute;a. El productor solo env&iacute;a
+                    un mensaje. Agregar un nuevo consumidor (ej., detecci&oacute;n de fraude) no
+                    requiere cambios en el productor ni en los consumidores existentes.</span
                   >
                 </p>
               </div>
@@ -1059,19 +1174,12 @@
                   <span class="lang-en">Technology</span
                   ><span class="lang-es">Tecnolog&iacute;a</span>
                 </th>
-                <th>
-                  <span class="lang-en">Type</span
-                  ><span class="lang-es">Tipo</span>
-                </th>
+                <th><span class="lang-en">Type</span><span class="lang-es">Tipo</span></th>
                 <th>Throughput</th>
-                <th>
-                  <span class="lang-en">Ordering</span
-                  ><span class="lang-es">Orden</span>
-                </th>
+                <th><span class="lang-en">Ordering</span><span class="lang-es">Orden</span></th>
                 <th>Replay</th>
                 <th>
-                  <span class="lang-en">Best For</span
-                  ><span class="lang-es">Ideal Para</span>
+                  <span class="lang-en">Best For</span><span class="lang-es">Ideal Para</span>
                 </th>
               </tr>
             </thead>
@@ -1093,8 +1201,7 @@
               <tr>
                 <td>Kafka</td>
                 <td>
-                  <span class="lang-en">Event Log</span
-                  ><span class="lang-es">Log de Eventos</span>
+                  <span class="lang-en">Event Log</span><span class="lang-es">Log de Eventos</span>
                 </td>
                 <td><span class="badge badge-green">Very High</span></td>
                 <td><span class="badge badge-green">Per Partition</span></td>
@@ -1168,7 +1275,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="75" y="102" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+              <text
+                x="75"
+                y="102"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Producer</tspan>
                 <tspan class="lang-es">Productor</tspan>
               </text>
@@ -1200,15 +1314,39 @@
                 stroke="var(--gold)"
                 stroke-width="2"
               />
-              <text x="300" y="85" text-anchor="middle" fill="var(--gold)" font-size="13" font-weight="600">
+              <text
+                x="300"
+                y="85"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="13"
+                font-weight="600"
+              >
                 Exchange
               </text>
               <text x="300" y="105" text-anchor="middle" fill="var(--muted)" font-size="9">
                 direct | topic | fanout
               </text>
               <!-- Routing key labels -->
-              <rect x="252" y="115" width="96" height="20" rx="4" fill="none" stroke="var(--gold)" stroke-width="1" opacity="0.5" />
-              <text x="300" y="129" text-anchor="middle" fill="var(--gold)" font-size="8" opacity="0.7">
+              <rect
+                x="252"
+                y="115"
+                width="96"
+                height="20"
+                rx="4"
+                fill="none"
+                stroke="var(--gold)"
+                stroke-width="1"
+                opacity="0.5"
+              />
+              <text
+                x="300"
+                y="129"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="8"
+                opacity="0.7"
+              >
                 routing-key
               </text>
               <!-- Arrow Exchange -> Queue 1 (top) -->
@@ -1311,8 +1449,24 @@
               <text x="560" y="44" text-anchor="middle" fill="var(--purple)" font-size="10">
                 Queue 1
               </text>
-              <rect x="518" y="28" width="10" height="10" rx="2" fill="var(--purple)" opacity="0.4" />
-              <rect x="531" y="28" width="10" height="10" rx="2" fill="var(--purple)" opacity="0.3" />
+              <rect
+                x="518"
+                y="28"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--purple)"
+                opacity="0.4"
+              />
+              <rect
+                x="531"
+                y="28"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--purple)"
+                opacity="0.3"
+              />
               <!-- Queue 2 -->
               <rect
                 x="510"
@@ -1343,8 +1497,24 @@
               <text x="560" y="179" text-anchor="middle" fill="var(--error)" font-size="10">
                 Queue 3
               </text>
-              <rect x="518" y="163" width="10" height="10" rx="2" fill="var(--error)" opacity="0.4" />
-              <rect x="531" y="163" width="10" height="10" rx="2" fill="var(--error)" opacity="0.3" />
+              <rect
+                x="518"
+                y="163"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--error)"
+                opacity="0.4"
+              />
+              <rect
+                x="531"
+                y="163"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--error)"
+                opacity="0.3"
+              />
               <!-- Arrow Queue 1 -> Consumer 1 -->
               <line
                 x1="612"
@@ -1429,8 +1599,7 @@
                 ><span class="lang-es">Tipos de Exchange</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Exchanges route messages to queues based on rules.</span
+                <span class="lang-en">Exchanges route messages to queues based on rules.</span
                 ><span class="lang-es"
                   >Los exchanges enrutan mensajes a colas seg&uacute;n reglas.</span
                 >
@@ -1438,19 +1607,18 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    ><strong>Direct:</strong> routes to queues whose binding key exactly
-                    matches the routing key. <strong>Topic:</strong> routes based on wildcard
-                    pattern matching (e.g., <code>order.*</code>).
-                    <strong>Fanout:</strong> broadcasts to all bound queues regardless of
-                    routing key. Choose based on whether you need selective or broadcast
-                    delivery.</span
+                    ><strong>Direct:</strong> routes to queues whose binding key exactly matches the
+                    routing key. <strong>Topic:</strong> routes based on wildcard pattern matching
+                    (e.g., <code>order.*</code>). <strong>Fanout:</strong> broadcasts to all bound
+                    queues regardless of routing key. Choose based on whether you need selective or
+                    broadcast delivery.</span
                   ><span class="lang-es"
                     ><strong>Direct:</strong> enruta a colas cuya clave de enlace coincide
-                    exactamente con la clave de enrutamiento. <strong>Topic:</strong> enruta
-                    basado en coincidencia de patrones con comodines (ej.,
-                    <code>order.*</code>). <strong>Fanout:</strong> transmite a todas las
-                    colas enlazadas sin importar la clave de enrutamiento. Elige seg&uacute;n
-                    si necesitas entrega selectiva o broadcast.</span
+                    exactamente con la clave de enrutamiento. <strong>Topic:</strong> enruta basado
+                    en coincidencia de patrones con comodines (ej., <code>order.*</code>).
+                    <strong>Fanout:</strong> transmite a todas las colas enlazadas sin importar la
+                    clave de enrutamiento. Elige seg&uacute;n si necesitas entrega selectiva o
+                    broadcast.</span
                   >
                 </p>
               </div>
@@ -1490,7 +1658,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="80" y="112" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+              <text
+                x="80"
+                y="112"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Producer</tspan>
                 <tspan class="lang-es">Productor</tspan>
               </text>
@@ -1524,7 +1699,15 @@
                 stroke-dasharray="6,3"
                 opacity="0.4"
               />
-              <text x="370" y="36" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600" opacity="0.7">
+              <text
+                x="370"
+                y="36"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+                opacity="0.7"
+              >
                 Kafka Broker
               </text>
               <!-- Topic label -->
@@ -1566,10 +1749,42 @@
                 stroke-width="1.5"
               />
               <text x="280" y="132" fill="var(--purple)" font-size="9" font-weight="500">P1</text>
-              <rect x="300" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.6" />
-              <rect x="325" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.5" />
-              <rect x="350" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.4" />
-              <rect x="375" y="117" width="20" height="20" rx="3" fill="var(--purple)" opacity="0.3" />
+              <rect
+                x="300"
+                y="117"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--purple)"
+                opacity="0.6"
+              />
+              <rect
+                x="325"
+                y="117"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--purple)"
+                opacity="0.5"
+              />
+              <rect
+                x="350"
+                y="117"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--purple)"
+                opacity="0.4"
+              />
+              <rect
+                x="375"
+                y="117"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--purple)"
+                opacity="0.3"
+              />
               <text x="310" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">0</text>
               <text x="335" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">1</text>
               <text x="360" y="131" text-anchor="middle" fill="var(--bg)" font-size="7">2</text>
@@ -1586,9 +1801,33 @@
                 stroke-width="1.5"
               />
               <text x="280" y="177" fill="var(--gold)" font-size="9" font-weight="500">P2</text>
-              <rect x="300" y="162" width="20" height="20" rx="3" fill="var(--gold)" opacity="0.6" />
-              <rect x="325" y="162" width="20" height="20" rx="3" fill="var(--gold)" opacity="0.5" />
-              <rect x="350" y="162" width="20" height="20" rx="3" fill="var(--gold)" opacity="0.4" />
+              <rect
+                x="300"
+                y="162"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--gold)"
+                opacity="0.6"
+              />
+              <rect
+                x="325"
+                y="162"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--gold)"
+                opacity="0.5"
+              />
+              <rect
+                x="350"
+                y="162"
+                width="20"
+                height="20"
+                rx="3"
+                fill="var(--gold)"
+                opacity="0.4"
+              />
               <text x="310" y="176" text-anchor="middle" fill="var(--bg)" font-size="7">0</text>
               <text x="335" y="176" text-anchor="middle" fill="var(--bg)" font-size="7">1</text>
               <text x="360" y="176" text-anchor="middle" fill="var(--bg)" font-size="7">2</text>
@@ -1605,7 +1844,15 @@
                 stroke-dasharray="6,3"
                 opacity="0.4"
               />
-              <text x="725" y="36" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600" opacity="0.7">
+              <text
+                x="725"
+                y="36"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+                opacity="0.7"
+              >
                 Consumer Group
               </text>
               <!-- Arrow P0 -> Consumer 1 -->
@@ -1661,7 +1908,14 @@
                 stroke="var(--mint)"
                 stroke-width="1.5"
               />
-              <text x="690" y="85" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="500">
+              <text
+                x="690"
+                y="85"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="10"
+                font-weight="500"
+              >
                 Consumer 1 (P0)
               </text>
               <!-- Consumer 2 -->
@@ -1675,7 +1929,14 @@
                 stroke="var(--purple)"
                 stroke-width="1.5"
               />
-              <text x="690" y="132" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="500">
+              <text
+                x="690"
+                y="132"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="10"
+                font-weight="500"
+              >
                 Consumer 2 (P1)
               </text>
               <!-- Consumer 3 -->
@@ -1689,7 +1950,14 @@
                 stroke="var(--gold)"
                 stroke-width="1.5"
               />
-              <text x="690" y="177" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="500">
+              <text
+                x="690"
+                y="177"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="10"
+                font-weight="500"
+              >
                 Consumer 3 (P2)
               </text>
             </svg>
@@ -1701,29 +1969,26 @@
                 ><span class="lang-es">Particiones y Grupos de Consumidores</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Kafka achieves parallelism through partitioned topics.</span
+                <span class="lang-en">Kafka achieves parallelism through partitioned topics.</span
                 ><span class="lang-es"
-                  >Kafka logra paralelismo a trav&eacute;s de t&oacute;picos
-                  particionados.</span
+                  >Kafka logra paralelismo a trav&eacute;s de t&oacute;picos particionados.</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Each topic is split into partitions, which are ordered, immutable
-                    sequences of records. Within a consumer group, each partition is consumed
-                    by exactly one consumer, enabling parallel processing. Messages are
-                    retained even after consumption, allowing replay from any offset. The
-                    number of partitions determines maximum parallelism.</span
+                    >Each topic is split into partitions, which are ordered, immutable sequences of
+                    records. Within a consumer group, each partition is consumed by exactly one
+                    consumer, enabling parallel processing. Messages are retained even after
+                    consumption, allowing replay from any offset. The number of partitions
+                    determines maximum parallelism.</span
                   ><span class="lang-es"
-                    >Cada t&oacute;pico se divide en particiones, que son secuencias
-                    ordenadas e inmutables de registros. Dentro de un grupo de consumidores,
-                    cada partici&oacute;n es consumida por exactamente un consumidor,
-                    permitiendo procesamiento paralelo. Los mensajes se retienen incluso
-                    despu&eacute;s del consumo, permitiendo repetici&oacute;n desde cualquier
-                    offset. El n&uacute;mero de particiones determina el paralelismo
-                    m&aacute;ximo.</span
+                    >Cada t&oacute;pico se divide en particiones, que son secuencias ordenadas e
+                    inmutables de registros. Dentro de un grupo de consumidores, cada
+                    partici&oacute;n es consumida por exactamente un consumidor, permitiendo
+                    procesamiento paralelo. Los mensajes se retienen incluso despu&eacute;s del
+                    consumo, permitiendo repetici&oacute;n desde cualquier offset. El n&uacute;mero
+                    de particiones determina el paralelismo m&aacute;ximo.</span
                   >
                 </p>
               </div>
@@ -1744,28 +2009,26 @@
                 <span class="lang-en"
                   >Distributed event log optimized for high-throughput streaming.</span
                 ><span class="lang-es"
-                  >Log de eventos distribuido optimizado para streaming de alto
-                  rendimiento.</span
+                  >Log de eventos distribuido optimizado para streaming de alto rendimiento.</span
                 >
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
                     ><strong>Model:</strong> Append-only log with consumer offsets.
-                    <strong>Retention:</strong> Messages persist for configurable time
-                    (days/weeks). <strong>Ordering:</strong> Guaranteed per partition.
+                    <strong>Retention:</strong> Messages persist for configurable time (days/weeks).
+                    <strong>Ordering:</strong> Guaranteed per partition.
                     <strong>Replay:</strong> Consumers can re-read from any offset.
                     <strong>Scaling:</strong> Add partitions for parallelism. Best for event
                     sourcing, analytics pipelines, and high-volume stream processing.</span
                   ><span class="lang-es"
-                    ><strong>Modelo:</strong> Log de solo adici&oacute;n con offsets de
-                    consumidor. <strong>Retenci&oacute;n:</strong> Los mensajes persisten por
-                    tiempo configurable (d&iacute;as/semanas).
-                    <strong>Orden:</strong> Garantizado por partici&oacute;n.
-                    <strong>Replay:</strong> Los consumidores pueden releer desde cualquier
-                    offset. <strong>Escalado:</strong> Agregar particiones para paralelismo.
-                    Ideal para event sourcing, pipelines de anal&iacute;tica y procesamiento
-                    de flujos de alto volumen.</span
+                    ><strong>Modelo:</strong> Log de solo adici&oacute;n con offsets de consumidor.
+                    <strong>Retenci&oacute;n:</strong> Los mensajes persisten por tiempo
+                    configurable (d&iacute;as/semanas). <strong>Orden:</strong> Garantizado por
+                    partici&oacute;n. <strong>Replay:</strong> Los consumidores pueden releer desde
+                    cualquier offset. <strong>Escalado:</strong> Agregar particiones para
+                    paralelismo. Ideal para event sourcing, pipelines de anal&iacute;tica y
+                    procesamiento de flujos de alto volumen.</span
                   >
                 </p>
               </div>
@@ -1785,20 +2048,18 @@
                   <span class="lang-en"
                     ><strong>Model:</strong> Queue with message acknowledgment.
                     <strong>Retention:</strong> Messages deleted after consumption.
-                    <strong>Ordering:</strong> FIFO per queue.
-                    <strong>Routing:</strong> Flexible exchange types (direct, topic, fanout,
-                    headers). <strong>Scaling:</strong> Add consumers to a queue for
-                    competing consumers pattern. Best for task distribution, RPC-style
-                    communication, and complex routing scenarios.</span
+                    <strong>Ordering:</strong> FIFO per queue. <strong>Routing:</strong> Flexible
+                    exchange types (direct, topic, fanout, headers). <strong>Scaling:</strong> Add
+                    consumers to a queue for competing consumers pattern. Best for task
+                    distribution, RPC-style communication, and complex routing scenarios.</span
                   ><span class="lang-es"
                     ><strong>Modelo:</strong> Cola con confirmaci&oacute;n de mensajes.
                     <strong>Retenci&oacute;n:</strong> Mensajes eliminados tras consumo.
-                    <strong>Orden:</strong> FIFO por cola.
-                    <strong>Enrutamiento:</strong> Tipos flexibles de exchange (direct, topic,
-                    fanout, headers). <strong>Escalado:</strong> Agregar consumidores a una
-                    cola para el patr&oacute;n de consumidores competidores. Ideal para
-                    distribuci&oacute;n de tareas, comunicaci&oacute;n estilo RPC y
-                    escenarios de enrutamiento complejos.</span
+                    <strong>Orden:</strong> FIFO por cola. <strong>Enrutamiento:</strong> Tipos
+                    flexibles de exchange (direct, topic, fanout, headers).
+                    <strong>Escalado:</strong> Agregar consumidores a una cola para el patr&oacute;n
+                    de consumidores competidores. Ideal para distribuci&oacute;n de tareas,
+                    comunicaci&oacute;n estilo RPC y escenarios de enrutamiento complejos.</span
                   >
                 </p>
               </div>
@@ -1838,7 +2099,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="70" y="52" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="600">
+              <text
+                x="70"
+                y="52"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Client</tspan>
                 <tspan class="lang-es">Cliente</tspan>
               </text>
@@ -1870,7 +2138,14 @@
                 stroke="var(--mint)"
                 stroke-width="2"
               />
-              <text x="245" y="50" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+              <text
+                x="245"
+                y="50"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
                 API Gateway
               </text>
               <text x="245" y="66" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -1901,7 +2176,14 @@
                 stroke="var(--primary)"
                 stroke-width="2"
               />
-              <text x="440" y="47" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+              <text
+                x="440"
+                y="47"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Order Service</tspan>
                 <tspan class="lang-es">Servicio de Pedidos</tspan>
               </text>
@@ -1934,7 +2216,14 @@
                 stroke="var(--gold)"
                 stroke-width="2"
               />
-              <text x="440" y="145" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+              <text
+                x="440"
+                y="145"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Message Queue</tspan>
                 <tspan class="lang-es">Cola de Mensajes</tspan>
               </text>
@@ -1942,9 +2231,33 @@
                 order.placed
               </text>
               <!-- Message blocks -->
-              <rect x="365" y="150" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.4" />
-              <rect x="379" y="150" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.3" />
-              <rect x="393" y="150" width="10" height="10" rx="2" fill="var(--gold)" opacity="0.2" />
+              <rect
+                x="365"
+                y="150"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--gold)"
+                opacity="0.4"
+              />
+              <rect
+                x="379"
+                y="150"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--gold)"
+                opacity="0.3"
+              />
+              <rect
+                x="393"
+                y="150"
+                width="10"
+                height="10"
+                rx="2"
+                fill="var(--gold)"
+                opacity="0.2"
+              />
               <!-- Arrow Queue -> Payment (left L-shape downward) -->
               <line
                 x1="370"
@@ -2042,7 +2355,14 @@
                 stroke="var(--purple)"
                 stroke-width="2"
               />
-              <text x="160" y="256" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="500">
+              <text
+                x="160"
+                y="256"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Payment</tspan>
                 <tspan class="lang-es">Pagos</tspan>
               </text>
@@ -2057,7 +2377,14 @@
                 stroke="var(--mint)"
                 stroke-width="2"
               />
-              <text x="440" y="256" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="500">
+              <text
+                x="440"
+                y="256"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Inventory</tspan>
                 <tspan class="lang-es">Inventario</tspan>
               </text>
@@ -2072,7 +2399,14 @@
                 stroke="var(--error)"
                 stroke-width="2"
               />
-              <text x="720" y="256" text-anchor="middle" fill="var(--error)" font-size="11" font-weight="500">
+              <text
+                x="720"
+                y="256"
+                text-anchor="middle"
+                fill="var(--error)"
+                font-size="11"
+                font-weight="500"
+              >
                 <tspan class="lang-en">Notification</tspan>
                 <tspan class="lang-es">Notificaci&oacute;n</tspan>
               </text>
@@ -2085,8 +2419,7 @@
                 ><span class="lang-es">Cu&aacute;ndo Usar Colas</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Not every service interaction needs a queue.</span
+                <span class="lang-en">Not every service interaction needs a queue.</span
                 ><span class="lang-es"
                   >No toda interacci&oacute;n entre servicios necesita una cola.</span
                 >
@@ -2094,18 +2427,18 @@
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Use queues when: the consumer can process later (async), multiple
-                    consumers need the same event (fan-out), you need to survive consumer
-                    downtime (durability), or you want to smooth traffic spikes (buffering).
-                    Avoid queues for real-time request/response flows where the client needs
-                    an immediate answer.</span
+                    >Use queues when: the consumer can process later (async), multiple consumers
+                    need the same event (fan-out), you need to survive consumer downtime
+                    (durability), or you want to smooth traffic spikes (buffering). Avoid queues for
+                    real-time request/response flows where the client needs an immediate
+                    answer.</span
                   ><span class="lang-es"
                     >Usa colas cuando: el consumidor puede procesar despu&eacute;s (async),
-                    m&uacute;ltiples consumidores necesitan el mismo evento (fan-out),
-                    necesitas sobrevivir a ca&iacute;das del consumidor (durabilidad), o
-                    quieres suavizar picos de tr&aacute;fico (buffering). Evita colas para
-                    flujos de solicitud/respuesta en tiempo real donde el cliente necesita una
-                    respuesta inmediata.</span
+                    m&uacute;ltiples consumidores necesitan el mismo evento (fan-out), necesitas
+                    sobrevivir a ca&iacute;das del consumidor (durabilidad), o quieres suavizar
+                    picos de tr&aacute;fico (buffering). Evita colas para flujos de
+                    solicitud/respuesta en tiempo real donde el cliente necesita una respuesta
+                    inmediata.</span
                   >
                 </p>
               </div>
@@ -2116,27 +2449,23 @@
                 ><span class="lang-es">Elecci&oacute;n de Tecnolog&iacute;a</span>
               </h4>
               <p>
-                <span class="lang-en"
-                  >Choose based on your specific requirements.</span
-                ><span class="lang-es"
-                  >Elige seg&uacute;n tus requisitos espec&iacute;ficos.</span
-                >
+                <span class="lang-en">Choose based on your specific requirements.</span
+                ><span class="lang-es">Elige seg&uacute;n tus requisitos espec&iacute;ficos.</span>
               </p>
               <div class="expand-content">
                 <p style="color: var(--muted)">
                   <span class="lang-en"
-                    >Need complex routing? RabbitMQ. Need event replay and high throughput?
-                    Kafka. Want zero ops on AWS? SQS. Need lightweight real-time processing
-                    with an existing Redis setup? Redis Streams. Most eCommerce systems start
-                    with SQS or RabbitMQ and move to Kafka as event streaming needs
-                    grow.</span
+                    >Need complex routing? RabbitMQ. Need event replay and high throughput? Kafka.
+                    Want zero ops on AWS? SQS. Need lightweight real-time processing with an
+                    existing Redis setup? Redis Streams. Most eCommerce systems start with SQS or
+                    RabbitMQ and move to Kafka as event streaming needs grow.</span
                   ><span class="lang-es"
-                    >&iquest;Necesitas enrutamiento complejo? RabbitMQ. &iquest;Necesitas
-                    replay de eventos y alto rendimiento? Kafka. &iquest;Quieres cero
-                    operaci&oacute;n en AWS? SQS. &iquest;Necesitas procesamiento ligero en
-                    tiempo real con un Redis existente? Redis Streams. La mayor&iacute;a de
-                    sistemas eCommerce empiezan con SQS o RabbitMQ y migran a Kafka conforme
-                    crecen las necesidades de streaming de eventos.</span
+                    >&iquest;Necesitas enrutamiento complejo? RabbitMQ. &iquest;Necesitas replay de
+                    eventos y alto rendimiento? Kafka. &iquest;Quieres cero operaci&oacute;n en AWS?
+                    SQS. &iquest;Necesitas procesamiento ligero en tiempo real con un Redis
+                    existente? Redis Streams. La mayor&iacute;a de sistemas eCommerce empiezan con
+                    SQS o RabbitMQ y migran a Kafka conforme crecen las necesidades de streaming de
+                    eventos.</span
                   >
                 </p>
               </div>
@@ -2146,10 +2475,7 @@
 
         <!-- ========== SLIDE 11: SUMMARY ========== -->
         <section>
-          <h2>
-            <span class="lang-en">Summary</span
-            ><span class="lang-es">Resumen</span>
-          </h2>
+          <h2><span class="lang-en">Summary</span><span class="lang-es">Resumen</span></h2>
           <div class="grid-3">
             <div class="card float-in border-blue">
               <h4>
@@ -2158,14 +2484,14 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >Message queues decouple producers from consumers, enabling independent
-                  scaling, deployment, and failure recovery. Services communicate through
-                  durable messages instead of direct calls.</span
+                  >Message queues decouple producers from consumers, enabling independent scaling,
+                  deployment, and failure recovery. Services communicate through durable messages
+                  instead of direct calls.</span
                 ><span class="lang-es"
                   >Las colas de mensajes desacoplan productores de consumidores, permitiendo
-                  escalado, despliegue y recuperaci&oacute;n de fallos independientes. Los
-                  servicios se comunican a trav&eacute;s de mensajes durables en lugar de
-                  llamadas directas.</span
+                  escalado, despliegue y recuperaci&oacute;n de fallos independientes. Los servicios
+                  se comunican a trav&eacute;s de mensajes durables en lugar de llamadas
+                  directas.</span
                 >
               </p>
             </div>
@@ -2176,14 +2502,13 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >Fan-out, competing consumers, and event sourcing solve different problems.
-                  Choose the right pattern based on whether you need broadcast delivery, work
-                  distribution, or event replay.</span
+                  >Fan-out, competing consumers, and event sourcing solve different problems. Choose
+                  the right pattern based on whether you need broadcast delivery, work distribution,
+                  or event replay.</span
                 ><span class="lang-es"
                   >Fan-out, consumidores competidores y event sourcing resuelven problemas
-                  diferentes. Elige el patr&oacute;n correcto seg&uacute;n si necesitas
-                  entrega broadcast, distribuci&oacute;n de trabajo o replay de
-                  eventos.</span
+                  diferentes. Elige el patr&oacute;n correcto seg&uacute;n si necesitas entrega
+                  broadcast, distribuci&oacute;n de trabajo o replay de eventos.</span
                 >
               </p>
             </div>
@@ -2194,13 +2519,13 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >RabbitMQ excels at routing, Kafka at streaming, SQS at managed simplicity,
-                  and Redis Streams at lightweight real-time processing. Start simple, evolve
-                  as needed.</span
+                  >RabbitMQ excels at routing, Kafka at streaming, SQS at managed simplicity, and
+                  Redis Streams at lightweight real-time processing. Start simple, evolve as
+                  needed.</span
                 ><span class="lang-es"
                   >RabbitMQ destaca en enrutamiento, Kafka en streaming, SQS en simplicidad
-                  gestionada y Redis Streams en procesamiento ligero en tiempo real. Empieza
-                  simple, evoluciona seg&uacute;n sea necesario.</span
+                  gestionada y Redis Streams en procesamiento ligero en tiempo real. Empieza simple,
+                  evoluciona seg&uacute;n sea necesario.</span
                 >
               </p>
             </div>
@@ -2211,25 +2536,12 @@
         <section>
           <div style="text-align: center; padding-top: 60px">
             <h1 style="font-size: 2.2em; margin-bottom: 10px">
-              <span class="lang-en">Questions?</span
-              ><span class="lang-es">&iquest;Preguntas?</span>
+              <span class="lang-en">Questions?</span><span class="lang-es">&iquest;Preguntas?</span>
             </h1>
             <div class="diagram-container" style="margin: 10px 0">
               <svg width="80" height="80" viewBox="0 0 80 80">
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="35"
-                  fill="none"
-                  stroke="var(--primary)"
-                  stroke-width="2"
-                >
-                  <animate
-                    attributeName="r"
-                    values="33;37;33"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
+                <circle cx="40" cy="40" r="35" fill="none" stroke="var(--primary)" stroke-width="2">
+                  <animate attributeName="r" values="33;37;33" dur="2s" repeatCount="indefinite" />
                 </circle>
                 <text
                   x="40"
@@ -2244,8 +2556,7 @@
               </svg>
             </div>
             <p style="font-size: 0.82em; color: var(--muted)">
-              <span class="lang-en"
-                >Scalable System Design &mdash; Module 14</span
+              <span class="lang-en">Scalable System Design &mdash; Module 14</span
               ><span class="lang-es"
                 >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 14</span
               >
