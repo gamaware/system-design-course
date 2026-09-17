@@ -17,19 +17,33 @@
     <style>
       /* ============ CKM DESIGN ENHANCEMENTS ============ */
       :root {
-        --color-primary: #00D4FF;
-        --color-secondary: #FF00AA;
-        --primitive-gradient-primary: linear-gradient(135deg, #00D4FF, #00FF88);
+        --color-primary: #00d4ff;
+        --color-secondary: #ff00aa;
+        --primitive-gradient-primary: linear-gradient(135deg, #00d4ff, #00ff88);
       }
-      .reveal h1, .reveal h2 {
+      .reveal h1,
+      .reveal h2 {
         background: var(--primitive-gradient-primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      .card { transition: all 0.3s ease; }
-      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15); }
-      .progress-bar-top { position: fixed; top: 0; left: 0; height: 3px; background: var(--primitive-gradient-primary); transition: width 0.3s; z-index: 9999; }
+      .card {
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
+      }
+      .progress-bar-top {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--primitive-gradient-primary);
+        transition: width 0.3s;
+        z-index: 9999;
+      }
     </style>
     <script>
       (function () {
@@ -53,7 +67,33 @@
         EN
       </button>
       <button class="toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-      <select id="theme-select" onchange="applyThemePreset(this.value)" style="font-size:11px; padding:4px 8px; border:1px solid var(--card-border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-family:inherit;"><option value="custom-dark">Custom Dark</option><option value="bold-signal">Bold Signal</option><option value="electric-studio">Electric Studio</option><option value="creative-voltage">Creative Voltage</option><option value="dark-botanical">Dark Botanical</option><option value="notebook-tabs">Notebook Tabs</option><option value="pastel-geometry">Pastel Geometry</option><option value="split-pastel">Split Pastel</option><option value="neon-cyber">Neon Cyber</option><option value="terminal-green">Terminal Green</option><option value="swiss-modern">Swiss Modern</option><option value="paper-ink">Paper &amp; Ink</option></select>
+        <select
+          id="theme-select"
+          onchange="applyThemePreset(this.value)"
+          style="
+            font-size: 11px;
+            padding: 4px 8px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+          "
+        >
+          <option value="custom-dark">Custom Dark</option>
+          <option value="bold-signal">Bold Signal</option>
+          <option value="electric-studio">Electric Studio</option>
+          <option value="creative-voltage">Creative Voltage</option>
+          <option value="dark-botanical">Dark Botanical</option>
+          <option value="notebook-tabs">Notebook Tabs</option>
+          <option value="pastel-geometry">Pastel Geometry</option>
+          <option value="split-pastel">Split Pastel</option>
+          <option value="neon-cyber">Neon Cyber</option>
+          <option value="terminal-green">Terminal Green</option>
+          <option value="swiss-modern">Swiss Modern</option>
+          <option value="paper-ink">Paper &amp; Ink</option>
+        </select>
         &#9790;
       </button>
     </div>
@@ -80,15 +120,7 @@
                   />
                 </path>
                 <!-- Lock body -->
-                <rect
-                  x="45"
-                  y="60"
-                  width="30"
-                  height="24"
-                  rx="3"
-                  fill="var(--mint)"
-                  opacity="0.8"
-                >
+                <rect x="45" y="60" width="30" height="24" rx="3" fill="var(--mint)" opacity="0.8">
                   <animate
                     attributeName="opacity"
                     values="0.6;1;0.6"
@@ -181,9 +213,7 @@
               </h4>
               <p>
                 <span class="lang-en">Session management, tokens, PASETO</span
-                ><span class="lang-es"
-                  >Gesti&oacute;n de sesiones, tokens, PASETO</span
-                >
+                ><span class="lang-es">Gesti&oacute;n de sesiones, tokens, PASETO</span>
               </p>
             </div>
             <div class="card float-in border-orange">
@@ -193,9 +223,7 @@
               </h4>
               <p>
                 <span class="lang-en">Authorization Code flow, SAML, federated identity</span
-                ><span class="lang-es"
-                  >Flujo Authorization Code, SAML, identidad federada</span
-                >
+                ><span class="lang-es">Flujo Authorization Code, SAML, identidad federada</span>
               </p>
             </div>
             <div class="card float-in border-purple">
@@ -228,18 +256,20 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  ><strong>&ldquo;Who are you?&rdquo;</strong> &mdash; Verifies the identity
-                  of a user or system.</span
+                  ><strong>&ldquo;Who are you?&rdquo;</strong> &mdash; Verifies the identity of a
+                  user or system.</span
                 ><span class="lang-es"
-                  ><strong>&laquo;&iquest;Qui&eacute;n eres?&raquo;</strong> &mdash; Verifica
-                  la identidad de un usuario o sistema.</span
+                  ><strong>&laquo;&iquest;Qui&eacute;n eres?&raquo;</strong> &mdash; Verifica la
+                  identidad de un usuario o sistema.</span
                 >
               </p>
               <div class="expand-content">
                 <ul>
                   <li>
                     <span class="lang-en">Passwords, biometrics, certificates</span
-                    ><span class="lang-es">Contrase&ntilde;as, biom&eacute;tricos, certificados</span>
+                    ><span class="lang-es"
+                      >Contrase&ntilde;as, biom&eacute;tricos, certificados</span
+                    >
                   </li>
                   <li>
                     <span class="lang-en">Happens before authorization</span
@@ -263,8 +293,8 @@
                   ><strong>&ldquo;What can you do?&rdquo;</strong> &mdash; Determines the
                   permissions and access level.</span
                 ><span class="lang-es"
-                  ><strong>&laquo;&iquest;Qu&eacute; puedes hacer?&raquo;</strong> &mdash;
-                  Determina los permisos y nivel de acceso.</span
+                  ><strong>&laquo;&iquest;Qu&eacute; puedes hacer?&raquo;</strong> &mdash; Determina
+                  los permisos y nivel de acceso.</span
                 >
               </p>
               <div class="expand-content">
@@ -320,7 +350,14 @@
                 stroke="var(--mint)"
                 stroke-width="2"
               />
-              <text x="75" y="82" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+              <text
+                x="75"
+                y="82"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">User</tspan>
                 <tspan class="lang-es">Usuario</tspan>
               </text>
@@ -330,8 +367,13 @@
 
               <!-- Step 1: Login Request -->
               <line
-                x1="130" y1="75" x2="250" y2="75"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="75"
+                x2="250"
+                y2="75"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-session)"
               />
               <circle r="3" fill="var(--primary)">
@@ -356,7 +398,14 @@
                 stroke="var(--primary)"
                 stroke-width="2.5"
               />
-              <text x="325" y="72" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">
+              <text
+                x="325"
+                y="72"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="700"
+              >
                 <tspan class="lang-en">Backend Server</tspan>
                 <tspan class="lang-es">Servidor Backend</tspan>
               </text>
@@ -367,8 +416,13 @@
 
               <!-- Arrow to Session Store -->
               <line
-                x1="400" y1="82" x2="500" y2="82"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="400"
+                y1="82"
+                x2="500"
+                y2="82"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-session)"
               />
               <circle r="3" fill="var(--purple)">
@@ -389,7 +443,14 @@
                 stroke="var(--purple)"
                 stroke-width="2"
               />
-              <text x="565" y="76" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="600">
+              <text
+                x="565"
+                y="76"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="11"
+                font-weight="600"
+              >
                 Session Store
               </text>
               <text x="565" y="96" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -398,8 +459,13 @@
 
               <!-- Cookie sent back -->
               <line
-                x1="250" y1="130" x2="130" y2="130"
-                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                x1="250"
+                y1="130"
+                x2="130"
+                y2="130"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-session)"
               />
               <circle r="3" fill="var(--mint)">
@@ -414,8 +480,13 @@
 
               <!-- Subsequent requests -->
               <line
-                x1="130" y1="170" x2="250" y2="170"
-                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="170"
+                x2="250"
+                y2="170"
+                stroke="var(--gold)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-session)"
               />
               <circle r="3" fill="var(--gold)">
@@ -431,8 +502,13 @@
 
               <!-- Server validates with store -->
               <line
-                x1="400" y1="170" x2="500" y2="130"
-                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                x1="400"
+                y1="170"
+                x2="500"
+                y2="130"
+                stroke="var(--gold)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-session)"
               />
               <text x="460" y="142" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -448,26 +524,31 @@
             </h4>
             <p>
               <span class="lang-en"
-                >Server-side session storage with a cookie-based session ID. Stateful
-                but simple.</span
+                >Server-side session storage with a cookie-based session ID. Stateful but
+                simple.</span
               ><span class="lang-es"
-                >Almacenamiento de sesi&oacute;n en el servidor con un session ID en
-                cookie. Con estado pero simple.</span
+                >Almacenamiento de sesi&oacute;n en el servidor con un session ID en cookie. Con
+                estado pero simple.</span
               >
             </p>
             <div class="expand-content">
               <ul>
                 <li>
                   <span class="lang-en">Server must store session data (memory, Redis, DB)</span
-                  ><span class="lang-es">El servidor almacena datos de sesi&oacute;n (memoria, Redis, BD)</span>
+                  ><span class="lang-es"
+                    >El servidor almacena datos de sesi&oacute;n (memoria, Redis, BD)</span
+                  >
                 </li>
                 <li>
                   <span class="lang-en">Cookie must use HttpOnly + Secure + SameSite flags</span
                   ><span class="lang-es">Cookie debe usar flags HttpOnly + Secure + SameSite</span>
                 </li>
                 <li>
-                  <span class="lang-en">Scaling requires shared session store (sticky sessions or Redis)</span
-                  ><span class="lang-es">Escalar requiere almac&eacute;n compartido (sesiones sticky o Redis)</span>
+                  <span class="lang-en"
+                    >Scaling requires shared session store (sticky sessions or Redis)</span
+                  ><span class="lang-es"
+                    >Escalar requiere almac&eacute;n compartido (sesiones sticky o Redis)</span
+                  >
                 </li>
               </ul>
             </div>
@@ -497,36 +578,117 @@
               </defs>
 
               <!-- JWT structure -->
-              <rect x="20" y="10" width="200" height="30" rx="4" fill="var(--error)" opacity="0.3" />
-              <text x="120" y="30" text-anchor="middle" fill="var(--error)" font-size="10" font-weight="600">
+              <rect
+                x="20"
+                y="10"
+                width="200"
+                height="30"
+                rx="4"
+                fill="var(--error)"
+                opacity="0.3"
+              />
+              <text
+                x="120"
+                y="30"
+                text-anchor="middle"
+                fill="var(--error)"
+                font-size="10"
+                font-weight="600"
+              >
                 Header (alg, typ)
               </text>
-              <rect x="220" y="10" width="240" height="30" rx="4" fill="var(--purple)" opacity="0.3" />
-              <text x="340" y="30" text-anchor="middle" fill="var(--purple)" font-size="10" font-weight="600">
+              <rect
+                x="220"
+                y="10"
+                width="240"
+                height="30"
+                rx="4"
+                fill="var(--purple)"
+                opacity="0.3"
+              />
+              <text
+                x="340"
+                y="30"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="10"
+                font-weight="600"
+              >
                 Payload (sub, exp, claims)
               </text>
-              <rect x="460" y="10" width="200" height="30" rx="4" fill="var(--mint)" opacity="0.3" />
-              <text x="560" y="30" text-anchor="middle" fill="var(--mint)" font-size="10" font-weight="600">
+              <rect
+                x="460"
+                y="10"
+                width="200"
+                height="30"
+                rx="4"
+                fill="var(--mint)"
+                opacity="0.3"
+              />
+              <text
+                x="560"
+                y="30"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="10"
+                font-weight="600"
+              >
                 Signature (HMAC/RSA)
               </text>
               <!-- Dots between sections -->
-              <text x="213" y="30" text-anchor="middle" fill="var(--muted)" font-size="14" font-weight="700">.</text>
-              <text x="453" y="30" text-anchor="middle" fill="var(--muted)" font-size="14" font-weight="700">.</text>
+              <text
+                x="213"
+                y="30"
+                text-anchor="middle"
+                fill="var(--muted)"
+                font-size="14"
+                font-weight="700"
+              >
+                .
+              </text>
+              <text
+                x="453"
+                y="30"
+                text-anchor="middle"
+                fill="var(--muted)"
+                font-size="14"
+                font-weight="700"
+              >
+                .
+              </text>
 
               <!-- User -->
               <rect
-                x="20" y="70" width="110" height="50" rx="8"
-                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+                x="20"
+                y="70"
+                width="110"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
               />
-              <text x="75" y="98" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+              <text
+                x="75"
+                y="98"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">User</tspan>
                 <tspan class="lang-es">Usuario</tspan>
               </text>
 
               <!-- Step 1: Login -->
               <line
-                x1="130" y1="88" x2="270" y2="88"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="88"
+                x2="270"
+                y2="88"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-jwt)"
               />
               <circle r="3" fill="var(--primary)">
@@ -541,10 +703,23 @@
 
               <!-- Auth Server -->
               <rect
-                x="270" y="62" width="150" height="65" rx="8"
-                fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5"
+                x="270"
+                y="62"
+                width="150"
+                height="65"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
               />
-              <text x="345" y="88" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="700">
+              <text
+                x="345"
+                y="88"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="700"
+              >
                 <tspan class="lang-en">Auth Server</tspan>
                 <tspan class="lang-es">Servidor Auth</tspan>
               </text>
@@ -555,8 +730,13 @@
 
               <!-- JWT returned -->
               <line
-                x1="270" y1="140" x2="130" y2="140"
-                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                x1="270"
+                y1="140"
+                x2="130"
+                y2="140"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-jwt)"
               />
               <circle r="3" fill="var(--mint)">
@@ -571,8 +751,13 @@
 
               <!-- Client sends to API -->
               <line
-                x1="130" y1="175" x2="530" y2="175"
-                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="175"
+                x2="530"
+                y2="175"
+                stroke="var(--gold)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-jwt)"
               />
               <circle r="3" fill="var(--gold)">
@@ -587,10 +772,23 @@
 
               <!-- API Server -->
               <rect
-                x="530" y="62" width="150" height="65" rx="8"
-                fill="var(--surface)" stroke="var(--gold)" stroke-width="2"
+                x="530"
+                y="62"
+                width="150"
+                height="65"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
               />
-              <text x="605" y="88" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+              <text
+                x="605"
+                y="88"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="12"
+                font-weight="600"
+              >
                 API Server
               </text>
               <text x="605" y="106" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -618,12 +816,19 @@
                   ><span class="lang-es">Codificado en Base64url, no cifrado por defecto</span>
                 </li>
                 <li>
-                  <span class="lang-en">Cannot be revoked individually (use short expiry + refresh tokens)</span
-                  ><span class="lang-es">No se pueden revocar individualmente (usar expiraci&oacute;n corta + refresh tokens)</span>
+                  <span class="lang-en"
+                    >Cannot be revoked individually (use short expiry + refresh tokens)</span
+                  ><span class="lang-es"
+                    >No se pueden revocar individualmente (usar expiraci&oacute;n corta + refresh
+                    tokens)</span
+                  >
                 </li>
                 <li>
-                  <span class="lang-en">Vulnerable to algorithm confusion and &ldquo;none&rdquo; attacks</span
-                  ><span class="lang-es">Vulnerable a confusi&oacute;n de algoritmo y ataques &ldquo;none&rdquo;</span>
+                  <span class="lang-en"
+                    >Vulnerable to algorithm confusion and &ldquo;none&rdquo; attacks</span
+                  ><span class="lang-es"
+                    >Vulnerable a confusi&oacute;n de algoritmo y ataques &ldquo;none&rdquo;</span
+                  >
                 </li>
               </ul>
             </div>
@@ -638,26 +843,24 @@
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >PASETO addresses the design flaws of JWT by removing algorithm negotiation
-              and providing secure defaults.</span
+              >PASETO addresses the design flaws of JWT by removing algorithm negotiation and
+              providing secure defaults.</span
             ><span class="lang-es"
-              >PASETO aborda las fallas de dise&ntilde;o de JWT al eliminar la
-              negociaci&oacute;n de algoritmos y proveer configuraciones seguras por
-              defecto.</span
+              >PASETO aborda las fallas de dise&ntilde;o de JWT al eliminar la negociaci&oacute;n de
+              algoritmos y proveer configuraciones seguras por defecto.</span
             >
           </p>
           <div class="card expandable float-in border-blue" tabindex="0">
             <h4>
-              <span class="lang-en">JWT vs PASETO</span
-              ><span class="lang-es">JWT vs PASETO</span>
+              <span class="lang-en">JWT vs PASETO</span><span class="lang-es">JWT vs PASETO</span>
             </h4>
             <p>
               <span class="lang-en"
                 >PASETO is simpler, more secure, and eliminates entire classes of JWT
                 vulnerabilities.</span
               ><span class="lang-es"
-                >PASETO es m&aacute;s simple, m&aacute;s seguro, y elimina clases
-                completas de vulnerabilidades de JWT.</span
+                >PASETO es m&aacute;s simple, m&aacute;s seguro, y elimina clases completas de
+                vulnerabilidades de JWT.</span
               >
             </p>
             <div class="expand-content">
@@ -672,8 +875,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <span class="lang-en">Algorithm</span
-                      ><span class="lang-es">Algoritmo</span>
+                      <span class="lang-en">Algorithm</span><span class="lang-es">Algoritmo</span>
                     </td>
                     <td>
                       <span class="lang-en">Negotiable (header)</span
@@ -690,12 +892,10 @@
                       ><span class="lang-es">Ataque &ldquo;none&rdquo;</span>
                     </td>
                     <td>
-                      <span class="lang-en">Possible</span
-                      ><span class="lang-es">Posible</span>
+                      <span class="lang-en">Possible</span><span class="lang-es">Posible</span>
                     </td>
                     <td>
-                      <span class="lang-en">Impossible</span
-                      ><span class="lang-es">Imposible</span>
+                      <span class="lang-en">Impossible</span><span class="lang-es">Imposible</span>
                     </td>
                   </tr>
                   <tr>
@@ -756,29 +956,68 @@
 
               <!-- User -->
               <rect
-                x="20" y="30" width="110" height="50" rx="8"
-                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+                x="20"
+                y="30"
+                width="110"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
               />
-              <text x="75" y="58" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+              <text
+                x="75"
+                y="58"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">User</tspan>
                 <tspan class="lang-es">Usuario</tspan>
               </text>
 
               <!-- App / Client -->
               <rect
-                x="20" y="130" width="110" height="50" rx="8"
-                fill="var(--surface)" stroke="var(--primary)" stroke-width="2"
+                x="20"
+                y="130"
+                width="110"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2"
               />
-              <text x="75" y="158" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="600">
+              <text
+                x="75"
+                y="158"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="11"
+                font-weight="600"
+              >
                 App (Client)
               </text>
 
               <!-- Auth Server -->
               <rect
-                x="350" y="30" width="160" height="60" rx="8"
-                fill="var(--surface)" stroke="var(--purple)" stroke-width="2.5"
+                x="350"
+                y="30"
+                width="160"
+                height="60"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2.5"
               />
-              <text x="430" y="55" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="700">
+              <text
+                x="430"
+                y="55"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="12"
+                font-weight="700"
+              >
                 <tspan class="lang-en">Auth Server</tspan>
                 <tspan class="lang-es">Servidor Auth</tspan>
               </text>
@@ -788,26 +1027,49 @@
 
               <!-- Resource Server / API -->
               <rect
-                x="350" y="160" width="160" height="55" rx="8"
-                fill="var(--surface)" stroke="var(--gold)" stroke-width="2"
+                x="350"
+                y="160"
+                width="160"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
               />
-              <text x="430" y="185" text-anchor="middle" fill="var(--gold)" font-size="12" font-weight="600">
+              <text
+                x="430"
+                y="185"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="12"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Resource API</tspan>
                 <tspan class="lang-es">API de Recursos</tspan>
               </text>
 
               <!-- Step 1: User clicks login -->
               <line
-                x1="75" y1="80" x2="75" y2="130"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="75"
+                y1="80"
+                x2="75"
+                y2="130"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-oauth)"
               />
               <text x="55" y="110" fill="var(--muted)" font-size="8">1</text>
 
               <!-- Step 2: App redirects to Auth Server -->
               <line
-                x1="130" y1="140" x2="350" y2="60"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="140"
+                x2="350"
+                y2="60"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-oauth)"
               />
               <circle r="3" fill="var(--primary)">
@@ -823,8 +1085,13 @@
 
               <!-- Step 3: Auth Server redirects back with code -->
               <line
-                x1="350" y1="80" x2="130" y2="150"
-                stroke="var(--purple)" stroke-width="2" stroke-dasharray="8,4"
+                x1="350"
+                y1="80"
+                x2="130"
+                y2="150"
+                stroke="var(--purple)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-oauth)"
               />
               <circle r="3" fill="var(--purple)">
@@ -839,8 +1106,13 @@
 
               <!-- Step 4: App exchanges code for token -->
               <line
-                x1="130" y1="165" x2="350" y2="165"
-                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="165"
+                x2="350"
+                y2="165"
+                stroke="var(--gold)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-oauth)"
               />
               <circle r="3" fill="var(--gold)">
@@ -856,8 +1128,13 @@
 
               <!-- Step 5: Token returned -->
               <line
-                x1="350" y1="180" x2="130" y2="180"
-                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                x1="350"
+                y1="180"
+                x2="130"
+                y2="180"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-oauth)"
               />
               <circle r="3" fill="var(--mint)">
@@ -872,8 +1149,13 @@
 
               <!-- Step 6: Access API with token -->
               <line
-                x1="130" y1="195" x2="350" y2="195"
-                stroke="var(--error)" stroke-width="2" stroke-dasharray="8,4"
+                x1="130"
+                y1="195"
+                x2="350"
+                y2="195"
+                stroke="var(--error)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-oauth)"
               />
               <circle r="3" fill="var(--error)">
@@ -898,15 +1180,17 @@
                 >Most secure OAuth flow for server-side apps. The code exchange happens
                 server-to-server.</span
               ><span class="lang-es"
-                >Flujo OAuth m&aacute;s seguro para apps del lado servidor. El intercambio
-                de c&oacute;digo ocurre servidor a servidor.</span
+                >Flujo OAuth m&aacute;s seguro para apps del lado servidor. El intercambio de
+                c&oacute;digo ocurre servidor a servidor.</span
               >
             </p>
             <div class="expand-content">
               <ul>
                 <li>
                   <span class="lang-en">Authorization code is short-lived and single-use</span
-                  ><span class="lang-es">El c&oacute;digo de autorizaci&oacute;n es de corta vida y un solo uso</span>
+                  ><span class="lang-es"
+                    >El c&oacute;digo de autorizaci&oacute;n es de corta vida y un solo uso</span
+                  >
                 </li>
                 <li>
                   <span class="lang-en">Tokens never exposed to the browser</span
@@ -914,7 +1198,10 @@
                 </li>
                 <li>
                   <span class="lang-en">Use PKCE extension for public clients (SPA, mobile)</span
-                  ><span class="lang-es">Usar extensi&oacute;n PKCE para clientes p&uacute;blicos (SPA, m&oacute;vil)</span>
+                  ><span class="lang-es"
+                    >Usar extensi&oacute;n PKCE para clientes p&uacute;blicos (SPA,
+                    m&oacute;vil)</span
+                  >
                 </li>
               </ul>
             </div>
@@ -924,17 +1211,15 @@
         <!-- ========== SLIDE 7: SSO & SAML ========== -->
         <section>
           <h2>
-            <span class="lang-en">SSO &amp; SAML</span
-            ><span class="lang-es">SSO y SAML</span>
+            <span class="lang-en">SSO &amp; SAML</span><span class="lang-es">SSO y SAML</span>
           </h2>
           <p style="font-size: 0.68em; color: var(--muted); margin-bottom: 8px">
             <span class="lang-en"
-              >Single Sign-On allows users to authenticate once and access multiple
-              applications. SAML is the enterprise standard for SSO.</span
+              >Single Sign-On allows users to authenticate once and access multiple applications.
+              SAML is the enterprise standard for SSO.</span
             ><span class="lang-es"
               >Single Sign-On permite a los usuarios autenticarse una vez y acceder a
-              m&uacute;ltiples aplicaciones. SAML es el est&aacute;ndar empresarial
-              para SSO.</span
+              m&uacute;ltiples aplicaciones. SAML es el est&aacute;ndar empresarial para SSO.</span
             >
           </p>
           <div class="diagram-container">
@@ -955,20 +1240,46 @@
 
               <!-- User -->
               <rect
-                x="30" y="55" width="110" height="50" rx="8"
-                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+                x="30"
+                y="55"
+                width="110"
+                height="50"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
               />
-              <text x="85" y="83" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+              <text
+                x="85"
+                y="83"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">User</tspan>
                 <tspan class="lang-es">Usuario</tspan>
               </text>
 
               <!-- SP -->
               <rect
-                x="240" y="45" width="140" height="70" rx="8"
-                fill="var(--surface)" stroke="var(--primary)" stroke-width="2"
+                x="240"
+                y="45"
+                width="140"
+                height="70"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2"
               />
-              <text x="310" y="72" text-anchor="middle" fill="var(--primary)" font-size="12" font-weight="600">
+              <text
+                x="310"
+                y="72"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="12"
+                font-weight="600"
+              >
                 Service Provider
               </text>
               <text x="310" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -977,10 +1288,23 @@
 
               <!-- IdP -->
               <rect
-                x="500" y="45" width="150" height="70" rx="8"
-                fill="var(--surface)" stroke="var(--purple)" stroke-width="2.5"
+                x="500"
+                y="45"
+                width="150"
+                height="70"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--purple)"
+                stroke-width="2.5"
               />
-              <text x="575" y="72" text-anchor="middle" fill="var(--purple)" font-size="12" font-weight="700">
+              <text
+                x="575"
+                y="72"
+                text-anchor="middle"
+                fill="var(--purple)"
+                font-size="12"
+                font-weight="700"
+              >
                 Identity Provider
               </text>
               <text x="575" y="90" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -989,8 +1313,13 @@
 
               <!-- Step 1: User -> SP -->
               <line
-                x1="140" y1="72" x2="240" y2="72"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="140"
+                y1="72"
+                x2="240"
+                y2="72"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-saml)"
               />
               <circle r="3" fill="var(--primary)">
@@ -1006,8 +1335,13 @@
 
               <!-- Step 2: SP -> IdP -->
               <line
-                x1="380" y1="65" x2="500" y2="65"
-                stroke="var(--purple)" stroke-width="2" stroke-dasharray="8,4"
+                x1="380"
+                y1="65"
+                x2="500"
+                y2="65"
+                stroke="var(--purple)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-saml)"
               />
               <circle r="3" fill="var(--purple)">
@@ -1023,8 +1357,13 @@
 
               <!-- Step 3: IdP -> SP (SAML assertion) -->
               <line
-                x1="500" y1="95" x2="380" y2="95"
-                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                x1="500"
+                y1="95"
+                x2="380"
+                y2="95"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-saml)"
               />
               <circle r="3" fill="var(--mint)">
@@ -1039,8 +1378,13 @@
 
               <!-- Step 4: SP -> User (access granted) -->
               <line
-                x1="240" y1="95" x2="140" y2="95"
-                stroke="var(--gold)" stroke-width="2" stroke-dasharray="8,4"
+                x1="240"
+                y1="95"
+                x2="140"
+                y2="95"
+                stroke="var(--gold)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-saml)"
               />
               <circle r="3" fill="var(--gold)">
@@ -1062,18 +1406,21 @@
             </h4>
             <p>
               <span class="lang-en"
-                >SAML uses XML assertions for enterprise SSO. OAuth 2.0 + OIDC uses
-                JSON tokens and is preferred for modern web/mobile apps.</span
+                >SAML uses XML assertions for enterprise SSO. OAuth 2.0 + OIDC uses JSON tokens and
+                is preferred for modern web/mobile apps.</span
               ><span class="lang-es"
-                >SAML usa aserciones XML para SSO empresarial. OAuth 2.0 + OIDC usa
-                tokens JSON y es preferido para apps web/m&oacute;vil modernas.</span
+                >SAML usa aserciones XML para SSO empresarial. OAuth 2.0 + OIDC usa tokens JSON y es
+                preferido para apps web/m&oacute;vil modernas.</span
               >
             </p>
             <div class="expand-content">
               <ul>
                 <li>
-                  <span class="lang-en">SAML: XML-based, heavyweight, enterprise legacy systems</span
-                  ><span class="lang-es">SAML: basado en XML, pesado, sistemas legados empresariales</span>
+                  <span class="lang-en"
+                    >SAML: XML-based, heavyweight, enterprise legacy systems</span
+                  ><span class="lang-es"
+                    >SAML: basado en XML, pesado, sistemas legados empresariales</span
+                  >
                 </li>
                 <li>
                   <span class="lang-en">OIDC: JSON-based, lightweight, modern APIs and SPAs</span
@@ -1108,11 +1455,16 @@
                 <ul>
                   <li>
                     <span class="lang-en">Most common but weakest factor alone</span
-                    ><span class="lang-es">M&aacute;s com&uacute;n pero el factor m&aacute;s d&eacute;bil solo</span>
+                    ><span class="lang-es"
+                      >M&aacute;s com&uacute;n pero el factor m&aacute;s d&eacute;bil solo</span
+                    >
                   </li>
                   <li>
-                    <span class="lang-en">Vulnerable to phishing, brute force, credential stuffing</span
-                    ><span class="lang-es">Vulnerable a phishing, fuerza bruta, credential stuffing</span>
+                    <span class="lang-en"
+                      >Vulnerable to phishing, brute force, credential stuffing</span
+                    ><span class="lang-es"
+                      >Vulnerable a phishing, fuerza bruta, credential stuffing</span
+                    >
                   </li>
                 </ul>
               </div>
@@ -1124,7 +1476,9 @@
               </h4>
               <p>
                 <span class="lang-en">Phone, hardware token, smart card</span
-                ><span class="lang-es">Tel&eacute;fono, token de hardware, tarjeta inteligente</span>
+                ><span class="lang-es"
+                  >Tel&eacute;fono, token de hardware, tarjeta inteligente</span
+                >
               </p>
               <div class="expand-content">
                 <ul>
@@ -1133,8 +1487,11 @@
                     ><span class="lang-es">YubiKey, Google Authenticator, c&oacute;digos SMS</span>
                   </li>
                   <li>
-                    <span class="lang-en">Hardware keys (FIDO2/WebAuthn) are phishing-resistant</span
-                    ><span class="lang-es">Llaves de hardware (FIDO2/WebAuthn) son resistentes a phishing</span>
+                    <span class="lang-en"
+                      >Hardware keys (FIDO2/WebAuthn) are phishing-resistant</span
+                    ><span class="lang-es"
+                      >Llaves de hardware (FIDO2/WebAuthn) son resistentes a phishing</span
+                    >
                   </li>
                 </ul>
               </div>
@@ -1152,7 +1509,9 @@
                 <ul>
                   <li>
                     <span class="lang-en">Convenient but cannot be changed if compromised</span
-                    ><span class="lang-es">Conveniente pero no se puede cambiar si se compromete</span>
+                    ><span class="lang-es"
+                      >Conveniente pero no se puede cambiar si se compromete</span
+                    >
                   </li>
                   <li>
                     <span class="lang-en">Used in Touch ID, Face ID, Windows Hello</span
@@ -1168,13 +1527,17 @@
               </h4>
               <p>
                 <span class="lang-en">6-digit code that changes every 30 seconds</span
-                ><span class="lang-es">C&oacute;digo de 6 d&iacute;gitos que cambia cada 30 segundos</span>
+                ><span class="lang-es"
+                  >C&oacute;digo de 6 d&iacute;gitos que cambia cada 30 segundos</span
+                >
               </p>
               <div class="expand-content">
                 <ul>
                   <li>
                     <span class="lang-en">RFC 6238 standard, works offline</span
-                    ><span class="lang-es">Est&aacute;ndar RFC 6238, funciona sin conexi&oacute;n</span>
+                    ><span class="lang-es"
+                      >Est&aacute;ndar RFC 6238, funciona sin conexi&oacute;n</span
+                    >
                   </li>
                   <li>
                     <span class="lang-en">Shared secret + current time = OTP</span
@@ -1210,10 +1573,23 @@
 
               <!-- Client -->
               <rect
-                x="40" y="45" width="140" height="55" rx="8"
-                fill="var(--surface)" stroke="var(--mint)" stroke-width="2"
+                x="40"
+                y="45"
+                width="140"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--mint)"
+                stroke-width="2"
               />
-              <text x="110" y="68" text-anchor="middle" fill="var(--mint)" font-size="11" font-weight="600">
+              <text
+                x="110"
+                y="68"
+                text-anchor="middle"
+                fill="var(--mint)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Client App</tspan>
                 <tspan class="lang-es">App Cliente</tspan>
               </text>
@@ -1223,8 +1599,13 @@
 
               <!-- Arrow: Client -> Gateway -->
               <line
-                x1="180" y1="72" x2="330" y2="72"
-                stroke="var(--primary)" stroke-width="2" stroke-dasharray="8,4"
+                x1="180"
+                y1="72"
+                x2="330"
+                y2="72"
+                stroke="var(--primary)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-apikey)"
               />
               <circle r="3" fill="var(--primary)">
@@ -1240,10 +1621,23 @@
 
               <!-- API Gateway -->
               <rect
-                x="330" y="35" width="180" height="75" rx="8"
-                fill="var(--surface)" stroke="var(--primary)" stroke-width="2.5"
+                x="330"
+                y="35"
+                width="180"
+                height="75"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--primary)"
+                stroke-width="2.5"
               />
-              <text x="420" y="65" text-anchor="middle" fill="var(--primary)" font-size="13" font-weight="700">
+              <text
+                x="420"
+                y="65"
+                text-anchor="middle"
+                fill="var(--primary)"
+                font-size="13"
+                font-weight="700"
+              >
                 API Gateway
               </text>
               <text x="420" y="85" text-anchor="middle" fill="var(--muted)" font-size="8">
@@ -1253,8 +1647,13 @@
 
               <!-- Arrow: Gateway -> Backend -->
               <line
-                x1="510" y1="72" x2="630" y2="72"
-                stroke="var(--mint)" stroke-width="2" stroke-dasharray="8,4"
+                x1="510"
+                y1="72"
+                x2="630"
+                y2="72"
+                stroke="var(--mint)"
+                stroke-width="2"
+                stroke-dasharray="8,4"
                 marker-end="url(#arrow-apikey)"
               />
               <circle r="3" fill="var(--mint)">
@@ -1270,10 +1669,23 @@
 
               <!-- Backend -->
               <rect
-                x="630" y="45" width="140" height="55" rx="8"
-                fill="var(--surface)" stroke="var(--gold)" stroke-width="2"
+                x="630"
+                y="45"
+                width="140"
+                height="55"
+                rx="8"
+                fill="var(--surface)"
+                stroke="var(--gold)"
+                stroke-width="2"
               />
-              <text x="700" y="68" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">
+              <text
+                x="700"
+                y="68"
+                text-anchor="middle"
+                fill="var(--gold)"
+                font-size="11"
+                font-weight="600"
+              >
                 <tspan class="lang-en">Backend</tspan>
                 <tspan class="lang-es">Backend</tspan>
               </text>
@@ -1290,26 +1702,34 @@
             </h4>
             <p>
               <span class="lang-en"
-                >API keys identify the calling application, not the user. Good for
-                server-to-server, not for user authentication.</span
+                >API keys identify the calling application, not the user. Good for server-to-server,
+                not for user authentication.</span
               ><span class="lang-es"
-                >Las API keys identifican la aplicaci&oacute;n, no al usuario. Buenas
-                para servidor a servidor, no para autenticaci&oacute;n de usuarios.</span
+                >Las API keys identifican la aplicaci&oacute;n, no al usuario. Buenas para servidor
+                a servidor, no para autenticaci&oacute;n de usuarios.</span
               >
             </p>
             <div class="expand-content">
               <ul>
                 <li>
-                  <span class="lang-en">No expiration by default &mdash; must be rotated manually</span
-                  ><span class="lang-es">Sin expiraci&oacute;n por defecto &mdash; deben rotarse manualmente</span>
+                  <span class="lang-en"
+                    >No expiration by default &mdash; must be rotated manually</span
+                  ><span class="lang-es"
+                    >Sin expiraci&oacute;n por defecto &mdash; deben rotarse manualmente</span
+                  >
                 </li>
                 <li>
                   <span class="lang-en">Often sent in headers (X-API-Key) or query parameters</span
-                  ><span class="lang-es">Generalmente enviadas en headers (X-API-Key) o par&aacute;metros de consulta</span>
+                  ><span class="lang-es"
+                    >Generalmente enviadas en headers (X-API-Key) o par&aacute;metros de
+                    consulta</span
+                  >
                 </li>
                 <li>
                   <span class="lang-en">Use with rate limiting and IP allowlists for security</span
-                  ><span class="lang-es">Usar con rate limiting y listas de IP permitidas para seguridad</span>
+                  ><span class="lang-es"
+                    >Usar con rate limiting y listas de IP permitidas para seguridad</span
+                  >
                 </li>
               </ul>
             </div>
@@ -1335,11 +1755,11 @@
               <div class="expand-content">
                 <p>
                   <span class="lang-en"
-                    >Encrypt all data in transit. Use HSTS headers. Redirect HTTP to HTTPS.
-                    Use TLS 1.3 minimum.</span
+                    >Encrypt all data in transit. Use HSTS headers. Redirect HTTP to HTTPS. Use TLS
+                    1.3 minimum.</span
                   ><span class="lang-es"
-                    >Cifrar todos los datos en tr&aacute;nsito. Usar headers HSTS. Redirigir
-                    HTTP a HTTPS. Usar TLS 1.3 m&iacute;nimo.</span
+                    >Cifrar todos los datos en tr&aacute;nsito. Usar headers HSTS. Redirigir HTTP a
+                    HTTPS. Usar TLS 1.3 m&iacute;nimo.</span
                   >
                 </p>
               </div>
@@ -1356,11 +1776,11 @@
               <div class="expand-content">
                 <p>
                   <span class="lang-en"
-                    >HttpOnly prevents JavaScript access. Secure ensures HTTPS-only
-                    transmission. SameSite prevents CSRF.</span
+                    >HttpOnly prevents JavaScript access. Secure ensures HTTPS-only transmission.
+                    SameSite prevents CSRF.</span
                   ><span class="lang-es"
-                    >HttpOnly previene acceso por JavaScript. Secure asegura transmisi&oacute;n
-                    solo por HTTPS. SameSite previene CSRF.</span
+                    >HttpOnly previene acceso por JavaScript. Secure asegura transmisi&oacute;n solo
+                    por HTTPS. SameSite previene CSRF.</span
                   >
                 </p>
               </div>
@@ -1377,8 +1797,8 @@
               <div class="expand-content">
                 <p>
                   <span class="lang-en"
-                    >Access tokens: 15 min. Refresh tokens: days/weeks with rotation.
-                    Revoke refresh tokens on logout.</span
+                    >Access tokens: 15 min. Refresh tokens: days/weeks with rotation. Revoke refresh
+                    tokens on logout.</span
                   ><span class="lang-es"
                     >Tokens de acceso: 15 min. Refresh tokens: d&iacute;as/semanas con
                     rotaci&oacute;n. Revocar refresh tokens al cerrar sesi&oacute;n.</span
@@ -1398,11 +1818,11 @@
               <div class="expand-content">
                 <p>
                   <span class="lang-en"
-                    >Limit login attempts per IP/user. Use exponential backoff. Return
-                    429 Too Many Requests.</span
+                    >Limit login attempts per IP/user. Use exponential backoff. Return 429 Too Many
+                    Requests.</span
                   ><span class="lang-es"
-                    >Limitar intentos de login por IP/usuario. Usar backoff exponencial.
-                    Retornar 429 Too Many Requests.</span
+                    >Limitar intentos de login por IP/usuario. Usar backoff exponencial. Retornar
+                    429 Too Many Requests.</span
                   >
                 </p>
               </div>
@@ -1419,11 +1839,11 @@
               <div class="expand-content">
                 <p>
                   <span class="lang-en"
-                    >Prevent SQL injection, XSS, and command injection. Use parameterized
-                    queries. Validate on server side.</span
+                    >Prevent SQL injection, XSS, and command injection. Use parameterized queries.
+                    Validate on server side.</span
                   ><span class="lang-es"
-                    >Prevenir inyecci&oacute;n SQL, XSS e inyecci&oacute;n de comandos.
-                    Usar consultas parametrizadas. Validar en el servidor.</span
+                    >Prevenir inyecci&oacute;n SQL, XSS e inyecci&oacute;n de comandos. Usar
+                    consultas parametrizadas. Validar en el servidor.</span
                   >
                 </p>
               </div>
@@ -1440,11 +1860,11 @@
               <div class="expand-content">
                 <p>
                   <span class="lang-en"
-                    >Users and services should only have the permissions they need. Review
-                    and audit access regularly.</span
+                    >Users and services should only have the permissions they need. Review and audit
+                    access regularly.</span
                   ><span class="lang-es"
-                    >Usuarios y servicios deben tener solo los permisos que necesitan.
-                    Revisar y auditar acceso regularmente.</span
+                    >Usuarios y servicios deben tener solo los permisos que necesitan. Revisar y
+                    auditar acceso regularmente.</span
                   >
                 </p>
               </div>
@@ -1462,8 +1882,7 @@
             <div class="card expandable float-in border-blue" tabindex="0">
               <h4>AWS Cognito</h4>
               <p>
-                <span class="lang-en"
-                  >User pools + identity pools for web/mobile apps on AWS.</span
+                <span class="lang-en">User pools + identity pools for web/mobile apps on AWS.</span
                 ><span class="lang-es"
                   >User pools + identity pools para apps web/m&oacute;vil en AWS.</span
                 >
@@ -1476,7 +1895,9 @@
                   </li>
                   <li>
                     <span class="lang-en">Social + enterprise federation (SAML, OIDC)</span
-                    ><span class="lang-es">Federaci&oacute;n social + empresarial (SAML, OIDC)</span>
+                    ><span class="lang-es"
+                      >Federaci&oacute;n social + empresarial (SAML, OIDC)</span
+                    >
                   </li>
                   <li>
                     <span class="lang-en">Lambda triggers for custom workflows</span
@@ -1488,8 +1909,7 @@
             <div class="card expandable float-in border-green" tabindex="0">
               <h4>Azure AD B2C</h4>
               <p>
-                <span class="lang-en"
-                  >Customer identity and access management for Azure apps.</span
+                <span class="lang-en">Customer identity and access management for Azure apps.</span
                 ><span class="lang-es"
                   >Gesti&oacute;n de identidad y acceso de clientes para apps Azure.</span
                 >
@@ -1498,7 +1918,9 @@
                 <ul>
                   <li>
                     <span class="lang-en">Custom user flows and policies</span
-                    ><span class="lang-es">Flujos de usuario y pol&iacute;ticas personalizadas</span>
+                    ><span class="lang-es"
+                      >Flujos de usuario y pol&iacute;ticas personalizadas</span
+                    >
                   </li>
                   <li>
                     <span class="lang-en">Multi-tenant with custom domains</span
@@ -1514,8 +1936,7 @@
             <div class="card expandable float-in border-orange" tabindex="0">
               <h4>GCP Identity Platform</h4>
               <p>
-                <span class="lang-en"
-                  >Google-backed authentication for apps on GCP.</span
+                <span class="lang-en">Google-backed authentication for apps on GCP.</span
                 ><span class="lang-es"
                   >Autenticaci&oacute;n respaldada por Google para apps en GCP.</span
                 >
@@ -1532,7 +1953,9 @@
                   </li>
                   <li>
                     <span class="lang-en">Blocking functions for custom logic</span
-                    ><span class="lang-es">Funciones de bloqueo para l&oacute;gica personalizada</span>
+                    ><span class="lang-es"
+                      >Funciones de bloqueo para l&oacute;gica personalizada</span
+                    >
                   </li>
                 </ul>
               </div>
@@ -1540,8 +1963,7 @@
             <div class="card expandable float-in border-purple" tabindex="0">
               <h4>Keycloak <span class="badge badge-green">Open Source</span></h4>
               <p>
-                <span class="lang-en"
-                  >Self-hosted identity and access management by Red Hat.</span
+                <span class="lang-en">Self-hosted identity and access management by Red Hat.</span
                 ><span class="lang-es"
                   >Gesti&oacute;n de identidad y acceso auto-hospedada por Red Hat.</span
                 >
@@ -1554,11 +1976,15 @@
                   </li>
                   <li>
                     <span class="lang-en">Customizable themes, user federation (LDAP, AD)</span
-                    ><span class="lang-es">Temas personalizables, federaci&oacute;n de usuarios (LDAP, AD)</span>
+                    ><span class="lang-es"
+                      >Temas personalizables, federaci&oacute;n de usuarios (LDAP, AD)</span
+                    >
                   </li>
                   <li>
                     <span class="lang-en">Used in this course lab for hands-on practice</span
-                    ><span class="lang-es">Usado en el laboratorio de este curso para pr&aacute;ctica</span>
+                    ><span class="lang-es"
+                      >Usado en el laboratorio de este curso para pr&aacute;ctica</span
+                    >
                   </li>
                 </ul>
               </div>
@@ -1568,9 +1994,7 @@
 
         <!-- ========== SLIDE 12: SUMMARY ========== -->
         <section>
-          <h2>
-            <span class="lang-en">Summary</span><span class="lang-es">Resumen</span>
-          </h2>
+          <h2><span class="lang-en">Summary</span><span class="lang-es">Resumen</span></h2>
           <div class="grid-3">
             <div class="card float-in border-blue">
               <h4>
@@ -1579,14 +2003,13 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >Authentication (AuthN) verifies identity; Authorization (AuthZ) controls
-                  access. Sessions are stateful; JWTs are stateless. PASETO improves on
-                  JWT security by eliminating algorithm negotiation.</span
+                  >Authentication (AuthN) verifies identity; Authorization (AuthZ) controls access.
+                  Sessions are stateful; JWTs are stateless. PASETO improves on JWT security by
+                  eliminating algorithm negotiation.</span
                 ><span class="lang-es"
-                  >Autenticaci&oacute;n (AuthN) verifica identidad; Autorizaci&oacute;n
-                  (AuthZ) controla acceso. Las sesiones son con estado; los JWTs son sin
-                  estado. PASETO mejora la seguridad de JWT al eliminar la
-                  negociaci&oacute;n de algoritmos.</span
+                  >Autenticaci&oacute;n (AuthN) verifica identidad; Autorizaci&oacute;n (AuthZ)
+                  controla acceso. Las sesiones son con estado; los JWTs son sin estado. PASETO
+                  mejora la seguridad de JWT al eliminar la negociaci&oacute;n de algoritmos.</span
                 >
               </p>
             </div>
@@ -1597,13 +2020,13 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >OAuth 2.0 Authorization Code flow is the standard for secure
-                  delegation. SAML handles enterprise SSO. OIDC adds identity on top
-                  of OAuth. Use PKCE for public clients.</span
+                  >OAuth 2.0 Authorization Code flow is the standard for secure delegation. SAML
+                  handles enterprise SSO. OIDC adds identity on top of OAuth. Use PKCE for public
+                  clients.</span
                 ><span class="lang-es"
                   >El flujo OAuth 2.0 Authorization Code es el est&aacute;ndar para
-                  delegaci&oacute;n segura. SAML maneja SSO empresarial. OIDC agrega
-                  identidad sobre OAuth. Usar PKCE para clientes p&uacute;blicos.</span
+                  delegaci&oacute;n segura. SAML maneja SSO empresarial. OIDC agrega identidad sobre
+                  OAuth. Usar PKCE para clientes p&uacute;blicos.</span
                 >
               </p>
             </div>
@@ -1614,14 +2037,14 @@
               </h4>
               <p>
                 <span class="lang-en"
-                  >Layer multiple security controls: HTTPS, secure cookies, MFA, token
-                  rotation, rate limiting, input validation, and least privilege. No
-                  single mechanism is sufficient.</span
+                  >Layer multiple security controls: HTTPS, secure cookies, MFA, token rotation,
+                  rate limiting, input validation, and least privilege. No single mechanism is
+                  sufficient.</span
                 ><span class="lang-es"
-                  >Capas de m&uacute;ltiples controles de seguridad: HTTPS, cookies
-                  seguras, MFA, rotaci&oacute;n de tokens, rate limiting,
-                  validaci&oacute;n de entrada y m&iacute;nimo privilegio. Ning&uacute;n
-                  mecanismo &uacute;nico es suficiente.</span
+                  >Capas de m&uacute;ltiples controles de seguridad: HTTPS, cookies seguras, MFA,
+                  rotaci&oacute;n de tokens, rate limiting, validaci&oacute;n de entrada y
+                  m&iacute;nimo privilegio. Ning&uacute;n mecanismo &uacute;nico es
+                  suficiente.</span
                 >
               </p>
             </div>
@@ -1632,25 +2055,12 @@
         <section>
           <div class="qa-center">
             <h1 style="font-size: 2.2em; margin-bottom: 10px">
-              <span class="lang-en">Questions?</span
-              ><span class="lang-es">&iquest;Preguntas?</span>
+              <span class="lang-en">Questions?</span><span class="lang-es">&iquest;Preguntas?</span>
             </h1>
             <div class="diagram-container" style="margin: 10px 0">
               <svg width="80" height="80" viewBox="0 0 80 80">
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="35"
-                  fill="none"
-                  stroke="var(--primary)"
-                  stroke-width="2"
-                >
-                  <animate
-                    attributeName="r"
-                    values="33;37;33"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
+                <circle cx="40" cy="40" r="35" fill="none" stroke="var(--primary)" stroke-width="2">
+                  <animate attributeName="r" values="33;37;33" dur="2s" repeatCount="indefinite" />
                 </circle>
                 <text
                   x="40"
@@ -1665,8 +2075,7 @@
               </svg>
             </div>
             <p style="font-size: 0.82em; color: var(--muted)">
-              <span class="lang-en"
-                >Scalable System Design &mdash; Module 06</span
+              <span class="lang-en">Scalable System Design &mdash; Module 06</span
               ><span class="lang-es"
                 >Dise&ntilde;o de Sistemas Escalables &mdash; M&oacute;dulo 06</span
               >
@@ -1685,14 +2094,240 @@
     <script src="slides.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
     <script src="../../shared/presentation/presenter.js"></script>
-      <script>
-    var THEME_PRESETS={"custom-dark":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#e6edf3",heading:"#ffffff",muted:"#8b949e",primary:"#58a6ff",secondary:"#79c0ff",mint:"#56d364",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #58a6ff, #56d364)"},"bold-signal":{bg:"#1a1a1a",surface:"#2d2d2d",border:"#444",text:"#ffffff",heading:"#ffffff",muted:"#9e9e9e",primary:"#FF5722",secondary:"#FF8A65",mint:"#4CAF50",warning:"#FFC107",error:"#f44336",purple:"#9C27B0",gold:"#FFB300",gradient:"linear-gradient(135deg, #FF5722, #FF8A65)"},"electric-studio":{bg:"#0a0a0a",surface:"#1a1a1a",border:"#333",text:"#ffffff",heading:"#ffffff",muted:"#888",primary:"#4361ee",secondary:"#3a86ff",mint:"#06d6a0",warning:"#ffd166",error:"#ef476f",purple:"#7209b7",gold:"#f4a261",gradient:"linear-gradient(135deg, #4361ee, #3a86ff)"},"creative-voltage":{bg:"#1a1a2e",surface:"#252547",border:"#3a3a5c",text:"#ffffff",heading:"#ffffff",muted:"#8888aa",primary:"#0066ff",secondary:"#d4ff00",mint:"#00ff88",warning:"#ffcc00",error:"#ff4444",purple:"#aa44ff",gold:"#ffaa00",gradient:"linear-gradient(135deg, #0066ff, #d4ff00)"},"dark-botanical":{bg:"#0f0f0f",surface:"#1a1a1a",border:"#2a2a2a",text:"#e8e4df",heading:"#ffffff",muted:"#9a9590",primary:"#d4a574",secondary:"#c9b896",mint:"#7daa6d",warning:"#d4a574",error:"#c97b7b",purple:"#a889bd",gold:"#c9b896",gradient:"linear-gradient(135deg, #d4a574, #e8b4b8)"},"notebook-tabs":{bg:"#f8f6f1",surface:"#ffffff",border:"#d0d0c8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#2d5016",secondary:"#98d4bb",mint:"#2d5016",warning:"#c49b1a",error:"#c44536",purple:"#7b5ea7",gold:"#c49b1a",gradient:"linear-gradient(135deg, #98d4bb, #c7b8ea)"},"pastel-geometry":{bg:"#faf9f7",surface:"#ffffff",border:"#e0ddd8",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#5a7c6a",secondary:"#f0b4d4",mint:"#5a7c6a",warning:"#c49b1a",error:"#c44536",purple:"#9b8dc4",gold:"#c49b1a",gradient:"linear-gradient(135deg, #5a7c6a, #9b8dc4)"},"split-pastel":{bg:"#f5e6dc",surface:"#ffffff",border:"#e0d5cc",text:"#1a1a1a",heading:"#1a1a1a",muted:"#777",primary:"#6b4c9a",secondary:"#e88d67",mint:"#5a9a6b",warning:"#d4a030",error:"#c44536",purple:"#6b4c9a",gold:"#d4a030",gradient:"linear-gradient(135deg, #6b4c9a, #e88d67)"},"neon-cyber":{bg:"#0a0f1c",surface:"#111827",border:"#1e293b",text:"#ffffff",heading:"#ffffff",muted:"#9ca3af",primary:"#00ffcc",secondary:"#ff00aa",mint:"#00ff88",warning:"#fbbf24",error:"#ef4444",purple:"#a855f7",gold:"#f59e0b",gradient:"linear-gradient(135deg, #00ffcc, #ff00aa)"},"terminal-green":{bg:"#0d1117",surface:"#161b22",border:"#30363d",text:"#c9d1d9",heading:"#c9d1d9",muted:"#8b949e",primary:"#39d353",secondary:"#238636",mint:"#39d353",warning:"#d29922",error:"#f85149",purple:"#bc8cff",gold:"#e3b341",gradient:"linear-gradient(135deg, #39d353, #238636)"},"swiss-modern":{bg:"#ffffff",surface:"#f5f5f5",border:"#e0e0e0",text:"#1a1a1a",heading:"#1a1a1a",muted:"#666",primary:"#ff0000",secondary:"#cc0000",mint:"#00aa55",warning:"#ff8800",error:"#ff0000",purple:"#6600cc",gold:"#cc8800",gradient:"linear-gradient(135deg, #ff0000, #cc0000)"},"paper-ink":{bg:"#f4f1ea",surface:"#ffffff",border:"#d8d3cb",text:"#2c2c2c",heading:"#2c2c2c",muted:"#8b8b8b",primary:"#2c2c2c",secondary:"#8b7355",mint:"#5a7a5a",warning:"#8b7355",error:"#8b4040",purple:"#6b5b8b",gold:"#8b7355",gradient:"linear-gradient(135deg, #2c2c2c, #8b7355)"}};
-    function applyThemePreset(n){var t=THEME_PRESETS[n];if(!t)return;var s=document.documentElement.style;s.setProperty("--bg",t.bg);s.setProperty("--surface",t.surface);s.setProperty("--card-border",t.border);s.setProperty("--text",t.text);s.setProperty("--heading",t.heading);s.setProperty("--muted",t.muted);s.setProperty("--primary",t.primary);s.setProperty("--secondary",t.secondary);s.setProperty("--mint",t.mint);s.setProperty("--warning",t.warning);s.setProperty("--error",t.error);s.setProperty("--purple",t.purple);s.setProperty("--gold",t.gold);s.setProperty("--primitive-gradient-primary",t.gradient);document.body.style.background=t.bg;var v=document.querySelector(".reveal-viewport");if(v)v.style.background=t.bg;localStorage.setItem("pres-theme-preset",n);var sel=document.getElementById("theme-select");if(sel)sel.value=n;}
-    (function(){var s=localStorage.getItem("pres-theme-preset");if(s&&THEME_PRESETS[s])applyThemePreset(s);})();
-    function updateProgressBar(){var b=document.getElementById("progressBarTop");if(b&&typeof Reveal!=="undefined")b.style.width=((Reveal.getIndices().h+1)/Reveal.getTotalSlides()*100)+"%";}
-    if(typeof Reveal!=="undefined"){Reveal.on("slidechanged",updateProgressBar);Reveal.on("ready",updateProgressBar);}
-    setTimeout(updateProgressBar,500);
+    <script>
+      var THEME_PRESETS = {
+        'custom-dark': {
+          bg: '#0d1117',
+          surface: '#161b22',
+          border: '#30363d',
+          text: '#e6edf3',
+          heading: '#ffffff',
+          muted: '#8b949e',
+          primary: '#58a6ff',
+          secondary: '#79c0ff',
+          mint: '#56d364',
+          warning: '#d29922',
+          error: '#f85149',
+          purple: '#bc8cff',
+          gold: '#e3b341',
+          gradient: 'linear-gradient(135deg, #58a6ff, #56d364)',
+        },
+        'bold-signal': {
+          bg: '#1a1a1a',
+          surface: '#2d2d2d',
+          border: '#444',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#9e9e9e',
+          primary: '#FF5722',
+          secondary: '#FF8A65',
+          mint: '#4CAF50',
+          warning: '#FFC107',
+          error: '#f44336',
+          purple: '#9C27B0',
+          gold: '#FFB300',
+          gradient: 'linear-gradient(135deg, #FF5722, #FF8A65)',
+        },
+        'electric-studio': {
+          bg: '#0a0a0a',
+          surface: '#1a1a1a',
+          border: '#333',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#888',
+          primary: '#4361ee',
+          secondary: '#3a86ff',
+          mint: '#06d6a0',
+          warning: '#ffd166',
+          error: '#ef476f',
+          purple: '#7209b7',
+          gold: '#f4a261',
+          gradient: 'linear-gradient(135deg, #4361ee, #3a86ff)',
+        },
+        'creative-voltage': {
+          bg: '#1a1a2e',
+          surface: '#252547',
+          border: '#3a3a5c',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#8888aa',
+          primary: '#0066ff',
+          secondary: '#d4ff00',
+          mint: '#00ff88',
+          warning: '#ffcc00',
+          error: '#ff4444',
+          purple: '#aa44ff',
+          gold: '#ffaa00',
+          gradient: 'linear-gradient(135deg, #0066ff, #d4ff00)',
+        },
+        'dark-botanical': {
+          bg: '#0f0f0f',
+          surface: '#1a1a1a',
+          border: '#2a2a2a',
+          text: '#e8e4df',
+          heading: '#ffffff',
+          muted: '#9a9590',
+          primary: '#d4a574',
+          secondary: '#c9b896',
+          mint: '#7daa6d',
+          warning: '#d4a574',
+          error: '#c97b7b',
+          purple: '#a889bd',
+          gold: '#c9b896',
+          gradient: 'linear-gradient(135deg, #d4a574, #e8b4b8)',
+        },
+        'notebook-tabs': {
+          bg: '#f8f6f1',
+          surface: '#ffffff',
+          border: '#d0d0c8',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#666',
+          primary: '#2d5016',
+          secondary: '#98d4bb',
+          mint: '#2d5016',
+          warning: '#c49b1a',
+          error: '#c44536',
+          purple: '#7b5ea7',
+          gold: '#c49b1a',
+          gradient: 'linear-gradient(135deg, #98d4bb, #c7b8ea)',
+        },
+        'pastel-geometry': {
+          bg: '#faf9f7',
+          surface: '#ffffff',
+          border: '#e0ddd8',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#666',
+          primary: '#5a7c6a',
+          secondary: '#f0b4d4',
+          mint: '#5a7c6a',
+          warning: '#c49b1a',
+          error: '#c44536',
+          purple: '#9b8dc4',
+          gold: '#c49b1a',
+          gradient: 'linear-gradient(135deg, #5a7c6a, #9b8dc4)',
+        },
+        'split-pastel': {
+          bg: '#f5e6dc',
+          surface: '#ffffff',
+          border: '#e0d5cc',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#777',
+          primary: '#6b4c9a',
+          secondary: '#e88d67',
+          mint: '#5a9a6b',
+          warning: '#d4a030',
+          error: '#c44536',
+          purple: '#6b4c9a',
+          gold: '#d4a030',
+          gradient: 'linear-gradient(135deg, #6b4c9a, #e88d67)',
+        },
+        'neon-cyber': {
+          bg: '#0a0f1c',
+          surface: '#111827',
+          border: '#1e293b',
+          text: '#ffffff',
+          heading: '#ffffff',
+          muted: '#9ca3af',
+          primary: '#00ffcc',
+          secondary: '#ff00aa',
+          mint: '#00ff88',
+          warning: '#fbbf24',
+          error: '#ef4444',
+          purple: '#a855f7',
+          gold: '#f59e0b',
+          gradient: 'linear-gradient(135deg, #00ffcc, #ff00aa)',
+        },
+        'terminal-green': {
+          bg: '#0d1117',
+          surface: '#161b22',
+          border: '#30363d',
+          text: '#c9d1d9',
+          heading: '#c9d1d9',
+          muted: '#8b949e',
+          primary: '#39d353',
+          secondary: '#238636',
+          mint: '#39d353',
+          warning: '#d29922',
+          error: '#f85149',
+          purple: '#bc8cff',
+          gold: '#e3b341',
+          gradient: 'linear-gradient(135deg, #39d353, #238636)',
+        },
+        'swiss-modern': {
+          bg: '#ffffff',
+          surface: '#f5f5f5',
+          border: '#e0e0e0',
+          text: '#1a1a1a',
+          heading: '#1a1a1a',
+          muted: '#666',
+          primary: '#ff0000',
+          secondary: '#cc0000',
+          mint: '#00aa55',
+          warning: '#ff8800',
+          error: '#ff0000',
+          purple: '#6600cc',
+          gold: '#cc8800',
+          gradient: 'linear-gradient(135deg, #ff0000, #cc0000)',
+        },
+        'paper-ink': {
+          bg: '#f4f1ea',
+          surface: '#ffffff',
+          border: '#d8d3cb',
+          text: '#2c2c2c',
+          heading: '#2c2c2c',
+          muted: '#8b8b8b',
+          primary: '#2c2c2c',
+          secondary: '#8b7355',
+          mint: '#5a7a5a',
+          warning: '#8b7355',
+          error: '#8b4040',
+          purple: '#6b5b8b',
+          gold: '#8b7355',
+          gradient: 'linear-gradient(135deg, #2c2c2c, #8b7355)',
+        },
+      };
+      function applyThemePreset(n) {
+        var t = THEME_PRESETS[n];
+        if (!t) return;
+        var s = document.documentElement.style;
+        s.setProperty('--bg', t.bg);
+        s.setProperty('--surface', t.surface);
+        s.setProperty('--card-border', t.border);
+        s.setProperty('--text', t.text);
+        s.setProperty('--heading', t.heading);
+        s.setProperty('--muted', t.muted);
+        s.setProperty('--primary', t.primary);
+        s.setProperty('--secondary', t.secondary);
+        s.setProperty('--mint', t.mint);
+        s.setProperty('--warning', t.warning);
+        s.setProperty('--error', t.error);
+        s.setProperty('--purple', t.purple);
+        s.setProperty('--gold', t.gold);
+        s.setProperty('--primitive-gradient-primary', t.gradient);
+        document.body.style.background = t.bg;
+        var v = document.querySelector('.reveal-viewport');
+        if (v) v.style.background = t.bg;
+        localStorage.setItem('pres-theme-preset', n);
+        var sel = document.getElementById('theme-select');
+        if (sel) sel.value = n;
+      }
+      (function () {
+        var s = localStorage.getItem('pres-theme-preset');
+        if (s && THEME_PRESETS[s]) applyThemePreset(s);
+      })();
+      function updateProgressBar() {
+        var b = document.getElementById('progressBarTop');
+        if (b && typeof Reveal !== 'undefined')
+          b.style.width = ((Reveal.getIndices().h + 1) / Reveal.getTotalSlides()) * 100 + '%';
+      }
+      if (typeof Reveal !== 'undefined') {
+        Reveal.on('slidechanged', updateProgressBar);
+        Reveal.on('ready', updateProgressBar);
+      }
+      setTimeout(updateProgressBar, 500);
     </script>
-
-</body>
+  </body>
 </html>
