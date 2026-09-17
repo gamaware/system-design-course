@@ -18,8 +18,9 @@ CLIENT_ID = "OAuth-Client"
 # cannot validate it. Instead of disabling verification (verify=False), which
 # would let anyone on the network impersonate Keycloak and approve forged
 # tokens, point KEYCLOAK_CA_BUNDLE at the certificate you generated in Task 2.
-# When the variable is unset, requests falls back to the system CA store,
-# which is the right default for a real CA-issued certificate.
+# When the variable is unset, requests falls back to the public CA bundle it
+# ships with (the certifi package, not the operating system trust store),
+# which is the right default for a certificate issued by a public CA.
 KEYCLOAK_CA_BUNDLE = os.getenv('KEYCLOAK_CA_BUNDLE') or True
 if KEYCLOAK_CA_BUNDLE is not True and not os.path.isfile(KEYCLOAK_CA_BUNDLE):
     raise SystemExit(
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     print("Starting Flask API...")
     print(f"Keycloak URL: {KEYCLOAK_INTROSPECT_URL}")
     print(f"Client ID: {CLIENT_ID}")
-    print(f"CA bundle: {'system CA store' if KEYCLOAK_CA_BUNDLE is True else KEYCLOAK_CA_BUNDLE}")
+    print(f"CA bundle: {'requests default (certifi)' if KEYCLOAK_CA_BUNDLE is True else KEYCLOAK_CA_BUNDLE}")
     # The Werkzeug debugger exposes an interactive Python console on any
     # unhandled exception, so it must never be on by default. Set
     # FLASK_DEBUG=1 explicitly to enable it on a private lab instance.
