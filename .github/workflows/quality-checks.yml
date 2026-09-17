@@ -172,8 +172,11 @@ jobs:
           ZIZMOR_VERSION="1.23.1"
           ZIZMOR_BASE="https://github.com/woodruffw/zizmor/releases"
           ZIZMOR_TAR="zizmor-x86_64-unknown-linux-gnu.tar.gz"
+          # Release artifacts are immutable; verify the pinned build's digest.
+          ZIZMOR_SHA256="67a8df0a14352dd81882e14876653d097b99b0f4f6b6fe798edc0320cff27aff"
           curl -fsSL "${ZIZMOR_BASE}/download/v${ZIZMOR_VERSION}/${ZIZMOR_TAR}" \
             -o /tmp/zizmor.tar.gz
+          echo "${ZIZMOR_SHA256}  /tmp/zizmor.tar.gz" | sha256sum -c -
           mkdir -p /tmp/zizmor-extract
           tar -xzf /tmp/zizmor.tar.gz -C /tmp/zizmor-extract
           sudo install -m 0755 /tmp/zizmor-extract/zizmor /usr/local/bin/zizmor

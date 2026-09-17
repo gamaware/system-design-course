@@ -167,8 +167,8 @@ Weekly auto-update of pre-commit hook versions via PR.
 ### auto-merge-bot-prs.yml
 
 Hourly scheduled job that squash-merges open Dependabot and pre-commit update PRs
-with admin bypass once every reported check is green, none is pending, and at least
-one check actually passed (an all-skipped run is not evidence). It skips drafts,
+with admin bypass once no reported check is failing or pending and at least one
+check actually passed (skipped checks are neither failures nor evidence). It skips drafts,
 fork PRs, PRs from any other author, conflicting PRs, PRs whose mergeability is still
 being computed, PRs with changes requested by a reviewer, and PRs with no reported
 checks. The merge is bound to the inspected head commit, and the job merges at most
