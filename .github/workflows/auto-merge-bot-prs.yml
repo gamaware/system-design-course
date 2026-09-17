@@ -36,6 +36,10 @@ jobs:
     name: Merge green bot PRs
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # zizmor's secrets-outside-env audit requires secrets to be read inside a
+    # job environment. "automation" carries no protection rules and GitHub
+    # creates it on first use.
+    environment: automation
     steps:
       - name: Merge eligible PRs
         env:
@@ -94,9 +98,19 @@ jobs:
               continue
             fi
 
-            if ! state=$(gh pr view "$number" --repo "$REPO" \
-              --json mergeStateStatus --jq '.mergeStateStatus'); then
+            if ! state_line=$(gh pr view "$number" --repo "$REPO" \
+              --json mergeStateStatus,reviewDecision \
+              --jq '"\(.mergeStateStatus) \(.reviewDecision)"'); then
               echo "PR #$number: could not read merge state, skipping"
+              skipped=$((skipped + 1))
+              continue
+            fi
+            state="${state_line%% *}"
+            review="${state_line##* }"
+
+            # Admin bypass must never override a reviewer who asked for changes.
+            if [ "$review" = "CHANGES_REQUESTED" ]; then
+              echo "PR #$number: changes requested by a reviewer, skipping"
               skipped=$((skipped + 1))
               continue
             fi
@@ -133,16 +147,17 @@ jobs:
               --jq '[
                 length,
                 ([.[] | select(.bucket == "fail" or .bucket == "cancel")] | length),
-                ([.[] | select(.bucket == "pending")] | length)
+                ([.[] | select(.bucket == "pending")] | length),
+                ([.[] | select(.bucket == "pass")] | length)
               ] | @tsv' 2>"$checks_err") || true
             if [ -z "$summary" ]; then
               # Distinguish a real API/auth failure from "no checks reported".
               if [ -s "$checks_err" ] && ! grep -qi "no checks" "$checks_err"; then
                 echo "::warning::PR #$number: gh pr checks failed: $(head -n 1 "$checks_err")"
               fi
-              summary=$'0\t0\t0'
+              summary=$'0\t0\t0\t0'
             fi
-            IFS=$'\t' read -r total fail pending <<< "$summary"
+            IFS=$'\t' read -r total fail pending pass <<< "$summary"
 
             if [ "$fail" -gt 0 ]; then
               echo "PR #$number: $fail failing check(s), skipping"
@@ -161,8 +176,15 @@ jobs:
               skipped=$((skipped + 1))
               continue
             fi
+            # Skipped checks are not failures, but they are not evidence either:
+            # require at least one check that actually ran and passed.
+            if [ "$pass" -eq 0 ]; then
+              echo "PR #$number: $total check(s) registered but none passed, skipping"
+              skipped=$((skipped + 1))
+              continue
+            fi
 
-            echo "PR #$number: all $total check(s) green, merging"
+            echo "PR #$number: $pass of $total check(s) passed, none failing or pending, merging"
             # Bind the merge to the head captured before the checks were
             # inspected; if the head moved since then, the merge is refused.
             if gh pr merge "$number" --repo "$REPO" --squash --admin --delete-branch \
