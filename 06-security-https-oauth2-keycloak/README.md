@@ -13,6 +13,21 @@ This hands-on lab teaches OAuth 2.0 authentication fundamentals using Keycloak a
 Access Management (IAM) solution. Students will deploy Keycloak on EC2 with SSL/TLS, configure
 OAuth clients and realms, and build a Flask API that validates JWT tokens for secure access control.
 
+## Class Diagrams
+
+Reference diagrams from class, covering the concepts this lab exercises.
+
+![Keycloak OAuth 2.0 lab topology: student laptop through the security group to an EC2 instance running Keycloak on 8443 and Flask on 5000, with the numbered token flow and introspection](diagrams/keycloak-oauth2-https-overview.png)
+
+Lab topology (student laptop → security group 22/8443/5000 → EC2 running Keycloak in Docker and the
+Flask API), with the numbered OAuth 2.0 token flow 1-6, token introspection, the realm, client and
+user inside Keycloak, HTTP vs HTTPS, and defense in depth.
+
+▶ [Explore the interactive diagram](https://aware-vision-3pyx.here.now/?theme=dark)
+(zoom, search, trace animation, export) — also included as
+[diagrams/keycloak-oauth2-https-overview.html](diagrams/keycloak-oauth2-https-overview.html)
+to open locally in a browser.
+
 ## Learning Objectives
 
 - Understand OAuth 2.0 and OpenID Connect authentication flows
