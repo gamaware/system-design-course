@@ -179,7 +179,6 @@ LFU eviction, TTL expiration, cache invalidation, eviction policies
 
 Created by [Alex Garcia](https://github.com/gamaware)
 
-- [LinkedIn Profile](https://www.linkedin.com/in/gamaware/)
 - [Personal Website](https://alexgarcia.info/)
 
 [badge-scalability]: https://img.shields.io/badge/Scalability-%234285F4.svg?style=for-the-badge&logo=googlecloud&logoColor=white
