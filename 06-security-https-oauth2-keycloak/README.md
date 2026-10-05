@@ -596,7 +596,19 @@ curl -sk -X POST "https://$KEYCLOAK_DNS:8443/admin/realms/OAuth-Demo/clients" \
     "webOrigins": ["https://'$KEYCLOAK_DNS':5000"],
     "attributes": {
       "access.token.lifespan": "900"
-    }
+    },
+    "protocolMappers": [
+      {
+        "name": "OAuth-Client-audience",
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-audience-mapper",
+        "config": {
+          "included.client.audience": "OAuth-Client",
+          "access.token.claim": "true",
+          "introspection.token.claim": "true"
+        }
+      }
+    ]
   }'
 
 echo "OAuth Client created"
@@ -621,6 +633,10 @@ export CLIENT_UUID
 - `publicClient: false` - Confidential client (has secret)
 - `redirectUris` - Allowed redirect URLs (security whitelist)
 - `webOrigins` - CORS allowed origins
+- `protocolMappers` (audience mapper) - Adds `OAuth-Client` to the `aud` claim of the access token.
+  Keycloak only accepts an introspection request when the calling client is in the token audience; without
+  this mapper the token only carries `"aud": "account"`, introspection answers `{"active": false}` and the
+  Flask API in Task 9 returns 403 even for a valid token
 
 ---
 
@@ -1132,6 +1148,9 @@ echo "Remove certificates: rm -rf ~/keycloak_certs"
 **Solution:**
 
 - Verify CLIENT_SECRET is correct: `echo $CLIENT_SECRET`
+- Check the token audience: `sudo docker logs keycloak 2>&1 | grep INTROSPECT_TOKEN_ERROR`. If the reason is
+  `Client 'OAuth-Client' is not in the token audience`, the client was created without the audience mapper
+  from Step 5.3. Delete the realm, run Tasks 5-7 again and request a new token
 - Check token hasn't expired: Calculate time left
 - Ensure Flask can reach Keycloak (network connectivity)
 - Review Flask logs for detailed error messages
