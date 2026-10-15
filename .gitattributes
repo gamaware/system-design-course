@@ -1,0 +1,25 @@
+# Normaliza los finales de línea en el repositorio.
+#
+# Sin esto, al clonar en Windows (core.autocrlf=true) los scripts se escriben con
+# CRLF. El shebang queda como "#!/bin/bash\r" y bash, WSL o el contenedor fallan con
+# un error de intérprete o de "archivo no encontrado" al correr ./setup.sh.
+
+* text=auto
+
+# Todo lo que se ejecuta dentro de Linux o de un contenedor debe quedarse en LF,
+# sin importar el sistema operativo de quien clona.
+*.sh        text eol=lf
+*.bash      text eol=lf
+Dockerfile  text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+Makefile    text eol=lf
+
+# Binarios: git no debe tocarlos.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.pdf  binary
+*.zip  binary
+*.ico  binary
