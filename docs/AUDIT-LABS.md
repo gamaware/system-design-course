@@ -12,9 +12,12 @@ exercises themselves.
 
 ## Scope
 
-Each lab was started with its own `setup.sh`, driven through its tasks with the real commands, and torn
-down with its `cleanup.sh`. Labs that deploy to AWS were validated statically with `cfn-lint`,
-`terraform validate`, dependency resolution and link checks, without deploying.
+Labs that run on Docker were started with their own `setup.sh`, driven through their tasks with the
+real commands, and torn down with their `cleanup.sh`. That covers modules 03, 07, 09, 10 and 11.
+
+Labs that deploy to AWS were checked statically, never deployed: `cfn-lint`, `terraform validate`,
+dependency resolution and link checks. That covers modules 01, 02, 04 and 08. The status table below
+says which treatment each module received.
 
 ## Status
 
@@ -76,6 +79,10 @@ failed during `docker compose up`. Both services now use the `bitnamilegacy` ima
 Four images still float on a major or minor tag: `mysql:8`, `mongo:7`, `cassandra:4.1` and
 `alpine:latest`. A floating tag moves under the lab without warning, which is exactly how the Redis
 breakage reached the student. Pinning them to an exact version would remove that risk.
+
+`redis:7.2-alpine` still tracks patch releases inside 7.2. That is a deliberate trade: patch releases
+carry security fixes and keep the memory footprint that Task 6 depends on, while the jump that broke
+the lab was a minor one, from 7.2 to 7.4.
 
 ## How to repeat this audit
 
