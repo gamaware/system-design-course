@@ -51,8 +51,14 @@ services:
       retries: 6
 
   minio:
-    image: minio/minio:RELEASE.2025-02-28T09-55-16Z
+    # minio/minio se retiro de Docker Hub cuando el proyecto paso a AIStor (oct-2025).
+    # bitnamilegacy conserva la ultima build community, con la consola web completa.
+    # user: root es necesario porque la imagen corre como UID 1001 y los volumenes
+    # nombrados pertenecen a root: sin esto MinIO falla con "Unable to write to the backend".
+    image: bitnamilegacy/minio:2025.2.18-debian-12-r0
     container_name: minio-server
+    user: root
+    entrypoint: ["/opt/bitnami/minio/bin/minio"]
     command: server /data1 /data2 /data3 /data4 --console-address ":9001"
     ports:
       - "9000:9000"
@@ -72,13 +78,15 @@ services:
       retries: 5
 
   mc:
-    image: minio/mc:latest
+    image: bitnamilegacy/minio-client:2025.5.21-debian-12-r8
     container_name: minio-client
     depends_on:
       minio:
         condition: service_healthy
     entrypoint: ""
-    command: /bin/sh
+    # bash, no sh: el /bin/sh de esta imagen es dash y no expande llaves,
+    # que el LAB.md usa en "mkdir -p /tmp/project/{css,js,docs}".
+    command: /bin/bash
     stdin_open: true
     tty: true
     volumes:
