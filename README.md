@@ -129,9 +129,9 @@ Students learn to:
 **Key Concepts**: VPC, subnets, Internet Gateway, route tables, security groups, Infrastructure as Code,
 CloudFormation, Terraform, Availability Zones, cross-AZ communication
 
-#### [09 — Distributed File Systems](./09-distributed-file-systems) _(coming soon)_
+#### [09 — Distributed File Systems](./09-distributed-file-systems)
 
-#### [10 — Databases](./10-databases) _(coming soon)_
+#### [10 — Databases](./10-databases)
 
 #### [11 — Caching](./11-caching)
 

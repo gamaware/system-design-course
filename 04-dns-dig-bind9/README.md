@@ -616,7 +616,7 @@ sudo mv /etc/named.conf.backup /etc/named.conf
 
 - [BIND9 Official Documentation](https://www.isc.org/bind/)
 - [ICANN Accredited Registrars][icann-registrars]
-- [DNS RFC Standards](https://www.ietf.org/rfc/)
+- [DNS RFC Standards](https://www.rfc-editor.org/standards)
 - [AWS Route 53 Documentation](https://docs.aws.amazon.com/route53/)
 
 ## Author

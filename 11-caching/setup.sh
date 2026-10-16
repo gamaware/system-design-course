@@ -33,7 +33,9 @@ echo ""
 
 # Build and start infrastructure
 echo "Building and starting Redis + backend..."
-docker compose up -d --build redis backend
+# --renew-anon-volumes discards the anonymous /data volume from a previous run. Without it, a
+# dump.rdb written by an older image stops the pinned Redis from starting.
+docker compose up -d --build --renew-anon-volumes redis backend
 
 echo ""
 echo "Waiting for services to be healthy..."

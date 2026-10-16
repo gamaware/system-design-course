@@ -1,6 +1,8 @@
 services:
   redis:
-    image: redis:7-alpine
+    # Pinned to 7.2: Redis 7.4 starts at ~1.04 MB when empty, which already exceeds the
+    # 1 MB ceiling Task 6 sets, so every write returns OOM and nothing is ever evicted.
+    image: redis:7.2-alpine
     container_name: redis-cache
     ports:
       - "6379:6379"

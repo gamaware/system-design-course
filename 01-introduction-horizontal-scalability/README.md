@@ -89,7 +89,7 @@ and the knobs in code.
 - AWS Account with appropriate permissions
 - AWS CLI configured with credentials
 - Python 3.9+
-- Node.js 14+
+- Node.js 22+
 - Docker (optional, for local testing)
 - Basic understanding of containers and AWS services
 
