@@ -42,9 +42,9 @@ docker compose up -d --build rabbitmq worker-1 tools
 
 echo ""
 echo "Waiting for RabbitMQ to be healthy..."
-# Lab-only credentials, the same ones docker-compose.yml sets for the local broker.
-RABBITMQ_USER="${RABBITMQ_USER:-lab14}"
-RABBITMQ_PASS="${RABBITMQ_PASS:-lab14-pass}"
+# Lab-only credentials, fixed in docker-compose.yml; a host RABBITMQ_USER/RABBITMQ_PASS must not override them.
+BROKER_USER="lab14"
+BROKER_PASS="lab14-pass"
 
 i=0
 while [ "$i" -lt 60 ]; do
@@ -56,7 +56,7 @@ while [ "$i" -lt 60 ]; do
         broker_ok=true
     fi
 
-    if curl -sf -u "$RABBITMQ_USER:$RABBITMQ_PASS" http://localhost:15672/api/overview > /dev/null 2>&1; then
+    if curl -sf --max-time 5 -u "$BROKER_USER:$BROKER_PASS" http://localhost:15672/api/overview > /dev/null 2>&1; then
         console_ok=true
     fi
 

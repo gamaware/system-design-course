@@ -49,11 +49,11 @@ through HAProxy, which offers the same three nodes on two frontends: port 18080 
 port 18081 without them. Every link between HAProxy and a node, and every link between two nodes,
 crosses Toxiproxy, where the lab injects latency and partitions.
 
-![Student and client container sending requests through HAProxy and Toxiproxy to three replicated nodes](diagrams/lab05-architecture.png)
+![Client container sending requests through HAProxy and Toxiproxy to three nodes](diagrams/lab05-architecture.png)
 
 [Edit this diagram](diagrams/lab05-architecture.drawio)
 
-**Components:**
+### Components
 
 - **Nodes (`node1`, `node2`, `node3`)**: a key-value store written with the Python standard library
   (`app/kv_node.py`). Each node keeps its data in memory, replicates every write to its peers, and
@@ -149,7 +149,7 @@ images and creates no named volumes. To verify, run `docker ps -a --filter "name
 | Concept | Description |
 | --- | --- |
 | **Distributed System** | Independent nodes with their own memory and clock that cooperate over a network |
-| **Replication** | Keeping a copy of the data on several nodes so one failure loses nothing |
+| **Replication** | Keeping copies of the data on several nodes; in AP mode, a write acknowledged before any peer stored it can still be lost |
 | **Partial Failure** | Some nodes fail or slow down while others keep working |
 | **Network Partition** | Nodes are up but cannot reach each other; the sender sees only silence |
 | **CAP Theorem** | During a partition, a system must choose between consistency and availability |

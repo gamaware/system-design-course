@@ -31,7 +31,8 @@ OS-agnostic. Follow the step-by-step instructions in **[LAB.md](LAB.md)**.
 - Distinguish a work queue (competing consumers) from publish/subscribe
   with fanout and topic exchanges, and predict where a message is routed
 - Demonstrate that durable queues with persistent messages survive a
-  consumer outage and a broker restart, and that transient messages do not
+  consumer outage and a broker restart, and that transient messages in a
+  classic queue do not
 - Implement bounded retries and route a poison message to a dead letter
   queue
 - Provoke a duplicate delivery, explain at-most-once, at-least-once and
@@ -173,7 +174,7 @@ volumes, and deletes the locally built `lab14-app:local` image.
 | **Competing consumers** | Several consumers on one queue; each message goes to only one of them |
 | **Acknowledgment (ack)** | The consumer's signal that it finished a message; until then the broker keeps it |
 | **Prefetch** | How many unacknowledged messages the broker may push to one consumer at a time |
-| **Durable queue / Persistent message** | A queue that survives a broker restart, and a message written to disk; you need both |
+| **Durable queue / Persistent message** | A queue that survives a broker restart, and a message written to disk; a classic queue needs both, a quorum queue stores every message on disk |
 | **Quorum queue** | RabbitMQ's replicated, always durable queue type |
 | **Dead letter queue (DLQ)** | Where rejected or expired messages go for inspection instead of being lost |
 | **Poison message** | A message that fails every time it is processed |
@@ -246,7 +247,7 @@ After completing this lab, you should take away these lessons:
 
 3. **Durability needs a durable queue and a persistent message.** After a
    broker restart, 30 persistent orders and 5 persistent messages were
-   still there; 20 transient messages in a durable queue were gone.
+   still there; 20 transient messages in a durable classic queue were gone.
 
 4. **Every failure needs a destination.** A poison message retried three
    times and moved to the dead letter queue, with headers that say where

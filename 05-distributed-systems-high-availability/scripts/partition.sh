@@ -22,8 +22,15 @@ usage() {
     exit 1
 }
 
+# Capture the output first: a failed inspect (Toxiproxy stopped) must stop the script instead of
+# looking like an open link, and grep -q must not close the pipe while docker exec is still writing.
 link_cut() {
-    toxi inspect "$1" 2>/dev/null | grep -q "partition"
+    local out
+    out="$(toxi inspect "$1")" || {
+        echo "error: cannot inspect $1 (is lab05-toxiproxy running?)" >&2
+        exit 1
+    }
+    grep -q "partition" <<< "$out"
 }
 
 case "${1:-}" in

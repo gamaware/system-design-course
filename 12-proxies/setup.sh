@@ -37,11 +37,16 @@ echo "  OpenSSL:        $(openssl version)"
 echo ""
 
 # Generate self-signed certificates. They live in certs/, which is ignored by git.
+# nginx reads its certificates only at startup, so a regenerated certificate needs fresh containers.
+CERTS_CHANGED=false
 make_cert() {
     local name="$1" common_name="$2" san="$3"
     if [ -f "$CERT_DIR/$name.crt" ] && [ -f "$CERT_DIR/$name.key" ]; then
-        echo "  $name.crt already exists, reusing it"
-        return
+        if openssl x509 -checkend 0 -noout -in "$CERT_DIR/$name.crt" > /dev/null 2>&1; then
+            echo "  $name.crt already exists, reusing it"
+            return
+        fi
+        echo "  $name.crt has expired, generating a new one"
     fi
     # MSYS_NO_PATHCONV=1 stops Git Bash on Windows from turning "/O=..." into a Windows path.
     # With conversion off, the output paths must be relative (the script already runs in its own folder).
@@ -53,6 +58,7 @@ make_cert() {
     # The nginx master process reads it as root inside the container.
     chmod 644 "$CERT_DIR/$name.crt"
     chmod 600 "$CERT_DIR/$name.key"
+    CERTS_CHANGED=true
     echo "  Created $name.crt (CN=$common_name)"
 }
 
@@ -63,7 +69,11 @@ make_cert public-site news.example.test "DNS:news.example.test"
 echo ""
 
 echo "Building the backend image and starting all containers..."
-docker compose up -d --build
+if [ "$CERTS_CHANGED" = true ]; then
+    docker compose up -d --build --force-recreate
+else
+    docker compose up -d --build
+fi
 
 echo ""
 echo "Waiting for containers to be healthy..."

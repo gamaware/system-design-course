@@ -556,7 +556,7 @@ nodes) stores it, and a node answers reads only while it can reach a majority.
 ```bash
 bash scripts/set-mode.sh cp
 curl -s -X PUT --data "10" http://localhost:18001/kv/stock
-docker exec lab05-client python /scripts/read_all.py stock
+docker exec lab05-client python /scripts/read_all.py stock --wait
 ```
 
 Expected output:
@@ -569,11 +569,13 @@ Expected output:
   node1: 10 (version 4,node1)
   node2: 10 (version 4,node1)
   node3: 10 (version 4,node1)
-replicas AGREE
+replicas AGREE after 0.01 s
 ```
 
-`acks: 2` means the client received its answer only after two nodes stored the value. No `--wait`
-was needed: the replicas already agreed when the write returned.
+`acks: 2` means the client received its answer only after two nodes, node1 and one peer, stored the
+value. The third replica may still be storing it when the answer returns, which is why `read_all.py`
+runs with `--wait`. All three agree within a few milliseconds, but only two were guaranteed to have
+the value.
 
 ### Step 5.2: Partition node1 again
 
@@ -923,7 +925,7 @@ user-visible downtime in place of MTTR:
 
 ```text
 availability = MTBF / (MTBF + downtime)
-  with checks:     3600 / (3600 + 0.40) = 99.989 %   (about four nines)
+  with checks:     3600 / (3600 + 0.40) = 99.989 %   (three nines, just short of four)
   without checks:  3600 / (3600 + 1.40) = 99.961 %   (three nines)
 ```
 

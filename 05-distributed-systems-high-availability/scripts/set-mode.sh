@@ -13,6 +13,13 @@ if [ "$mode" != "ap" ] && [ "$mode" != "cp" ]; then
     exit 1
 fi
 
+# Try every node even if one fails, so a single restarting node is reported instead of silently
+# leaving the cluster in mixed modes.
+failed=0
 for port in 18001 18002 18003; do
-    curl -sf -X POST --data "$mode" "http://localhost:$port/admin/mode"
+    if ! curl -sSf -X POST --data "$mode" "http://localhost:$port/admin/mode"; then
+        echo "error: could not set mode $mode on port $port; wait for the node and run this again" >&2
+        failed=1
+    fi
 done
+exit "$failed"

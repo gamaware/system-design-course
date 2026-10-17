@@ -206,9 +206,9 @@ Expected output:
 108:    location /orders/ {
 113:        proxy_pass http://orders_service/;
 119:    location /legacy/users/ {
-121:        proxy_pass http://users_service/;
-126:    location @rate_limited {
-131:    location / {
+124:        proxy_pass http://users_service/;
+129:    location @rate_limited {
+134:    location / {
 ```
 
 Lines 57 and 62 belong to the plain HTTP listener, which only redirects. From line 94 on, each `location` matches
@@ -609,7 +609,7 @@ Send 12 requests as fast as curl can, with the `team-alpha` key:
 ./scripts/burst.sh team-alpha 12
 ```
 
-Expected output:
+Example output:
 
 ```text
 Key: team-alpha   Requests: 12
@@ -618,8 +618,10 @@ Sequence: 200 200 200 200 429 429 429 429 429 429 429 429
   HTTP 429: 8
 ```
 
-One request at the base rate plus a burst of 3 got through. The bucket then ran dry, and the remaining 8 were
-rejected in the proxy.
+In this run, one request at the base rate plus a burst of 3 got through. The bucket then ran dry, and the remaining
+8 were rejected in the proxy. Your split may differ: the script sends one request after the other, so on a slower
+machine the bucket refills a little during the loop and one or two more get a `200`. Check that the sequence starts
+with `200` and ends with `429`.
 
 ### Step 5.4: Another client has its own bucket
 
@@ -629,7 +631,7 @@ Immediately after, send the same burst with the other key:
 ./scripts/burst.sh team-beta 12
 ```
 
-Expected output:
+Example output:
 
 ```text
 Key: team-beta   Requests: 12
@@ -638,7 +640,8 @@ Sequence: 200 200 200 200 429 429 429 429 429 429 429 429
   HTTP 429: 8
 ```
 
-`team-alpha` had just used up its bucket, yet `team-beta` got its full 4. A noisy client cannot starve the others.
+`team-alpha` had just used up its bucket, yet `team-beta` got as many `200`s as `team-alpha` did on its first
+burst. A noisy client cannot starve the others.
 
 ### Step 5.5: Read the 429 response and the proxy log
 
@@ -709,12 +712,16 @@ Expected output:
     proxy_set_header X-Forwarded-Proto $scheme;
     location /legacy/users/ {
         proxy_set_header Connection "";
+        proxy_set_header X-Real-IP "";
+        proxy_set_header X-Forwarded-For "";
+        proxy_set_header X-Forwarded-Proto "";
         proxy_pass http://users_service/;
     }
 ```
 
-The four headers are set at the `server` level. The `/legacy/users/` location sets one header of its own, and in
-nginx that cancels the inherited ones: it behaves like a proxy that forwards nothing about the client.
+The four headers are set at the `server` level. The `/legacy/users/` location sets headers of its own, and in nginx
+that cancels the inherited ones. Its empty values also drop any forwarding headers the client sent itself: it behaves
+like a proxy that forwards nothing about the client.
 
 ### Step 6.2: Before: a request through the naive rule
 

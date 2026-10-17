@@ -4,7 +4,9 @@ Each message is processed by exactly one worker. The worker acknowledges a messa
 finishes the work, so a worker that dies mid-message gives the message back to the broker.
 
 A message marked as poison always fails. The worker retries it up to MAX_ATTEMPTS times by
-publishing a copy with an "attempt" header, then rejects it so the broker dead-letters it.
+publishing a copy with an "attempt" header, then rejects it so the broker dead-letters it. The
+channel uses publisher confirms: the worker acknowledges the original only after the broker
+confirms that it stored the copy.
 
 Environment variables:
     WORKER_NAME  name printed in the logs (default: worker)
@@ -19,6 +21,7 @@ import time
 
 import broker
 import pika
+from pika.exceptions import NackError, UnroutableError
 
 WORKER_NAME = os.environ.get("WORKER_NAME", "worker")
 WORK_MS = int(os.environ.get("WORK_MS", "200"))
@@ -51,7 +54,7 @@ def parse_order(body):
 
 
 def retry_later(channel, method, properties, body, attempt):
-    """Publish a copy carrying the next attempt number, then acknowledge the original."""
+    """Publish a copy carrying the next attempt number and acknowledge the original once it is confirmed."""
     time.sleep(RETRY_DELAY_S)  # back off before retrying, so a bad message cannot spin the CPU
     headers = dict(properties.headers or {})
     headers["attempt"] = attempt + 1
@@ -61,7 +64,15 @@ def retry_later(channel, method, properties, body, attempt):
         message_id=properties.message_id,
         headers=headers,
     )
-    channel.basic_publish("", broker.ORDERS_QUEUE, body, retry_properties)
+    try:
+        # With confirms on, basic_publish waits for the broker. mandatory=True turns "no queue took it"
+        # into an error instead of a silent drop.
+        channel.basic_publish("", broker.ORDERS_QUEUE, body, retry_properties, mandatory=True)
+    except (NackError, UnroutableError) as error:
+        # The copy is not stored: keep the original by giving it back, so the order cannot disappear.
+        print(f"[{WORKER_NAME}] retry copy not confirmed ({error!r}) -> original requeued", flush=True)
+        channel.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+        return
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
@@ -70,6 +81,7 @@ def main():
     channel = connection.channel()
     broker.declare_topology(channel)
     channel.basic_qos(prefetch_count=PREFETCH)
+    channel.confirm_delivery()  # publisher confirms for the retry copies
     processed = 0
 
     def on_message(ch, method, properties, body):

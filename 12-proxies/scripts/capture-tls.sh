@@ -25,7 +25,19 @@ fi
 
 capture() {
     local filter="$1" file="$2"
-    docker exec lab12-sniffer timeout 5 tcpdump -i any -nn -A -s0 "$filter" > "$file" 2> /dev/null &
+    docker exec lab12-sniffer timeout 5 tcpdump -i any -nn -A -s0 "$filter" > "$file" 2> "$file.err" &
+}
+
+# timeout stops tcpdump after 5 seconds. tcpdump exits cleanly on that signal, and BusyBox
+# timeout passes its 0 through; GNU timeout reports 124. Any other status means the capture failed.
+wait_capture() {
+    local pid="$1" file="$2" status=0
+    wait "$pid" || status=$?
+    if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
+        echo "ERROR: The capture into $(basename "$file") failed (exit status $status):"
+        sed 's/^/  /' "$file.err"
+        exit 1
+    fi
 }
 
 echo "Marker sent in a request header: X-Lab-Marker: $MARKER"
@@ -40,9 +52,8 @@ sleep 1
 curl -s -o /dev/null --cacert "$LAB_DIR/certs/proxy.crt" \
     -H "X-Lab-Marker: $MARKER" https://localhost:8443/users/
 
-# tcpdump exits when timeout stops it; a non-zero status here is expected.
-wait "$pid_client" || true
-wait "$pid_backend" || true
+wait_capture "$pid_client" "$OUT_DIR/client-hop.txt"
+wait_capture "$pid_backend" "$OUT_DIR/backend-hop.txt"
 
 client_hits=$(grep -c "$MARKER" "$OUT_DIR/client-hop.txt" || true)
 backend_hits=$(grep -c "$MARKER" "$OUT_DIR/backend-hop.txt" || true)

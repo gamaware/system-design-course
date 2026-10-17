@@ -195,9 +195,10 @@ logs because no message was published.
 > orders were not processed yet. What did the checkout actually guarantee
 > to the customer when it returned?
 >
-> **Hint:** The producer only knows that the broker received the message.
-> Think about what the customer sees ("order received") versus what has
-> happened ("order fulfilled").
+> **Hint:** The producer only knows that it tried to publish the message:
+> without publisher confirms (Task 6) it does not even know whether the
+> broker received it. Think about what the customer sees ("order
+> received") versus what has happened ("order fulfilled").
 >
 > **Question:** If the order logic were down for 30 seconds, what would
 > happen to the synchronous checkout? And to the asynchronous one?
@@ -578,8 +579,11 @@ lab14-worker-1  | [worker-1] FAILED ORD-4001 attempt 3/3: ORD-4001 has an invali
 
 The four good orders went through while the poison one was being retried.
 Each retry is a new copy of the message with an `attempt` header; the
-attempts can land on different workers. After the third failure the
-worker calls `basic_reject(requeue=False)`.
+attempts can land on different workers. The worker acknowledges the
+original only after the broker confirms that it stored the copy (a
+publisher confirm, measured in Task 6); if the copy is not confirmed, the
+worker requeues the original instead. After the third failure the worker
+calls `basic_reject(requeue=False)`.
 
 ### Step 4.2: Find the message in the DLQ
 
@@ -623,8 +627,9 @@ click **Get Message(s)** to see the same headers and the payload.
 > **Hint:** Somebody has to fix the bug and decide what to do with the
 > order. What do they need in order to do that?
 >
-> **Question:** `retry_later` publishes the copy and then acknowledges
-> the original. What happens if the worker dies between those two lines?
+> **Question:** `retry_later` publishes the copy, waits for the broker to
+> confirm it, and then acknowledges the original. What happens if the
+> worker dies after the confirm but before the acknowledgment?
 >
 > **Hint:** Count how many copies of the message exist afterwards. Keep
 > the answer in mind for Task 5.
