@@ -142,6 +142,59 @@ const EXPLANATIONS = {
 
 let animating = false;
 
+// --- Presentation helpers (theme, icons, status wording) ---
+
+const THEME_KEY = 'lab10-visualizer-theme';
+
+// Buttons whose label the empty result state points to, per tab. Defaults to the
+// tab's primary button; CAP and Views start with a different step in the lab guide.
+const FIRST_ACTION = { cap: '#cap-stop', views: '#views-join' };
+
+const ICONS = {
+  ok: '<path d="M20 6 9 17l-5-5" />',
+  err: '<circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5h.01" />',
+  info: '<circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7.5h.01" />',
+};
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const label = document.querySelector('#btn-theme-label');
+  if (label) label.textContent = theme === 'dark' ? 'Light theme' : 'Dark theme';
+}
+
+try {
+  if (localStorage.getItem(THEME_KEY) === 'dark') applyTheme('dark');
+} catch {
+  // storage unavailable (private mode): keep the default light theme
+}
+
+function iconSvg(name) {
+  return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ICONS.info}</svg>`;
+}
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+// Map a step result string to a visual tone: ok, warn or err.
+function toneOf(text) {
+  const t = String(text ?? '').toLowerCase();
+  if (/error|fail|violation|rolled|not found|denied|refused/.test(t)) return 'err';
+  if (/not yet|stale|lag|diverged|partition/.test(t)) return 'warn';
+  return 'ok';
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function currentTab() {
+  return document.querySelector('.tab.active')?.dataset.tab || 'replication';
+}
+
 function $(sel) {
   return document.querySelector(sel);
 }
@@ -197,6 +250,13 @@ function setButtonsDisabled(d) {
   $$('button').forEach((b) => {
     b.disabled = d;
   });
+  document.body.classList.toggle('is-busy', d);
+  $('#main-area')?.setAttribute('aria-busy', String(d));
+  const panel = $('#result-panel');
+  if (panel) {
+    panel.classList.toggle('is-running', d);
+    if (d) renderResultRunning();
+  }
 }
 
 function clearAnimations() {
@@ -257,15 +317,16 @@ function logEvent(step) {
 
   const time = new Date().toLocaleTimeString('en-US', { hour12: false });
   const targetCls = step.target === 'primary' ? 'primary' : 'replica';
-  const resultCls =
-    step.result === 'OK' || step.result === 'FOUND' || step.result === 'COMMITTED' ? 'ok' : 'error';
+  const tone = toneOf(step.result);
+  const resultCls = tone === 'err' ? 'error' : tone;
 
-  entry.innerHTML =
-    `<span class="log-time">${time}</span>` +
-    `<span class="log-action">${step.action}</span>` +
-    `<span class="log-target ${targetCls}">${step.target}</span>` +
-    `<span class="log-result ${resultCls}">${step.result}</span>` +
-    `<span class="log-latency">${step.latency_ms.toFixed(1)}ms</span>`;
+  entry.append(
+    el('span', 'log-time', time),
+    el('span', 'log-action', step.action),
+    el('span', `log-target ${targetCls}`, step.target),
+    el('span', `log-result ${resultCls}`, step.result ?? 'ERROR'),
+    el('span', 'log-latency', `${Number(step.latency_ms || 0).toFixed(1)}ms`),
+  );
 
   log.prepend(entry);
   while (log.children.length > MAX_LOG_ENTRIES) {
@@ -285,25 +346,140 @@ function showExplanation(tab) {
     return;
   }
 
-  container.innerHTML = items
-    .map(
-      (item, i) =>
-        `<div class="explanation-step" id="exp-step-${i}">
-      <h4>${item.title}</h4>
-      <p>${item.detail}</p>
-    </div>`,
-    )
-    .join('');
+  container.replaceChildren(
+    ...items.map((item, i) => {
+      // Titles carry their own number ("1. INSERT on Primary"): show it as a badge.
+      const match = /^(\d+)\.\s*(.*)$/.exec(item.title);
+      const li = el('li', 'explanation-step');
+      li.id = `exp-step-${i}`;
+      const body = el('div');
+      body.append(el('h3', '', match ? match[2] : item.title), el('p', '', item.detail));
+      li.append(el('span', 'step-num', match ? match[1] : String(i + 1)), body);
+      return li;
+    }),
+  );
   panel.classList.remove('hidden');
 }
 
 function highlightExpStep(index) {
-  $$('.explanation-step').forEach((el, i) => {
-    el.classList.toggle('active', i === index);
+  $$('.explanation-step').forEach((step, i) => {
+    step.classList.toggle('active', i === index);
   });
 }
 
 // --- Result Panel ---
+
+const COLUMN_LABELS = { action: 'Step', result: 'Result', ms: 'Time (ms)' };
+const HIDDEN_RESULT_KEYS = new Set(['interpretation', 'steps']);
+const CONNECTION_ERROR = /connect|connection|gone away|lost|refused|timed out|timeout/i;
+
+function isNumeric(v) {
+  return typeof v === 'number' || /^-?\d+(\.\d+)?$/.test(String(v));
+}
+
+function formatValue(v) {
+  if (v === null || v === undefined) return 'NULL';
+  if (typeof v === 'object') return JSON.stringify(v);
+  return String(v);
+}
+
+function clearResultExtras(panel) {
+  panel.querySelector('.result-interpretation')?.remove();
+}
+
+function renderResultEmpty(tab) {
+  const panel = $('#result-panel');
+  if (!panel) return;
+  const btn = $(FIRST_ACTION[tab] || `#controls-${tab} .btn-primary`);
+  const label = btn ? btn.textContent.trim() : 'a button above';
+
+  panel.classList.remove('hidden');
+  panel.dataset.state = 'empty';
+  $('#result-status').className = 'result-status';
+  $('#result-status').textContent = '';
+  $('#result-latency').textContent = '';
+  $('#result-data').textContent = '';
+  clearResultExtras(panel);
+
+  const empty = el('div', 'result-empty');
+  const hint = el('p');
+  hint.append('Press ', el('b', '', label), ' to run this experiment. ');
+  hint.append('Each step lights up on the diagram and the outcome appears here.');
+  empty.append(el('span', 'result-empty-title', 'No result yet'), hint);
+  $('#result-body').replaceChildren(empty);
+}
+
+function renderResultRunning() {
+  const panel = $('#result-panel');
+  panel.dataset.state = 'neutral';
+  $('#result-status').className = 'result-status';
+  $('#result-status').textContent = 'Running…';
+  $('#result-latency').textContent = '';
+  $('#result-body').replaceChildren(
+    el('p', 'result-hint', 'Watch the diagram and the steps below.'),
+  );
+  $('#result-data').textContent = '';
+  clearResultExtras(panel);
+}
+
+function renderErrorBody(message) {
+  const wrap = el('div');
+  wrap.append(el('p', 'result-error-message', message));
+  if (CONNECTION_ERROR.test(message)) {
+    wrap.append(
+      el(
+        'p',
+        'result-hint',
+        'MySQL may still be starting: it takes about a minute after ./setup.sh. ' +
+          'Wait, then try again. If it keeps failing, check the containers with docker ps.',
+      ),
+    );
+  }
+  return wrap;
+}
+
+// Render API data as a table (list of steps) or key/value list (plan, stats).
+function renderResultData(data) {
+  if (data && typeof data === 'object' && !Array.isArray(data) && data.error) {
+    return renderErrorBody(String(data.error));
+  }
+
+  if (Array.isArray(data) && data.length && data.every((r) => r && typeof r === 'object')) {
+    const cols = [...new Set(data.flatMap((r) => Object.keys(r)))];
+    const table = el('table', 'result-table');
+    const head = el('tr');
+    cols.forEach((c) => {
+      const th = el('th', isNumeric(data[0][c]) ? 'num' : '', COLUMN_LABELS[c] || c);
+      th.scope = 'col';
+      head.append(th);
+    });
+    const tbody = el('tbody');
+    data.forEach((row) => {
+      const tr = el('tr');
+      cols.forEach((c) => {
+        const v = row[c];
+        let cls = isNumeric(v) ? 'num' : '';
+        if (c === 'result') cls = `val-${toneOf(v)}`;
+        tr.append(el('td', cls, formatValue(v)));
+      });
+      tbody.append(tr);
+    });
+    const thead = el('thead');
+    thead.append(head);
+    table.append(thead, tbody);
+    return table;
+  }
+
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    const entries = Object.entries(data).filter(([k]) => !HIDDEN_RESULT_KEYS.has(k));
+    if (entries.length === 0) return null;
+    const dl = el('dl', 'kv-list');
+    entries.forEach(([k, v]) => dl.append(el('dt', '', k), el('dd', '', formatValue(v))));
+    return dl;
+  }
+
+  return null;
+}
 
 function showResult(status, latency, data, cls, apiResult) {
   const panel = $('#result-panel');
@@ -311,21 +487,27 @@ function showResult(status, latency, data, cls, apiResult) {
   const latencyEl = $('#result-latency');
   const dataEl = $('#result-data');
 
-  statusEl.textContent = status;
+  const tone = cls === 'committed' ? 'ok' : cls === 'rolled-back' ? 'err' : 'neutral';
+  panel.dataset.state = tone;
   statusEl.className = `result-status ${cls || ''}`;
-  latencyEl.textContent = `${latency.toFixed(1)}ms total`;
+  statusEl.innerHTML = iconSvg(tone === 'neutral' ? 'info' : tone);
+  statusEl.append(el('span', '', status));
+  latencyEl.textContent = `${Number(latency || 0).toFixed(1)}ms total`;
   dataEl.textContent = JSON.stringify(data, null, 2);
   panel.classList.remove('hidden');
 
-  // Show interpretation below the JSON
-  const existingInterp = panel.querySelector('.result-interpretation');
-  if (existingInterp) existingInterp.remove();
+  const rendered = renderResultData(data);
+  $('#result-body').replaceChildren(...(rendered ? [rendered] : []));
+
+  // Interpretation: what the result means, in plain language
+  clearResultExtras(panel);
   if (apiResult?.interpretation) {
-    const iDiv = document.createElement('div');
-    iDiv.className = 'result-interpretation';
-    iDiv.textContent = apiResult.interpretation;
-    panel.appendChild(iDiv);
+    const iDiv = el('div', 'result-interpretation');
+    iDiv.append(el('strong', '', 'What this means'), apiResult.interpretation);
+    panel.insertBefore(iDiv, panel.querySelector('.result-raw'));
   }
+
+  panel.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 
   // Log SQL queries to the console (without interpretation)
   if (apiResult) {
@@ -333,45 +515,167 @@ function showResult(status, latency, data, cls, apiResult) {
   }
 }
 
+// A request that never got an answer (server down, network error).
+function showUnreachable() {
+  const panel = $('#result-panel');
+  if (!panel) return;
+  panel.classList.remove('is-running');
+  panel.dataset.state = 'err';
+  $('#result-status').className = 'result-status rolled-back';
+  $('#result-status').innerHTML = iconSvg('err');
+  $('#result-status').append(el('span', '', 'No response from the visualizer'));
+  $('#result-latency').textContent = '';
+  clearResultExtras(panel);
+  $('#result-body').replaceChildren(
+    el(
+      'p',
+      'result-hint',
+      'The request did not reach the server. Check that the lab containers are running ' +
+        '(docker ps), then reload this page.',
+    ),
+  );
+}
+
 // --- Sidebar Update ---
+
+function threadTone(value) {
+  if (value === 'Yes') return 'ok';
+  if (value === 'No') return 'err';
+  return value ? 'warn' : '';
+}
+
+function setHealth(tone, title, detail) {
+  const box = $('#repl-health');
+  if (!box) return;
+  box.dataset.state = tone;
+  $('#repl-health-title').textContent = title;
+  $('#repl-health-detail').textContent = detail;
+}
+
+// Turn the raw replica status into one sentence a class can read from the back row.
+function renderReplicationHealth(state) {
+  const r = state.replica || {};
+  const io = r.io_running;
+  const sql = r.sql_running;
+  const lag = r.lag;
+  const diagram = $('#diagram');
+  let partitioned = false;
+  let lagging = false;
+
+  if (!io && !sql) {
+    setHealth(
+      'warn',
+      'Replication not configured',
+      'The replica reports no replication status. Run ./setup.sh again to configure it.',
+    );
+  } else if (io === 'Connecting') {
+    lagging = true;
+    setHealth(
+      'warn',
+      'Replica connecting…',
+      'The replica is reconnecting to the primary. Wait a few seconds.',
+    );
+  } else if (io !== 'Yes' || sql !== 'Yes') {
+    partitioned = true;
+    setHealth(
+      'err',
+      'Replication stopped',
+      `IO thread: ${io || '--'}, SQL thread: ${sql || '--'}. New writes stay on the primary ` +
+        'until you click Start Replication (CAP Theorem tab).',
+    );
+  } else if (typeof lag === 'number' && lag > 0) {
+    lagging = true;
+    setHealth(
+      'warn',
+      `Replica ${lag} s behind`,
+      'Reads from the replica can return stale data until it catches up.',
+    );
+  } else {
+    setHealth('ok', 'In sync', 'The replica has applied every change from the primary.');
+  }
+
+  if (diagram) {
+    diagram.classList.toggle('is-partitioned', partitioned);
+    diagram.classList.toggle('is-lagging', lagging);
+  }
+}
+
+function renderRowDiff(state) {
+  const p = state.primary?.students;
+  const r = state.replica?.students;
+  const note = $('#row-diff');
+  const replicaRows = $('#stat-replica-rows');
+  const differs = typeof p === 'number' && typeof r === 'number' && p !== r;
+  replicaRows.classList.toggle('warn', differs);
+  if (!note) return;
+  note.hidden = !differs;
+  if (differs) {
+    const n = Math.abs(p - r);
+    note.textContent = `Replica has ${n} ${n === 1 ? 'row' : 'rows'} ${
+      p > r ? 'fewer' : 'more'
+    } than the primary.`;
+  }
+}
+
+function setFreshness(live) {
+  const f = $('#state-freshness');
+  if (!f) return;
+  f.dataset.state = live ? 'live' : 'offline';
+  // While offline the numbers below are the last known values: show them as stale.
+  document.querySelector('.sidebar')?.classList.toggle('is-stale', !live);
+  f.textContent = live ? `Live · every ${POLL_INTERVAL_MS / 1000} s` : 'Offline';
+}
 
 async function updateSidebar() {
   try {
     const state = await apiGet('/api/db/state');
 
     $('#stat-io').textContent = state.replica?.io_running || '--';
-    $('#stat-io').className = 'stat-value ' + (state.replica?.io_running === 'Yes' ? 'ok' : 'warn');
+    $('#stat-io').className = `stat-value ${threadTone(state.replica?.io_running)}`;
 
     $('#stat-sql').textContent = state.replica?.sql_running || '--';
-    $('#stat-sql').className =
-      'stat-value ' + (state.replica?.sql_running === 'Yes' ? 'ok' : 'warn');
+    $('#stat-sql').className = `stat-value ${threadTone(state.replica?.sql_running)}`;
 
     const lag = state.replica?.lag;
     $('#stat-lag').textContent = lag !== null && lag !== undefined ? lag : '--';
-    $('#stat-lag').className = 'stat-value ' + (lag === 0 ? 'ok' : 'warn');
+    $('#stat-lag').className = 'stat-value stat-big ' + (lag === 0 ? 'ok' : 'warn');
 
     $('#stat-primary-rows').textContent = state.primary?.students || '--';
     $('#stat-replica-rows').textContent = state.replica?.students || '--';
-    $('#stat-log-rows').textContent = state.primary?.access_log_rows || '--';
+    const logRows = state.primary?.access_log_rows;
+    $('#stat-log-rows').textContent =
+      typeof logRows === 'number' && logRows ? logRows.toLocaleString('en-US') : logRows || '--';
 
     // Courses
-    const courseList = $('#course-list');
-    courseList.innerHTML = (state.primary?.courses || [])
-      .map(
-        (c) =>
-          `<li class="course-item">
-        <span class="course-code">${c.code}</span>
-        <span class="course-enrolled">${c.enrolled} enrolled</span>
-      </li>`,
-      )
-      .join('');
+    $('#course-list').replaceChildren(
+      ...(state.primary?.courses || []).map((c) => {
+        const li = el('li', 'course-item');
+        const count = el('span', 'course-enrolled');
+        count.append(el('b', '', String(c.enrolled)), ' enrolled');
+        li.append(el('span', 'course-code', c.code), count);
+        return li;
+      }),
+    );
 
     // Indexes
     const indexes = state.primary?.indexes || [];
     const unique = [...new Set(indexes)];
-    $('#index-list').textContent = unique.length > 0 ? unique.join(', ') : 'None';
+    $('#index-list').replaceChildren(
+      ...(unique.length > 0 ? unique.map((name) => el('span', 'index-chip', name)) : ['None']),
+    );
+
+    renderReplicationHealth(state);
+    renderRowDiff(state);
+    setFreshness(true);
   } catch {
-    // silently retry next poll
+    // Keep polling; tell the class what is going on in the meantime.
+    setFreshness(false);
+    setHealth(
+      'err',
+      'Database unreachable',
+      'The visualizer cannot read MySQL. Right after ./setup.sh this is normal for about a ' +
+        'minute; otherwise check the containers with docker ps. Retrying every 3 seconds.',
+    );
   }
 }
 
@@ -922,7 +1226,7 @@ async function doReset() {
   const result = await apiPost('/api/db/reset', {});
   logEvent({ action: 'RESET DB', target: 'primary', result: result.result || 'OK', latency_ms: 0 });
   await updateSidebar();
-  $('#result-panel').classList.add('hidden');
+  renderResultEmpty(currentTab());
   $('#explanation-panel').classList.add('hidden');
   clearAnimations();
 }
@@ -932,9 +1236,15 @@ async function doReset() {
 function initTabs() {
   $$('.tab').forEach((tab) => {
     tab.addEventListener('click', () => {
-      $$('.tab').forEach((t) => t.classList.remove('active'));
+      $$('.tab').forEach((t) => {
+        t.classList.remove('active');
+        t.removeAttribute('aria-current');
+      });
       tab.classList.add('active');
+      tab.setAttribute('aria-current', 'true');
       const target = tab.dataset.tab;
+      const title = $('#experiment-title');
+      if (title) title.textContent = tab.textContent.trim();
       $$('.controls').forEach((p) => {
         p.classList.toggle('active', p.id === `controls-${target}`);
       });
@@ -944,7 +1254,7 @@ function initTabs() {
       }
       showExplanation(target);
       clearAnimations();
-      $('#result-panel').classList.add('hidden');
+      renderResultEmpty(target);
     });
   });
 }
@@ -987,6 +1297,7 @@ async function doSqlExec() {
     const headerRow = document.createElement('tr');
     result.columns.forEach((col) => {
       const th = document.createElement('th');
+      th.scope = 'col';
       th.textContent = col;
       headerRow.appendChild(th);
     });
@@ -999,7 +1310,10 @@ async function doSqlExec() {
       const tr = document.createElement('tr');
       result.columns.forEach((col) => {
         const td = document.createElement('td');
-        td.textContent = result.rows[i][col] ?? 'NULL';
+        const value = result.rows[i][col];
+        td.textContent = value ?? 'NULL';
+        if (value === null || value === undefined) td.className = 'null';
+        else if (isNumeric(value)) td.className = 'num';
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -1129,17 +1443,12 @@ function initTooltips() {
   const popup = $('#tooltip-popup');
   if (!popup) return;
 
-  document.addEventListener('mouseover', (e) => {
-    const el = e.target.closest('[data-tooltip]');
-    if (!el) {
-      popup.classList.remove('visible');
-      return;
-    }
-    popup.textContent = el.dataset.tooltip;
+  function show(target) {
+    popup.textContent = target.dataset.tooltip;
     popup.classList.add('visible');
 
     // Position above the element
-    const rect = el.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
     const popupW = popup.offsetWidth;
     const popupH = popup.offsetHeight;
     let left = rect.left + rect.width / 2 - popupW / 2;
@@ -1157,23 +1466,63 @@ function initTooltips() {
 
     popup.style.left = left + 'px';
     popup.style.top = top + 'px';
+  }
+
+  document.addEventListener('mouseover', (e) => {
+    const target = e.target.closest('[data-tooltip]');
+    if (!target) {
+      popup.classList.remove('visible');
+      return;
+    }
+    show(target);
   });
 
   document.addEventListener('mouseout', (e) => {
-    const el = e.target.closest('[data-tooltip]');
-    if (!el) return;
+    const target = e.target.closest('[data-tooltip]');
+    if (!target) return;
     // Only hide if we're leaving the tooltip target
     const related = e.relatedTarget;
-    if (related && el.contains(related)) return;
+    if (related && target.contains(related)) return;
     popup.classList.remove('visible');
   });
+
+  // Keyboard users get the same hint when a control receives focus.
+  document.addEventListener('focusin', (e) => {
+    const target = e.target.closest?.('[data-tooltip]');
+    if (target && target.matches(':focus-visible')) show(target);
+    else popup.classList.remove('visible');
+  });
+  document.addEventListener('focusout', () => popup.classList.remove('visible'));
 }
+
+function initTheme() {
+  const btn = $('#btn-theme');
+  if (!btn) return;
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  btn.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      // storage unavailable: the choice lasts until reload
+    }
+  });
+}
+
+// Requests that fail before the server answers (container stopped, network error).
+window.addEventListener('unhandledrejection', (e) => {
+  console.error(e.reason);
+  showUnreachable();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initButtons();
   initConsole();
   initTooltips();
+  initTheme();
   startPolling();
   showExplanation('replication');
+  renderResultEmpty('replication');
 });
