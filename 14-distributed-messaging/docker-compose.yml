@@ -1,0 +1,75 @@
+name: lab14
+
+services:
+  rabbitmq:
+    # Pinned to an exact release: a moving tag can change behavior between two runs of the lab.
+    image: rabbitmq:4.3.5-management-alpine
+    container_name: lab14-rabbitmq
+    # RabbitMQ names its node after the hostname and stores data under that name, so it must be stable.
+    hostname: lab14-rabbitmq
+    # Published on 127.0.0.1 only: the credentials below are public, so other machines must not reach the broker.
+    ports:
+      - "127.0.0.1:5672:5672"     # AMQP, the protocol producers and consumers speak
+      - "127.0.0.1:15672:15672"   # management web console and HTTP API
+    environment:
+      - RABBITMQ_DEFAULT_USER=lab14
+      - RABBITMQ_DEFAULT_PASS=lab14-pass
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+      interval: 5s
+      timeout: 10s
+      retries: 24
+      start_period: 10s
+
+  worker-1: &worker
+    build: ./app
+    image: lab14-app:local
+    container_name: lab14-worker-1
+    init: true
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - WORKER_NAME=worker-1
+      - WORK_MS=${WORK_MS:-200}
+      - LOG_EVERY=${LOG_EVERY:-1}
+    command: ["python", "worker.py"]
+
+  # A second competing consumer. Not started by setup.sh: you start it in Task 2.
+  worker-2:
+    <<: *worker
+    container_name: lab14-worker-2
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - WORKER_NAME=worker-2
+      - WORK_MS=${WORK_MS:-200}
+      - LOG_EVERY=${LOG_EVERY:-1}
+    profiles:
+      - scale
+
+  # Where you run the producer, the subscribers, the payment consumer and the monitor.
+  tools:
+    image: lab14-app:local
+    # Built by worker-1 (same image); never try to pull it from a registry.
+    pull_policy: never
+    container_name: lab14-tools
+    init: true
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      worker-1:
+        condition: service_started
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - LEDGER_PATH=/data/ledger.db
+    volumes:
+      - ledger-data:/data
+    command: ["sleep", "infinity"]
+
+volumes:
+  rabbitmq-data:
+  ledger-data:

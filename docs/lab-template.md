@@ -25,8 +25,9 @@ What students need before starting: tools, accounts, prior labs, knowledge.
 
 ### 5. Architecture
 
-Mermaid diagram showing the lab environment, components, and their
-relationships. Use color to highlight key elements.
+Architecture diagram showing the lab environment, components, and their
+relationships. Follow `docs/DIAGRAMS.md`: draw.io source committed next to a
+PNG, generated with the AWS architecture diagram skill. Do not use Mermaid.
 
 ### 6. Lab Structure
 

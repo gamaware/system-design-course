@@ -77,8 +77,6 @@ Lab teaching DNS fundamentals through practical exercises. Students learn to:
 **Key Concepts**: DNS resolution, DNS record types, authoritative DNS servers, DNS load balancing, Round Robin
 
 #### [05 — Key Characteristics of Distributed Systems: High Availability](./05-distributed-systems-high-availability)
->
-> Coming soon — content being migrated from AWS Academy.
 
 #### [06 — Security: HTTPS, OAuth 2.0 and Keycloak](./06-security-https-oauth2-keycloak)
 
@@ -150,11 +148,11 @@ Java (Jedis)
 **Key Concepts**: cache-aside, read-through, write-through, write-back, LRU eviction,
 LFU eviction, TTL expiration, cache invalidation, eviction policies
 
-#### [12 — Proxies](./12-proxies) _(coming soon)_
+#### [12 — Proxies](./12-proxies)
 
 #### [13 — Solutions Architecture](./13-solutions-architecture) _(coming soon)_
 
-#### [14 — Distributed Messaging](./14-distributed-messaging) _(coming soon)_
+#### [14 — Distributed Messaging](./14-distributed-messaging)
 
 #### [15 — Serverless](./15-serverless) _(coming soon)_
 
