@@ -63,30 +63,9 @@ The lab environment runs entirely in Docker Compose. Redis serves as the
 cache layer, a Python HTTP app simulates a slow database backend, and the
 student application implements caching patterns in their chosen language.
 
-```mermaid
-graph LR
-    subgraph Docker ["Docker Compose Network"]
-        subgraph Student ["Student Application"]
-            APP["C++ / C# / Java<br>(cache logic)"]
-        end
+![Redis, the Python origin and the student app as containers on one Compose network](diagrams/lab11-architecture.png)
 
-        subgraph Cache ["Cache Layer"]
-            REDIS[("Redis 7<br>port 6379")]
-        end
-
-        subgraph Origin ["Simulated Database"]
-            BACKEND[("Python API<br>port 5000<br>(500ms delay)")]
-        end
-    end
-
-    %% Cache-aside data flow
-    APP -->|"1. Check cache"| REDIS
-    REDIS ==>|"2a. Cache HIT<br>(<5ms)"| APP
-    APP -->|"2b. Cache MISS"| BACKEND
-    BACKEND ==>|"3. Response<br>(~500ms)"| APP
-    APP -->|"4. Store in cache"| REDIS
-
-```
+[Edit this diagram](diagrams/lab11-architecture.drawio)
 
 **Data flow (cache-aside pattern):**
 
@@ -100,6 +79,7 @@ graph LR
 ```text
 11-caching/
 ├── README.md                          # This file (lab overview)
+├── diagrams/                          # Architecture diagrams (draw.io source + PNG)
 ├── LAB-MACOS.md                       # Lab instructions (macOS/Linux)
 ├── LAB-WINDOWS.md                     # Lab instructions (Windows/PowerShell)
 ├── docker-compose.yml                 # Redis + backend + language profiles
@@ -217,126 +197,36 @@ locally built Docker images.
 The application manages the cache directly. On a miss, it fetches from the
 backend and stores the result for future requests.
 
-```mermaid
-sequenceDiagram
-    participant App as Application
-    participant Cache as Redis
-    participant DB as Backend DB
+![A first read that misses and fills Redis, then a second read served from Redis alone](diagrams/lab11-cache-aside.png)
 
-    %% First request: cache miss
-    App ->> Cache: GET product:1
-    Cache -->> App: (nil) -- cache MISS
-
-    App ->> DB: GET /products/1
-    DB -->> App: {product data} (500ms)
-
-    App ->> Cache: SET product:1
-    Cache -->> App: OK
-
-    %% Second request: cache hit
-    Note over App, Cache: Next request for product:1
-    App ->> Cache: GET product:1
-    Cache -->> App: {product data} -- cache HIT (1ms)
-```
+[Edit this diagram](diagrams/lab11-cache-aside.drawio)
 
 #### Read-Through with TTL
 
 Same as cache-aside but wrapped in a reusable helper with automatic
 expiration. The key expires after the TTL, forcing a fresh fetch.
 
-```mermaid
-sequenceDiagram
-    participant App as Application
-    participant Cache as Redis
-    participant DB as Backend DB
+![A miss cached with a 30 second expiry, then a read after the key expired](diagrams/lab11-read-through-ttl.png)
 
-    %% Initial fetch with TTL
-    App ->> Cache: GET product:2
-    Cache -->> App: (nil) -- cache MISS
-
-    App ->> DB: GET /products/2
-    DB -->> App: {product data} (500ms)
-
-    App ->> Cache: SETEX product:2 30 {data}
-    Cache -->> App: OK
-
-    Note over Cache: TTL counting down: 30...29...28...
-
-    %% After TTL expires, key is gone
-    Note over App, Cache: After 30 seconds
-    App ->> Cache: GET product:2
-    Cache -->> App: (nil) -- key expired
-    App ->> DB: GET /products/2
-    DB -->> App: {fresh data}
-```
+[Edit this diagram](diagrams/lab11-read-through-ttl.drawio)
 
 #### Write-Through
 
 Every write goes to both the backend and the cache synchronously.
 The cache is always up-to-date but writes are slower.
 
-```mermaid
-sequenceDiagram
-    participant App as Application
-    participant Cache as Redis
-    participant DB as Backend DB
+![The origin written first, then Redis, inside one call, and a read served from Redis](diagrams/lab11-write-through.png)
 
-    %% Synchronous write to both backend and cache
-    App ->> DB: PUT /products/1 {price: 99.99}
-    DB -->> App: OK (500ms)
-
-    App ->> Cache: SET product:1 {price: 99.99}
-    Cache -->> App: OK (1ms)
-
-    Note over App: Total write time: ~501ms
-
-    %% Read always returns fresh data
-    Note over App, Cache: Subsequent read
-    App ->> Cache: GET product:1
-    Cache -->> App: {price: 99.99} -- always fresh
-```
+[Edit this diagram](diagrams/lab11-write-through.drawio)
 
 #### Write-Back (Write-Behind)
 
 Writes go to the cache only. A separate flush process pushes dirty
 entries to the backend later. Fastest writes but risks data loss.
 
-```mermaid
-sequenceDiagram
-    participant App as Application
-    participant Cache as Redis
-    participant DB as Backend DB
+![Writes that reach only Redis and a dirty set, and a later flush that writes the origin](diagrams/lab11-write-back.png)
 
-    %% Fast writes go to cache only
-    App ->> Cache: SET product:3 {new data}
-    Cache -->> App: OK (1ms)
-    App ->> Cache: SADD dirty_keys product:3
-    Cache -->> App: OK
-
-    App ->> Cache: SET product:4 {new data}
-    Cache -->> App: OK (1ms)
-    App ->> Cache: SADD dirty_keys product:4
-    Cache -->> App: OK
-
-    Note over App: Writes are instant (~1ms each)
-
-    %% Asynchronous flush to backend
-    Note over App, DB: Later: flush dirty keys
-    App ->> Cache: SMEMBERS dirty_keys
-    Cache -->> App: [product:3, product:4]
-
-    App ->> Cache: GET product:3
-    Cache -->> App: {data}
-    App ->> DB: PUT /products/3
-    DB -->> App: OK (500ms)
-    App ->> Cache: SREM dirty_keys product:3
-
-    App ->> Cache: GET product:4
-    Cache -->> App: {data}
-    App ->> DB: PUT /products/4
-    DB -->> App: OK (500ms)
-    App ->> Cache: SREM dirty_keys product:4
-```
+[Edit this diagram](diagrams/lab11-write-back.drawio)
 
 ### Caching Pattern Decision Guide
 

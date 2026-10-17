@@ -1,0 +1,201 @@
+<mxfile host="Electron" version="29.6.1">
+  <diagram name="Page-1" id="lab10-mongodb">
+    <mxGraphModel dx="1980" dy="1100" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1880" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-group" value="" style="group;fontFamily=Helvetica;" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1070" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="title-text" value="Lab 10 - MongoDB Replica Set" style="text;html=1;resizable=1;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry width="1050" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle-text" value="One elected primary takes every write and streams its oplog to two secondaries, which serve reads but refuse writes" style="text;html=1;resizable=0;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="40" width="1045" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="title-separator" value="" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="70" width="1060" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="docker-band" value="Docker Compose network - replica set rs0 (mongo:7)" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="280" y="150" width="840" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="quorum-box" value="" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="330" y="270" width="250" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="quorum-text" value="&lt;div&gt;&lt;b&gt;Election&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;Three voting members. A member needs a majority, &lt;b&gt;2 of 3&lt;/b&gt; votes, to become primary. mongo1 carries priority 2 and wins the first vote.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=2;spacingLeft=6;fontSize=12;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="338" y="278" width="234" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="client-box" value="Shell Client" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#ED7100;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="410" width="130" height="118" as="geometry" />
+        </mxCell>
+        <mxCell id="client-icon" value="mongosh&lt;div&gt;&lt;i&gt;docker exec&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_application;shadow=1;fontFamily=Helvetica;" vertex="1" parent="client-box">
+          <mxGeometry x="41" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo1-box" value="Primary Member" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#F5E6F7;strokeColor=#C925D1;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#C925D1;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="420" y="410" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo1-icon" value="mongo1&lt;div&gt;&lt;i&gt;priority 2, port 27017&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="mongo1-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo2-box" value="Secondary Member" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#F5E6F7;strokeColor=#C925D1;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#C925D1;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="250" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo2-icon" value="mongo2&lt;div&gt;&lt;i&gt;priority 1, port 27018&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="mongo2-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo3-box" value="Secondary Member" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#F5E6F7;strokeColor=#C925D1;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#C925D1;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="640" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo3-icon" value="mongo3&lt;div&gt;&lt;i&gt;priority 1, port 27019&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="mongo3-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="e-write" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=block;startFill=1;" edge="1" parent="1" source="client-box" target="mongo1-icon">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-write-label" value="insertOne / find" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-write">
+          <mxGeometry x="0" relative="1" as="geometry">
+            <mxPoint x="0" y="-18" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-oplog2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="mongo1-icon" target="mongo2-icon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="452" />
+              <mxPoint x="600" y="304" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-oplog2-label" value="oplog stream" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-oplog2">
+          <mxGeometry x="0.45" relative="1" as="geometry">
+            <mxPoint x="0" y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-oplog3" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="mongo1-icon" target="mongo3-icon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="476" />
+              <mxPoint x="640" y="682" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-oplog3-label" value="oplog stream" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-oplog3">
+          <mxGeometry x="0.45" relative="1" as="geometry">
+            <mxPoint x="0" y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-secread" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=block;startFill=1;" edge="1" parent="1" source="client-box" target="mongo2-icon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="145" y="210" />
+              <mxPoint x="860" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-secread-label" value="setReadPref('secondary') then find" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-secread">
+          <mxGeometry x="0" relative="1" as="geometry">
+            <mxPoint x="160" y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-reject" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;endArrow=block;endFill=1;strokeColor=#D13212;strokeWidth=1.5;dashed=1;dashPattern=6 6;fontFamily=Helvetica;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.85;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="client-box" target="mongo3-icon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="145" y="790" />
+              <mxPoint x="700" y="790" />
+              <mxPoint x="700" y="711" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-reject-label" value="insertOne on a secondary is refused: not primary" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=#D13212;fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-reject">
+          <mxGeometry x="0" relative="1" as="geometry">
+            <mxPoint x="60" y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-heartbeat" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;endArrow=open;endFill=0;startArrow=open;startFill=0;strokeColor=#879196;strokeWidth=1.5;dashed=1;dashPattern=1 4;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="mongo2-icon" target="mongo3-icon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="304" />
+              <mxPoint x="1000" y="694" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-heartbeat-label" value="heartbeats and votes" style="edgeLabel;html=1;horizontal=0;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-heartbeat">
+          <mxGeometry x="0" relative="1" as="geometry">
+            <mxPoint x="16" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="badge-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="292" y="310" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="222" y="414" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="616" y="376" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="222" y="490" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="884" y="212" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="740" y="740" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-7" value="7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="620" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bg" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=20;indent=5;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="30" width="650" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="62" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-1" value="&lt;div&gt;&lt;b&gt;The members elect a primary&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;rs.initiate&lt;/b&gt; declares the three members. They vote, and mongo1 wins because its priority is 2 against 1. Exactly one primary exists at a time.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="60" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="152" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-2" value="&lt;div&gt;&lt;b&gt;Every write lands on the primary&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;insertOne&lt;/b&gt; is accepted only by mongo1. With &lt;b&gt;w:majority&lt;/b&gt; the call waits until 2 of the 3 members have stored the change.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="150" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="242" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-3" value="&lt;div&gt;&lt;b&gt;The oplog carries the change&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Both secondaries tail the primary's operation log and replay it, so all three members converge on the same documents.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="240" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="332" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-4" value="&lt;div&gt;&lt;b&gt;Reading the primary is the safe read&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; A &lt;b&gt;find&lt;/b&gt; on mongo1 sees the write that was just acknowledged, because the primary holds the authoritative copy.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="330" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="422" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-5" value="&lt;div&gt;&lt;b&gt;Reading a secondary spreads the load&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; With &lt;b&gt;setReadPref('secondary')&lt;/b&gt; the query runs on mongo2. The answer can be a moment behind the primary, which is the price of the extra read capacity.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="420" width="548" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="532" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-6" value="&lt;div&gt;&lt;b&gt;A secondary refuses writes&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; The same insert sent to mongo3 fails with &lt;b&gt;not primary&lt;/b&gt;. One writer keeps the order of operations single and the oplog linear, so no member can diverge.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="530" width="548" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-7" value="7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="642" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-7" value="&lt;div&gt;&lt;b&gt;Heartbeats decide the next primary&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Members ping each other. If mongo1 disappears, mongo2 and mongo3 are still 2 of 3 and elect a new primary on their own. MySQL needs an operator for the same step.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="640" width="548" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-footer-box" value="" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1192" y="722" width="606" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-footer-text" value="&lt;div&gt;&lt;b&gt;What the Compose file starts&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Three &lt;b&gt;mongo:7&lt;/b&gt; containers started with &lt;b&gt;--replSet rs0&lt;/b&gt;, published on ports 27017, 27018 and 27019, each with its own volume.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=2;spacingLeft=6;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1202" y="730" width="586" height="72" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

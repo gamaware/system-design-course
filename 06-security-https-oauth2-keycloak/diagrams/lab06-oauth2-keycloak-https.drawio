@@ -1,0 +1,241 @@
+<mxfile host="Electron" version="29.6.1">
+  <diagram name="Page-1" id="lab06-oauth2-keycloak">
+    <mxGraphModel dx="1800" dy="1020" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1720" pageHeight="1010" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-group" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="1">
+          <mxGeometry height="83" width="950" x="50" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="title-text" style="text;html=1;resizable=1;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;" value="Lab 06 - Security with HTTPS, OAuth 2.0 and Keycloak" vertex="1" parent="title-group">
+          <mxGeometry height="42" width="940" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle-text" style="text;html=1;resizable=0;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontFamily=Helvetica;" value="Keycloak on EC2 issues OAuth 2.0 tokens over HTTPS and the Flask API validates every call by token introspection" vertex="1" parent="title-group">
+          <mxGeometry height="25" width="940" x="5" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="title-separator" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" value="" vertex="1" parent="title-group">
+          <mxGeometry height="10" width="940" x="5" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="aws-cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud;strokeColor=#232F3E;fillColor=light-dark(#232F3E0D,#232F3E0D);fillStyle=auto;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="280" y="170" width="700" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="region" value="AWS Region" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#00A4A6;fillColor=light-dark(#0C7B7D0D,#0C7B7D0D);fillStyle=auto;verticalAlign=top;align=left;spacingLeft=30;fontColor=#00A4A6;dashed=1;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="310" y="215" width="640" height="685" as="geometry" />
+        </mxCell>
+        <mxCell id="security-group" value="Security group - inbound 22 (SSH), 8443 (Keycloak HTTPS), 5000 (Flask API)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;strokeColor=#DD3522;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#DD3522;dashed=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="340" y="260" width="580" height="615" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2-instance" value="EC2 instance - t3.small, Amazon Linux" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#ED7100;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#ED7100;dashed=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="370" y="320" width="520" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="docker-engine" value="Docker engine" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#ED7100;dashed=1;verticalAlign=top;align=left;spacingLeft=10;fontColor=#ED7100;fontSize=12;fontStyle=1;container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="410" y="370" width="460" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="laptop-container" value="Student laptop - browser and curl" style="fillColor=#f5f5f5;strokeColor=light-dark(#666666,#D4D4D4);rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#333333;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1;perimeterSpacing=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="380" width="150" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="laptop-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#232F3D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.users;fontFamily=Helvetica;" vertex="1" parent="laptop-container">
+          <mxGeometry x="51" y="70" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-group-keycloak" value="Identity provider" style="fillColor=#FFEBEE;strokeColor=#DD344C;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#DD344C;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="440" y="400" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-keycloak" value="Keycloak&lt;div&gt;&lt;i&gt;HTTPS :8443&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_application;fontFamily=Helvetica;shadow=1;" vertex="1" parent="svc-group-keycloak">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="keycloak-detail" value="&lt;b&gt;Inside Keycloak&lt;/b&gt;&lt;br&gt;Realm OAuth-Demo&lt;br&gt;Client OAuth-Client (confidential)&lt;br&gt;User testuser&lt;br&gt;Self-signed certificate on :8443" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" vertex="1" parent="1">
+          <mxGeometry x="580" y="400" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-group-flask" value="Resource server" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="440" y="660" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-flask" value="Flask API&lt;div&gt;&lt;i&gt;HTTP :5000&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.traditional_server;fontFamily=Helvetica;shadow=1;" vertex="1" parent="svc-group-flask">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="flask-detail" value="&lt;b&gt;app.py endpoints&lt;/b&gt;&lt;br&gt;GET /secure-data (Bearer token)&lt;br&gt;GET /public-data&lt;br&gt;GET /health" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" vertex="1" parent="1">
+          <mxGeometry x="580" y="660" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="tls-note" value="&lt;i&gt;Keycloak terminates TLS. The Flask API answers in plain HTTP, so only the hops in green are encrypted.&lt;/i&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#545B64,#D4D4D4);" vertex="1" parent="1">
+          <mxGeometry x="580" y="790" width="290" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;rounded=0;strokeColor=#248814;strokeWidth=2;fontFamily=Helvetica;exitX=1;exitY=0.1;exitDx=0;exitDy=0;entryX=0;entryY=0.28;entryDx=0;entryDy=0;" edge="1" parent="1" source="laptop-container" target="svc-group-keycloak">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="399" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-1-label" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" connectable="0" vertex="1" parent="edge-1">
+          <mxGeometry relative="1" x="-0.71" y="0" as="geometry">
+            <mxPoint as="offset" x="0" y="12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;rounded=0;strokeColor=#248814;strokeWidth=2;fontFamily=Helvetica;exitX=0;exitY=0.45;exitDx=0;exitDy=0;entryX=1;entryY=0.42;entryDx=0;entryDy=0;" edge="1" parent="1" source="svc-group-keycloak" target="laptop-container">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="454" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-2-label" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" connectable="0" vertex="1" parent="edge-2">
+          <mxGeometry relative="1" x="0.7" y="0" as="geometry">
+            <mxPoint as="offset" x="0" y="-12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;rounded=0;strokeColor=#DD344C;strokeWidth=2;fontFamily=Helvetica;exitX=1;exitY=0.95;exitDx=0;exitDy=0;entryX=0;entryY=0.33;entryDx=0;entryDy=0;" edge="1" parent="1" source="laptop-container" target="svc-group-flask">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="560" />
+              <mxPoint x="250" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-3-label" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" connectable="0" vertex="1" parent="edge-3">
+          <mxGeometry relative="1" x="-0.41" y="0" as="geometry">
+            <mxPoint as="offset" x="-48" y="0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;rounded=0;strokeColor=#248814;strokeWidth=2;fontFamily=Helvetica;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="svc-group-flask" target="svc-group-keycloak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-4-label" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" connectable="0" vertex="1" parent="edge-4">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint as="offset" x="-42" y="0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;rounded=0;strokeColor=#248814;strokeWidth=2;fontFamily=Helvetica;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="svc-group-keycloak" target="svc-group-flask">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-5-label" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" connectable="0" vertex="1" parent="edge-5">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint as="offset" x="42" y="0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;rounded=0;strokeColor=#DD344C;strokeWidth=2;fontFamily=Helvetica;exitX=0.6;exitY=1;exitDx=0;exitDy=0;entryX=0.4;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="svc-group-flask" target="laptop-container">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="512" y="812" />
+              <mxPoint x="120" y="812" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-6-label" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#F5F5F5);" connectable="0" vertex="1" parent="edge-6">
+          <mxGeometry relative="1" x="0.12" y="0" as="geometry">
+            <mxPoint as="offset" x="0" y="-13" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="228" y="358" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="228" y="470" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="200" y="580" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="430" y="616" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="616" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="520" y="788" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bg" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=20;indent=5;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="30" width="650" height="945" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-container" connectable="0" style="group" value="" vertex="1" parent="1">
+          <mxGeometry x="1040" y="60" width="610" height="895" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="&lt;b&gt;OAuth 2.0 password grant flow, driven from curl&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#FFFFFF);" vertex="1" parent="legend-container">
+          <mxGeometry width="600" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="step-1-legend" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="legend-container">
+          <mxGeometry height="86" width="600" x="0" y="36" as="geometry" />
+        </mxCell>
+        <mxCell id="step-1-badge-legend" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="step-1-legend">
+          <mxGeometry height="38" width="40" y="2" as="geometry" />
+        </mxCell>
+        <mxCell id="step-1-desc-legend" value="&lt;div&gt;&lt;b&gt;Token request with the password grant&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;curl posts grant_type=password with the username, the password, the client id and the client secret to the Keycloak token endpoint on port 8443, inside the TLS tunnel.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="step-1-legend">
+          <mxGeometry height="86" width="548" x="52" as="geometry" />
+        </mxCell>
+        <mxCell id="step-2-legend" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="legend-container">
+          <mxGeometry height="86" width="600" x="0" y="132" as="geometry" />
+        </mxCell>
+        <mxCell id="step-2-badge-legend" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="step-2-legend">
+          <mxGeometry height="38" width="40" y="2" as="geometry" />
+        </mxCell>
+        <mxCell id="step-2-desc-legend" value="&lt;div&gt;&lt;b&gt;Keycloak returns the access token&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;Keycloak checks the credentials against the realm OAuth-Demo and answers with a JWT access token that lasts 15 minutes.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="step-2-legend">
+          <mxGeometry height="86" width="548" x="52" as="geometry" />
+        </mxCell>
+        <mxCell id="step-3-legend" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="legend-container">
+          <mxGeometry height="86" width="600" x="0" y="228" as="geometry" />
+        </mxCell>
+        <mxCell id="step-3-badge-legend" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="step-3-legend">
+          <mxGeometry height="38" width="40" y="2" as="geometry" />
+        </mxCell>
+        <mxCell id="step-3-desc-legend" value="&lt;div&gt;&lt;b&gt;API call carrying the token&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;curl calls /secure-data on port 5000 with the header Authorization: Bearer and that token. This hop is plain HTTP in the lab.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="step-3-legend">
+          <mxGeometry height="86" width="548" x="52" as="geometry" />
+        </mxCell>
+        <mxCell id="step-4-legend" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="legend-container">
+          <mxGeometry height="86" width="600" x="0" y="324" as="geometry" />
+        </mxCell>
+        <mxCell id="step-4-badge-legend" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="step-4-legend">
+          <mxGeometry height="38" width="40" y="2" as="geometry" />
+        </mxCell>
+        <mxCell id="step-4-desc-legend" value="&lt;div&gt;&lt;b&gt;Token introspection&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;The Flask API posts the token to the introspection endpoint over HTTPS, authenticating with its own client id and client secret.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="step-4-legend">
+          <mxGeometry height="86" width="548" x="52" as="geometry" />
+        </mxCell>
+        <mxCell id="step-5-legend" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="legend-container">
+          <mxGeometry height="86" width="600" x="0" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="step-5-badge-legend" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="step-5-legend">
+          <mxGeometry height="38" width="40" y="2" as="geometry" />
+        </mxCell>
+        <mxCell id="step-5-desc-legend" value="&lt;div&gt;&lt;b&gt;Introspection answer&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;Keycloak replies whether the token is still active, together with the username and the expiry that the API copies into its answer.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="step-5-legend">
+          <mxGeometry height="86" width="548" x="52" as="geometry" />
+        </mxCell>
+        <mxCell id="step-6-legend" connectable="0" style="group;fontFamily=Helvetica;" value="" vertex="1" parent="legend-container">
+          <mxGeometry height="86" width="600" x="0" y="516" as="geometry" />
+        </mxCell>
+        <mxCell id="step-6-badge-legend" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="step-6-legend">
+          <mxGeometry height="38" width="40" y="2" as="geometry" />
+        </mxCell>
+        <mxCell id="step-6-desc-legend" value="&lt;div&gt;&lt;b&gt;Protected response&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;An active token returns the protected JSON. A missing header returns 401 and an invalid or expired token returns 403.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="step-6-legend">
+          <mxGeometry height="86" width="548" x="52" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-note" value="&lt;i&gt;The security group is the only way in: port 22 for SSH, 8443 for the Keycloak console and endpoints, 5000 for the Flask API.&lt;/i&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;fontColor=light-dark(#545B64,#E0E0E0);" vertex="1" parent="legend-container">
+          <mxGeometry x="0" y="612" width="600" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-styles" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;verticalAlign=top;fontFamily=Helvetica;" vertex="1" parent="legend-container">
+          <mxGeometry x="0" y="668" width="600" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-styles-title" value="&lt;b&gt;Line styles&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#FFFFFF);" vertex="1" parent="legend-line-styles">
+          <mxGeometry x="16" y="8" width="560" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-https" value="" style="endArrow=block;endFill=1;html=1;strokeColor=#248814;strokeWidth=2;fontFamily=Helvetica;" edge="1" parent="legend-line-styles">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="20" y="52" as="sourcePoint" />
+            <mxPoint x="90" y="52" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-line-https-text" value="Encrypted with TLS - HTTPS on port 8443" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#FFFFFF);" vertex="1" parent="legend-line-styles">
+          <mxGeometry x="104" y="40" width="470" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-http" value="" style="endArrow=block;endFill=1;html=1;strokeColor=#DD344C;strokeWidth=2;fontFamily=Helvetica;" edge="1" parent="legend-line-styles">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="20" y="90" as="sourcePoint" />
+            <mxPoint x="90" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-line-http-text" value="Plaintext - HTTP on port 5000, readable by anyone capturing the traffic" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;fontColor=light-dark(#232F3E,#FFFFFF);" vertex="1" parent="legend-line-styles">
+          <mxGeometry x="104" y="70" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-flow-note" value="&lt;i&gt;&lt;b&gt;Why this flow:&lt;/b&gt; a real web application would use the authorization code flow, where the browser is redirected to the Keycloak login page and the application exchanges a short-lived code for the token. This lab uses the password grant instead, so the whole exchange fits in a curl command.&lt;/i&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;fontColor=light-dark(#545B64,#E0E0E0);" vertex="1" parent="legend-container">
+          <mxGeometry x="0" y="820" width="600" height="72" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

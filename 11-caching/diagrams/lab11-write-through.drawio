@@ -1,0 +1,135 @@
+<mxfile host="Electron" version="29.6.1">
+  <diagram name="Page-1" id="lab11">
+    <mxGraphModel dx="1980" dy="1040" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1780" pageHeight="840" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-group" value="" style="group;fontFamily=Helvetica;" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="990" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="title-text" value="Lab 11 - Write-Through" style="text;html=1;resizable=1;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry width="970" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle-text" value="Every write reaches the origin and the cache before the call returns, so no read can observe a stale value" style="text;html=1;resizable=0;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="40" width="965" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="title-separator" value="" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="70" width="980" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="band-a" value="Phase A - write path (origin first, then cache, synchronously)" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="150" width="980" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="app-a-box" value="Application" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#ED7100;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="140" y="220" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="app-a" value="C++ / C# / Java&lt;div&gt;&lt;i&gt;cache logic&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_application;shadow=1;fontFamily=Helvetica;" vertex="1" parent="app-a-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-a-box" value="Cache Layer" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#F5E6F7;strokeColor=#C925D1;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#C925D1;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="220" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-a" value="Redis 7.2&lt;div&gt;&lt;i&gt;updated by the write itself&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="cache-a-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="origin-a-box" value="Origin Data Store" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#3F8624;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#3F8624;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="780" y="220" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="origin-a" value="Python API&lt;div&gt;&lt;i&gt;500 ms per call&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="origin-a-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="a-e1" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=block;startFill=1;" edge="1" parent="1" source="app-a" target="origin-a">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="390" /><mxPoint x="840" y="390" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="a-e1-label" value="PUT /products/1  (~500 ms)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="a-e1">
+          <mxGeometry x="0.0" relative="1" as="geometry">
+            <mxPoint x="0" y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a-e2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.45;exitDx=0;exitDy=0;entryX=0;entryY=0.45;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="app-a" target="cache-a">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="a-e2-label" value="SET product:1  (~1 ms)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="a-e2">
+          <mxGeometry x="0.0" relative="1" as="geometry">
+            <mxPoint x="0" y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a-b1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="210" y="350" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="a-b2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="276" y="226" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="a-note" value="the caller waits ~501 ms in total" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=2;fontColor=light-dark(#333333,#FAFAFA);fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="300" y="348" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="band-b" value="Phase B - read path (the cache is already correct)" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="480" width="980" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="app-b-box" value="Application" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#ED7100;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="140" y="550" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="app-b" value="C++ / C# / Java&lt;div&gt;&lt;i&gt;cache logic&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_application;shadow=1;fontFamily=Helvetica;" vertex="1" parent="app-b-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-b-box" value="Cache Layer" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#F5E6F7;strokeColor=#C925D1;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#C925D1;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="550" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-b" value="Redis 7.2&lt;div&gt;&lt;i&gt;always fresh&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="cache-b-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="origin-b-box" value="Origin Data Store" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#3F8624;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#3F8624;container=1;collapsible=0;shadow=1;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="780" y="550" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="origin-b" value="Python API&lt;div&gt;&lt;i&gt;not contacted&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;shadow=1;fontFamily=Helvetica;" vertex="1" parent="origin-b-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="b-e3" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.45;exitDx=0;exitDy=0;entryX=0;entryY=0.45;entryDx=0;entryDy=0;startArrow=block;startFill=1;" edge="1" parent="1" source="app-b" target="cache-b">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="b-e3-label" value="GET product:1  (HIT ~1 ms)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="b-e3">
+          <mxGeometry x="0.0" relative="1" as="geometry">
+            <mxPoint x="0" y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b-e4" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=none;dashed=1;dashPattern=6 6;" edge="1" parent="1" source="app-b" target="origin-b">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="720" /><mxPoint x="840" y="720" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="b-e4-label" value="not called" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontColor=light-dark(#232F3E,#F5F5F5);fontFamily=Helvetica;" connectable="0" vertex="1" parent="b-e4">
+          <mxGeometry x="0.0" relative="1" as="geometry">
+            <mxPoint x="0" y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b-b3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="276" y="556" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bg" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=20;indent=5;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="30" width="650" height="770" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1092" y="62" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-1" value="&lt;div&gt;&lt;b&gt;The origin is written first&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;PUT /products/1&lt;/b&gt; goes to the Python API and takes about 500 ms. Ordering matters: the durable copy lands before the cache is told anything.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1144" y="60" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1092" y="140" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-2" value="&lt;div&gt;&lt;b&gt;The cache is written in the same call&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;SET product:1&lt;/b&gt; costs about 1 ms and runs before the write returns. If this step fails the write must fail too, or the cache would hold a value the origin never accepted.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1144" y="138" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1092" y="218" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-3" value="&lt;div&gt;&lt;b&gt;Reads are hits by construction&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;GET product:1&lt;/b&gt; returns the value just written, in about 1 ms, without touching the origin (dashed arrow in phase B).&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1144" y="216" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-footer-box" value="" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1092" y="650" width="606" height="128" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-footer-text" value="&lt;div&gt;&lt;b&gt;Where write-through differs&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;Who writes first:&lt;/b&gt; the origin, then the cache, both inside one synchronous call. In cache-aside nothing writes the cache on a write at all.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;Who reads:&lt;/b&gt; the application, and it can trust the cache instead of guessing whether a TTL has saved it.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;Cost:&lt;/b&gt; every write pays the origin&#x27;s 500 ms, even for keys nobody ever reads. That is the price of never serving stale data.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=2;spacingLeft=6;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1102" y="658" width="586" height="112" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

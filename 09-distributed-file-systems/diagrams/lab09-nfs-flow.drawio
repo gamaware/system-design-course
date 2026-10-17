@@ -1,0 +1,217 @@
+<mxfile host="Electron" version="29.6.1">
+  <diagram name="Page-1" id="diagram-1">
+    <mxGraphModel dx="3348" dy="1143" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1800" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-group" value="" style="group;fontFamily=Helvetica;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="50" y="30" width="960" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="title-text" value="Lab 09 - NFS Data Flow" style="text;html=1;resizable=1;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;" parent="title-group" vertex="1">
+          <mxGeometry x="0" y="0" width="900" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle-text" value="A write from one client reaches the other through the server, and flock keeps two writers from overlapping" style="text;html=1;resizable=0;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontFamily=Helvetica;" parent="title-group" vertex="1">
+          <mxGeometry x="5" y="40" width="900" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="title-separator" value="" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" parent="title-group" vertex="1">
+          <mxGeometry x="5" y="70" width="950" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="docker-net" value="Docker Compose network" style="rounded=1;absoluteArcSize=1;arcSize=28;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=light-dark(#2496ED0D,#2496ED0D);fillStyle=auto;strokeColor=#2496ED;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=18;spacingTop=2;fontSize=14;fontStyle=1;fontColor=#1A6DB0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fontFamily=Helvetica;" parent="1" vertex="1">
+          <mxGeometry x="230" y="150" width="780" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="grp-client1" value="Writer" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" parent="docker-net" vertex="1">
+          <mxGeometry x="60" y="80" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-client1" value="nfs-client-1&lt;div&gt;&lt;i&gt;writes and locks&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.container_1;fontFamily=Helvetica;shadow=1;" parent="grp-client1" vertex="1">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="grp-nfsserver" value="File server" style="fillColor=#E8F5E9;strokeColor=#3F8624;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#3F8624;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" parent="docker-net" vertex="1">
+          <mxGeometry x="330" y="80" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-nfsserver" value="nfs-server&lt;div&gt;&lt;i&gt;nfsd, sync export&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.traditional_server;fontFamily=Helvetica;shadow=1;" parent="grp-nfsserver" vertex="1">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="grp-disk" value="Server storage" style="fillColor=#E8F5E9;strokeColor=#3F8624;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#3F8624;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" parent="docker-net" vertex="1">
+          <mxGeometry x="600" y="80" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-disk" value="/nfs/shared&lt;div&gt;&lt;i&gt;Docker volume&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.disk;fontFamily=Helvetica;shadow=1;" parent="grp-disk" vertex="1">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="grp-lock" value="POSIX lock" style="fillColor=#FFEBEE;strokeColor=#DD344C;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#DD344C;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" parent="docker-net" vertex="1">
+          <mxGeometry x="60" y="340" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-lock" value="lockfile.lock&lt;div&gt;&lt;i&gt;flock on /mnt/data&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_application;fontFamily=Helvetica;shadow=1;" parent="grp-lock" vertex="1">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="grp-client2" value="Reader" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" parent="docker-net" vertex="1">
+          <mxGeometry x="330" y="340" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc-client2" value="nfs-client-2&lt;div&gt;&lt;i&gt;reads the same path&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.container_1;fontFamily=Helvetica;shadow=1;" parent="grp-client2" vertex="1">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" edge="1" source="grp-client1" target="grp-nfsserver">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f1-lbl" value="mount /nfs/shared" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f1" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="0" y="-20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" edge="1" source="grp-client1" target="grp-nfsserver">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f2-lbl" value="write file.txt" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f2" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="0" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" edge="1" source="grp-nfsserver" target="grp-disk">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f3-lbl" value="write + fsync" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f3" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="0" y="-20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=0;exitY=0.8;exitDx=0;exitDy=0;entryX=1;entryY=0.8;entryDx=0;entryDy=0;dashed=1;dashPattern=6 6;" parent="1" edge="1" source="grp-disk" target="grp-nfsserver">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f4-lbl" value="on-disk ack" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f4" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="0" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1" source="grp-client2" target="grp-nfsserver">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f5-lbl" value="read file.txt" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f5" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="-80" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;dashed=1;dashPattern=6 6;" parent="1" edge="1" source="grp-nfsserver" target="grp-client2">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f6-lbl" value="same bytes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f6" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="58" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" edge="1" source="grp-client1" target="grp-lock">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f7-lbl" value="flock held" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f7" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="-58" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#545B64;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=6 6;" parent="1" edge="1" source="grp-client2" target="grp-lock">
+          <mxGeometry relative="1" as="geometry">
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8-lbl" value="flock -n denied" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" parent="f8" vertex="1" connectable="0">
+          <mxGeometry relative="1" x="0.0" y="0" as="geometry">
+            <mxPoint x="0" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="470" y="185" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="470" y="372" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="688" y="194" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="500" y="455" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="760" y="400" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="step-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="372" y="400" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-outer" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1050" y="30" width="650" height="676" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bg" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=20;indent=5;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;" parent="legend-outer" vertex="1">
+          <mxGeometry x="0" y="0" width="650" height="676" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-1-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="20" y="20" width="600" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-1-badge" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" parent="legend-step-1-group" vertex="1">
+          <mxGeometry x="0" y="2" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-1-desc" value="&lt;div&gt;&lt;b&gt;Mount the export&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;nfs-client-1 mounts /nfs/shared over the network&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;From here on the remote directory behaves like a local path&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-step-1-group" vertex="1">
+          <mxGeometry x="52" y="0" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-2-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="20" y="106" width="600" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-2-badge" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" parent="legend-step-2-group" vertex="1">
+          <mxGeometry x="0" y="2" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-2-desc" value="&lt;div&gt;&lt;b&gt;Write through the mount&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;The client writes file.txt into /mnt/shared&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;No client-side upload step: the write is a normal POSIX write&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-step-2-group" vertex="1">
+          <mxGeometry x="52" y="0" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-3-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="20" y="192" width="600" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-3-badge" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" parent="legend-step-3-group" vertex="1">
+          <mxGeometry x="0" y="2" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-3-desc" value="&lt;div&gt;&lt;b&gt;The server commits to disk&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;The export uses sync, so the server writes to its volume first&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;Only then does it acknowledge the write to the client&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-step-3-group" vertex="1">
+          <mxGeometry x="52" y="0" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-4-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="20" y="278" width="600" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-4-badge" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" parent="legend-step-4-group" vertex="1">
+          <mxGeometry x="0" y="2" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-4-desc" value="&lt;div&gt;&lt;b&gt;The other client reads&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;nfs-client-2 reads the same path from its own mount&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;It never talks to nfs-client-1, only to the server&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-step-4-group" vertex="1">
+          <mxGeometry x="52" y="0" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-5-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="20" y="364" width="600" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-5-badge" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" parent="legend-step-5-group" vertex="1">
+          <mxGeometry x="0" y="2" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-5-desc" value="&lt;div&gt;&lt;b&gt;Both clients see the same bytes&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;The server is the single source of truth, so the read is consistent&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;This POSIX guarantee is what object storage does not offer&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-step-5-group" vertex="1">
+          <mxGeometry x="52" y="0" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-6-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="20" y="450" width="600" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-6-badge" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" parent="legend-step-6-group" vertex="1">
+          <mxGeometry x="0" y="2" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-step-6-desc" value="&lt;div&gt;&lt;b&gt;flock serializes writers&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;nfs-client-1 takes an advisory lock on /mnt/data/lockfile.lock&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;-&lt;/font&gt; &lt;/b&gt;flock -n from nfs-client-2 is denied while the lock is held&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-step-6-group" vertex="1">
+          <mxGeometry x="52" y="0" width="548" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-group" value="" style="group;fontFamily=Helvetica;" parent="legend-outer" vertex="1" connectable="0">
+          <mxGeometry x="21" y="546" width="598" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-bg" value="" style="fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;" parent="legend-line-group" vertex="1">
+          <mxGeometry x="0" y="0" width="598" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-title" value="Line styles" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;fontStyle=1;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-line-group" vertex="1">
+          <mxGeometry x="10" y="8" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-line-desc" value="&lt;div&gt;&lt;b&gt;Solid&lt;/b&gt;: requests the client sends&lt;/div&gt;&lt;div&gt;&lt;b&gt;Dashed&lt;/b&gt;: what comes back, including the denied lock&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" parent="legend-line-group" vertex="1">
+          <mxGeometry x="10" y="34" width="576" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

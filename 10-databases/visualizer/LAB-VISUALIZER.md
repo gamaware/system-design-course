@@ -131,24 +131,9 @@ This terminates the EC2 instance and removes all resources.
 The visualizer connects to a live MySQL primary-replica cluster.
 All operations are real SQL queries executed against real databases.
 
-```mermaid
-graph LR
-    subgraph Docker ["Docker Compose Network"]
-        subgraph Viz ["Visualizer"]
-            WEB["Browser<br>(localhost:8081)"]
-            API["Python API<br>(server.py)"]
-        end
-        subgraph DB ["MySQL Cluster"]
-            PRIMARY[("Primary<br>port 3306<br>read-write")]
-            REPLICA[("Replica<br>port 3307<br>read-only")]
-        end
-    end
+![A browser calling a Python API bridge inside Docker Compose, which sends writes to the MySQL primary on port 3306 and reads to the replica on port 3307 while the primary feeds the replica over its binary log](../diagrams/lab10-architecture.png)
 
-    WEB -->|"HTTP"| API
-    API -->|"INSERT / UPDATE"| PRIMARY
-    API -->|"SELECT / SHOW STATUS"| REPLICA
-    PRIMARY -.->|"binlog replication"| REPLICA
-```
+[Edit this diagram](../diagrams/lab10-architecture.drawio)
 
 ## Lab Structure
 

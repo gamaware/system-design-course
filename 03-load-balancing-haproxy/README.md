@@ -15,16 +15,9 @@ failover behavior.
 
 Reference diagrams from class, covering the concepts this lab exercises.
 
-![HAProxy load balancing lab topology: client through security group to an EC2 instance running HAProxy, distributing traffic to 3 active backends with 2 backups](diagrams/haproxy-load-balancing-overview.png)
+![Numbered request flow from a client into HAProxy on port 8080, which spreads traffic over three active backends, keeps two backups idle, health checks every server and publishes a stats page](diagrams/lab03-haproxy-load-balancing.png)
 
-Lab topology (client → security group → EC2 running HAProxy → 3 active backends + 2 backups),
-with load balancing algorithms, health checks and failover, Layer 4 vs Layer 7, and single
-points of failure.
-
-▶ [Explore the interactive diagram](https://silken-urchin-y7aj.here.now/?theme=dark)
-(zoom, search, trace animation, export) — also included as
-[diagrams/haproxy-load-balancing-overview.html](diagrams/haproxy-load-balancing-overview.html)
-to open locally in a browser.
+[Edit this diagram](diagrams/lab03-haproxy-load-balancing.drawio)
 
 ## Learning Objectives
 
@@ -57,6 +50,7 @@ to open locally in a browser.
 ```text
 03-load-balancing-haproxy/
 ├── README.md                    # This file
+├── diagrams/                    # Architecture diagrams (draw.io source + PNG)
 ├── setup.sh                     # Initial setup script
 ├── cleanup.sh                   # Cleanup script
 ├── configs/                     # HAProxy configurations
@@ -228,21 +222,9 @@ but roughly even over many requests.
 
 ## Architecture Diagram
 
-```mermaid
-graph TD
-    %% Traffic entry
-    Client("Client/s") ==> HAProxy(["HAProxy<br>Port 8080"])
+![One EC2 instance holding HAProxy on 8080, backends on 8001-8003, two backup backends on 8004-8005 and the stats page on 8404](diagrams/lab03-haproxy-load-balancing.png)
 
-    %% Primary backends
-    HAProxy --> Backend1["Backend 1<br>Port 8001"]
-    HAProxy --> Backend2["Backend 2<br>Port 8002"]
-    HAProxy --> Backend3["Backend 3<br>Port 8003"]
-
-    %% Backup backends (activated only when all primaries are down)
-    HAProxy -.->|"Backup"| Backend4["Backend 4<br>Port 8004<br>Backup"]
-    HAProxy -.->|"Backup"| Backend5["Backend 5<br>Port 8005<br>Backup"]
-
-```
+[Edit this diagram](diagrams/lab03-haproxy-load-balancing.drawio)
 
 ## Key Concepts
 

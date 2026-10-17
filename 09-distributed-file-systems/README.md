@@ -51,43 +51,9 @@ The lab environment runs entirely in Docker Compose. An NFS server
 exports three directories to two client containers, while a MinIO server
 provides S3-compatible object storage with 4-drive erasure coding.
 
-```mermaid
-graph TB
-    subgraph Docker["Docker Compose Network"]
-        subgraph NFS["NFS (Traditional File System)"]
-            SERVER["NFS Server<br/>/nfs/shared (rw)<br/>/nfs/data (rw)<br/>/nfs/backup (ro)"]
-            CLIENT1["NFS Client 1<br/>mounts /mnt/*"]
-            CLIENT2["NFS Client 2<br/>mounts /mnt/*"]
-        end
-        subgraph Object["Object Storage (MinIO)"]
-            MINIO["MinIO Server<br/>port 9000 (API)<br/>port 9001 (Console)"]
-            D1["Drive 1"]
-            D2["Drive 2"]
-            D3["Drive 3"]
-            D4["Drive 4"]
-        end
-        MC["mc CLI<br/>(MinIO Client)"]
-    end
+![Docker Compose network with an NFS server exporting three directories to two clients, and MinIO spreading objects over four drives next to Amazon S3](diagrams/lab09-architecture.png)
 
-    CLIENT1 -->|"NFS mount"| SERVER
-    CLIENT2 -->|"NFS mount"| SERVER
-    MC -->|"S3 API"| MINIO
-    MINIO --- D1
-    MINIO --- D2
-    MINIO --- D3
-    MINIO --- D4
-
-    AWS["AWS S3<br/>(cloud)"]
-    CLIENT1 -->|"aws s3"| MINIO
-    CLIENT1 -->|"aws s3"| AWS
-
-    style SERVER fill:#326CE5,stroke:#1A3A6E,color:#fff
-    style MINIO fill:#C72E49,stroke:#8B1A30,color:#fff
-    style AWS fill:#569A31,stroke:#3D6B22,color:#fff
-    style CLIENT1 fill:#E3F2FD,stroke:#2196F3
-    style CLIENT2 fill:#E3F2FD,stroke:#2196F3
-    style MC fill:#FFF3E0,stroke:#FF9800
-```
+[Edit this diagram](diagrams/lab09-architecture.drawio)
 
 **Two storage models compared:**
 
@@ -102,6 +68,7 @@ graph TB
 ```text
 09-distributed-file-systems/
 ├── README.md                       # This file (lab overview)
+├── diagrams/                       # Architecture diagrams (draw.io source + PNG)
 ├── LAB.md                          # Step-by-step instructions (8 tasks)
 ├── docker-compose.yml              # NFS + MinIO + clients
 ├── setup.sh                        # Start environment (local Docker)
@@ -198,52 +165,15 @@ locally built Docker images.
 
 ### NFS Data Flow
 
-```mermaid
-sequenceDiagram
-    participant Client as NFS Client
-    participant Server as NFS Server
-    participant Disk as Server Disk
+![Numbered path of a write from one client to the server disk, the read that follows from the other client, and the flock that blocks a second writer](diagrams/lab09-nfs-flow.png)
 
-    Client->>Server: MOUNT /nfs/shared
-    Server-->>Client: mount handle
-
-    Client->>Server: WRITE file.txt (via NFS)
-    Server->>Disk: Write to /nfs/shared/file.txt
-    Disk-->>Server: OK
-    Server-->>Client: OK (sync: confirmed on disk)
-
-    Note over Client,Server: Another client reads the same file
-    Client->>Server: READ file.txt
-    Server->>Disk: Read /nfs/shared/file.txt
-    Disk-->>Server: data
-    Server-->>Client: data (POSIX consistent)
-```
+[Edit this diagram](diagrams/lab09-nfs-flow.drawio)
 
 ### Object Storage Data Flow
 
-```mermaid
-sequenceDiagram
-    participant Client as mc / aws s3
-    participant MinIO as MinIO Server
-    participant D1 as Drive 1
-    participant D2 as Drive 2
-    participant D3 as Drive 3
-    participant D4 as Drive 4
+![Numbered path of an upload split into two data and two parity shards over four drives, one drive lost, and the object rebuilt from the survivors](diagrams/lab09-erasure-coding.png)
 
-    Client->>MinIO: PUT /bucket/object.txt
-    MinIO->>D1: data shard 1
-    MinIO->>D2: data shard 2
-    MinIO->>D3: parity shard 1
-    MinIO->>D4: parity shard 2
-    MinIO-->>Client: 200 OK (erasure coded)
-
-    Note over D3: Drive 3 fails!
-    Client->>MinIO: GET /bucket/object.txt
-    MinIO->>D1: read shard 1
-    MinIO->>D2: read shard 2
-    MinIO->>D4: read parity 2
-    MinIO-->>Client: 200 OK (reconstructed from 3 shards)
-```
+[Edit this diagram](diagrams/lab09-erasure-coding.drawio)
 
 ### Storage Model Decision Guide
 

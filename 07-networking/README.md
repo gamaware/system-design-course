@@ -28,27 +28,9 @@ environment.
 
 ## Architecture
 
-```mermaid
-graph TB
-    %% Frontend network (broken path)
-    subgraph frontend ["Frontend Network - 172.16.238.0/24"]
-        direction LR
-        BOB_FE("Bob's Laptop<br>eth0: 172.16.238.10")
-        SRV_FE["devapp01-web<br>eth0: 172.16.238.20"]
-    end
+![Bob's laptop and the devapp01 server on two Docker bridge networks, with the server's frontend interface down and its default route missing](diagrams/lab07-architecture.png)
 
-    %% Backend network (working path)
-    subgraph backend ["Backend Network - 172.16.239.0/24"]
-        direction LR
-        BOB_BE("Bob's Laptop<br>eth1: 172.16.239.10")
-        SRV_BE["devapp01<br>eth1: 172.16.239.20"]
-    end
-
-    %% Connectivity status
-    BOB_FE -.-x|"BROKEN"| SRV_FE
-    BOB_BE -->|"OK"| SRV_BE
-
-```
+[Edit this diagram](diagrams/lab07-architecture.drawio)
 
 **Scenario:** An Apache web server (`devapp01-web`) should be accessible from
 Bob's laptop on port 80, but something is wrong with the network. Students must
@@ -64,7 +46,7 @@ find and fix the issue.
 ├── cleanup.sh                 # Tear down the environment
 ├── Dockerfile.laptop          # Bob's laptop image
 ├── Dockerfile.server          # Web server image
-└── aws-vpc-architecture.png   # Architecture diagram for optional AWS section
+└── diagrams/                  # Architecture diagrams and their draw.io sources
 ```
 
 ## Quick Start
@@ -324,7 +306,9 @@ the same fundamentals (interfaces, IPs, routing) in a cloud environment.
 
 **Requirements:** AWS Academy Learner Lab or AWS account with EC2 access.
 
-![AWS VPC with public and private subnets, Internet Gateway, and EC2 instance](aws-vpc-architecture.png)
+![EC2 instance in a public subnet reaching the internet through the VPC router, the public route table and an internet gateway, next to a private subnet with no outbound path](diagrams/lab07-aws-vpc.png)
+
+[Edit this diagram](diagrams/lab07-aws-vpc.drawio)
 
 ### Task 7: Create a VPC
 

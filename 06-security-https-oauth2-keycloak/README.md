@@ -17,16 +17,9 @@ OAuth clients and realms, and build a Flask API that validates JWT tokens for se
 
 Reference diagrams from class, covering the concepts this lab exercises.
 
-![Keycloak OAuth 2.0 lab topology: student laptop through the security group to an EC2 instance running Keycloak on 8443 and Flask on 5000, with the numbered token flow and introspection](diagrams/keycloak-oauth2-https-overview.png)
+![Student laptop reaching an EC2 instance through the security group on ports 22, 8443 and 5000, where Keycloak runs in Docker behind HTTPS and the Flask API answers over plain HTTP](diagrams/lab06-oauth2-keycloak-https.png)
 
-Lab topology (student laptop → security group 22/8443/5000 → EC2 running Keycloak in Docker and the
-Flask API), with the numbered OAuth 2.0 token flow 1-6, token introspection, the realm, client and
-user inside Keycloak, HTTP vs HTTPS, and defense in depth.
-
-▶ [Explore the interactive diagram](https://aware-vision-3pyx.here.now/?theme=dark)
-(zoom, search, trace animation, export) — also included as
-[diagrams/keycloak-oauth2-https-overview.html](diagrams/keycloak-oauth2-https-overview.html)
-to open locally in a browser.
+[Edit this diagram](diagrams/lab06-oauth2-keycloak-https.drawio)
 
 ## Learning Objectives
 
@@ -53,6 +46,7 @@ to open locally in a browser.
 ```text
 06-security-https-oauth2-keycloak/
 ├── README.md              # This file
+├── diagrams/              # Architecture diagrams (draw.io source + PNG)
 └── app.py                 # Flask API with OAuth 2.0 token validation
 ```
 
@@ -158,22 +152,9 @@ A **Realm** is a workspace that manages its own set of users, credentials, roles
 
 ## Lab Architecture
 
-```mermaid
-sequenceDiagram
-    participant User as Browser (User)
-    participant KC as Keycloak (Auth Server)
-    participant API as Flask API (Resource Server)
+![Numbered OAuth 2.0 password grant flow between the student laptop, Keycloak on port 8443 and the Flask API on port 5000, from the curl token request to the introspected token and the protected response](diagrams/lab06-oauth2-keycloak-https.png)
 
-    %% Authentication phase
-    User ->> KC: 1. Authenticate (username/password)
-    KC -->> User: 2. Return JWT Access Token
-
-    %% API request with token validation
-    User ->> API: 3. Request /secure-data with Bearer Token
-    API ->> KC: 4. Validate Token (Introspection)
-    KC -->> API: 5. Token Valid + User Info
-    API -->> User: 6. Return Protected Data
-```
+[Edit this diagram](diagrams/lab06-oauth2-keycloak-https.drawio)
 
 **Flow:**
 

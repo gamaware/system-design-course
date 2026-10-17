@@ -1,0 +1,329 @@
+<mxfile host="Electron" version="29.6.1">
+  <diagram name="Page-1" id="lab02-hyp">
+    <mxGraphModel dx="2100" dy="1800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1900" pageHeight="1540" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-group" value="" style="group;fontFamily=Helvetica;" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1100" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="title-text" value="Lab 02 - What a Hypervisor Does" style="text;html=1;resizable=1;points=[];autosize=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry width="1080" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle-text" value="It cuts one physical host into isolated machines, hands each a vCPU, vRAM and vNIC, and leaves storage to reach them by three different routes" style="text;html=1;resizable=0;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="40" width="1075" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="title-separator" value="" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="70" width="1090" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="band-slice" value="How one host becomes many machines - read this band from the bottom up" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="150" width="1100" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1" value="VM 1 - Linux" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;strokeWidth=1.5;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);container=1;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="90" y="196" width="290" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1-box" value="Compute" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="vm1">
+          <mxGeometry x="12" y="30" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1-icon" value="Virtual machine&lt;div&gt;&lt;i&gt;own OS, isolated&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;shadow=1;fontFamily=Helvetica;" vertex="1" parent="vm1-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1-vcpu" value="vCPU" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm1">
+          <mxGeometry x="146" y="36" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1-vram" value="vRAM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm1">
+          <mxGeometry x="146" y="72" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1-vnic" value="vNIC" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm1">
+          <mxGeometry x="146" y="108" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm1-cap" value="&lt;i&gt;its slice of the host&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="vm1">
+          <mxGeometry x="146" y="142" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2" value="VM 2 - Windows" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;strokeWidth=1.5;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);container=1;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="400" y="196" width="290" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2-box" value="Compute" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="vm2">
+          <mxGeometry x="12" y="30" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2-icon" value="Virtual machine&lt;div&gt;&lt;i&gt;own OS, isolated&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;shadow=1;fontFamily=Helvetica;" vertex="1" parent="vm2-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2-vcpu" value="vCPU" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm2">
+          <mxGeometry x="146" y="36" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2-vram" value="vRAM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm2">
+          <mxGeometry x="146" y="72" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2-vnic" value="vNIC" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm2">
+          <mxGeometry x="146" y="108" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm2-cap" value="&lt;i&gt;its slice of the host&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="vm2">
+          <mxGeometry x="146" y="142" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3" value="VM 3 - Unix" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;strokeWidth=1.5;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);container=1;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="710" y="196" width="290" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3-box" value="Compute" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="vm3">
+          <mxGeometry x="12" y="30" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3-icon" value="Virtual machine&lt;div&gt;&lt;i&gt;own OS, isolated&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;shadow=1;fontFamily=Helvetica;" vertex="1" parent="vm3-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3-vcpu" value="vCPU" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm3">
+          <mxGeometry x="146" y="36" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3-vram" value="vRAM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm3">
+          <mxGeometry x="146" y="72" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3-vnic" value="vNIC" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="vm3">
+          <mxGeometry x="146" y="108" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vm3-cap" value="&lt;i&gt;its slice of the host&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="vm3">
+          <mxGeometry x="146" y="142" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vm-more" value="VM 4 ... VM n&lt;div&gt;&lt;i&gt;added until the host is full&lt;/i&gt;&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=middle;align=center;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="196" width="135" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="isolation-text" value="demarcation line - no machine can see another, and that isolation is what makes sharing one host safe" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=#DD344C;" vertex="1" parent="1">
+          <mxGeometry x="80" y="386" width="1060" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="isolation-line" value="" style="line;strokeWidth=1.5;html=1;dashed=1;dashPattern=8 6;strokeColor=#DD344C;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="410" width="1060" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="hyp-bar" value="Hypervisor&lt;div&gt;&lt;i&gt;splits the processor, slices the memory, shares the network card&lt;/i&gt;&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;strokeWidth=1.5;fontSize=13;fontStyle=1;fontColor=#ED7100;align=center;verticalAlign=top;spacingTop=4;container=1;collapsible=0;pointerEvents=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="436" width="1060" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="map1" value="CPU becomes vCPU" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#29393B);strokeColor=#ED7100;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="hyp-bar">
+          <mxGeometry x="120" y="44" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="map2" value="RAM becomes vRAM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#29393B);strokeColor=#ED7100;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="hyp-bar">
+          <mxGeometry x="410" y="44" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="map3" value="network card becomes vNIC" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#29393B);strokeColor=#ED7100;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="hyp-bar">
+          <mxGeometry x="700" y="44" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="host-panel" value="Compute host - one physical server" style="rounded=1;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1.5;fontSize=13;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=top;spacingTop=4;container=1;collapsible=0;pointerEvents=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="540" width="1060" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="host-cpu" value="CPU&lt;div&gt;&lt;i&gt;does the processing&lt;/i&gt;&lt;/div&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#1F2A2E);strokeColor=#666666;fontSize=11;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="host-panel">
+          <mxGeometry x="20" y="30" width="235" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="host-ram" value="RAM&lt;div&gt;&lt;i&gt;short term memory&lt;/i&gt;&lt;/div&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#1F2A2E);strokeColor=#666666;fontSize=11;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="host-panel">
+          <mxGeometry x="275" y="30" width="235" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="host-net" value="Network&lt;div&gt;&lt;i&gt;sends the data&lt;/i&gt;&lt;/div&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#1F2A2E);strokeColor=#666666;fontSize=11;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="host-panel">
+          <mxGeometry x="530" y="30" width="235" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="host-sto" value="Storage&lt;div&gt;&lt;i&gt;disk, NAS or NFS - not always virtualized&lt;/i&gt;&lt;/div&gt;" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#FFFFFF,#1F2A2E);strokeColor=#3F8624;fontSize=11;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="host-panel">
+          <mxGeometry x="785" y="30" width="235" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="band-storage" value="Three ways to give a machine its storage" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="670" width="1100" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="ebs-box" value="Block storage" style="fillColor=#E8F5E9;strokeColor=#3F8624;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#3F8624;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="710" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ebs" value="EBS volume&lt;div&gt;&lt;i&gt;network attached&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_block_store;shadow=1;fontFamily=Helvetica;" vertex="1" parent="ebs-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="net-1" value="Network" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#EDE7F6;strokeColor=#8C4FFF;strokeWidth=1.5;fontSize=12;fontStyle=1;fontColor=#8C4FFF;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="270" y="745" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="hyp-1" value="Hypervisor" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;strokeWidth=1.5;fontSize=12;fontStyle=1;fontColor=#ED7100;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="745" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vmt-1-box" value="Guest" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="690" y="710" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vmt-1" value="Your machine&lt;div&gt;&lt;i&gt;sees a local disk&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;shadow=1;fontFamily=Helvetica;" vertex="1" parent="vmt-1-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="note-1" value="&lt;b&gt;Network attached volume&lt;/b&gt;&lt;div&gt;&lt;i&gt;Storage travels over the network, the hypervisor presents it to the machine as an ordinary disk. On AWS this is the EBS volume your instance boots from.&lt;/i&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="1">
+          <mxGeometry x="840" y="720" width="290" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="disk-box" value="Local storage" style="fillColor=#E8F5E9;strokeColor=#3F8624;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#3F8624;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="850" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="disk" value="Instance store&lt;div&gt;&lt;i&gt;disk inside the host&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.disk;shadow=1;fontFamily=Helvetica;" vertex="1" parent="disk-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="hyp-2" value="Hypervisor" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;strokeWidth=1.5;fontSize=12;fontStyle=1;fontColor=#ED7100;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="885" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vmt-2-box" value="Guest" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="690" y="850" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vmt-2" value="Your machine&lt;div&gt;&lt;i&gt;fastest, but temporary&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;shadow=1;fontFamily=Helvetica;" vertex="1" parent="vmt-2-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="note-2" value="&lt;b&gt;Disk inside the host&lt;/b&gt;&lt;div&gt;&lt;i&gt;No network in the way, so it is the fastest of the three. On AWS this is the instance store, and whatever is on it disappears when the instance stops.&lt;/i&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="1">
+          <mxGeometry x="840" y="860" width="290" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="efs-box" value="File storage" style="fillColor=#E8F5E9;strokeColor=#3F8624;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#3F8624;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="990" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="efs" value="EFS or FSx&lt;div&gt;&lt;i&gt;shared file system&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_file_system;shadow=1;fontFamily=Helvetica;" vertex="1" parent="efs-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="net-3" value="Network" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#EDE7F6;strokeColor=#8C4FFF;strokeWidth=1.5;fontSize=12;fontStyle=1;fontColor=#8C4FFF;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="270" y="1025" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="hyp-3-ghost" value="Hypervisor&lt;div&gt;&lt;i&gt;not involved&lt;/i&gt;&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;fontSize=11;fontColor=light-dark(#879196,#879196);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="986" width="130" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="vmt-3-box" value="Guest" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="690" y="990" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vmt-3" value="Your machine&lt;div&gt;&lt;i&gt;mounts it over the vNIC&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;shadow=1;fontFamily=Helvetica;" vertex="1" parent="vmt-3-box">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="note-3" value="&lt;b&gt;Shared file system&lt;/b&gt;&lt;div&gt;&lt;i&gt;It arrives through the virtual network card, so the hypervisor never handles it and many machines can mount the same files. On AWS this is EFS or FSx.&lt;/i&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="1">
+          <mxGeometry x="840" y="1000" width="290" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ebs-net" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="ebs" target="net-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-net-hyp1" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="net-1" target="hyp-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-hyp1-vm" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="hyp-1" target="vmt-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-disk-hyp2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="disk" target="hyp-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-disk-hyp2-label" value="no network in the way" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-disk-hyp2">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-hyp2-vm" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="hyp-2" target="vmt-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-efs-net3" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="efs" target="net-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-net3-vm" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="net-3" target="vmt-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-net3-vm-label" value="straight to the virtual network card" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="e-net3-vm">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="band-types" value="Two kinds of hypervisor" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1180" width="1100" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="type1" value="Type 1 - bare metal: the hypervisor runs on the hardware itself" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;strokeWidth=1.5;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);container=1;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1230" width="480" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="t1-vm1" value="VM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type1">
+          <mxGeometry x="14" y="30" width="142" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t1-vm2" value="VM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type1">
+          <mxGeometry x="169" y="30" width="142" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t1-vm3" value="VM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type1">
+          <mxGeometry x="324" y="30" width="142" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t1-hyp" value="Hypervisor" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;fontSize=12;fontStyle=1;fontColor=#ED7100;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type1">
+          <mxGeometry x="14" y="80" width="452" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t1-hw" value="Hardware" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type1">
+          <mxGeometry x="14" y="130" width="452" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t1-note" value="&lt;i&gt;Lower latency and stronger isolation, so this is what clouds run. VMware ESXi, Hyper-V, KVM, Xen.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="type1">
+          <mxGeometry x="14" y="180" width="452" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="type2" value="Type 2 - hosted: the hypervisor is an application on a desktop system" style="rounded=1;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;strokeWidth=1.5;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);container=1;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="610" y="1230" width="480" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-vm1" value="VM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type2">
+          <mxGeometry x="14" y="28" width="142" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-vm2" value="VM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type2">
+          <mxGeometry x="169" y="28" width="142" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-vm3" value="VM" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type2">
+          <mxGeometry x="324" y="28" width="142" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-hyp" value="Hypervisor" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;fontSize=12;fontStyle=1;fontColor=#ED7100;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type2">
+          <mxGeometry x="14" y="70" width="452" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-hostos" value="Host operating system" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#FFEBEE;strokeColor=#DD344C;fontSize=12;fontColor=#DD344C;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type2">
+          <mxGeometry x="14" y="112" width="452" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-hw" value="Hardware" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;fontSize=12;fontColor=light-dark(#333333,#FAFAFA);align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="type2">
+          <mxGeometry x="14" y="154" width="452" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="t2-note" value="&lt;i&gt;The extra layer in red costs latency, which is fine on a laptop. VirtualBox, VMware Workstation, Parallels.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="type2">
+          <mxGeometry x="14" y="194" width="452" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="12" y="568" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="12" y="464" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="12" y="272" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="12" y="756" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="12" y="896" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="12" y="1036" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bg" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=20;indent=5;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="30" width="650" height="1470" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="62" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-1" value="&lt;div&gt;&lt;b&gt;The host owns the real resources&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; One physical server with a processor, memory, a network card and some storage. On its own it serves one operating system at a time.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="60" width="548" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="232" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-2" value="&lt;div&gt;&lt;b&gt;The hypervisor cuts them into shares&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; It is the software that virtualizes the host. The processor becomes vCPUs, the memory becomes vRAM, the network card becomes vNICs.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="230" width="548" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="402" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-3" value="&lt;div&gt;&lt;b&gt;Each machine gets its own share&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; It boots its own operating system and sees only its slice. Machines are added until the host is full, and none of them can read its neighbours.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="400" width="548" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="572" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-4" value="&lt;div&gt;&lt;b&gt;Storage route one: over the network&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; The volume lives elsewhere and reaches the host over the network; the hypervisor hands it to the machine as a plain disk. This is the EBS volume in Task 4, and it survives a stop.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="570" width="548" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="742" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-5" value="&lt;div&gt;&lt;b&gt;Storage route two: a disk in the host&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; The hypervisor passes through a disk physically inside the server. Nothing crosses the network, so it is the fastest route, and it is also the one you lose when the instance stops.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="740" width="548" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-badge-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;shadow=1;glass=0;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="912" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text-6" value="&lt;div&gt;&lt;b&gt;Storage route three: around the hypervisor&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; A shared file system is mounted over the virtual network card, so the hypervisor never takes part. Many machines can read the same files at once. On AWS, EFS or FSx.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="910" width="548" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-footer-box" value="" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="1046" width="606" height="434" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-footer-text" value="&lt;div&gt;&lt;b&gt;Type 1 and type 2&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;Type 1&lt;/b&gt; sits straight on the hardware. Fewer layers means lower latency and less to attack, which is why providers use it. The instance in this lab runs on the AWS Nitro hypervisor, a type 1 built on KVM.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; &lt;b&gt;Type 2&lt;/b&gt; runs as an application on a desktop operating system. The extra layer costs latency, which is acceptable on a laptop but not in a data centre.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Why the course cares&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Without a hypervisor, one box serves one tenant. With one, the same box serves many isolated machines: that is multitenancy, and it is what makes renting compute cheap.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; The instance type you pick in Task 4, t3.micro, names the size of the slice: how much vCPU and vRAM the hypervisor hands your machine.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Storage is the one resource the hypervisor does not always mediate, which is why the three routes above behave so differently when an instance is stopped.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=2;spacingLeft=6;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1222" y="1054" width="586" height="418" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

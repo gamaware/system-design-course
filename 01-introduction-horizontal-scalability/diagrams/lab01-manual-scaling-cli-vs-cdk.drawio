@@ -1,0 +1,314 @@
+<mxfile host="Electron" version="29.6.1">
+  <diagram name="Page-1" id="lab01-manual-scaling">
+    <mxGraphModel dx="2400" dy="1200" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="2250" pageHeight="1120" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title-group" value="" style="group;fontFamily=Helvetica;" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1450" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="title-text" value="Lab 01 - Manual Scaling: CLI or CDK" style="text;html=1;resizable=1;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry width="1430" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle-text" value="The same change made twice: one path moves the service and leaves the code lying, the other moves the code and lets the service follow" style="text;html=1;resizable=0;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="40" width="1425" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="title-separator" value="" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" vertex="1" parent="title-group">
+          <mxGeometry x="5" y="70" width="1440" height="10" as="geometry" />
+        </mxCell>
+
+        <mxCell id="band-a" value="Path A - the CLI: imperative, immediate, and it drifts" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#ED7100;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=#ED7100;container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="150" width="1450" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a1-c" value="Command" style="fillColor=#F5E6F7;strokeColor=#C925D1;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#C925D1;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="130" y="230" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="aws ecs update-service&lt;div&gt;&lt;i&gt;--desired-count 5&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.command_line_interface;fontFamily=Helvetica;shadow=1;" vertex="1" parent="a1-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a2-c" value="Control plane" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="230" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="ECS API&lt;div&gt;&lt;i&gt;writes desiredCount 5&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;fontFamily=Helvetica;shadow=1;" vertex="1" parent="a2-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a3-c" value="Rollout" style="fillColor=#EDE7F6;strokeColor=#8C4FFF;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#8C4FFF;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="670" y="230" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="Scheduler and ALB&lt;div&gt;&lt;i&gt;tasks start, targets register&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_load_balancing;fontFamily=Helvetica;shadow=1;" vertex="1" parent="a3-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a4-c" value="Result" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="230" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="5 tasks running&lt;div&gt;&lt;i&gt;the code still says 3&lt;/i&gt;&lt;/div&gt;" style="sketch=0;outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.ecs_service;fontFamily=Helvetica;" vertex="1" parent="a4-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="drift-box" value="&lt;div&gt;&lt;b&gt;This is drift&lt;/b&gt;&lt;/div&gt;&lt;div&gt;The service is at five, the repository still says three. The next &lt;code&gt;cdk deploy&lt;/code&gt; will quietly put it back to three. Fine for a demo or an incident, wrong for a permanent change.&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=6;fontSize=13;fontColor=light-dark(#000000,#000000);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="225" width="340" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a1" target="a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea1l" value="one API call" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea1">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a2" target="a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea2l" value="effective at once" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea2">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ea3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a3" target="a4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea3l" value="about 4 to 5 min" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea3">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ea4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#ED7100;strokeWidth=2;dashed=1;dashPattern=8 6;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a4" target="drift-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="band-b" value="Path B - CDK: declarative, reviewable, and the code stays true" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#3F8624;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=#3F8624;container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="425" width="1450" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b1-c" value="Source" style="fillColor=#F5E6F7;strokeColor=#C925D1;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#C925D1;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="130" y="505" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="Edit app.py&lt;div&gt;&lt;i&gt;desired_count 3 to 5&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloud_development_kit;fontFamily=Helvetica;shadow=1;" vertex="1" parent="b1-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b2-c" value="Review" style="fillColor=#F5E6F7;strokeColor=#C925D1;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#C925D1;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="505" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="cdk diff&lt;div&gt;&lt;i&gt;DesiredCount 3 to 5&lt;/i&gt;&lt;/div&gt;" style="sketch=0;outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.change_set;fontFamily=Helvetica;" vertex="1" parent="b2-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b3-c" value="Apply" style="fillColor=#FCE4EC;strokeColor=#E7157B;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#E7157B;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="670" y="505" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="cdk deploy&lt;div&gt;&lt;i&gt;CloudFormation UPDATE&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudformation;fontFamily=Helvetica;shadow=1;" vertex="1" parent="b3-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b4-c" value="Rollout" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="505" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="ECS and ALB&lt;div&gt;&lt;i&gt;5 of 5 healthy&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;fontFamily=Helvetica;shadow=1;" vertex="1" parent="b4-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b5-c" value="Record" style="fillColor=#E8F5E9;strokeColor=#3F8624;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#3F8624;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="505" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" value="git commit&lt;div&gt;&lt;i&gt;versioned, repeatable&lt;/i&gt;&lt;/div&gt;" style="sketch=0;outlineConnect=0;fontColor=light-dark(#232F3E,#FFFFFF);gradientColor=none;fillColor=#3F8624;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.git_repository;fontFamily=Helvetica;" vertex="1" parent="b5-c">
+          <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eb1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="b1" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1l" value="one line changes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb1">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="b2" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2l" value="read the diff first" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb2">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="b3" target="b4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3l" value="about 2 to 3 min" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb3">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="b4" target="b5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb4l" value="no drift" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb4">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <mxPoint x="0" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="badge-1" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="190" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-2" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="190" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-3" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="670" y="190" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="940" y="190" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="465" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-6" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="465" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-7" value="7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="670" y="465" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-8" value="8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="940" y="465" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-9" value="9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="465" width="28" height="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="band-c" value="Drift, side by side" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="700" width="1450" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="c-code" value="&lt;div&gt;&lt;b&gt;What the repository says&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;code&gt;ecsdemo-frontend/cdk/app.py&lt;/code&gt;&lt;/div&gt;&lt;div&gt;&lt;code&gt;desired_count=3,&lt;/code&gt;&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=8;fontSize=13;fontColor=light-dark(#000000,#FFFFFF);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="150" y="755" width="380" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c-neq" value="&amp;#8800;" style="text;html=1;align=center;verticalAlign=middle;fontSize=34;fontStyle=1;fontFamily=Helvetica;fontColor=#ED7100;" vertex="1" parent="1">
+          <mxGeometry x="550" y="780" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c-real" value="&lt;div&gt;&lt;b&gt;What the account says&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;code&gt;aws ecs describe-services&lt;/code&gt;&lt;/div&gt;&lt;div&gt;&lt;code&gt;desiredCount: 5&lt;/code&gt; - five tasks running&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=8;fontSize=13;fontColor=light-dark(#000000,#000000);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="630" y="755" width="380" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c-note" value="&lt;div&gt;&lt;b&gt;The rule&lt;/b&gt;&lt;/div&gt;&lt;div&gt;If you did it with the CLI, put it in the code afterwards. Otherwise the next deploy silently undoes your change, usually at the worst possible moment.&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=8;fontSize=13;fontColor=light-dark(#000000,#000000);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="755" width="420" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="band-d" value="So which one do you use" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="895" width="1450" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="&lt;div&gt;&lt;b&gt;Reach for the CLI&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Classroom demos, live incidents, quick experiments. Anything you intend to undo within the hour.&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=8;fontSize=13;fontColor=light-dark(#000000,#000000);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="935" width="450" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="&lt;div&gt;&lt;b&gt;Reach for CDK&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Permanent changes, anything another person should review, anything that has to be reproducible in a second account.&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#3F8624;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=8;fontSize=13;fontColor=light-dark(#000000,#000000);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="935" width="450" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="&lt;div&gt;&lt;b&gt;Same path for the other knobs&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;code&gt;min_capacity&lt;/code&gt;, &lt;code&gt;max_capacity&lt;/code&gt; and the CPU target live in the same file and change the same way.&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=8;fontSize=13;fontColor=light-dark(#000000,#FFFFFF);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="935" width="440" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-bg" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=20;indent=5;fillColor=light-dark(#EDF3FF,#305363);strokeColor=#6c8ebf;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="30" width="650" height="1015" as="geometry" />
+        </mxCell>
+
+        <mxCell id="h-a" value="Path A - the CLI" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Helvetica;fontColor=#ED7100;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="52" width="400" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="s1-badge" value="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="86" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s1-desc" value="&lt;div&gt;&lt;b&gt;You type one command&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;&lt;code&gt;aws ecs update-service --cluster container-demo --service ecsdemo-frontend --desired-count 5&lt;/code&gt;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="84" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2-badge" value="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="176" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s2-desc" value="&lt;div&gt;&lt;b&gt;The ECS API accepts it immediately&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;No template, no change set, no review. The service property is simply overwritten.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="174" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-badge" value="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="256" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-desc" value="&lt;div&gt;&lt;b&gt;The rollout takes minutes&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;The scheduler pulls images and starts tasks; the ALB only sends traffic once the health check passes.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="254" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s4-badge" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="336" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s4-desc" value="&lt;div&gt;&lt;b&gt;And now the code is wrong&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;Five tasks run, the repository still claims three. Nothing warns you until the next deploy reverts it.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="334" width="558" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="h-b" value="Path B - CDK" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Helvetica;fontColor=#3F8624;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="426" width="400" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="s5-badge" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="460" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s5-desc" value="&lt;div&gt;&lt;b&gt;You change the number in the code&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;&lt;code&gt;desired_count=3&lt;/code&gt; becomes &lt;code&gt;desired_count=5&lt;/code&gt; in &lt;code&gt;ecsdemo-frontend/cdk/app.py&lt;/code&gt;.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="458" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6-badge" value="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="540" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s6-desc" value="&lt;div&gt;&lt;b&gt;&lt;code&gt;cdk diff&lt;/code&gt; is the evidence&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;It prints exactly one line: &lt;code&gt;AWS::ECS::Service DesiredCount 3 to 5&lt;/code&gt;. That output is what a reviewer approves.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="538" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7-badge" value="7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="620" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s7-desc" value="&lt;div&gt;&lt;b&gt;&lt;code&gt;cdk deploy&lt;/code&gt; updates the stack&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;CloudFormation changes only what differs. Existing tasks are not restarted when DesiredCount is the only change.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="618" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s8-badge" value="8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="700" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s8-desc" value="&lt;div&gt;&lt;b&gt;The rollout is the same as path A&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;ECS and the ALB do identical work. The difference is never in the rollout, it is in what the repository knows.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="698" width="558" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s9-badge" value="9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=22;labelBackgroundColor=none;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="780" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s9-desc" value="&lt;div&gt;&lt;b&gt;The commit closes the loop&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;- &lt;/b&gt;Now the change has an author, a date and a reason, and a second account can be brought to the same state by running the same code.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=-4;fontSize=14;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1612" y="778" width="558" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ls-box" value="Line styles" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=14;fontStyle=1;fontColor=light-dark(#000000,#FFFFFF);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="885" width="610" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="ls1" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;fontFamily=Helvetica;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1580" y="925" as="sourcePoint" />
+            <mxPoint x="1640" y="925" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ls1t" value="The path the change travels" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Helvetica;fontColor=light-dark(#000000,#FFFFFF);" vertex="1" parent="1">
+          <mxGeometry x="1652" y="911" width="420" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="ls2" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;fontFamily=Helvetica;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1580" y="957" as="sourcePoint" />
+            <mxPoint x="1640" y="957" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ls2t" value="The step that keeps code and reality in agreement" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Helvetica;fontColor=light-dark(#000000,#FFFFFF);" vertex="1" parent="1">
+          <mxGeometry x="1652" y="943" width="460" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="ls3" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#ED7100;strokeWidth=2;dashed=1;dashPattern=8 6;fontFamily=Helvetica;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1580" y="989" as="sourcePoint" />
+            <mxPoint x="1640" y="989" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ls3t" value="The consequence nobody asked for: drift" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Helvetica;fontColor=light-dark(#000000,#FFFFFF);" vertex="1" parent="1">
+          <mxGeometry x="1652" y="975" width="460" height="28" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

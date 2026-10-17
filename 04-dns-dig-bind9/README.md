@@ -15,21 +15,26 @@ and understand DNS-based load balancing.
 
 Reference diagrams from class, covering the concepts this lab exercises.
 
-![DNS name resolution flow](diagrams/dns-resolution-flow.png)
+![Numbered walk of a query from the browser cache to the authoritative server](diagrams/lab04-dns-resolution-flow.png)
 
-*Step-by-step DNS resolution: user, local cache, recursive resolver, root, TLD, and authoritative servers,
-followed by the final HTTP request.*
+[Edit this diagram](diagrams/lab04-dns-resolution-flow.drawio)
 
-![DNS vs. load balancer comparison](diagrams/dns-vs-load-balancer.png)
+*Step-by-step DNS resolution: client cache, recursive resolver and its cache, root, TLD, and authoritative
+servers, and the HTTP request that only starts once the name has been resolved.*
 
-*When to use each: decision granularity, reaction speed, health checks, persistence, and scope.*
+![Two panels contrasting DNS round robin answering without health checks against a load balancer that checks every backend](diagrams/lab04-dns-vs-load-balancer.png)
 
-![DNS plus load balancer multi-region pattern](diagrams/dns-plus-load-balancer-multi-region.png)
+[Edit this diagram](diagrams/lab04-dns-vs-load-balancer.drawio)
 
-*The real-world pattern: DNS (Route 53) picks the region, the load balancer (ALB/HAProxy) picks the instance.*
+*When to use each: DNS round robin answers without health checks and commits for a whole TTL, while the
+load balancer decides on every
+request and drops a failed backend in seconds.*
 
-▶ [Explore the interactive diagram](https://spruce-frost-hy26.here.now/?theme=dark) (zoom, search, trace animation, export).
-SVG versions of the comparison and multi-region diagrams are available in [diagrams/](diagrams/).
+![Two Regions with load balancers chosen by Route 53 routing](diagrams/lab04-dns-plus-load-balancer-multi-region.png)
+
+[Edit this diagram](diagrams/lab04-dns-plus-load-balancer-multi-region.drawio)
+
+*The real-world pattern: DNS (Route 53) picks the Region, the load balancer (ALB/HAProxy) picks the instance.*
 
 ## Learning Objectives
 
@@ -60,7 +65,8 @@ SVG versions of the comparison and multi-region diagrams are available in [diagr
 
 ```text
 04-dns-dig-bind9/
-└── README.md              # This file (all exercises run on EC2)
+├── README.md              # This file (all exercises run on EC2)
+└── diagrams/              # Architecture diagrams (draw.io source + PNG)
 ```
 
 This lab runs entirely on an AWS EC2 instance. Execute each command and observe the

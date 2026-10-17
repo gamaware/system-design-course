@@ -56,24 +56,9 @@ button click and console query executes real SQL against real databases.
 The same Docker Compose stack runs locally or on an EC2 instance via
 CloudFormation.
 
-```mermaid
-graph LR
-    subgraph Docker ["Docker Compose Network"]
-        subgraph Viz ["Visualizer"]
-            WEB["Browser<br>(localhost:8081)"]
-            API["Python API Bridge<br>(server.py)"]
-        end
-        subgraph DB ["MySQL Cluster"]
-            PRIMARY[("Primary<br>port 3306<br>read-write")]
-            REPLICA[("Replica<br>port 3307<br>read-only")]
-        end
-    end
+![A browser calling a Python API bridge inside Docker Compose, which sends writes to the MySQL primary on port 3306 and reads to the replica on port 3307 while the primary feeds the replica over its binary log](diagrams/lab10-architecture.png)
 
-    WEB -->|"HTTP"| API
-    API -->|"INSERT / UPDATE"| PRIMARY
-    API -->|"SELECT / SHOW STATUS"| REPLICA
-    PRIMARY -.->|"binlog<br>replication"| REPLICA
-```
+[Edit this diagram](diagrams/lab10-architecture.drawio)
 
 **Data flow:**
 
@@ -87,6 +72,7 @@ graph LR
 ```text
 10-databases/
 ├── README.md                           # This file (lab overview)
+├── diagrams/                           # Architecture diagrams (draw.io source + PNG)
 ├── LAB.md                              # Full lab index with comparison table
 ├── visualizer/                         # Main lab (interactive browser)
 │   ├── LAB-VISUALIZER.md              # Step-by-step instructions (5 tasks)

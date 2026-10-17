@@ -41,16 +41,20 @@ in this course.
 
 ## Class Diagrams
 
-Reference diagrams from class, covering the concepts this lab exercises (editable SVG + PNG in [`diagrams/`](./diagrams/)):
+Reference diagrams from class, covering the concepts this lab exercises (editable draw.io source + PNG in [`diagrams/`](./diagrams/)):
 
 | Diagram | What it shows |
 | --- | --- |
-| [What is virtualization?](./diagrams/compute-virtualization.png) | Definition, On‑Prem (1 server = 1 OS = 1 app) vs. one physical host running independent VMs on a hypervisor, VM portability, and the three benefits (cost, agility, downtime). |
-| [What is a hypervisor?](./diagrams/compute-hypervisors.png) | Compute host (CPU/RAM/Network + storage) sliced into vCPU/vRAM/vNIC per VM, isolation between VMs, the three storage paths (EBS / Instance Store / EFS‑FSx), Type 1 vs. Type 2 with products, multitenancy and how it maps to EC2 in the labs. |
+| [What is virtualization?](./diagrams/lab02-virtualization.png) | Definition, On‑Prem (1 server = 1 OS = 1 app) vs. one physical host running independent VMs on a hypervisor, VM portability, and the three benefits (cost, agility, downtime). |
+| [What is a hypervisor?](./diagrams/lab02-hypervisors.png) | Compute host (CPU/RAM/Network + storage) sliced into vCPU/vRAM/vNIC per VM, isolation between VMs, the three storage paths (EBS / Instance Store / EFS‑FSx), Type 1 vs. Type 2 with products, multitenancy and how it maps to EC2 in the labs. |
 
-![What is virtualization: on-prem vs virtualized host with VMs on a hypervisor](./diagrams/compute-virtualization.png)
+![Three underused servers running one application each, next to one host whose hypervisor shares its processor, memory and network across three isolated virtual machines](diagrams/lab02-virtualization.png)
 
-![How hypervisors work: resource slicing, VM isolation, storage paths, and Type 1 vs Type 2](./diagrams/compute-hypervisors.png)
+[Edit this diagram](diagrams/lab02-virtualization.drawio)
+
+![A physical host sliced into virtual machines with their own vCPU, vRAM and vNIC, the three routes storage takes to reach a machine, and bare metal against hosted hypervisors](diagrams/lab02-hypervisors.png)
+
+[Edit this diagram](diagrams/lab02-hypervisors.drawio)
 
 ## Lab Structure
 
@@ -150,31 +154,9 @@ Acts as a virtual firewall:
 
 Understanding the architecture helps visualize how components work together:
 
-```mermaid
-graph TB
-    subgraph aws_cloud ["AWS Cloud"]
-        subgraph vpc ["VPC (Virtual Private Cloud)"]
-            subgraph public_subnet ["Public Subnet"]
-                EC2{{"EC2 Instance<br>Amazon Linux 2023<br>t3.micro<br>Public IP: x.x.x.x"}}
-                SG[["Security Group<br>Allow SSH (22)<br>from your IP"]]
-                EBS[("EBS Root Volume<br>8 GB gp3<br>Contains AMI")]
+![Your computer reaching an EC2 instance through an internet gateway and a security group, with the EBS root volume attached inside the public subnet](diagrams/lab02-ec2-architecture.png)
 
-                EC2 -.->|"protected by"| SG
-                EC2 -.->|"storage"| EBS
-            end
-        end
-    end
-
-    %% External actors
-    User("Your Computer<br>SSH Client<br>Private Key")
-    Internet(["Internet Gateway"])
-
-    %% Connection flow
-    User ==>|"SSH connection<br>port 22"| Internet
-    Internet --> SG
-    SG -->|"allowed"| EC2
-
-```
+[Edit this diagram](diagrams/lab02-ec2-architecture.drawio)
 
 **Key points:**
 
@@ -575,26 +557,9 @@ Think of connecting to your instance like going to your house:
 
 ### SSH Connection Flow
 
-```mermaid
-sequenceDiagram
-    participant You as Your Computer
-    participant SG as Security Group
-    participant EC2 as EC2 Instance
+![The SSH handshake as an architecture: the security group checks the source address, then the instance matches your signature against the stored public key](diagrams/lab02-ssh-connection-flow.png)
 
-    You ->> SG: SSH connection request (port 22)
-    Note over SG: Check: Is source IP allowed?
-
-    alt IP allowed
-        SG ->> EC2: Forward connection
-        EC2 ->> You: Request authentication
-        You ->> EC2: Send public key signature<br>(signed with private key)
-        EC2 ->> EC2: Verify signature<br>with stored public key
-        EC2 ->> You: Authentication successful
-        Note over You, EC2: Secure SSH session established
-    else IP not allowed
-        SG ->> You: Connection refused
-    end
-```
+[Edit this diagram](diagrams/lab02-ssh-connection-flow.drawio)
 
 ---
 

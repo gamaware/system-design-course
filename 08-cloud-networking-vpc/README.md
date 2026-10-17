@@ -51,66 +51,33 @@ local operating system.
 ## Architecture
 
 The following diagram shows the target architecture you will build in this
-lab. CloudFormation creates the network foundation (orange), the AWS CLI
-creates security resources (green), and Terraform creates the compute
-instances (blue).
+lab. CloudFormation creates the network foundation (step 1), the AWS CLI
+creates security resources (step 2), and Terraform creates the compute
+instances (step 3).
 
-```mermaid
-graph TB
-    subgraph AWS ["AWS Cloud"]
-        subgraph VPC ["VPC 10.0.0.0/16"]
-            %% Availability Zone A
-            subgraph AZA ["Availability Zone A"]
-                SUBA["Public Subnet A<br>10.0.10.0/24"]
-                EC2_1{{"EC2-1<br>Amazon Linux 2023"}}
-            end
+![Numbered walkthrough of the lab: CloudFormation, the AWS CLI and Terraform run from the student computer and build a VPC with an Internet Gateway, a public route table, a security group and one EC2 web server in each of two Availability Zones](diagrams/lab08-vpc-architecture.png)
 
-            %% Availability Zone C
-            subgraph AZC ["Availability Zone C"]
-                SUBC["Public Subnet C<br>10.0.20.0/24"]
-                EC2_2{{"EC2-2<br>Amazon Linux 2023"}}
-            end
-
-            RT[["Public Route Table<br>0.0.0.0/0 -> IGW"]]
-            SG[["Security Group<br>SSH + ICMP"]]
-        end
-
-        IGW(["Internet Gateway"])
-    end
-
-    %% External access
-    STUDENT("Student's Computer")
-
-    %% Connections
-    STUDENT ==>|"SSH / ping"| IGW
-    IGW --> EC2_1
-    IGW --> EC2_2
-    EC2_1 <-->|"ping (cross-AZ)"| EC2_2
-
-    %% Associations
-    RT -.-> IGW
-    SG -.-> EC2_1
-    SG -.-> EC2_2
-    SUBA --- EC2_1
-    SUBC --- EC2_2
-
-```
+[Edit this diagram](diagrams/lab08-vpc-architecture.drawio)
 
 **Tool responsibilities:**
 
-| Color | Tool | Resources |
+| Step | Tool | Resources |
 | --- | --- | --- |
-| Orange | CloudFormation | VPC, subnets, Internet Gateway, route tables |
-| Green | AWS CLI | Key pair, security group |
-| Blue | Terraform | EC2-1, EC2-2 |
+| 1 | CloudFormation | VPC, subnets, Internet Gateway, route tables |
+| 2 | AWS CLI | Key pair, security group |
+| 3 | Terraform | EC2-1, EC2-2 |
 
 After the VPC is created (Task 2), the network foundation looks like this:
 
-![VPC Architecture after creation](images/3-1-architecture-en.png)
+![Empty VPC 10.0.0.0/16 with an Internet Gateway attached to it and two Availability Zones that still hold no subnets](diagrams/lab08-vpc-foundation.png)
+
+[Edit this diagram](diagrams/lab08-vpc-foundation.drawio)
 
 After both subnets are provisioned and route tables are associated:
 
-![VPC Architecture with both subnets](images/3-2-architecture-en.png)
+![VPC with one public subnet per Availability Zone, both associated with a single route table whose default route points at the Internet Gateway](diagrams/lab08-vpc-subnets.png)
+
+[Edit this diagram](diagrams/lab08-vpc-subnets.drawio)
 
 ### Bridge from Lab 07
 
@@ -131,6 +98,7 @@ Lab 07 to their AWS VPC equivalents in this lab:
 ```text
 08-cloud-networking-vpc/
 ├── README.md                          # This file (lab overview)
+├── diagrams/                          # Architecture diagrams (draw.io source + PNG)
 ├── LAB-MACOS.md                       # Lab instructions (macOS/Linux)
 ├── LAB-WINDOWS.md                     # Lab instructions (Windows/PowerShell)
 ├── setup.sh                           # Deploy CF stack + init TF (bash)

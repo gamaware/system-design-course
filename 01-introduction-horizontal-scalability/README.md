@@ -22,67 +22,38 @@ balancing, implement CPU-based autoscaling, and observe scaling behavior under l
 
 ## Architecture
 
-```mermaid
-graph TB
-    %% Traffic flow
-    User("Users") --> ALB(["Application Load Balancer"])
-    ALB --> Frontend["Frontend Service<br>Ruby on Rails"]
-    Frontend --> NodeJS["NodeJS Service<br>Backend API"]
-    Frontend --> Crystal["Crystal Service<br>Backend API"]
+![VPC across three Availability Zones with an Application Load Balancer in the public subnets, three ECS Fargate services and Cloud Map in the private subnets, and a CloudWatch to alarms to Application Auto Scaling loop underneath](diagrams/lab01-architecture.png)
 
-    %% ECS services
-    subgraph ecs_cluster ["ECS Cluster"]
-        direction TB
-        Frontend
-        NodeJS
-        Crystal
-    end
-
-    %% Autoscaling feedback loop
-    subgraph auto_scaling ["Auto Scaling"]
-        direction TB
-        ASG{{"Auto Scaling Group"}}
-        CW[["CloudWatch Metrics"]]
-        ASG -.->|"Monitors"| Frontend
-        CW -.->|"Triggers"| ASG
-    end
-
-```
+[Edit this diagram](diagrams/lab01-architecture.drawio)
 
 ## Class Diagrams
 
 Reference diagrams from class, covering the concepts this lab exercises.
-PNGs below are the versions shown in class; editable SVG sources live in [`diagrams/`](./diagrams/).
+Editable draw.io sources live in [`diagrams/`](./diagrams/).
 
 | Diagram | What it shows |
 | --- | --- |
-| [Lab architecture](./diagrams/class-lab01-architecture.png) | VPC (3 AZs), ALB, ECS Fargate cluster with the three services, Cloud Map `service.local`, the CloudWatch → target-tracking alarms → Application Auto Scaling loop, and the CDK stacks. |
-| [Manual scaling: CLI vs. CDK](./diagrams/class-manual-scaling-cli-vs-cdk.png) | Imperative `aws ecs update-service --desired-count` (drift) vs. declaratively changing `desired_count` in `ecsdemo-frontend/cdk/app.py` + `cdk diff` / `cdk deploy`. |
-| [AWS CDK lifecycle](./diagrams/class-cdk-lifecycle.png) | What CDK is (L1/L2/L3 constructs, app → stacks) and the lifecycle `init → bootstrap → synth → diff → deploy → iterate → destroy`, with the lab's exact commands and typical errors. |
-| [How autoscaling decides](./diagrams/class-autoscaling-how-it-decides.png) | The target-tracking "thermostat": CPU metric → AlarmHigh/AlarmLow → `new = ceil(tasks × CPU / target)` → desiredCount within min/max; measured timeline and the four knobs in `app.py`. |
-| [Scaling flow: manual vs. autoscaling](./diagrams/class-scaling-flow-manual-vs-autoscaling.png) | Step-by-step manual scale-out/scale-in with measured timings, the CPU target-tracking feedback loop (AlarmHigh / AlarmLow), and lessons learned (sustained load, target vs. saturation plateau). |
+| [Lab architecture](./diagrams/lab01-architecture.png) | VPC (3 AZs), ALB, ECS Fargate cluster with the three services, Cloud Map `service.local`, and the CloudWatch → target-tracking alarms → Application Auto Scaling loop. |
+| [Manual scaling: CLI vs. CDK](./diagrams/lab01-manual-scaling-cli-vs-cdk.png) | Imperative `aws ecs update-service --desired-count` (drift) vs. declaratively changing `desired_count` in `ecsdemo-frontend/cdk/app.py` + `cdk diff` / `cdk deploy`. |
+| [AWS CDK lifecycle](./diagrams/lab01-cdk-lifecycle.png) | What CDK is (L1/L2/L3 constructs, app → stacks) and the lifecycle `init → bootstrap → synth → diff → deploy → iterate → destroy`, with the lab's exact commands and typical errors. |
+| [How autoscaling decides](./diagrams/lab01-autoscaling-decision.png) | The target-tracking "thermostat": CPU metric → AlarmHigh/AlarmLow → `new = ceil(tasks × CPU / target)` → desiredCount within min/max; measured timeline and the four knobs in `app.py`. |
+| [Scaling out and in, measured](./diagrams/lab01-scaling-flow.png) | Manual scale-out and scale-in with measured timings, what happens when the autoscaler is left switched on, and the lessons from the load test. |
 
-![Lab 01 architecture (ECS Fargate + ALB)](./diagrams/class-lab01-architecture.png)
+![Two parallel paths changing the same task count: the CLI path ending in drift, and the CDK path ending in a commit](diagrams/lab01-manual-scaling-cli-vs-cdk.png)
 
-VPC with 3 AZs, ALB, Fargate cluster with the three services, Cloud Map,
-and the CloudWatch → alarms → Application Auto Scaling loop.
+[Edit this diagram](diagrams/lab01-manual-scaling-cli-vs-cdk.drawio)
 
-![Manual scaling: CLI vs. CDK](./diagrams/class-manual-scaling-cli-vs-cdk.png)
+![Seven numbered stages from cdk init to cdk destroy, with the edit, synth, diff, deploy loop drawn above them](diagrams/lab01-cdk-lifecycle.png)
 
-Changing `desiredCount` with the CLI (imperative, causes drift) vs. changing it in code and running `cdk deploy` (declarative).
+[Edit this diagram](diagrams/lab01-cdk-lifecycle.drawio)
 
-![Scaling flow: manual vs. autoscaling](./diagrams/class-scaling-flow-manual-vs-autoscaling.png)
+![Five-step control loop from traffic to desiredCount, the scaling formula, and a task-count timeline measured during the lab](diagrams/lab01-autoscaling-decision.png)
 
-Manual scaling steps with measured timings, the target-tracking loop (AlarmHigh / AlarmLow), and lessons learned.
+[Edit this diagram](diagrams/lab01-autoscaling-decision.drawio)
 
-![AWS CDK: what it is and its lifecycle](./diagrams/class-cdk-lifecycle.png)
+![Scale-out in four steps taking minutes against scale-in in three steps taking seconds, plus how the autoscaler reverts a manual change](diagrams/lab01-scaling-flow.png)
 
-Constructs, app → stacks, and the `init → bootstrap → synth → diff → deploy → iterate → destroy` cycle with the lab's commands.
-
-![ECS Auto Scaling: how it decides task count](./diagrams/class-autoscaling-how-it-decides.png)
-
-The CPU thermostat: metric → alarms → `new = ceil(tasks × CPU / target)` → desiredCount within min/max,
-and the knobs in code.
+[Edit this diagram](diagrams/lab01-scaling-flow.drawio)
 
 ## Prerequisites
 
