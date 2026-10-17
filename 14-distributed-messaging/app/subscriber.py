@@ -53,13 +53,21 @@ def main():
         # A peek never acknowledges. basic_get takes one message at a time with no prefetch limit (a
         # quorum queue caps a consumer with prefetch 0 at 2,000 messages), and a message this channel
         # holds unacknowledged is not handed out again, so each one is seen once.
-        while True:
-            method, properties, body = channel.basic_get(args.queue, auto_ack=False)
-            if method is None:  # the queue has no more ready messages
-                break
-            received += 1
-            show(method, properties, body)
-        connection.close()  # closing without acknowledging returns every message to the queue
+        last_tag = None
+        try:
+            while True:
+                method, properties, body = channel.basic_get(args.queue, auto_ack=False)
+                if method is None:  # the queue has no more ready messages
+                    break
+                last_tag = method.delivery_tag
+                received += 1
+                show(method, properties, body)
+        finally:
+            # Give every message back explicitly. Closing the channel would also requeue them, but a
+            # quorum queue counts that as a failed delivery, and repeated peeks would dead-letter them.
+            if last_tag is not None:
+                channel.basic_nack(delivery_tag=last_tag, multiple=True, requeue=True)
+            connection.close()
     else:
         channel.basic_qos(prefetch_count=100)
         for method, properties, body in channel.consume(args.queue, inactivity_timeout=IDLE_SECONDS):
