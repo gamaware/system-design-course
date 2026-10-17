@@ -30,6 +30,6 @@ and Python code.
 ## What NOT to flag
 
 - Third-party files in `ecsdemo-*/` directories (AWS demo apps, not our code).
-- Placeholder READMEs in modules 05, 12, 13, 14, 15, 16 and 17 (content under development).
+- Placeholder READMEs in modules 13, 15, 16 and 17 (content under development).
 - Lab `06-security-https-oauth2-keycloak` trusts a self-signed certificate through the
   `KEYCLOAK_CA_BUNDLE` environment variable (intentional; the lab explains why `verify=False` is unsafe).

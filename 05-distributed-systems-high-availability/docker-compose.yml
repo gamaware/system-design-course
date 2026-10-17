@@ -1,0 +1,96 @@
+# Lab 05: three replicated key-value nodes behind Toxiproxy and HAProxy.
+# Every host port sits in 18000-18099 (plus 8474 for the Toxiproxy API) so this lab can run
+# next to the other labs of the course. Every port is published on 127.0.0.1 only: /admin/crash and
+# the Toxiproxy API must not be reachable from other machines on the network.
+
+x-node: &node
+  # Pinned to an exact tag: the node only needs the Python standard library.
+  image: python:3.13.7-alpine3.22
+  command: ["python", "-u", "/app/kv_node.py"]
+  # A crashed node (exit status 1) is restarted by Docker: the supervisor of this lab.
+  restart: on-failure
+  volumes:
+    - ./app:/app:ro
+  healthcheck:
+    test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8080/health/live"]
+    interval: 5s
+    timeout: 3s
+    retries: 5
+
+services:
+  node1:
+    <<: *node
+    container_name: lab05-node1
+    hostname: node1
+    ports:
+      - "127.0.0.1:18001:8080"
+    environment:
+      NODE_ID: node1
+      MODE: ap
+      WARMUP_SECONDS: ${WARMUP_SECONDS:-5}
+      PEERS: node2=http://toxiproxy:18012,node3=http://toxiproxy:18013
+
+  node2:
+    <<: *node
+    container_name: lab05-node2
+    hostname: node2
+    ports:
+      - "127.0.0.1:18002:8080"
+    environment:
+      NODE_ID: node2
+      MODE: ap
+      WARMUP_SECONDS: ${WARMUP_SECONDS:-5}
+      PEERS: node1=http://toxiproxy:18021,node3=http://toxiproxy:18023
+
+  node3:
+    <<: *node
+    container_name: lab05-node3
+    hostname: node3
+    ports:
+      - "127.0.0.1:18003:8080"
+    environment:
+      NODE_ID: node3
+      MODE: ap
+      WARMUP_SECONDS: ${WARMUP_SECONDS:-5}
+      PEERS: node1=http://toxiproxy:18031,node2=http://toxiproxy:18032
+
+  toxiproxy:
+    # Every link (load balancer -> node, node -> node) crosses Toxiproxy, so any of them can be
+    # slowed down or cut. Proxies are declared in toxiproxy/toxiproxy.json.
+    image: ghcr.io/shopify/toxiproxy:2.12.0
+    container_name: lab05-toxiproxy
+    command: ["-host=0.0.0.0", "-config=/config/toxiproxy.json"]
+    ports:
+      - "127.0.0.1:8474:8474"
+    volumes:
+      - ./toxiproxy/toxiproxy.json:/config/toxiproxy.json:ro
+    healthcheck:
+      test: ["CMD", "/toxiproxy-cli", "list"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  haproxy:
+    image: haproxy:3.2.4-alpine
+    container_name: lab05-haproxy
+    depends_on:
+      toxiproxy:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:18080:18080"
+      - "127.0.0.1:18081:18081"
+      - "127.0.0.1:18090:18090"
+    environment:
+      CHECK_INTER: ${CHECK_INTER:-1s}
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+
+  client:
+    # Runs the measurement scripts from inside the lab network, so results do not depend on the
+    # tools installed on the student's machine.
+    image: python:3.13.7-alpine3.22
+    container_name: lab05-client
+    command: ["sleep", "infinity"]
+    init: true
+    volumes:
+      - ./scripts:/scripts:ro
