@@ -6,7 +6,7 @@
     "1": "{{s1}} makes the same order-created event reach several independent consumers, without the API knowing how many there are.",
     "2": "{{s2}} receives its copy of each order and keeps it until a worker confirms it was processed; if the worker dies halfway, the order shows up again.",
     "3": "{{s3}} runs the code that assigns a driver only when there are messages, scales on its own and costs nothing in the early morning.",
-    "4": "{{s4}} sets aside, on its own, an order that fails 5 times so it can be reviewed later, without blocking the line.",
+    "4": "{{s4}} sets aside only the order that fails 5 times so it can be reviewed later, without blocking the line.",
     "5": "{{s5}} receives the drivers' GPS, keeps it for 7 days in order, and analytics reads it again from the beginning as many times as it wants."
   },
   "slots": {

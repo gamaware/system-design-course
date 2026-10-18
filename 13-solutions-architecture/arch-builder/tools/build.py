@@ -276,14 +276,17 @@ def strip_tokens(text: str) -> str:
 
 def leaks(p: dict, ctx: Context, texts: list[tuple[str, str]], rep: Report, lang: str) -> None:
     allow = {a["id"] for a in p.get("allow_mention", [])}
-    answers = {s["accept"][0]: s["id"] for s in p["slots"]}
-    for sid, slot_id in answers.items():
+    # Un servicio puede responder varios slots (uses > 1): cada uno puede nombrarlo en su propia etiqueta.
+    answers: dict[str, set[str]] = {}
+    for s in p["slots"]:
+        answers.setdefault(s["accept"][0], set()).add(s["id"])
+    for sid, slot_ids in answers.items():
         if sid in allow or sid not in ctx.services:
             continue
         for nm in service_names(ctx.services[sid]):
             rx = name_regex(nm)
             for where, text in texts:
-                if where == f"slot {slot_id} label":
+                if where in {f"slot {slot_id} label" for slot_id in slot_ids}:
                     continue
                 if text and rx.search(text):
                     rep.err("E-LEAK", f"{lang}: {where} nombra la respuesta {sid} ({nm!r})")
@@ -447,7 +450,7 @@ def validate(p: dict, ctx: Context, stem: str | None = None) -> Report:
 
     # 9. artículos antes del hueco
     for r in p["requirements"]:
-        if ARTICLE_ES.search(r["text"]) or ARTICLE_EN.search(r["text"]):
+        if ARTICLE_ES.search(r["text"]):  # "a" es preposición en español; el inglés se revisa en la traducción
             rep.err(
                 "E-ARTICLE",
                 f"requisito {r['n']}: un artículo antes del hueco delata el género o el sonido de la respuesta",

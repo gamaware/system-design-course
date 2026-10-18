@@ -397,7 +397,7 @@
       "role": "near-miss",
       "why_not": {
         "s2": "Un volumen de EBS se conecta a instancias EC2 de una sola zona (con Multi-Attach, hasta 16); no sirve videos por HTTP sin un servidor delante.",
-        "s3": "EBS es un disco de bloques para instancias EC2, no una clase de almacenamiento para guardar años grabaciones al menor costo."
+        "s3": "EBS es un disco de bloques para instancias EC2, no una clase de almacenamiento para guardar por años las grabaciones al menor costo."
       }
     },
     {

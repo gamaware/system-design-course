@@ -49,7 +49,7 @@ official icon package of each provider, verifies its SHA-256 checksum, and write
 `dist/`. Players only need a browser; progress and the language choice live in the browser's
 `localStorage`, never on a server.
 
-![Puzzles, icon registry and app built by build.sh into a static dist/ site, opened in the browser](diagrams/lab13-architecture.png)
+![Lab 13 build flow: puzzles, icon registry and app become a static dist/ site](diagrams/lab13-architecture.png)
 
 [Edit this diagram](diagrams/lab13-architecture.drawio)
 

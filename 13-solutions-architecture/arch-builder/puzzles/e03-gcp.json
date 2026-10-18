@@ -405,7 +405,7 @@
       "role": "near-miss",
       "why_not": {
         "s2": "Persistent Disk agrega almacenamiento en bloques a una VM de Compute Engine; no es un bucket que sirva videos por HTTP.",
-        "s3": "Persistent Disk es el disco de una VM, no una clase de Cloud Storage para guardar años grabaciones al menor costo."
+        "s3": "Persistent Disk es el disco de una VM, no una clase de Cloud Storage para guardar por años las grabaciones al menor costo."
       }
     },
     {
