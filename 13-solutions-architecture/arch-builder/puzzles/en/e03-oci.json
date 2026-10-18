@@ -1,0 +1,78 @@
+{
+  "id": "e03-oci",
+  "title": "Video courses for 300,000 students",
+  "summary": "CursosMX sells recorded courses to 300,000 students in Mexico and Central America. Videos must arrive fast, raw recordings must cost little, and the login receives SQL injection attempts.",
+  "requirements": {
+    "1": "{{s1}} answers from the region the most requested pages and images, without the request reaching the servers; it does not keep files larger than 100 MB.",
+    "2": "{{s2}} delivers millions of videos that students watch every day directly over the internet; you pay per stored GB and there are no servers to manage.",
+    "3": "{{s3}} keeps the raw recordings for 5 years, and they are almost never opened. What matters is the lowest cost per stored GB, even if reading them later costs more or takes longer.",
+    "4": "{{s4}} holds the records for cursosmx.com and answers anyone on the internet who asks for that name, so they reach the entry in Querétaro.",
+    "5": "{{s5}} checks every HTTP request to the login and blocks SQL injection before it reaches the app.",
+    "6": "The load balancer backend set spreads what the cache did not answer, such as login and payments, across the servers in the region."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Web Application Acceleration is a policy assigned to an HTTP load balancer that caches 200 responses to GET and HEAD to spare the servers; the cache holds 100 MB and does not keep larger files.",
+      "hint_cue": "without the request reaching the servers"
+    },
+    "s2": {
+      "explanation": "Object Storage stores unstructured data of any content type, such as videos, and lets you read it directly from the internet; it is a regional service not tied to any Compute instance.",
+      "hint_cue": "no servers to manage"
+    },
+    "s3": {
+      "explanation": "The Archive tier has the lowest Object Storage cost and a 90-day minimum; each object is restored before it can be read, which takes up to an hour.",
+      "hint_cue": "the lowest cost per stored GB"
+    },
+    "s4": {
+      "explanation": "An OCI DNS internet zone answers anyone who queries it. A private zone has similar capabilities, but only answers clients that reach it through a VCN.",
+      "hint_cue": "answers anyone on the internet"
+    },
+    "s5": {
+      "explanation": "The OCI WAF policy is regional and works as a plug-in for the load balancer; it creates rules against SQL injection, XSS and other OWASP vulnerabilities.",
+      "hint_cue": "blocks SQL injection"
+    }
+  },
+  "nodes": {
+    "n-users": "Students",
+    "n-internet": "Internet",
+    "n-team": "Production team",
+    "n-lb": "Load balancer backend set",
+    "n-app": "Web, login and payment servers"
+  },
+  "edges": {
+    "e1": "cursosmx.com",
+    "e2": "cursosmx.com?",
+    "e3": "HTTPS",
+    "e4": "videos: direct, not via cache",
+    "e5": "what the cache missed",
+    "e6": "load balancer policy",
+    "e7": "spreads",
+    "e8": "raw recordings"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · cursos compartment",
+    "g-edge": "Entry in Querétaro",
+    "g-region": "Region Querétaro",
+    "g-net": "VCN 10.0.0.0/16"
+  },
+  "why_not": {
+    "oci-block-volume": {
+      "s2": "A Block Volume attaches to an instance over iSCSI and the instance uses it like a hard drive; the video origin must be read directly from the internet.",
+      "s3": "A Block Volume is block storage for an instance, not one of the Object Storage tiers."
+    },
+    "oci-object-storage-ia": {
+      "s3": "Infrequent Access costs less than Standard, but it is not the cheapest tier, and it charges for every GB read.",
+      "s2": "Infrequent Access charges for every GB read and requires 31 days minimum; it does not suit videos watched every day."
+    },
+    "oci-dns-private": {
+      "s4": "A private zone only answers clients that reach it through a VCN; students on the internet cannot query it."
+    },
+    "oci-nsg": {
+      "s5": "NSG rules allow traffic by direction, IP protocol, ports and source or destination; the rules against SQL injection belong to another service."
+    },
+    "oci-cache": {
+      "s1": "OCI Cache builds in-memory clusters for applications and is reached only through a private endpoint; students on the internet cannot get to it.",
+      "s2": "OCI Cache is in-memory storage for applications, reached through a private endpoint; it does not deliver videos directly over the internet."
+    }
+  }
+}

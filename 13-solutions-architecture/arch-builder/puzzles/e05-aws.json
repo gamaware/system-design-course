@@ -1,0 +1,504 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e05-aws",
+  "version": 1,
+  "scenario": "e05",
+  "cloud": "aws",
+  "title": "Pagos de becas",
+  "summary": "BecaPay deposita apoyos a 15 mil universitarios por una app. El auditor exige un login estándar, llaves propias y un rastro de cada cambio.",
+  "topics": [
+    "OAuth 2.0 y OIDC",
+    "tokens JWT",
+    "llaves de cifrado",
+    "detección de amenazas",
+    "auditoría"
+  ],
+  "source_refs": [
+    {
+      "title": "Amazon Cognito: proveedores sociales en un grupo de usuarios",
+      "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-social-idp.html"
+    },
+    {
+      "title": "API Gateway: autorizadores JWT en API HTTP",
+      "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-jwt-authorizer.html"
+    },
+    {
+      "title": "AWS KMS: rotación automática de llaves",
+      "url": "https://docs.aws.amazon.com/help-panel/kms/latest/console/hp-automatic-key-rotation.html"
+    },
+    {
+      "title": "Amazon GuardDuty: precios y fuentes que analiza",
+      "url": "https://aws.amazon.com/guardduty/pricing/"
+    },
+    {
+      "title": "AWS CloudTrail para dueños de aplicaciones",
+      "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/logging-monitoring-for-application-owners/cloudtrail.html"
+    },
+    {
+      "title": "Amazon Cognito: el token de ID",
+      "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-id-token.html"
+    },
+    {
+      "title": "Amazon Cognito: el token de actualización",
+      "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-refresh-token.html"
+    },
+    {
+      "title": "¿Qué es IAM?",
+      "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html"
+    },
+    {
+      "title": "Amazon Cognito frente a IAM",
+      "url": "https://aws.amazon.com/compare/cognito-and-iam/"
+    },
+    {
+      "title": "¿Qué es un Network Load Balancer?",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html"
+    },
+    {
+      "title": "AWS KMS: registro de llamadas con CloudTrail",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/logging-using-cloudtrail.html"
+    },
+    {
+      "title": "¿Qué es AWS Secrets Manager?",
+      "url": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html"
+    },
+    {
+      "title": "Secrets Manager: cifrado de secretos",
+      "url": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/security-encryption.html"
+    },
+    {
+      "title": "GuardDuty: hallazgos de IAM",
+      "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html"
+    },
+    {
+      "title": "¿Qué es Amazon Inspector?",
+      "url": "https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html"
+    },
+    {
+      "title": "CloudTrail: contenido de un evento",
+      "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html"
+    },
+    {
+      "title": "VPC Flow Logs",
+      "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html"
+    },
+    {
+      "title": "Integraciones privadas de HTTP APIs en API Gateway",
+      "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-private.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.0,
+        "r": 0,
+        "w": 6.94,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.06,
+        "r": 0.22,
+        "w": 6.82,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 3.55,
+        "r": 0.5,
+        "w": 3.05,
+        "h": 3.0
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "az",
+      "label": "AZ mx-central-1a",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.61,
+        "r": 0.72,
+        "w": 1.45,
+        "h": 2.72
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "az",
+      "label": "AZ mx-central-1b",
+      "parent": "g-net",
+      "cell": {
+        "c": 5.09,
+        "r": 0.72,
+        "w": 1.45,
+        "h": 2.72
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.61,
+        "r": 0.96,
+        "w": 2.93,
+        "h": 2.48
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-app",
+      "icon": "gen-users",
+      "label": "App de alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.5
+      },
+      "group": null
+    },
+    {
+      "id": "n-pay",
+      "icon": "aws-ec2",
+      "label": "Servicio de pagos",
+      "number": 6,
+      "cell": {
+        "c": 3.85,
+        "r": 1.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-db",
+      "icon": "aws-rds",
+      "label": "BD de becas",
+      "number": 7,
+      "cell": {
+        "c": 5.3,
+        "r": 1.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-sec",
+      "icon": "gen-team",
+      "label": "Equipo de seguridad",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 2.3
+      },
+      "group": null
+    },
+    {
+      "id": "n-aud",
+      "icon": "gen-team",
+      "label": "Auditor",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 3.6
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 1.25,
+        "r": 1.5
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-cognito"
+      ],
+      "near_miss": "aws-iam",
+      "hint_cue": "con su cuenta de Google",
+      "explanation": "Un grupo de usuarios de Cognito agrega el botón de Google, hace el intercambio OAuth 2.0 y OIDC, y le da a la app tokens de ID y de acceso que caducan (de 5 minutos a 1 día) y un token de actualización para pedir otros.",
+      "refs": [
+        "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-social-idp.html",
+        "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-id-token.html",
+        "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-refresh-token.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+        "https://aws.amazon.com/compare/cognito-and-iam/"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 2.5,
+        "r": 1.5
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-api-gateway"
+      ],
+      "near_miss": "aws-nlb",
+      "hint_cue": "token inválido, caducado o de otro emisor",
+      "explanation": "Con un autorizador JWT en la ruta, API Gateway revisa la firma, el emisor (iss), la audiencia y la caducidad (exp) y niega la solicitud si algo falla. Llega a la subred privada con una integración privada: un VPC link hacia un balanceador o Cloud Map.",
+      "refs": [
+        "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-jwt-authorizer.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html",
+        "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-private.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 6.75,
+        "r": 0.5
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-kms"
+      ],
+      "near_miss": "aws-secrets-manager",
+      "hint_cue": "llaves de la empresa que rotan cada año",
+      "explanation": "Una llave de KMS administrada por el cliente puede rotar sola, cada 365 días si no se indica otro periodo, y CloudTrail registra cada operación criptográfica con ella, como Decrypt o GenerateDataKey.",
+      "refs": [
+        "https://docs.aws.amazon.com/help-panel/kms/latest/console/hp-automatic-key-rotation.html",
+        "https://docs.aws.amazon.com/kms/latest/developerguide/logging-using-cloudtrail.html",
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/security-encryption.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.75,
+        "r": 2.3
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-guardduty"
+      ],
+      "near_miss": "aws-inspector",
+      "hint_cue": "IP sospechosa",
+      "explanation": "GuardDuty analiza los eventos de CloudTrail, los VPC Flow Logs y las consultas DNS; su hallazgo MaliciousIPCaller avisa cuando alguien invoca una API de AWS desde una IP maliciosa conocida.",
+      "refs": [
+        "https://aws.amazon.com/guardduty/pricing/",
+        "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html",
+        "https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.75,
+        "r": 3.6
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-cloudtrail"
+      ],
+      "near_miss": "aws-vpc-flow-logs",
+      "hint_cue": "quién cambió una regla de firewall",
+      "explanation": "Cada evento de CloudTrail guarda quién hizo la solicitud (userIdentity), cuándo (eventTime) y desde qué IP (sourceIPAddress), y CloudTrail deja ver la creación, el cambio y el borrado de recursos.",
+      "refs": [
+        "https://docs.aws.amazon.com/prescriptive-guidance/latest/logging-monitoring-for-application-owners/cloudtrail.html",
+        "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+        "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-app",
+      "to": "s1",
+      "dir": "forward",
+      "step": 1,
+      "label": "login",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 2,
+      "label": "token",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s2",
+      "to": "n-pay",
+      "dir": "forward",
+      "step": 3,
+      "label": "/pagos",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "n-pay",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "consultas",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s3",
+      "to": "n-db",
+      "dir": "forward",
+      "step": null,
+      "label": "llaves de cifrado",
+      "style": "dashed",
+      "route": "v-first"
+    },
+    {
+      "id": "e6",
+      "from": "n-pay",
+      "to": "s4",
+      "dir": "forward",
+      "step": 5,
+      "label": "actividad",
+      "style": "dotted",
+      "route": "points",
+      "points": [
+        {
+          "c": 4.35,
+          "r": 2.64
+        }
+      ]
+    },
+    {
+      "id": "e7",
+      "from": "s4",
+      "to": "n-sec",
+      "dir": "forward",
+      "step": 6,
+      "label": "alerta",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "s5",
+      "to": "n-aud",
+      "dir": "forward",
+      "step": null,
+      "label": "rastro",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} deja que los alumnos entren con correo o con su cuenta de Google, y la app recibe tokens OAuth 2.0 / OIDC que caducan y se renuevan con un token de actualización."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} rechaza cualquier llamada a /pagos con un token inválido, caducado o de otro emisor antes de que llegue al servicio."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} cifra la BD y los respaldos con llaves de la empresa que rotan cada año, y cada uso de esas llaves se puede registrar."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} alerta si alguien opera los recursos de la nube desde una IP sospechosa."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} le muestra al auditor quién cambió una regla de firewall o borró un recurso, cuándo y desde dónde."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El servicio de pagos corre en la subred privada y solo recibe las llamadas que ya validó el slot 2."
+    },
+    {
+      "n": 7,
+      "slot": null,
+      "text": "La base de datos guarda las cuentas de los becarios y sus depósitos, cifrados con las llaves del slot 3."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-cognito"
+    },
+    {
+      "service": "aws-api-gateway"
+    },
+    {
+      "service": "aws-kms"
+    },
+    {
+      "service": "aws-guardduty"
+    },
+    {
+      "service": "aws-cloudtrail"
+    },
+    {
+      "service": "aws-iam",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "IAM controla quién se autentica y tiene permisos sobre los recursos de AWS; no ofrece el registro ni el inicio de sesión de los alumnos de la app."
+      }
+    },
+    {
+      "service": "aws-nlb",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "El Network Load Balancer funciona en la capa 4: elige destino con un hash de protocolo, IP y puerto, sin abrir la solicitud HTTP donde viaja el token."
+      }
+    },
+    {
+      "service": "aws-secrets-manager",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Secrets Manager guarda y rota secretos, como credenciales de BD y llaves de API, y los cifra con llaves de KMS; no es el servicio que crea y rota esas llaves de cifrado."
+      }
+    },
+    {
+      "service": "aws-inspector",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Inspector busca vulnerabilidades de software y exposición de red no deseada en EC2, imágenes de ECR y Lambda; no alerta por llamadas a la API que llegan de una IP sospechosa."
+      }
+    },
+    {
+      "service": "aws-vpc-flow-logs",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Los VPC Flow Logs capturan información del tráfico IP que entra y sale de las interfaces de red; no dicen qué usuario cambió una regla de firewall ni quién borró un recurso."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 5 de ARCHITECTURES.md, con los ajustes de la revisión a ciegas: el token sin duración fija, el registro de cada uso de la llave como opción y la amenaza del slot 4 como operación desde una IP sospechosa. Keycloak no aparece como ficha: el slot 1 es el proveedor administrado de la nube. Revisión final: la explicación del slot 2 dice que API Gateway llega al servicio de la subred privada con una integración privada por VPC link (hacia un ALB, un NLB o Cloud Map).",
+  "status": "published"
+}

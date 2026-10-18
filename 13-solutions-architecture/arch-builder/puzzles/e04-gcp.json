@@ -1,0 +1,392 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e04-gcp",
+  "version": 1,
+  "scenario": "e04",
+  "cloud": "gcp",
+  "title": "Estudio de animación que renderiza de noche",
+  "summary": "Un estudio tapatío renderiza un cortometraje de noche en 200 VM que leen las mismas escenas. Los artistas trabajan desde su oficina y ninguna escena se puede perder.",
+  "topics": [
+    "archivos compartidos NFS",
+    "almacenamiento de objetos",
+    "respaldo frente a réplica",
+    "cómputo interrumpible",
+    "conexión híbrida cifrada"
+  ],
+  "source_refs": [
+    {
+      "title": "Filestore: descripción general",
+      "url": "https://docs.cloud.google.com/filestore/docs/overview"
+    },
+    {
+      "title": "Compute Engine: compartir discos entre VM",
+      "url": "https://docs.cloud.google.com/compute/docs/disks/sharing-disks-between-vms"
+    },
+    {
+      "title": "Filestore: respaldos",
+      "url": "https://docs.cloud.google.com/filestore/docs/backup-restore"
+    },
+    {
+      "title": "Cloud Storage: disponibilidad y durabilidad",
+      "url": "https://docs.cloud.google.com/storage/docs/availability-durability"
+    },
+    {
+      "title": "Compute Engine: Spot VMs",
+      "url": "https://docs.cloud.google.com/compute/docs/instances/spot"
+    },
+    {
+      "title": "Cloud VPN: descripción general",
+      "url": "https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview"
+    },
+    {
+      "title": "Filestore: replicación de instancias",
+      "url": "https://docs.cloud.google.com/filestore/docs/instance-replication"
+    },
+    {
+      "title": "Compute Engine: descuentos por compromiso de uso",
+      "url": "https://docs.cloud.google.com/compute/docs/instances/committed-use-discounts-overview"
+    },
+    {
+      "title": "Regiones compatibles de Filestore",
+      "url": "https://docs.cloud.google.com/filestore/docs/regions"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.5
+  },
+  "groups": [
+    {
+      "id": "g-office",
+      "kind": "corporate-dc",
+      "label": "Oficina en GDL",
+      "parent": null,
+      "cell": {
+        "c": 0,
+        "r": 2.6,
+        "w": 1.5,
+        "h": 1.45
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto estudio",
+      "parent": null,
+      "cell": {
+        "c": 1.7,
+        "r": 0,
+        "w": 7.25,
+        "h": 4.5
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.76,
+        "r": 0.22,
+        "w": 7.13,
+        "h": 4.22
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region",
+      "cell": {
+        "c": 3.05,
+        "r": 0.44,
+        "w": 3.9,
+        "h": 3.94
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-net",
+      "cell": {
+        "c": 5.03,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.9,
+        "w": 3.78,
+        "h": 3.36
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-artists",
+      "icon": "gen-team",
+      "label": "Artistas",
+      "number": 6,
+      "cell": {
+        "c": 0.25,
+        "r": 2.9
+      },
+      "group": "g-office"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 2.9
+      },
+      "group": "g-priv",
+      "accept": [
+        "gcp-filestore"
+      ],
+      "near_miss": "gcp-persistent-disk",
+      "hint_cue": "montan a la vez por NFS",
+      "explanation": "Una instancia regional de Filestore conmuta sin interrupción si falla una zona, y varias instancias de aplicación usan el mismo sistema de archivos a la vez por NFS. Filestore está en northamerica-south1, con tres zonas.",
+      "refs": [
+        "https://docs.cloud.google.com/filestore/docs/overview",
+        "https://docs.cloud.google.com/compute/docs/disks/sharing-disks-between-vms",
+        "https://docs.cloud.google.com/filestore/docs/regions"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 7.4,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-filestore-backups"
+      ],
+      "near_miss": "gcp-filestore-replication",
+      "hint_cue": "versión de anoche",
+      "explanation": "Un respaldo de Filestore es una copia de un momento dado con todos los datos de la instancia, pensada para recuperar ante desastres. La réplica, en cambio, se actualiza de forma continua con cada cambio del origen.",
+      "refs": [
+        "https://docs.cloud.google.com/filestore/docs/backup-restore",
+        "https://docs.cloud.google.com/filestore/docs/overview",
+        "https://docs.cloud.google.com/filestore/docs/instance-replication"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 7.4,
+        "r": 1.2
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-cloud-storage"
+      ],
+      "near_miss": "gcp-filestore-zonal",
+      "hint_cue": "sobreviven a la pérdida de una zona completa",
+      "explanation": "Un bucket regional de Cloud Storage guarda los datos en al menos dos zonas y está diseñado para tolerar la pérdida de cualquiera de ellas. Una instancia zonal de Filestore deja de estar disponible si cae su zona.",
+      "refs": [
+        "https://docs.cloud.google.com/storage/docs/availability-durability",
+        "https://docs.cloud.google.com/filestore/docs/overview"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 4.5,
+        "r": 1.2
+      },
+      "group": "g-priv",
+      "accept": [
+        "gcp-spot-vm"
+      ],
+      "near_miss": "gcp-cud",
+      "hint_cue": "segundos o minutos de aviso",
+      "explanation": "Las Spot VMs reciben un aviso de expropiación (Google recomienda 120 segundos), no tienen tiempo mínimo ni máximo de ejecución y tienen descuentos de hasta 91 % sobre el precio bajo demanda.",
+      "refs": [
+        "https://docs.cloud.google.com/compute/docs/instances/spot",
+        "https://docs.cloud.google.com/compute/docs/instances/committed-use-discounts-overview"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 1.95,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-cloud-vpn"
+      ],
+      "near_miss": "gcp-interconnect",
+      "hint_cue": "por el internet que ya tiene",
+      "explanation": "Cloud VPN extiende la red de la oficina a la VPC con una conexión IPsec VPN que cifra el tráfico entre las dos redes, y HA VPN da un SLA de 99.99 % o 99.9 % según la topología.",
+      "refs": [
+        "https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-artists",
+      "to": "s5",
+      "dir": "forward",
+      "step": 1,
+      "label": "su internet",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s5",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "sube escenas",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s4",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "lee escenas por NFS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "cuadros terminados",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "copia de cada noche",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda la carpeta de proyectos que cientos de servidores Linux montan a la vez por NFS, disponible en ambas zonas."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} conserva la versión de anoche de la carpeta de proyectos, para recuperar una escena que alguien borre por error."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda por años los cuadros terminados, que se leen por HTTP y sobreviven a la pérdida de una zona completa."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da los nodos de render: pueden apagarse con segundos o minutos de aviso porque el trabajo se reanuda, e importa el precio más bajo sin compromiso."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} une hoy mismo la oficina con la red de la nube, cifrada, por el internet que ya tiene."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "Los artistas trabajan en la oficina del estudio en Guadalajara y desde ahí suben sus escenas."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-filestore"
+    },
+    {
+      "service": "gcp-filestore-backups"
+    },
+    {
+      "service": "gcp-cloud-storage"
+    },
+    {
+      "service": "gcp-spot-vm"
+    },
+    {
+      "service": "gcp-cloud-vpn"
+    },
+    {
+      "service": "gcp-persistent-disk",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Persistent Disk solo se comparte entre VM de la misma zona, en modo de escritura múltiple con máximo 2 VM, y casi ningún sistema de archivos está hecho para bloques compartidos.",
+        "s3": "Persistent Disk es almacenamiento de bloques para VM; no sirve los cuadros por HTTP."
+      }
+    },
+    {
+      "service": "gcp-filestore-replication",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "La réplica es una copia completa que se actualiza de forma continua con cada cambio del origen y no se puede montar, así que no guarda la versión de anoche.",
+        "s1": "La replicación de instancias copia a otra región una instancia que ya existe; por sí sola no es la carpeta que montan los servidores."
+      }
+    },
+    {
+      "service": "gcp-filestore-zonal",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una instancia zonal de Filestore deja de estar disponible si falla su zona, hasta que esa zona se restablece, y se lee por NFS, no por HTTP.",
+        "s1": "Una instancia zonal vive en una sola zona y deja de estar disponible si esa zona falla; el requisito pide ambas zonas."
+      }
+    },
+    {
+      "service": "gcp-cud",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un descuento por compromiso baja el precio a cambio de comprometer uso o gasto durante uno o tres años, y el requisito pide no comprometerse."
+      }
+    },
+    {
+      "service": "gcp-interconnect",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Cloud Interconnect es un enlace aparte que no pasa por el internet público, y con Partner Interconnect hay que agregar el cifrado IPsec por separado."
+      }
+    }
+  ],
+  "review_notes": "Escenario 4 de ARCHITECTURES.md. s2 near-miss = replicación de instancias de Filestore en lugar de 'Filestore regional', porque Filestore regional es la respuesta de s1 (el validador exige que el near-miss no sea respuesta). Filestore zonal queda como near-miss de s3 y también falla en s1. La fuente de respaldos no dice si se restaura por archivo; por eso el requisito 2 no lo pide. Revisión a ciegas: la réplica se explica con la página de replicación de instancias (copia continua, no montable) y los plazos de los descuentos por compromiso con su página. Revisión final: la página de regiones de Filestore lista northamerica-south1 (zonas a, b y c) sin restricción por nivel, y la página del nivel regional no menciona límites de región.",
+  "status": "published"
+}

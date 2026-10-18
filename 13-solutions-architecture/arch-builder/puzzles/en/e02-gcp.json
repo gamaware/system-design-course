@@ -1,0 +1,77 @@
+{
+  "id": "e02-gcp",
+  "title": "A store that survives Buen Fin",
+  "summary": "An artisan cooperative from Tlaquepaque gets ten times its usual traffic during Buen Fin. The store must grow on its own and keep selling if a zone fails.",
+  "requirements": {
+    "1": "{{s1}} is each individual server: it has its own operating system the team patches, its inventory agent installed, and runs all day.",
+    "2": "{{s2}} keeps 2 to 20 copies across both zones, adds or removes them with the load and replaces the ones that fail.",
+    "3": "{{s3}} receives and decrypts HTTPS, sends /api to one group and /tienda to another, and only forwards to healthy servers.",
+    "4": "{{s4}} issues and automatically renews what slot 3 presents to the browser to prove it is tienda.mx.",
+    "5": "{{s5}} records CPU every minute and alerts the on-call team if it stays above 80 % for 5 minutes.",
+    "6": "The managed database stores orders and inventory, and only the slot 1 servers query it."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Compute Engine provides VMs with a full operating system where the team installs its agent and applies patches, running with no time limit. Cloud Run functions runs code per request with no operating system access.",
+      "hint_cue": "operating system the team patches"
+    },
+    "s2": {
+      "explanation": "A regional managed instance group spreads identical VMs across zones, the autoscaler sets their number to the load and autohealing recreates the ones that fail. An unmanaged group does not scale on its own.",
+      "hint_cue": "replaces the ones that fail"
+    },
+    "s3": {
+      "explanation": "The regional external Application Load Balancer terminates HTTPS, uses a URL map to send /api and /tienda to different backend services and only forwards to healthy backends. The passthrough one does not read the URL.",
+      "hint_cue": "sends /api to one group and /tienda to another"
+    },
+    "s4": {
+      "explanation": "Certificate Manager issues the Google-managed certificate for tienda.mx, renews it automatically and deploys it on the load balancer. Cloud KMS creates and manages keys to encrypt and sign, not certificates.",
+      "hint_cue": "presents to the browser to prove it is tienda.mx"
+    },
+    "s5": {
+      "explanation": "Cloud Monitoring receives the CPU metric of each VM and an alerting policy notifies the on-call team when it stays above 80 % for 5 minutes. Recommender gives periodic suggestions.",
+      "hint_cue": "alerts the on-call team"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-internet": "Internet",
+    "n-db": "Managed database",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "buys at tienda.mx",
+    "e2": "HTTPS",
+    "e3": "/api and /tienda",
+    "e4": "queries",
+    "e5": "TLS for tienda.mx",
+    "e6": "adds and replaces",
+    "e7": "CPU every minute",
+    "e8": "alert"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · tienda project",
+    "g-region": "northamerica-south1 region",
+    "g-net": "VPC network",
+    "g-zone-a": "northamerica-south1-a",
+    "g-zone-b": "northamerica-south1-b",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "gcp-run-functions": {
+      "s1": "Cloud Run functions runs functions per event or request; it does not let the team patch the operating system or install its own agent."
+    },
+    "gcp-unmanaged-ig": {
+      "s2": "An unmanaged instance group puts different VMs together for load balancing, but it has no autoscaler and does not heal instances."
+    },
+    "gcp-passthrough-nlb": {
+      "s3": "The external passthrough Network Load Balancer works at layer 4 and passes connections through: it does not decrypt HTTPS or read the URL."
+    },
+    "gcp-cloud-kms": {
+      "s4": "Cloud KMS creates keys to encrypt and sign, and can rotate symmetric ones automatically, but the load balancer uses certificates, which Certificate Manager deploys."
+    },
+    "gcp-recommender": {
+      "s5": "Recommender suggests size or cost changes from historical usage; it does not alert the on-call team within minutes."
+    }
+  }
+}

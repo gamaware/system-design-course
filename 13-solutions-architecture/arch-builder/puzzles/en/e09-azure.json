@@ -1,0 +1,96 @@
+{
+  "id": "e09-azure",
+  "title": "DNS picks the region and the balancer picks the VM",
+  "summary": "A store sells to Mexico and Spain under a single domain, tienda.mx, from Mexico Central and Spain Central. If a region fails, shoppers must reach the other one within minutes.",
+  "requirements": {
+    "1": "{{s1}} publishes a single name, tienda.mx, and answers with the address of the healthy region closest to the shopper, with a 60 s TTL.",
+    "2": "{{s2}} probes from several points on the internet, at a set interval, that each region's balancer answers; if one fails, slot 1 stops announcing it.",
+    "3": "{{s3}} receives HTTPS in region A, terminates TLS and spreads requests only across the web VMs that pass their health check.",
+    "4": "{{s4}} keeps at least 2 web VMs in region A in different zones, replaces the one that fails and adds more when the load goes up.",
+    "5": "{{s5}} delivers the alarm's alert to the on-call team when slot 2 marks a region as down; the repair clock starts with that alert.",
+    "6": "{{s6}} does in region B what slot 3 does in A: terminates TLS and spreads requests only across the healthy web VMs.",
+    "7": "{{s7}} does what slot 4 does, for the web VMs in region B: at least 2 in different zones, replaces the one that fails and adds more with the load."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Traffic Manager answers DNS with its routing method: Performance picks the lowest-latency endpoint and leaves out the one that becomes unavailable. The TTL of its answers is configurable, for example 60 s.",
+      "hint_cue": "answers with the address of the healthy region closest"
+    },
+    "s2": {
+      "explanation": "Every Traffic Manager profile includes endpoint monitoring: its name servers choose by the health those checks measure and stop returning the endpoint that fails. Here monitoring is part of the profile, not a separate service.",
+      "hint_cue": "probes from several points on the internet"
+    },
+    "s3": {
+      "explanation": "Application Gateway v2 is a layer 7 web traffic load balancer that lives in its own subnet of the virtual network: it terminates SSL/TLS and spreads requests across the servers in its backend pool.",
+      "hint_cue": "terminates TLS and spreads requests"
+    },
+    "s4": {
+      "explanation": "A Virtual Machine Scale Set raises or lowers the number of VMs with metric rules such as CPU percentage and supports automatic instance repairs. An availability set spreads VMs across fault domains; to scale, the guide recommends scale sets.",
+      "hint_cue": "replaces the one that fails and adds more"
+    },
+    "s5": {
+      "explanation": "An action group defines who is notified when an Azure Monitor alert fires, and how: email, SMS, voice call or a push notification in the Azure app.",
+      "hint_cue": "delivers the alarm's alert to the on-call team"
+    },
+    "s6": {
+      "explanation": "In region B another Application Gateway v2, in its own subnet of that virtual network, terminates SSL/TLS and spreads requests across the servers in its backend pool.",
+      "hint_cue": "terminates TLS and spreads requests only across the healthy web VMs"
+    },
+    "s7": {
+      "explanation": "Region B has its own Virtual Machine Scale Set: it raises or lowers the number of VMs with metric rules and supports automatic instance repairs.",
+      "hint_cue": "replaces the one that fails and adds more with the load"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-vm-a1": "Web VM",
+    "n-vm-a2": "Web VM",
+    "n-vm-b1": "Web VM",
+    "n-vm-b2": "Web VM",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "tienda.mx? IP and TTL 60 s",
+    "e2": "HTTPS",
+    "e7": "probe",
+    "e8": "probe",
+    "e9": "A down",
+    "e10": "now answers with B",
+    "e11": "alarm",
+    "e12": "alert"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription",
+    "g-reg-a": "Region A (Mexico)",
+    "g-net-a": "VNet 10.0.0.0/16",
+    "g-zone-a1": "Zone 1",
+    "g-zone-a2": "Zone 2",
+    "g-reg-b": "Region B (Spain)",
+    "g-net-b": "VNet 10.1.0.0/16",
+    "g-zone-b1": "Zone 1",
+    "g-zone-b2": "Zone 2"
+  },
+  "why_not": {
+    "azure-dns-private-resolver": {
+      "s1": "DNS Private Resolver resolves DNS queries between Azure virtual networks and on-premises networks, for private zones; it does not publish tienda.mx to the internet or pick the healthy region."
+    },
+    "azure-app-gateway-probe": {
+      "s2": "The Application Gateway probe checks the servers in its backend pool and stops sending traffic to the one that fails; the name servers of slot 1 pick the region by the health their own checks measure."
+    },
+    "azure-api-management": {
+      "s3": "API Management publishes and manages APIs; this slot needs a layer 7 web traffic balancer in the virtual network that terminates TLS and spreads requests across the region's VMs.",
+      "s6": "API Management publishes and manages APIs; this slot needs a layer 7 web traffic balancer in the virtual network that terminates TLS and spreads requests across the region's VMs."
+    },
+    "azure-availability-set": {
+      "s4": "An availability set spreads VMs across fault domains so they do not fail together; to raise or lower the number of VMs with demand, the same guide recommends a different resource.",
+      "s7": "An availability set spreads VMs across fault domains so they do not fail together; to raise or lower the number of VMs with demand, the same guide recommends a different resource."
+    },
+    "azure-vm": {
+      "s4": "Each web VM in the diagram is already a virtual machine; the slot asks for what raises or lowers the number of VMs with rules and repairs the instances that fail.",
+      "s7": "Each web VM in the diagram is already a virtual machine; the slot asks for what raises or lowers the number of VMs with rules and repairs the instances that fail."
+    },
+    "azure-log-analytics": {
+      "s5": "A Log Analytics workspace is a store that collects log data from Azure and non-Azure resources; the slot asks for what defines who is notified, and how, when the alert fires."
+    }
+  }
+}

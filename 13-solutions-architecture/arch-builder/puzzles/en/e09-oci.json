@@ -1,0 +1,96 @@
+{
+  "id": "e09-oci",
+  "title": "DNS picks the region and the balancer picks the VM",
+  "summary": "A store sells to Mexico and Spain under a single domain, tienda.mx, from Querétaro and Madrid. If the primary region fails, shoppers must reach the other one within minutes.",
+  "requirements": {
+    "1": "{{s1}} publishes a single name, tienda.mx, and answers with region A's address while it is healthy, and otherwise with B's, with a 60 s TTL.",
+    "2": "{{s2}} probes from several points on the internet, at a set interval, that each region's balancer answers; if one fails, slot 1 stops announcing it.",
+    "3": "{{s3}} receives HTTPS in region A, terminates TLS and spreads requests only across the web VMs that pass their health check.",
+    "4": "{{s4}} manages region A's web VMs as a group, spread across fault domains, and grows or shrinks with the load.",
+    "5": "{{s5}} delivers the alarm's alert to the on-call team when slot 2 marks a region as down; the repair clock starts with that alert.",
+    "6": "{{s6}} does in region B what slot 3 does in A: terminates TLS and spreads requests only across the healthy web VMs.",
+    "7": "{{s7}} does what slot 4 does, for the web VMs in region B: manages them as a group and grows or shrinks with the load."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Traffic Management steering policies serve DNS answers only for public DNS; the failover policy serves the primary answer first and uses Health Checks monitors to know whether its answers are healthy.",
+      "hint_cue": "answers with region A's address while it is healthy"
+    },
+    "s2": {
+      "explanation": "Health Checks monitors any public-facing service, such as an external load balancer, from vantage points around the world at intervals of 10 s or more, and the failover policy uses those monitors.",
+      "hint_cue": "probes from several points on the internet"
+    },
+    "s3": {
+      "explanation": "OCI Load Balancer terminates SSL on a listener, for example on port 443, with its certificate bundle, and spreads requests across the servers of a backend set, which has its own health check policy.",
+      "hint_cue": "terminates TLS and spreads requests"
+    },
+    "s4": {
+      "explanation": "An instance pool is a set of instances managed as a group from an instance configuration; with autoscaling it grows or shrinks by a metric or a schedule.",
+      "hint_cue": "grows or shrinks with the load"
+    },
+    "s5": {
+      "explanation": "Monitoring alarms publish their message to a Notifications topic when they change state, for example from OK to FIRING, and the topic delivers it to its subscriptions, such as PagerDuty.",
+      "hint_cue": "delivers the alarm's alert to the on-call team"
+    },
+    "s6": {
+      "explanation": "In region B another OCI Load Balancer terminates SSL on its listener and spreads requests across the servers of its backend set, by its health check policy.",
+      "hint_cue": "terminates TLS and spreads requests only across the healthy web VMs"
+    },
+    "s7": {
+      "explanation": "Region B has its own instance pool: with autoscaling it grows or shrinks and, when it scales in, balances the removals across fault domains.",
+      "hint_cue": "manages them as a group and grows or shrinks with the load"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-vm-a1": "Web VM",
+    "n-vm-a2": "Web VM",
+    "n-vm-b1": "Web VM",
+    "n-vm-b2": "Web VM",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "tienda.mx? IP and TTL 60 s",
+    "e2": "HTTPS",
+    "e7": "probe",
+    "e8": "probe",
+    "e9": "A down",
+    "e10": "now answers with B",
+    "e11": "alarm",
+    "e12": "alert"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · tienda tenancy",
+    "g-reg-a": "Region A (Querétaro)",
+    "g-net-a": "VCN 10.0.0.0/16",
+    "g-zone-a1": "Fault domain 1",
+    "g-zone-a2": "Fault domain 2",
+    "g-reg-b": "Region B (Madrid)",
+    "g-net-b": "VCN 10.1.0.0/16",
+    "g-zone-b1": "Fault domain 1",
+    "g-zone-b2": "Fault domain 2"
+  },
+  "why_not": {
+    "oci-dns-private-resolver": {
+      "s1": "The private resolver answers name queries inside VCNs, and the policies that pick answers by their health only exist for public DNS, not for private DNS."
+    },
+    "oci-lb-health-check": {
+      "s2": "The backend set health check policy checks the servers behind the balancer; DNS policies judge the health of their answers with Health Checks monitors and probes, not with this policy."
+    },
+    "oci-api-gateway": {
+      "s3": "API Gateway is for publishing APIs with private or public endpoints; this slot needs to terminate SSL on a listener and spread requests across the servers of a backend set.",
+      "s6": "API Gateway is for publishing APIs with private or public endpoints; this slot needs to terminate SSL on a listener and spread requests across the servers of a backend set."
+    },
+    "oci-instance-configuration": {
+      "s4": "An instance configuration is the template with the image, shape and metadata to create instances; it does not manage a group or grow with the load.",
+      "s7": "An instance configuration is the template with the image, shape and metadata to create instances; it does not manage a group or grow with the load."
+    },
+    "oci-compute": {
+      "s4": "Each web VM in the diagram is already a Compute instance; the slot asks for the set that manages them as a group and grows or shrinks with the load.",
+      "s7": "Each web VM in the diagram is already a Compute instance; the slot asks for the set that manages them as a group and grows or shrinks with the load."
+    },
+    "oci-logging": {
+      "s5": "Logging gives access to the logs of the tenancy's resources so you can search and filter them; the alert reaches the on-call team through the service the alarm publishes its message to."
+    }
+  }
+}

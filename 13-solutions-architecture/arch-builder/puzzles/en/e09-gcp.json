@@ -1,0 +1,96 @@
+{
+  "id": "e09-gcp",
+  "title": "DNS picks the region and the balancer picks the VM",
+  "summary": "A store sells to Mexico and Spain under a single domain, tienda.mx, from northamerica-south1 and europe-southwest1. If a region fails, shoppers must reach the other one within minutes.",
+  "requirements": {
+    "1": "{{s1}} publishes a single name, tienda.mx, and answers with the address of the healthy region closest to the shopper, with a 60 s TTL.",
+    "2": "{{s2}} probes from several points on the internet, at a set interval, that each region's balancer answers; if one fails, slot 1 stops announcing it.",
+    "3": "{{s3}} receives HTTPS in region A, terminates TLS and spreads requests only across the web VMs that pass their health check.",
+    "4": "{{s4}} keeps at least 2 web VMs in region A in different zones, replaces the one that fails and adds more when the load goes up.",
+    "5": "{{s5}} delivers the alarm's alert to the on-call team when slot 2 marks a region as down; the repair clock starts with that alert.",
+    "6": "{{s6}} does in region B what slot 3 does in A: terminates TLS and spreads requests only across the healthy web VMs.",
+    "7": "{{s7}} does what slot 4 does, for the web VMs in region B: at least 2 in different zones, replaces the one that fails and adds more with the load."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Cloud DNS routing policies in a public zone can be geolocation (the nearest match to where the query comes from) or failover, and they only return healthy addresses.",
+      "hint_cue": "answers with the address of the healthy region closest"
+    },
+    "s2": {
+      "explanation": "For external endpoints you create a health check that probes from three Google Cloud regions, for example over HTTPS, every 30 to 300 s; it only works in public zones, and the policy only returns healthy addresses.",
+      "hint_cue": "probes from several points on the internet"
+    },
+    "s3": {
+      "explanation": "The regional external Application Load Balancer is an Envoy proxy that terminates TLS in a single region with its target HTTPS proxy, and its backend service only sends requests to healthy backends.",
+      "hint_cue": "terminates TLS and spreads requests"
+    },
+    "s4": {
+      "explanation": "A managed instance group recreates the VMs its autohealing health check finds unhealthy, and the autoscaler adds VMs when the load goes up. An unmanaged group cannot use the autoscaler.",
+      "hint_cue": "replaces the one that fails and adds more"
+    },
+    "s5": {
+      "explanation": "Cloud Monitoring notification channels alert the on-call team when an alerting policy fires, by email, SMS, Slack, PagerDuty or the console mobile app.",
+      "hint_cue": "delivers the alarm's alert to the on-call team"
+    },
+    "s6": {
+      "explanation": "In region B another regional external Application Load Balancer terminates TLS in that region, and its backend service only sends requests to healthy backends.",
+      "hint_cue": "terminates TLS and spreads requests only across the healthy web VMs"
+    },
+    "s7": {
+      "explanation": "Region B has its own managed instance group: it recreates the VMs its autohealing health check finds unhealthy, and the autoscaler adds VMs when the load goes up.",
+      "hint_cue": "replaces the one that fails and adds more with the load"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-vm-a1": "Web VM",
+    "n-vm-a2": "Web VM",
+    "n-vm-b1": "Web VM",
+    "n-vm-b2": "Web VM",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "tienda.mx? IP and TTL 60 s",
+    "e2": "HTTPS",
+    "e7": "probe",
+    "e8": "probe",
+    "e9": "A down",
+    "e10": "now answers with B",
+    "e11": "alarm",
+    "e12": "alert"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · tienda project",
+    "g-reg-a": "Region A (Mexico)",
+    "g-net-a": "Subnet 10.0.0.0/20",
+    "g-zone-a1": "northamerica-south1-a",
+    "g-zone-a2": "northamerica-south1-b",
+    "g-reg-b": "Region B (Spain)",
+    "g-net-b": "Subnet 10.1.0.0/20",
+    "g-zone-b1": "europe-southwest1-a",
+    "g-zone-b2": "europe-southwest1-b"
+  },
+  "why_not": {
+    "gcp-dns-server-policy": {
+      "s1": "Server policies apply private DNS settings to a VPC network, such as forwarding and logging, for hybrid resolution; they do not publish tienda.mx or pick the healthy region."
+    },
+    "gcp-backend-health-check": {
+      "s2": "The backend service health check watches the balancer's backends so only the healthy ones get requests; in a public zone, the DNS policy uses external endpoint health checks instead, which probe from three Google Cloud regions."
+    },
+    "gcp-api-gateway": {
+      "s3": "API Gateway is for creating, sharing, maintaining and securing REST APIs; this slot needs a regional proxy that terminates TLS and spreads requests across Compute Engine instance groups by their health check.",
+      "s6": "API Gateway is for creating, sharing, maintaining and securing REST APIs; this slot needs a regional proxy that terminates TLS and spreads requests across Compute Engine instance groups by their health check."
+    },
+    "gcp-unmanaged-ig": {
+      "s4": "An unmanaged instance group groups VMs, but only managed groups can use the autoscaler to add VMs with the load.",
+      "s7": "An unmanaged instance group groups VMs, but only managed groups can use the autoscaler to add VMs with the load."
+    },
+    "gcp-compute-engine": {
+      "s4": "Each web VM in the diagram is already a Compute Engine VM; the slot asks for what recreates unhealthy VMs and adds more when the load goes up.",
+      "s7": "Each web VM in the diagram is already a Compute Engine VM; the slot asks for what recreates unhealthy VMs and adds more when the load goes up."
+    },
+    "gcp-cloud-logging": {
+      "s5": "Cloud Logging is the system that stores, searches and analyzes logs; the slot asks for the piece through which Cloud Monitoring alerts the on-call team when an alerting policy fires."
+    }
+  }
+}

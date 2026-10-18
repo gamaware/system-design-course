@@ -1,0 +1,346 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e08-aws",
+  "version": 1,
+  "scenario": "e08",
+  "cloud": "aws",
+  "title": "Paquetería que no pierde pedidos",
+  "summary": "EnvíaYa reparte 80 mil paquetes al día en el Bajío. Cada pedido creado llega a facturación, al SMS del cliente y a la asignación de repartidor, y una falla en uno no detiene a los demás.",
+  "topics": [
+    "publicar/suscribir",
+    "colas",
+    "entrega al menos una vez",
+    "DLQ",
+    "streaming"
+  ],
+  "source_refs": [
+    {
+      "title": "Amazon SNS: enviar notificaciones a colas de Amazon SQS (fanout)",
+      "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html"
+    },
+    {
+      "title": "Amazon SQS: colas estándar",
+      "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html"
+    },
+    {
+      "title": "AWS Lambda con Amazon SQS",
+      "url": "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html"
+    },
+    {
+      "title": "Amazon Kinesis Data Streams: terminología y conceptos",
+      "url": "https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html"
+    },
+    {
+      "title": "Amazon Data Firehose: entrega de datos",
+      "url": "https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html"
+    },
+    {
+      "title": "Amazon SQS: colas de mensajes fallidos (DLQ)",
+      "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html"
+    },
+    {
+      "title": "Manejo de errores de una fuente de eventos SQS en Lambda",
+      "url": "https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-errorhandling.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 6.85,
+        "h": 4.2
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-api",
+      "icon": "aws-api-gateway",
+      "label": "API de pedidos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-sms",
+      "icon": "gen-users",
+      "label": "Clientes (SMS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-analytics",
+      "icon": "gen-team",
+      "label": "Analítica",
+      "number": null,
+      "cell": {
+        "c": 3.6,
+        "r": 3.1
+      },
+      "group": "g-cloud"
+    },
+    {
+      "id": "n-gps",
+      "icon": "gen-users",
+      "label": "Repartidores (GPS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 3.1
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 1.45,
+        "r": 0.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-sns"
+      ],
+      "near_miss": null,
+      "hint_cue": "llegue a varios consumidores independientes",
+      "explanation": "Amazon SNS empuja cada mensaje publicado en el tema a todos sus suscriptores, y la cola del slot 2 recibe su propia copia. La API solo publica en el tema. SQS no reparte copias: es una cola que se lee por sondeo.",
+      "refs": [
+        "https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 1.45,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-sqs"
+      ],
+      "near_miss": "aws-elasticache",
+      "hint_cue": "si el trabajador muere a la mitad, el pedido reaparece",
+      "explanation": "La cola estándar de SQS guarda el pedido hasta que se borra. Mientras el trabajador lo procesa queda oculto; si falla, vuelve a ser visible al vencer el tiempo de visibilidad. Puede entregar más de una copia, así que el trabajador debe ser idempotente.",
+      "refs": [
+        "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.6,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-lambda"
+      ],
+      "near_miss": "aws-ec2",
+      "hint_cue": "solo cuando hay mensajes",
+      "explanation": "Con el mapeo de eventos, Lambda sondea la cola, invoca la función solo cuando hay lotes de mensajes y borra los que se procesaron bien. Una instancia EC2 seguiría encendida y cobrando aunque no llegaran pedidos.",
+      "refs": [
+        "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 1.45,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-sqs-dlq"
+      ],
+      "near_miss": "aws-s3",
+      "hint_cue": "falla 5 veces",
+      "explanation": "Con maxReceiveCount en 5, el pedido recibido 5 veces pasa a la DLQ para revisarlo y regresarlo con redrive. Para que solo cuente el que falla, la función reporta sus fallas con ReportBatchItemFailures; si no, todo el lote vuelve a la cola. S3 no cuenta recepciones.",
+      "refs": [
+        "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-errorhandling.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.0,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-kinesis-data-streams"
+      ],
+      "near_miss": "aws-firehose",
+      "hint_cue": "relee desde el principio",
+      "explanation": "Kinesis Data Streams numera cada registro dentro de su shard y lo deja disponible durante la retención, que sube de 24 horas a 7 días o más; cada aplicación lee el flujo por su cuenta. Firehose solo entrega a un destino.",
+      "refs": [
+        "https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html",
+        "https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-api",
+      "to": "s1",
+      "dir": "forward",
+      "step": 1,
+      "label": "pedido creado",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s1",
+      "to": "n-sms",
+      "dir": "forward",
+      "step": 2,
+      "label": "SMS al cliente",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia del pedido",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "pedidos por atender",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "tras 5 fallas",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "n-gps",
+      "to": "s5",
+      "dir": "forward",
+      "step": null,
+      "label": "posiciones GPS",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "s5",
+      "to": "n-analytics",
+      "dir": "forward",
+      "step": null,
+      "label": "relee desde el inicio",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} hace que un mismo pedido creado llegue a varios consumidores independientes, sin que la API sepa cuántos son."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} recibe su copia de cada pedido y la guarda hasta que un trabajador confirma que la procesó; si el trabajador muere a la mitad, el pedido reaparece."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} corre el código que asigna repartidor solo cuando hay mensajes, escala solo y no cuesta de madrugada."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} aparta solo el pedido que falla 5 veces para revisarlo después, sin bloquear la fila."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} recibe el GPS de los repartidores, lo conserva 7 días en orden y analítica lo relee desde el principio cuantas veces quiera."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-sns"
+    },
+    {
+      "service": "aws-sqs"
+    },
+    {
+      "service": "aws-lambda"
+    },
+    {
+      "service": "aws-sqs-dlq"
+    },
+    {
+      "service": "aws-kinesis-data-streams"
+    },
+    {
+      "service": "aws-elasticache",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "ElastiCache es una caché en memoria: sus listas no garantizan la entrega ni hacen reaparecer el pedido si el trabajador muere a la mitad."
+      }
+    },
+    {
+      "service": "aws-ec2",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una instancia EC2 cobra mientras está encendida, aunque no lleguen pedidos de madrugada, y no se invoca sola con cada lote de mensajes."
+      }
+    },
+    {
+      "service": "aws-s3",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un bucket de S3 guarda objetos, pero no cuenta cuántas veces falló un pedido ni lo aparta de la cola por sí solo.",
+        "s5": "S3 guarda objetos completos (Firehose, por ejemplo, junta varios registros en un objeto); no numera cada posición para releerlas en orden."
+      }
+    },
+    {
+      "service": "aws-firehose",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Data Firehose entrega los registros a un destino como S3; no los conserva para que analítica los relea desde el principio."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 8 de ARCHITECTURES.md. La flecha a la DLQ sale del slot 2 (la cola mueve el mensaje tras 5 recepciones), no del slot 3. El slot 4 cita ahora la página de DLQ de SQS (redrive policy, maxReceiveCount, aislar mensajes y redrive de salida) en lugar de la de colas estándar, que no las menciona. Que Firehose no deja releer sigue deducido (ARCHITECTURES, No verificado). Revisión final: sin respuesta parcial de lote, una falla regresa todo el lote a la cola; la explicación del slot 4 dice que la función usa ReportBatchItemFailures para que solo el pedido que falla sume recepciones.",
+  "status": "published"
+}

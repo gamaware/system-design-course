@@ -1,0 +1,610 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e01-gcp",
+  "version": 1,
+  "scenario": "e01",
+  "cloud": "gcp",
+  "title": "Red privada con salida controlada",
+  "summary": "40 preparatorias de Jalisco publican calificaciones en un portal. La Secretaría exige que ni los servidores ni la base de datos se puedan alcanzar desde internet.",
+  "topics": [
+    "redes privadas",
+    "salida a internet",
+    "filtrado de salida",
+    "reglas con estado",
+    "acceso administrativo",
+    "registros de tráfico"
+  ],
+  "source_refs": [
+    {
+      "title": "Cloud NAT: descripción general",
+      "url": "https://docs.cloud.google.com/nat/docs/overview"
+    },
+    {
+      "title": "Secure Web Proxy: descripción general",
+      "url": "https://docs.cloud.google.com/secure-web-proxy/docs/overview"
+    },
+    {
+      "title": "Reglas de firewall de VPC",
+      "url": "https://docs.cloud.google.com/firewall/docs/firewalls"
+    },
+    {
+      "title": "Google Cloud Armor: políticas de seguridad",
+      "url": "https://docs.cloud.google.com/armor/docs/security-policy-overview"
+    },
+    {
+      "title": "IAP: reenvío TCP",
+      "url": "https://docs.cloud.google.com/iap/docs/using-tcp-forwarding"
+    },
+    {
+      "title": "Private Google Access",
+      "url": "https://docs.cloud.google.com/vpc/docs/private-google-access"
+    },
+    {
+      "title": "VPC Flow Logs",
+      "url": "https://docs.cloud.google.com/vpc/docs/flow-logs"
+    },
+    {
+      "title": "Cloud NGFW: servicio de filtrado de URL",
+      "url": "https://docs.cloud.google.com/firewall/docs/about-url-filtering"
+    },
+    {
+      "title": "VPC Network Peering",
+      "url": "https://docs.cloud.google.com/vpc/docs/vpc-peering"
+    },
+    {
+      "title": "Cloud VPN: descripción general",
+      "url": "https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 6.2
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto portal",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.0,
+        "h": 6.18
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.88,
+        "h": 5.9
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 5.55,
+        "h": 4.53
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.48,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.65,
+        "r": 0.66,
+        "w": 1.62,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "gcp-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-app",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-db",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 3.6,
+        "w": 3.14,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-students",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-admin",
+      "icon": "gen-team",
+      "label": "Administrador",
+      "number": null,
+      "cell": {
+        "c": 0.46,
+        "r": 5.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-bank",
+      "icon": "gen-internet",
+      "label": "Banco",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-sat",
+      "icon": "gen-internet",
+      "label": "SAT",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 2.5
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "gcp-app-lb",
+      "label": "Balanceador",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 1.15
+      },
+      "group": "g-pub"
+    },
+    {
+      "id": "n-app",
+      "icon": "gcp-compute-engine",
+      "label": "Servidores de la app",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 2.5
+      },
+      "group": "g-app"
+    },
+    {
+      "id": "n-db",
+      "icon": "gcp-cloud-sql",
+      "label": "BD de calificaciones",
+      "number": 7,
+      "cell": {
+        "c": 3.33,
+        "r": 3.85
+      },
+      "group": "g-db"
+    },
+    {
+      "id": "n-storage",
+      "icon": "gcp-cloud-storage",
+      "label": "Almacenamiento de objetos",
+      "number": null,
+      "cell": {
+        "c": 6.6,
+        "r": 5.15
+      },
+      "group": "g-region"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 6.6,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "gcp-cloud-nat"
+      ],
+      "near_miss": "gcp-external-ip",
+      "hint_cue": "nadie de afuera puede abrirles una conexión",
+      "explanation": "Cloud NAT deja que las VM sin IP externa se comuniquen con internet y no permite conexiones de entrada no solicitadas: solo traduce las respuestas a conexiones ya establecidas.",
+      "refs": [
+        "https://docs.cloud.google.com/nat/docs/overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 5.45,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "gcp-secure-web-proxy"
+      ],
+      "near_miss": null,
+      "hint_cue": "el proxy que cada servidor tiene configurado",
+      "explanation": "En modo de proxy explícito, cada servidor apunta directo a Secure Web Proxy, que filtra destinos por nombre de host o URL (en HTTPS, con inspección TLS). Después el tráfico sale a internet, típicamente por Cloud NAT.",
+      "refs": [
+        "https://docs.cloud.google.com/secure-web-proxy/docs/overview",
+        "https://docs.cloud.google.com/nat/docs/overview",
+        "https://docs.cloud.google.com/firewall/docs/about-url-filtering"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.28,
+        "r": 3.85
+      },
+      "group": "g-db",
+      "accept": [
+        "gcp-vpc-firewall-rules"
+      ],
+      "near_miss": "gcp-cloud-armor",
+      "hint_cue": "estén en la subred que estén",
+      "explanation": "Las reglas de firewall de VPC tienen estado, así que la respuesta pasa sola, y pueden usar cuentas de servicio como destino y como origen: el 3306 se abre solo desde la cuenta de servicio de la app.",
+      "refs": [
+        "https://docs.cloud.google.com/firewall/docs/firewalls",
+        "https://docs.cloud.google.com/armor/docs/security-policy-overview"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.2,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-iap"
+      ],
+      "near_miss": "gcp-cloud-vpn",
+      "hint_cue": "sin abrir el puerto 22 a internet",
+      "explanation": "Con el reenvío TCP de IAP se hace SSH a VM sin IP externa; el firewall solo admite el rango 35.235.240.0/20 de IAP en el puerto 22, y Cloud Audit Logs deja ver cada solicitud de acceso.",
+      "refs": [
+        "https://docs.cloud.google.com/iap/docs/using-tcp-forwarding",
+        "https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.6,
+        "r": 3.85
+      },
+      "group": "g-net",
+      "accept": [
+        "gcp-private-google-access"
+      ],
+      "near_miss": "gcp-vpc-peering",
+      "hint_cue": "que solo tienen IP interna",
+      "explanation": "Private Google Access se activa por subred y deja que las VM con solo IP interna lleguen a las APIs de Google, incluido Cloud Storage. Ese tráfico va por Private Google Access aunque la VM use Cloud NAT.",
+      "refs": [
+        "https://docs.cloud.google.com/vpc/docs/private-google-access",
+        "https://docs.cloud.google.com/nat/docs/overview",
+        "https://docs.cloud.google.com/vpc/docs/vpc-peering"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 3.33,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-vpc-flow-logs"
+      ],
+      "near_miss": "gcp-cloud-audit-logs",
+      "hint_cue": "el origen, el destino y el puerto",
+      "explanation": "VPC Flow Logs toma una muestra de los paquetes que envían y reciben las VM y los agrupa por conexión (5-tupla): IP y puerto de origen y destino, y protocolo.",
+      "refs": [
+        "https://docs.cloud.google.com/vpc/docs/flow-logs",
+        "https://docs.cloud.google.com/iap/docs/using-tcp-forwarding"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-students",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "consulta",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "n-app",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "MySQL 3306",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "n-app",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "boletas PDF",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-storage",
+      "dir": "forward",
+      "step": 6,
+      "label": "red privada",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "n-app",
+      "to": "s2",
+      "dir": "forward",
+      "step": 7,
+      "label": "parches, SAT y banco",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 8,
+      "label": "dominios permitidos",
+      "style": "solid"
+    },
+    {
+      "id": "e9",
+      "from": "s1",
+      "to": "n-sat",
+      "dir": "forward",
+      "step": 9,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "n-bank",
+      "dir": "forward",
+      "step": 10,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e11",
+      "from": "n-admin",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "terminal",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s4",
+      "to": "n-app",
+      "dir": "forward",
+      "step": null,
+      "label": "sesión",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e13",
+      "from": "s3",
+      "to": "n-db",
+      "dir": "forward",
+      "step": null,
+      "label": "solo la app",
+      "style": "dashed"
+    },
+    {
+      "id": "e14",
+      "from": "n-db",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "tráfico",
+      "style": "dotted"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} deja que los servidores privados descarguen parches de internet, pero nadie de afuera puede abrirles una conexión."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} es el proxy que cada servidor tiene configurado para su tráfico web de salida; con inspección TLS revisa la URL de cada petición HTTPS y solo deja llegar al SAT, al banco y al repositorio de parches."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} hace que solo los servidores de la app hablen con la BD por el puerto 3306, estén en la subred que estén, y que la respuesta regrese sola."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da a los administradores una terminal en servidores sin IP pública, sin abrir el puerto 22 a internet, y deja registro de cada sesión."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} deja que los servidores, que solo tienen IP interna, lleven las boletas PDF al almacenamiento de objetos sin pasar por el slot 1."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} guarda el origen, el destino y el puerto del tráfico de red de los servidores para investigar un escaneo."
+    },
+    {
+      "n": 7,
+      "slot": null,
+      "text": "La base de datos de calificaciones escucha en el puerto 3306 y vive en una subred privada, sin IP pública."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-cloud-nat",
+      "why_not": {
+        "s2": "Cloud NAT solo traduce direcciones y no es un proxy. Es la salida típica del intermediario hacia internet, pero no decide a qué dominios se llega."
+      }
+    },
+    {
+      "service": "gcp-secure-web-proxy"
+    },
+    {
+      "service": "gcp-vpc-firewall-rules",
+      "why_not": {
+        "s2": "Cloud NGFW también filtra por dominio, pero intercepta el tráfico de forma transparente, sin que el servidor lo tenga configurado como proxy, y al descifrar TLS solo lee el dominio del encabezado host, no la URL completa."
+      }
+    },
+    {
+      "service": "gcp-iap"
+    },
+    {
+      "service": "gcp-private-google-access"
+    },
+    {
+      "service": "gcp-vpc-flow-logs"
+    },
+    {
+      "service": "gcp-external-ip",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Cloud NAT existe para que cada VM no necesite su propia IP externa; con una IP externa, el servidor tiene dirección pública en internet."
+      }
+    },
+    {
+      "service": "gcp-cloud-armor",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Cloud Armor filtra en el borde de Google el tráfico antes de que llegue a los backends de un balanceador; no controla qué servidor habla con la BD por el 3306."
+      }
+    },
+    {
+      "service": "gcp-cloud-vpn",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Cloud VPN extiende otra red hacia la VPC por un túnel IPsec; es una conexión entre redes, no el túnel de IAP hacia una VM sin IP externa con cada solicitud de acceso visible en Cloud Audit Logs."
+      }
+    },
+    {
+      "service": "gcp-vpc-peering",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "VPC Network Peering conecta dos redes de VPC para que sus recursos se comuniquen; lo que deja a una VM con solo IP interna llegar a Cloud Storage es Private Google Access, que se activa en la subred."
+      }
+    },
+    {
+      "service": "gcp-cloud-audit-logs",
+      "role": "near-miss",
+      "why_not": {
+        "s6": "Cloud Audit Logs registra solicitudes de acceso y operaciones, como las de IAP; no guarda muestras del tráfico de red entre VM."
+      }
+    }
+  ],
+  "review_notes": "Escenario 1 de ARCHITECTURES.md. GCP no tiene internet gateway como recurso; el distractor del slot 1 es la IP externa. Secure Web Proxy en vez de Cloud NGFW: el requisito 2 pide un proxy configurado en cada servidor (modo explícito) que revise la URL de cada petición HTTPS; el filtrado de URL de Cloud NGFW es transparente y solo lee el dominio, y lleva why_not para s2. El requisito 5 no dice 'sin salir a internet' porque la documentación de Private Google Access no lo afirma. El slot 2 no tiene near-miss propio: la confusión es con Cloud NAT, respuesta del slot 1, que lleva why_not para s2. En GCP las reglas de firewall de entrada que niegan paquetes hacen que VPC Flow Logs no los muestree; por eso el requisito 6 no pide registrar rechazos.",
+  "status": "published"
+}

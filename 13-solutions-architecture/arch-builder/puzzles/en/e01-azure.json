@@ -1,0 +1,97 @@
+{
+  "id": "e01-azure",
+  "title": "A private network with controlled egress",
+  "summary": "40 high schools in Jalisco publish grades on a portal. The state Education Ministry requires that neither the servers nor the database can be reached from the internet.",
+  "requirements": {
+    "1": "{{s1}} lets the private servers download patches from the internet, but nobody outside can open a connection to them.",
+    "2": "All outbound web traffic goes through {{s2}}, an intermediary that only lets it reach the domains of the SAT, the bank and the patch repository.",
+    "3": "{{s3}} is associated with the database subnet and its rules only let the app servers in on port 3306; the reply comes back on its own, with no extra rule.",
+    "4": "{{s4}} gives administrators a terminal on servers with no public IP, without opening port 22 to the internet, and keeps a record of every session.",
+    "5": "{{s5}} takes the PDF report cards from the servers to object storage without going out to the internet or through slot 1.",
+    "6": "{{s6}} keeps the source, destination and port of the servers' network traffic to investigate a scan.",
+    "7": "The grades database listens on port 3306 and lives in a private subnet, with no public IP."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Azure NAT Gateway gives private VMs outbound internet access and does not allow unsolicited inbound connections: only packets that answer an outbound connection get through.",
+      "hint_cue": "nobody outside can open a connection to them"
+    },
+    "s2": {
+      "explanation": "Azure Firewall is a stateful firewall with central rules that can limit outbound HTTP/S traffic to a list of FQDNs, such as the SAT, bank and patch domains.",
+      "hint_cue": "only lets it reach the domains"
+    },
+    "s3": {
+      "explanation": "An NSG is associated with the subnet and its rules allow or deny traffic; with the servers' application security group as the source, only they get in on 3306. It keeps the state of each flow, so the reply passes with no extra rule.",
+      "hint_cue": "is associated with the database subnet"
+    },
+    "s4": {
+      "explanation": "Azure Bastion gives RDP and SSH over TLS from the portal to VMs with no public IP, protects them from port scanning and, with the Premium SKU, records the sessions.",
+      "hint_cue": "without opening port 22 to the internet"
+    },
+    "s5": {
+      "explanation": "The private endpoint gives the storage account a private IP from the VNet; traffic goes over Private Link on the Microsoft backbone, with no exposure to the public internet.",
+      "hint_cue": "without going out to the internet or through slot 1"
+    },
+    "s6": {
+      "explanation": "Virtual network flow logs record the IP traffic in the VNet: source and destination IP and port, protocol, and whether the flow was allowed or denied.",
+      "hint_cue": "source, destination and port"
+    }
+  },
+  "nodes": {
+    "n-students": "Students",
+    "n-internet": "Internet",
+    "n-admin": "Administrator",
+    "n-bank": "Bank",
+    "n-sat": "SAT (tax office)",
+    "n-lb": "Load balancer",
+    "n-app": "App servers",
+    "n-db": "Grades database",
+    "n-storage": "Object storage"
+  },
+  "edges": {
+    "e1": "checks grades",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "MySQL 3306",
+    "e5": "PDF report cards",
+    "e6": "private network",
+    "e7": "patches, SAT and bank",
+    "e8": "allowed domains",
+    "e9": "HTTPS",
+    "e10": "HTTPS",
+    "e11": "terminal",
+    "e12": "session",
+    "e13": "app only",
+    "e14": "traffic"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription",
+    "g-region": "Region Mexico Central",
+    "g-net": "VNet 10.0.0.0/16",
+    "g-zone-a": "Avail. zone 1",
+    "g-zone-b": "Avail. zone 2",
+    "g-pub": "Public subnet",
+    "g-app": "Private subnet",
+    "g-db": "Private subnet"
+  },
+  "why_not": {
+    "azure-nsg": {
+      "s2": "NSG rules use IP addresses, CIDR ranges, service tags or application security groups; they cannot limit egress to domain names."
+    },
+    "azure-public-ip": {
+      "s1": "A public IP on the VM is another way out, but it gives the VM an address on the internet. Also, NAT Gateway takes precedence over instance-level public IPs."
+    },
+    "azure-asg": {
+      "s3": "An application security group only groups the VMs' network interfaces; the rules that allow or deny traffic live in the NSG associated with the subnet, which uses the group as source or destination."
+    },
+    "azure-vpn-gateway": {
+      "s4": "A point-to-site VPN creates a secure connection from one computer to the virtual network; it is not the RDP or SSH connection over TLS to each VM that Bastion provides, which records every session with the Premium SKU."
+    },
+    "azure-vnet-peering": {
+      "s5": "Peering connects two or more virtual networks so their resources can communicate; the private VNet IP for the storage account comes from the private endpoint."
+    },
+    "azure-activity-log": {
+      "s6": "The activity log keeps management operations on resources, such as creating a VM or changing an access policy; the source, destination and port of each flow are recorded by virtual network flow logs."
+    }
+  }
+}

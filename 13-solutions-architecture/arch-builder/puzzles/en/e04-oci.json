@@ -1,0 +1,70 @@
+{
+  "id": "e04-oci",
+  "title": "An animation studio that renders at night",
+  "summary": "A Guadalajara studio renders a short film overnight on 200 VMs that read the same scenes. The artists work from their office and no scene can be lost.",
+  "requirements": {
+    "1": "{{s1}} holds the project folder that hundreds of Linux servers mount at the same time over NFS, available in both fault domains.",
+    "2": "{{s2}} keeps last night's version of the project folder, so a scene someone deletes by mistake can be recovered.",
+    "3": "{{s3}} stores the finished frames for years; they are read over HTTP from the internet and do not depend on any instance.",
+    "4": "{{s4}} provides the render nodes: they can shut down with seconds or minutes of notice because the job resumes, and the lowest price with no commitment matters.",
+    "5": "{{s5}} joins the office to the cloud network today, encrypted, over the internet it already has.",
+    "6": "The artists work at the studio office in Guadalajara and upload their scenes from there."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "OCI File Storage uses NFSv3; each mount target lives in a subnet and accepts up to 100,000 NFS connections. Within the availability domain it replicates synchronously and has failover.",
+      "hint_cue": "mount at the same time over NFS"
+    },
+    "s2": {
+      "explanation": "A File Storage snapshot is a consistent point-in-time view kept under .snapshot/name at the root of the file system, where the deleted scene can be copied back from.",
+      "hint_cue": "last night's version"
+    },
+    "s3": {
+      "explanation": "Object Storage is a regional service that does not depend on any compute instance; it is read from the internet or from within the cloud and stores data redundantly across several servers.",
+      "hint_cue": "do not depend on any instance"
+    },
+    "s4": {
+      "explanation": "Preemptible instances can be terminated at any time, with an event two minutes before, and cost 50% less than on-demand capacity: they suit work that tolerates interruptions.",
+      "hint_cue": "seconds or minutes of notice"
+    },
+    "s5": {
+      "explanation": "Site-to-Site VPN uses public internet lines and encrypts with IPsec all communication between the office and the VCN, which goes through the DRG.",
+      "hint_cue": "over the internet it already has"
+    }
+  },
+  "nodes": {
+    "n-artists": "Artists"
+  },
+  "edges": {
+    "e1": "its internet",
+    "e2": "uploads scenes",
+    "e3": "reads scenes over NFS",
+    "e4": "finished frames",
+    "e5": "nightly copy"
+  },
+  "groups": {
+    "g-office": "Office in GDL",
+    "g-cloud": "Oracle Cloud · studio compartment",
+    "g-region": "Querétaro region (single AD)",
+    "g-net": "VCN 10.0.0.0/16",
+    "g-zone-a": "Fault domain 1",
+    "g-zone-b": "Fault domain 2",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "oci-block-volume": {
+      "s1": "A block volume is used as an instance's hard drive; attaching it to several at once requires installing a cluster-aware solution, and it is not an NFS folder.",
+      "s3": "A block volume is used as an instance's hard drive; it does not store objects that are read over HTTP from the internet."
+    },
+    "oci-fss-replication": {
+      "s2": "Replication gives the target the same file and folder structure as the source and, at each interval, deletes the previous replication snapshot: it does not keep last night's version.",
+      "s1": "Replication copies a file system that already exists; on its own it is not the folder the servers mount."
+    },
+    "oci-capacity-reservation": {
+      "s4": "A capacity reservation sets instances aside, but they are billed at the standard rate and unused capacity is billed at 85%: it does not make the nodes cheaper."
+    },
+    "oci-fastconnect": {
+      "s5": "FastConnect creates a dedicated, private connection between the data center and Oracle Cloud, not the encrypted tunnel over the internet the office already has."
+    }
+  }
+}

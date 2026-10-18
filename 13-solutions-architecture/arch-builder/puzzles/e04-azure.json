@@ -1,0 +1,400 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e04-azure",
+  "version": 1,
+  "scenario": "e04",
+  "cloud": "azure",
+  "title": "Estudio de animación que renderiza de noche",
+  "summary": "Un estudio tapatío renderiza un cortometraje de noche en 200 VM que leen las mismas escenas. Los artistas trabajan desde su oficina y ninguna escena se puede perder.",
+  "topics": [
+    "archivos compartidos NFS",
+    "almacenamiento de objetos",
+    "respaldo frente a réplica",
+    "cómputo interrumpible",
+    "conexión híbrida cifrada"
+  ],
+  "source_refs": [
+    {
+      "title": "Azure Files: recursos compartidos NFS",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol"
+    },
+    {
+      "title": "Azure Files: instantáneas de recursos compartidos",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"
+    },
+    {
+      "title": "Azure Storage: redundancia de datos",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+    },
+    {
+      "title": "Azure Spot Virtual Machines",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms"
+    },
+    {
+      "title": "¿Qué es Azure VPN Gateway?",
+      "url": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways"
+    },
+    {
+      "title": "Azure Blob Storage: soporte de NFS 3.0",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support"
+    },
+    {
+      "title": "Azure Disk Storage: descripción general de discos administrados",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
+    },
+    {
+      "title": "Azure Backup: matriz de soporte para Azure Files",
+      "url": "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-support-matrix"
+    },
+    {
+      "title": "¿Qué son las reservaciones de Azure?",
+      "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/save-compute-costs-reservations"
+    },
+    {
+      "title": "Azure ExpressRoute: descripción general",
+      "url": "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.5
+  },
+  "groups": [
+    {
+      "id": "g-office",
+      "kind": "corporate-dc",
+      "label": "Oficina en GDL",
+      "parent": null,
+      "cell": {
+        "c": 0,
+        "r": 2.6,
+        "w": 1.5,
+        "h": 1.45
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.7,
+        "r": 0,
+        "w": 7.25,
+        "h": 4.5
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "azure-region",
+      "label": "Región Mexico Central",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.76,
+        "r": 0.22,
+        "w": 7.13,
+        "h": 4.22
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 3.05,
+        "r": 0.44,
+        "w": 3.9,
+        "h": 3.94
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "azure-zone",
+      "label": "Zona de disponibilidad 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "azure-zone",
+      "label": "Zona de disponibilidad 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 5.03,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.9,
+        "w": 3.78,
+        "h": 3.36
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-artists",
+      "icon": "gen-team",
+      "label": "Artistas",
+      "number": 6,
+      "cell": {
+        "c": 0.25,
+        "r": 2.9
+      },
+      "group": "g-office"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 2.9
+      },
+      "group": "g-priv",
+      "accept": [
+        "azure-files"
+      ],
+      "near_miss": "azure-managed-disks",
+      "hint_cue": "montan a la vez por NFS",
+      "explanation": "Azure Files da recursos compartidos NFS con un sistema de archivos POSIX completo, en SSD con ZRS, y miles de clientes Linux los usan a la vez. Para editar archivos en su lugar, Microsoft recomienda Azure Files y no NFS 3.0 en Blob Storage.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol",
+        "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 7.4,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-files-snapshots"
+      ],
+      "near_miss": "azure-backup",
+      "hint_cue": "versión de anoche",
+      "explanation": "Una instantánea de recurso compartido es una copia de solo lectura de un momento dado, también en NFS, y permite recuperar archivos uno por uno. Azure Backup no admite recursos compartidos con el protocolo NFS.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files",
+        "https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol",
+        "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-support-matrix"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 7.4,
+        "r": 1.2
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-blob-zrs"
+      ],
+      "near_miss": "azure-blob-lrs",
+      "hint_cue": "sobreviven a la pérdida de una zona completa",
+      "explanation": "Con ZRS, Blob Storage copia los datos de forma síncrona en tres o más zonas y siguen disponibles para leer y escribir aunque una zona falle. Con LRS se quedan en un solo centro de datos.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 4.5,
+        "r": 1.2
+      },
+      "group": "g-priv",
+      "accept": [
+        "azure-spot-vm"
+      ],
+      "near_miss": "azure-reservations",
+      "hint_cue": "segundos o minutos de aviso",
+      "explanation": "Azure desaloja las Spot VMs con 30 segundos de aviso cuando necesita la capacidad y no tienen SLA, a cambio de un ahorro importante. El render se reanuda en otra VM.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms",
+        "https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/save-compute-costs-reservations"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 1.95,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-vpn-gateway-s2s"
+      ],
+      "near_miss": "azure-expressroute",
+      "hint_cue": "por el internet que ya tiene",
+      "explanation": "La conexión sitio a sitio de VPN Gateway arma un túnel IPsec/IKE y envía tráfico cifrado entre la VNet y la oficina por el internet público.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways",
+        "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-artists",
+      "to": "s5",
+      "dir": "forward",
+      "step": 1,
+      "label": "su internet",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s5",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "sube escenas",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s4",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "lee escenas por NFS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "cuadros terminados",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "copia de cada noche",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda la carpeta de proyectos, que los artistas editan en su lugar y que cientos de servidores Linux montan a la vez por NFS, disponible en ambas zonas."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} conserva la versión de anoche de la carpeta de proyectos, para recuperar una escena que alguien borre por error."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda por años los cuadros terminados, que se leen por HTTP y sobreviven a la pérdida de una zona completa."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da los nodos de render: pueden apagarse con segundos o minutos de aviso porque el trabajo se reanuda, e importa el precio más bajo sin compromiso."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} une hoy mismo la oficina con la red de la nube, cifrada, por el internet que ya tiene."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "Los artistas trabajan en la oficina del estudio en Guadalajara y desde ahí suben sus escenas."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-files"
+    },
+    {
+      "service": "azure-files-snapshots"
+    },
+    {
+      "service": "azure-blob-zrs",
+      "why_not": {
+        "s1": "Microsoft desaconseja NFS 3.0 en Blob Storage para recursos compartidos de uso general y para editar archivos en su lugar, porque cada edición reescribe el blob completo."
+      }
+    },
+    {
+      "service": "azure-spot-vm"
+    },
+    {
+      "service": "azure-vpn-gateway-s2s"
+    },
+    {
+      "service": "azure-managed-disks",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Un disco administrado es un volumen de bloques para VM; compartirlo entre varias VM exige un administrador de clúster, y no es un recurso compartido NFS.",
+        "s3": "Un disco administrado es un volumen de bloques que se usa con una VM; no sirve los cuadros por HTTP."
+      }
+    },
+    {
+      "service": "azure-backup",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Según su matriz de soporte, Azure Backup no admite recursos compartidos con el protocolo NFS, así que no puede respaldar esta carpeta."
+      }
+    },
+    {
+      "service": "azure-blob-lrs",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "LRS copia los datos dentro de un solo centro de datos, así que los cuadros no sobreviven a la pérdida de una zona completa.",
+        "s1": "Con LRS los datos quedan en un solo centro de datos, y Microsoft desaconseja NFS 3.0 en Blob Storage para editar archivos en su lugar."
+      }
+    },
+    {
+      "service": "azure-reservations",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una reservación baja el precio a cambio de comprometerse a un plan de uno o tres años, y el requisito pide el precio más bajo sin compromiso."
+      }
+    },
+    {
+      "service": "azure-expressroute",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "ExpressRoute extiende la red local a la nube por una conexión privada con un proveedor de conectividad y no pasa por el internet público: no usa el internet de la oficina."
+      }
+    }
+  ],
+  "review_notes": "Escenario 4 de ARCHITECTURES.md. s2 near-miss = ZRS (la fuente de redundancia dice que los borrados se aplican a todas las copias); ZRS lleva el modo 'del recurso compartido' para que no compita con Blob Storage ZRS en s3. Azure Backup es distractor de s2: su matriz de soporte dice que no admite recursos NFS. Revisión a ciegas: s5 usa la ficha azure-vpn-gateway-s2s (sitio a sitio); el requisito 1 pide editar en su lugar, que Microsoft desaconseja en NFS 3.0 de Blob Storage; Azure Files pasa de 'NFS en SSD con ZRS' a 'SSD'. Revisión final: se quitó la ficha ZRS (modo del recurso compartido) porque competía con Azure Files por disponible en ambas zonas; el near-miss del slot 2 es ahora Azure Backup, que según su matriz de soporte no admite recursos NFS. Quedan 5 fichas que no son respuesta.",
+  "status": "published"
+}

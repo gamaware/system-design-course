@@ -1,0 +1,76 @@
+{
+  "id": "e07-gcp",
+  "title": "World Cup 2026 betting pool",
+  "summary": "A Mexican app expects 2 million players during the 2026 World Cup matches, and bets spike at minute 90.",
+  "requirements": {
+    "1": "{{s1}} is the HTTP proxy that receives bets over HTTPS, spreads the requests across the containers and passes the player's IP to the API in the X-Forwarded-For header.",
+    "2": "{{s2}} runs the API in containers without the two-person team managing servers, nodes or a Kubernetes cluster.",
+    "3": "{{s3}} keeps the leaderboard of 2 million players in memory, sorted by points, so the API does not hit the database on every lookup.",
+    "4": "{{s4}} absorbs the minute-90 spike: workers pull bets at their own pace and each one is done only when they confirm they processed it; otherwise it is delivered again.",
+    "5": "{{s5}} is the NoSQL store for the bets: it saves each one keyed by player and match and writes it only if that key does not exist yet, so nobody bets twice.",
+    "6": "The score provider sends each goal to the slot 2 API, which updates the slot 3 leaderboard."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "The regional external Application Load Balancer is a layer 7 proxy for HTTP and HTTPS; with a serverless NEG it reaches Cloud Run in the same region and passes the player's IP in X-Forwarded-For.",
+      "hint_cue": "in the X-Forwarded-For header"
+    },
+    "s2": {
+      "explanation": "Cloud Run is a fully managed platform for running containers: there is no cluster to create or infrastructure to manage, and it scales with the requests.",
+      "hint_cue": "without the two-person team managing servers"
+    },
+    "s3": {
+      "explanation": "Memorystore for Valkey is a fully managed in-memory Valkey service that can be deployed in northamerica-south1 (Mexico); Google uses it as a caching layer to deliver real-time leaderboards.",
+      "hint_cue": "in memory"
+    },
+    "s4": {
+      "explanation": "With a Pub/Sub pull subscription, workers request messages when they can and must acknowledge each one; if they do not ack it before the deadline, Pub/Sub delivers it again.",
+      "hint_cue": "otherwise it is delivered again"
+    },
+    "s5": {
+      "explanation": "Firestore is a NoSQL document database that scales with the load on its own. A write with the precondition that the document must not exist only applies if it is not there yet, so the bet is not duplicated.",
+      "hint_cue": "writes it only if that key does not exist yet"
+    }
+  },
+  "nodes": {
+    "n-users": "Players",
+    "n-internet": "Internet",
+    "n-scores": "Score provider"
+  },
+  "edges": {
+    "e1": "bets at minute 90",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "enqueues the bet",
+    "e5": "workers store it",
+    "e6": "standings",
+    "e7": "each goal"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · quiniela project",
+    "g-region": "northamerica-south1 region",
+    "g-net": "VPC network",
+    "g-zone-a": "northamerica-south1-a",
+    "g-zone-b": "northamerica-south1-b",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet (Direct VPC)"
+  },
+  "why_not": {
+    "gcp-passthrough-nlb": {
+      "s1": "Passthrough Network Load Balancers do not support serverless NEGs, so they cannot send traffic to Cloud Run; also, the requirement asks for an HTTP proxy."
+    },
+    "gcp-gke-standard": {
+      "s2": "In GKE Standard the team configures its own node pools and plans their capacity, and the requirement rules out running a Kubernetes cluster."
+    },
+    "gcp-cloud-sql-read-replica": {
+      "s3": "A Cloud SQL read replica is a read-only copy of the relational database; the requirement asks to keep the leaderboard in memory.",
+      "s5": "Cloud SQL read replicas are read-only: the bet cannot be written to them."
+    },
+    "gcp-managed-kafka": {
+      "s4": "In Managed Service for Apache Kafka what a consumer group receives is controlled with the offsets of each partition, and Google recommends Pub/Sub when you need per-message processing tracking."
+    },
+    "gcp-cloud-storage": {
+      "s5": "Cloud Storage stores immutable objects that do not change during their storage lifetime; the requirement asks for a NoSQL database."
+    }
+  }
+}

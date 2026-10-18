@@ -1,0 +1,356 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e08-azure",
+  "version": 1,
+  "scenario": "e08",
+  "cloud": "azure",
+  "title": "Paquetería que no pierde pedidos",
+  "summary": "EnvíaYa reparte 80 mil paquetes al día en el Bajío. Cada pedido creado llega a facturación, al SMS del cliente y a la asignación de repartidor, y una falla en uno no detiene a los demás.",
+  "topics": [
+    "publicar/suscribir",
+    "colas",
+    "entrega al menos una vez",
+    "DLQ",
+    "streaming"
+  ],
+  "source_refs": [
+    {
+      "title": "Service Bus: colas, temas y suscripciones",
+      "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions"
+    },
+    {
+      "title": "Service Bus: reenvío automático",
+      "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-auto-forwarding"
+    },
+    {
+      "title": "Azure Functions: disparador de Service Bus",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger"
+    },
+    {
+      "title": "Azure Functions: plan Flex Consumption",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-functions/flex-consumption-plan"
+    },
+    {
+      "title": "Azure Functions: escalado basado en destino",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-functions/functions-target-based-scaling"
+    },
+    {
+      "title": "Productos de Azure disponibles por región",
+      "url": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table"
+    },
+    {
+      "title": "Service Bus: colas de mensajes fallidos",
+      "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues"
+    },
+    {
+      "title": "Event Hubs: características y terminología",
+      "url": "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-features"
+    },
+    {
+      "title": "Introducción a Azure Stream Analytics",
+      "url": "https://learn.microsoft.com/en-us/azure/stream-analytics/stream-analytics-introduction"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 6.85,
+        "h": 4.2
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-api",
+      "icon": "azure-api-management",
+      "label": "API de pedidos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-sms",
+      "icon": "gen-users",
+      "label": "Clientes (SMS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-analytics",
+      "icon": "gen-team",
+      "label": "Analítica",
+      "number": null,
+      "cell": {
+        "c": 3.6,
+        "r": 3.1
+      },
+      "group": "g-cloud"
+    },
+    {
+      "id": "n-gps",
+      "icon": "gen-users",
+      "label": "Repartidores (GPS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 3.1
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 1.45,
+        "r": 0.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-service-bus-topic"
+      ],
+      "near_miss": null,
+      "hint_cue": "llegue a varios consumidores independientes",
+      "explanation": "Con un tema de Service Bus, cada suscripción recibe una copia del mensaje publicado, en un esquema de publicar y suscribir de uno a muchos. En una cola, en cambio, cada mensaje lo procesa un solo consumidor.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 1.45,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-service-bus-queue"
+      ],
+      "near_miss": "azure-managed-redis",
+      "hint_cue": "si el trabajador muere a la mitad, el pedido reaparece",
+      "explanation": "El reenvío automático se activa en la suscripción del tema (origen) y pasa sola su copia a esta cola, porque Service Bus no deja crear receptores en un origen con reenvío. En peek-lock, si el bloqueo vence sin completarse, el mensaje vuelve a estar disponible.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-auto-forwarding",
+        "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.6,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-functions"
+      ],
+      "near_miss": "azure-vm",
+      "hint_cue": "solo cuando hay mensajes",
+      "explanation": "El disparador de Service Bus ejecuta la función cuando llegan mensajes a la cola. En Mexico Central, el plan Flex Consumption escala según los mensajes pendientes y baja a cero; el plan Consumo de Linux está en cierre. Completa el mensaje si la función termina bien y lo abandona si falla.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger",
+        "https://learn.microsoft.com/en-us/azure/azure-functions/flex-consumption-plan",
+        "https://learn.microsoft.com/en-us/azure/azure-functions/functions-target-based-scaling",
+        "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 1.45,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-service-bus-dlq"
+      ],
+      "near_miss": "azure-blob-storage",
+      "hint_cue": "falla 5 veces",
+      "explanation": "Cada cola tiene su subcola de mensajes fallidos. Cuando un mensaje pasa el máximo de entregas (10 por omisión y configurable), Service Bus lo mueve ahí y se queda hasta que alguien lo revise. Un contenedor de Blob no cuenta entregas.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.0,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-event-hubs"
+      ],
+      "near_miss": "azure-stream-analytics",
+      "hint_cue": "relee desde el principio",
+      "explanation": "Event Hubs guarda los eventos en particiones ordenadas hasta 7 días en el nivel Standard, y cada grupo de consumidores elige su offset, incluso el inicio, para releerlos. Stream Analytics procesa en memoria y no guarda la entrada.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-features",
+        "https://learn.microsoft.com/en-us/azure/stream-analytics/stream-analytics-introduction"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-api",
+      "to": "s1",
+      "dir": "forward",
+      "step": 1,
+      "label": "pedido creado",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s1",
+      "to": "n-sms",
+      "dir": "forward",
+      "step": 2,
+      "label": "SMS vía código propio",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "reenvío de la suscripción",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "pedidos por atender",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "tras 5 fallas",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "n-gps",
+      "to": "s5",
+      "dir": "forward",
+      "step": null,
+      "label": "posiciones GPS",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "s5",
+      "to": "n-analytics",
+      "dir": "forward",
+      "step": null,
+      "label": "relee desde el inicio",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} hace que un mismo pedido creado llegue a varios consumidores independientes, sin que la API sepa cuántos son."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} recibe su copia de cada pedido y la guarda hasta que un trabajador confirma que la procesó; si el trabajador muere a la mitad, el pedido reaparece."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} corre el código que asigna repartidor solo cuando hay mensajes, escala solo y no cuesta de madrugada."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} aparta solo el pedido que falla 5 veces para revisarlo después, sin bloquear la fila."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} recibe el GPS de los repartidores, lo conserva 7 días en orden y analítica lo relee desde el principio cuantas veces quiera."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-service-bus-topic"
+    },
+    {
+      "service": "azure-service-bus-queue"
+    },
+    {
+      "service": "azure-functions"
+    },
+    {
+      "service": "azure-service-bus-dlq"
+    },
+    {
+      "service": "azure-event-hubs"
+    },
+    {
+      "service": "azure-managed-redis",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Azure Managed Redis es una caché en memoria: sus listas no garantizan la entrega ni hacen reaparecer el pedido si el trabajador muere a la mitad."
+      }
+    },
+    {
+      "service": "azure-vm",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una VM cobra mientras está encendida, aunque no lleguen pedidos de madrugada, y no se ejecuta sola con cada mensaje de la cola."
+      }
+    },
+    {
+      "service": "azure-blob-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un contenedor de Blob guarda archivos, pero no cuenta las entregas de un mensaje ni lo aparta de la cola por sí solo.",
+        "s5": "Blob Storage guarda archivos; no tiene particiones con offsets para que analítica relea el GPS en orden desde el principio."
+      }
+    },
+    {
+      "service": "azure-stream-analytics",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Stream Analytics procesa el flujo en memoria y no guarda los datos de entrada, así que analítica no puede releer el GPS."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 8 de ARCHITECTURES.md. Slot 1 = tema de Service Bus; una suscripción tiene el reenvío automático hacia la cola del slot 2 y la otra alimenta el SMS. El reenvío se configura en el origen (la suscripción), no en la cola: Service Bus no permite receptores en un origen con reenvío activo, y Functions lee de la cola destino. Por eso la ficha del slot 2 dice cola destino del reenvío y la flecha e3 dice reenvío de la suscripción (revisión a ciegas). La subcola de mensajes fallidos es de la cola del slot 2, por eso la flecha sale de ahí. El máximo de entregas es 10 por omisión: el requisito pide 5, que se configura. Revisión final: Service Bus no envía SMS por sí mismo; la flecha 2 dice SMS vía código propio (un consumidor de la suscripción manda el SMS), igual que la flecha 3 de OCI. En AWS y OCI el tema sí entrega por SMS. Slot 3: la tabla de productos por región marca en Mexico Central el plan Consumo de Linux de Functions como en cierre y Flex Consumption como GA; la explicación nombra Flex Consumption.",
+  "status": "published"
+}

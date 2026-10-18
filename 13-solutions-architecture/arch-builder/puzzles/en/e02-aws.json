@@ -1,0 +1,77 @@
+{
+  "id": "e02-aws",
+  "title": "A store that survives Buen Fin",
+  "summary": "An artisan cooperative from Tlaquepaque gets ten times its usual traffic during Buen Fin. The store must grow on its own and keep selling if a zone fails.",
+  "requirements": {
+    "1": "{{s1}} is each individual server: it has its own operating system the team patches, its inventory agent installed, and runs all day.",
+    "2": "{{s2}} keeps 2 to 20 copies across both zones, adds or removes them with the load and replaces the ones that fail.",
+    "3": "{{s3}} receives and decrypts HTTPS, sends /api to one group and /tienda to another, and only forwards to healthy servers.",
+    "4": "{{s4}} issues and automatically renews what slot 3 presents to the browser to prove it is tienda.mx.",
+    "5": "{{s5}} records CPU every minute and alerts the on-call team if it stays above 80 % for 5 minutes.",
+    "6": "The managed database stores orders and inventory, and only the slot 1 servers query it."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Amazon EC2 provides instances with a full operating system: the team patches them, installs its agent and they run with no time limit. Lambda gives no operating system access and stops each run at 15 minutes.",
+      "hint_cue": "operating system the team patches"
+    },
+    "s2": {
+      "explanation": "An EC2 Auto Scaling group keeps capacity between the minimum and maximum, spreads instances across zones, scales with the load and replaces instances that fail their health check. A launch template only describes how to launch them.",
+      "hint_cue": "replaces the ones that fail"
+    },
+    "s3": {
+      "explanation": "The Application Load Balancer terminates TLS, sends /api and /tienda to different target groups with path rules and only forwards to targets that pass their health check. The Network Load Balancer works at layer 4 and does not read the URL.",
+      "hint_cue": "sends /api to one group and /tienda to another"
+    },
+    "s4": {
+      "explanation": "The ALB presents an X.509 certificate that proves the domain; ACM issues the public one for tienda.mx and renews it automatically while it is in use and its validation CNAME stays in DNS. KMS stores keys, not certificates.",
+      "hint_cue": "presents to the browser to prove it is tienda.mx"
+    },
+    "s5": {
+      "explanation": "CloudWatch receives the instance CPU every minute and an alarm moves to ALARM when it stays above 80 % for 5 minutes; its action alerts the on-call team. Trusted Advisor only runs periodic checks.",
+      "hint_cue": "alerts the on-call team"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-internet": "Internet",
+    "n-db": "Managed database",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "buys at tienda.mx",
+    "e2": "HTTPS",
+    "e3": "/api and /tienda",
+    "e4": "queries",
+    "e5": "TLS for tienda.mx",
+    "e6": "adds and replaces",
+    "e7": "CPU every minute",
+    "e8": "alert"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud",
+    "g-region": "Region mx-central-1",
+    "g-net": "VPC 10.0.0.0/16",
+    "g-zone-a": "Availability Zone A",
+    "g-zone-b": "Availability Zone B",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "aws-lambda": {
+      "s1": "Lambda stops each run at 15 minutes and does not let the team patch the operating system or install agents."
+    },
+    "aws-launch-template": {
+      "s2": "A launch template is only the template with the AMI and instance type: it does not keep copies or replace the ones that fail."
+    },
+    "aws-nlb": {
+      "s3": "The Network Load Balancer works at layer 4: it spreads TCP connections but does not read the URL to send /api and /tienda to different groups."
+    },
+    "aws-kms": {
+      "s4": "KMS creates and controls keys to encrypt and sign data, but the ALB presents an X.509 certificate, which ACM issues and renews."
+    },
+    "aws-trusted-advisor": {
+      "s5": "Trusted Advisor gives periodic best-practice recommendations; it does not measure CPU every minute or alert the on-call team."
+    }
+  }
+}

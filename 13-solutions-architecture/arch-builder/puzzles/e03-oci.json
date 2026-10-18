@@ -1,0 +1,440 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e03-oci",
+  "version": 1,
+  "scenario": "e03",
+  "cloud": "oci",
+  "title": "Cursos en video para 300 mil alumnos",
+  "summary": "CursosMX vende cursos grabados a 300 mil alumnos de México y Centroamérica. Los videos deben llegar rápido, las grabaciones crudas deben costar poco y el login recibe intentos de inyección SQL.",
+  "topics": [
+    "entrega de contenido",
+    "caché",
+    "clases de almacenamiento",
+    "nombres públicos",
+    "filtrado HTTP"
+  ],
+  "source_refs": [
+    {
+      "title": "OCI Web Application Acceleration: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/web-app-acceleration/overview.htm"
+    },
+    {
+      "title": "OCI Object Storage: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm"
+    },
+    {
+      "title": "OCI Object Storage: niveles de almacenamiento",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/understandingstoragetiers.htm"
+    },
+    {
+      "title": "OCI DNS: zonas privadas",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/DNS/Tasks/privatedns.htm"
+    },
+    {
+      "title": "OCI Web Application Firewall: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/WAF/Concepts/overview.htm"
+    },
+    {
+      "title": "OCI Cache",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/ocicache/home.htm"
+    },
+    {
+      "title": "OCI Block Volume: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm"
+    },
+    {
+      "title": "OCI: grupos de seguridad de red",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/networksecuritygroups.htm"
+    },
+    {
+      "title": "OCI: reglas de seguridad",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securityrules.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento cursos",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 7.0,
+        "h": 5.24
+      }
+    },
+    {
+      "id": "g-edge",
+      "kind": "generic",
+      "label": "Entrada en Querétaro",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 1.3,
+        "w": 1.53,
+        "h": 2.7
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "oci-region",
+      "label": "Región Querétaro",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 3.6,
+        "r": 0.22,
+        "w": 5.29,
+        "h": 4.96
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 5.3,
+        "r": 2.55,
+        "w": 3.53,
+        "h": 1.5
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de producción",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 4.0
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "oci-load-balancer",
+      "label": "Backend set del balanceador",
+      "number": 6,
+      "cell": {
+        "c": 5.7,
+        "r": 2.95
+      },
+      "group": "g-net"
+    },
+    {
+      "id": "n-app",
+      "icon": "oci-compute",
+      "label": "Servidores de la web, login y pagos",
+      "number": null,
+      "cell": {
+        "c": 7.5,
+        "r": 2.95
+      },
+      "group": "g-net"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.26,
+        "r": 1.6
+      },
+      "group": "g-edge",
+      "accept": [
+        "oci-web-app-acceleration"
+      ],
+      "near_miss": "oci-cache",
+      "hint_cue": "sin que la petición llegue a los servidores",
+      "explanation": "Web Application Acceleration es una política que se asigna a un balanceador HTTP y guarda en caché las respuestas 200 a GET y HEAD para no cargar a los servidores; la caché mide 100 MB y no guarda archivos más grandes.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/web-app-acceleration/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/ocicache/home.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.2,
+        "r": 1.6
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-object-storage"
+      ],
+      "near_miss": "oci-block-volume",
+      "hint_cue": "no hay servidores que administrar",
+      "explanation": "Object Storage guarda datos no estructurados de cualquier tipo, como videos, y permite leerlos directo desde internet; es un servicio regional que no depende de ninguna instancia de Compute.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/understandingstoragetiers.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/ocicache/home.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.2,
+        "r": 4.0
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-object-storage-archive"
+      ],
+      "near_miss": "oci-object-storage-ia",
+      "hint_cue": "el menor costo por GB guardado",
+      "explanation": "El nivel Archive tiene el menor costo de almacenamiento de Object Storage y 90 días mínimos; cada objeto se restaura antes de leerse, y eso tarda hasta una hora.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/understandingstoragetiers.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.26,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-dns"
+      ],
+      "near_miss": "oci-dns-private",
+      "hint_cue": "responde a cualquiera en internet",
+      "explanation": "Una zona de internet de OCI DNS responde a cualquiera que la consulte. Una zona privada tiene capacidades parecidas, pero solo responde a clientes que la alcanzan desde una VCN.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/DNS/Tasks/privatedns.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 2.26,
+        "r": 2.95
+      },
+      "group": "g-edge",
+      "accept": [
+        "oci-waf"
+      ],
+      "near_miss": "oci-nsg",
+      "hint_cue": "bloquea la inyección SQL",
+      "explanation": "La política de OCI WAF es regional y funciona como complemento del balanceador; crea reglas contra inyección SQL, XSS y otras vulnerabilidades de OWASP.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/WAF/Concepts/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/networksecuritygroups.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securityrules.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "cursosmx.com",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s4",
+      "dir": "forward",
+      "step": 2,
+      "label": "¿cursosmx.com?",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "s2",
+      "dir": "none",
+      "step": null,
+      "label": "videos: directo, no por la caché",
+      "style": "dotted"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 4,
+      "label": "lo que no está en caché",
+      "style": "solid",
+      "route": "points",
+      "points": [
+        {
+          "c": 2.76,
+          "r": 2.85
+        },
+        {
+          "c": 6.2,
+          "r": 2.85
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-lb",
+      "dir": "none",
+      "step": null,
+      "label": "política del balanceador",
+      "style": "dotted"
+    },
+    {
+      "id": "e7",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 5,
+      "label": "reparte",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "n-team",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "grabaciones crudas",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} contesta desde la región las páginas e imágenes que más se piden, sin que la petición llegue a los servidores; no guarda archivos de más de 100 MB."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} entrega directo por internet millones de videos que los alumnos ven a diario; se paga por GB guardado y no hay servidores que administrar."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda 5 años las grabaciones crudas, que casi nunca se abren. Importa el menor costo por GB guardado, aunque leerlas después sea más caro o más lento."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} guarda los registros de cursosmx.com y responde a cualquiera en internet que pregunte por ese nombre, para que llegue a la entrada en Querétaro."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} revisa cada petición HTTP del login y bloquea la inyección SQL antes de que llegue a la app."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El backend set del balanceador reparte entre los servidores de la región lo que la caché no contestó, como el login y los pagos."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-web-app-acceleration"
+    },
+    {
+      "service": "oci-object-storage"
+    },
+    {
+      "service": "oci-object-storage-archive"
+    },
+    {
+      "service": "oci-dns"
+    },
+    {
+      "service": "oci-waf"
+    },
+    {
+      "service": "oci-cache",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "OCI Cache crea clústeres en memoria para las aplicaciones y solo se alcanza por un endpoint privado; los alumnos en internet no llegan a él.",
+        "s2": "OCI Cache es almacenamiento en memoria para aplicaciones, con acceso por un endpoint privado; no entrega videos directo por internet."
+      }
+    },
+    {
+      "service": "oci-block-volume",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Un Block Volume se conecta a una instancia por iSCSI y la instancia lo usa como disco duro; el origen de los videos debe leerse directo desde internet.",
+        "s3": "Un Block Volume es almacenamiento de bloques para una instancia, no uno de los niveles de Object Storage."
+      }
+    },
+    {
+      "service": "oci-object-storage-ia",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Infrequent Access cuesta menos que Standard, pero no es el nivel más barato, y cobra cada GB que se lee.",
+        "s2": "Infrequent Access cobra cada GB que se lee y pide 31 días mínimos; no conviene para videos que se ven a diario."
+      }
+    },
+    {
+      "service": "oci-dns-private",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una zona privada solo responde a clientes que la alcanzan desde una VCN; los alumnos en internet no la pueden consultar."
+      }
+    },
+    {
+      "service": "oci-nsg",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Las reglas de un NSG permiten tráfico según dirección, protocolo IP, puertos y origen o destino; las reglas contra inyección SQL son de otro servicio."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 3 de ARCHITECTURES.md. OCI no tiene CDN (equivalencia dudosa E3-1): el slot 1 es Web Application Acceleration, una política del balanceador cuyos backends son servidores, no Object Storage. Para no romper la geometría común, el slot 1 se dibuja como la caché a la entrada del balanceador, el nodo 6 es el backend set de ese mismo balanceador y la política WAF se une a él con línea punteada. La flecha 1 a 2 queda punteada, sin dirección ni paso: los videos se leen directo de Object Storage y no pasan por la caché (máximo 100 MB por archivo). Se quitó Traffic Management de la paleta porque también contesta consultas públicas; su lugar lo toma OCI Cache como near-miss del slot 1. Ver design-notes.md. Revisión final: la etiqueta de la línea punteada 1 a 2 dice que los videos van directo y no pasan por la caché; Web Application Acceleration solo se asocia a un balanceador y nunca a Object Storage.",
+  "status": "published"
+}

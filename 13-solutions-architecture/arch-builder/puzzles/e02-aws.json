@@ -1,0 +1,443 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e02-aws",
+  "version": 1,
+  "scenario": "e02",
+  "cloud": "aws",
+  "title": "Tienda que aguanta el Buen Fin",
+  "summary": "Una cooperativa de artesanos de Tlaquepaque multiplica por diez su tráfico en el Buen Fin. La tienda debe crecer sola y no perder ventas si cae una zona.",
+  "topics": [
+    "cómputo",
+    "autoescalado",
+    "balanceo L7",
+    "terminación TLS",
+    "monitoreo"
+  ],
+  "source_refs": [
+    {
+      "title": "AWS Lambda: tiempo de espera de una función",
+      "url": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html"
+    },
+    {
+      "title": "Amazon EC2 Auto Scaling: revisiones de salud",
+      "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html"
+    },
+    {
+      "title": "¿Qué es un Application Load Balancer?",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
+    },
+    {
+      "title": "AWS Certificate Manager: renovación con validación DNS",
+      "url": "https://docs.aws.amazon.com/acm/latest/userguide/dns-renewal-validation.html"
+    },
+    {
+      "title": "EC2 Auto Scaling: escalado simple y por pasos con alarmas de CloudWatch",
+      "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html"
+    },
+    {
+      "title": "AWS Trusted Advisor",
+      "url": "https://aws.amazon.com/premiumsupport/technology/trusted-advisor/"
+    },
+    {
+      "title": "Application Load Balancer: certificados SSL",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/https-listener-certificates.html"
+    },
+    {
+      "title": "AWS KMS: información general",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 5.51,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.39,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "az",
+      "label": "Zona de disponibilidad A",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "az",
+      "label": "Zona de disponibilidad B",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "public-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-db",
+      "icon": "aws-rds",
+      "label": "BD administrada",
+      "number": 6,
+      "cell": {
+        "c": 2.35,
+        "r": 2.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 7.55,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "aws-ec2"
+      ],
+      "near_miss": "aws-lambda",
+      "hint_cue": "sistema operativo que el equipo parcha",
+      "explanation": "Amazon EC2 da instancias con sistema operativo completo: el equipo las parcha, les instala su agente y corren sin límite de tiempo. Lambda no da acceso al sistema operativo y corta cada ejecución a los 15 minutos.",
+      "refs": [
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-ec2-auto-scaling"
+      ],
+      "near_miss": "aws-launch-template",
+      "hint_cue": "reemplaza las que fallan",
+      "explanation": "Un grupo de EC2 Auto Scaling mantiene la capacidad entre el mínimo y el máximo, reparte instancias entre zonas, escala con la carga y reemplaza las que fallan su revisión de salud. Un launch template solo describe cómo lanzarlas.",
+      "refs": [
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "aws-alb"
+      ],
+      "near_miss": "aws-nlb",
+      "hint_cue": "manda /api a un grupo y /tienda a otro",
+      "explanation": "El Application Load Balancer termina TLS, manda /api y /tienda a grupos de destino distintos con reglas por ruta y solo envía a destinos que pasan su revisión de salud. El Network Load Balancer es de capa 4 y no lee la URL.",
+      "refs": [
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 1.15
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-acm"
+      ],
+      "near_miss": "aws-kms",
+      "hint_cue": "presenta al navegador para probar que es tienda.mx",
+      "explanation": "El ALB presenta un certificado X.509 que prueba el dominio; ACM emite el público de tienda.mx y lo renueva automáticamente mientras esté en uso y su CNAME de validación siga en el DNS. KMS guarda llaves, no certificados.",
+      "refs": [
+        "https://docs.aws.amazon.com/acm/latest/userguide/dns-renewal-validation.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/https-listener-certificates.html",
+        "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-cloudwatch"
+      ],
+      "near_miss": "aws-trusted-advisor",
+      "hint_cue": "avisa a guardia",
+      "explanation": "CloudWatch recibe la CPU de las instancias cada minuto y una alarma cambia a ALARM cuando pasa de 80 % durante 5 minutos; su acción avisa a guardia. Trusted Advisor solo da revisiones periódicas.",
+      "refs": [
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
+        "https://aws.amazon.com/premiumsupport/technology/trusted-advisor/"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "compra en tienda.mx",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "/api y /tienda",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "consultas",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "TLS de tienda.mx",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "agrega y reemplaza",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "s1",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "CPU cada minuto",
+      "style": "dotted",
+      "route": "v-first"
+    },
+    {
+      "id": "e8",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 6,
+      "label": "aviso",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es cada servidor individual: tiene su propio sistema operativo que el equipo parcha, su agente de inventario instalado y atiende todo el día."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} mantiene de 2 a 20 copias en ambas zonas, agrega o quita según la carga y reemplaza las que fallan."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe y descifra el HTTPS, manda /api a un grupo y /tienda a otro, y solo envía a servidores sanos."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} emite y renueva automáticamente lo que el slot 3 presenta al navegador para probar que es tienda.mx."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} registra la CPU cada minuto y avisa a guardia si pasa de 80 % durante 5 minutos."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "La base de datos administrada guarda pedidos e inventario, y solo la consultan los servidores del slot 1."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-ec2"
+    },
+    {
+      "service": "aws-ec2-auto-scaling"
+    },
+    {
+      "service": "aws-alb"
+    },
+    {
+      "service": "aws-acm"
+    },
+    {
+      "service": "aws-cloudwatch"
+    },
+    {
+      "service": "aws-lambda",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Lambda corta cada ejecución a los 15 minutos y no deja parchar el sistema operativo ni instalar agentes."
+      }
+    },
+    {
+      "service": "aws-launch-template",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Un launch template es solo la plantilla con la AMI y el tipo de instancia: no mantiene copias ni reemplaza las que fallan."
+      }
+    },
+    {
+      "service": "aws-nlb",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "El Network Load Balancer trabaja en capa 4: reparte conexiones TCP, pero no lee la URL para mandar /api y /tienda a grupos distintos."
+      }
+    },
+    {
+      "service": "aws-kms",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "KMS crea y controla llaves para cifrar y firmar datos, pero el ALB presenta un certificado X.509, que ACM emite y renueva."
+      }
+    },
+    {
+      "service": "aws-trusted-advisor",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Trusted Advisor da recomendaciones periódicas de buenas prácticas; no mide la CPU cada minuto ni avisa a guardia."
+      }
+    }
+  ],
+  "review_notes": "Piloto del motor: tabla del Escenario 2 de ARCHITECTURES.md. Zonas como columnas que cruzan las subredes.",
+  "status": "published"
+}

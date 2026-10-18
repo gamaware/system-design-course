@@ -1,0 +1,450 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e07-oci",
+  "version": 1,
+  "scenario": "e07",
+  "cloud": "oci",
+  "title": "Quiniela del Mundial 2026",
+  "summary": "Una app mexicana espera 2 millones de jugadores durante los partidos del Mundial 2026, y las apuestas se disparan en el minuto 90.",
+  "topics": [
+    "balanceo L7",
+    "contenedores sin servidores",
+    "caché",
+    "cola",
+    "NoSQL"
+  ],
+  "source_refs": [
+    {
+      "title": "OCI Network Load Balancer: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/NetworkLoadBalancer/overview.htm"
+    },
+    {
+      "title": "OCI Load Balancer: servidores de backend",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingbackendservers.htm"
+    },
+    {
+      "title": "OCI Load Balancer: encabezados HTTP",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Balance/Reference/httpheaders.htm"
+    },
+    {
+      "title": "OCI Container Instances: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/container-instances/overview-of-container-instances.htm"
+    },
+    {
+      "title": "OKE: nodos virtuales frente a nodos administrados",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengcomparingvirtualwithmanagednodes_topic.htm"
+    },
+    {
+      "title": "OCI Cache",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/ocicache/home.htm"
+    },
+    {
+      "title": "OCI Cache: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/ocicache/overview.htm"
+    },
+    {
+      "title": "MySQL HeatWave: réplicas de lectura",
+      "url": "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html"
+    },
+    {
+      "title": "OCI Queue: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm"
+    },
+    {
+      "title": "OCI Streaming: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm"
+    },
+    {
+      "title": "Object Storage: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm"
+    },
+    {
+      "title": "NoSQL Database Cloud Service: diseño de tablas",
+      "url": "https://docs.oracle.com/en/cloud/paas/nosql-cloud/dtddt/designing-a-table-in-oracle-nosql-database-cloud-service.html"
+    },
+    {
+      "title": "NoSQL Database Cloud Service: agregar datos con las API",
+      "url": "https://docs.oracle.com/en/cloud/paas/nosql-cloud/dtddt/using-apis-to-add-table-data.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento quiniela",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.99,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "oci-region",
+      "label": "Región Querétaro (AD único)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 6.87,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "oci-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Jugadores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-scores",
+      "icon": "gen-team",
+      "label": "Proveedor de marcadores",
+      "number": 6,
+      "cell": {
+        "c": 0.92,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "oci-load-balancer"
+      ],
+      "near_miss": "oci-network-load-balancer",
+      "hint_cue": "en el encabezado X-Forwarded-For",
+      "explanation": "OCI Load Balancer es un proxy inverso de capa 7 para HTTP y HTTPS. Sus backends se registran por OCID o por IP, y la IP del jugador le llega a la API en los encabezados X-Forwarded-For y X-Real-IP.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/NetworkLoadBalancer/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingbackendservers.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Reference/httpheaders.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "oci-container-instances"
+      ],
+      "near_miss": "oci-oke",
+      "hint_cue": "sin que el equipo de dos personas administre servidores",
+      "explanation": "OCI Container Instances corre contenedores en cómputo sin servidores, sin administrar servidores, y es para cargas como las API que no requieren una plataforma de orquestación como Kubernetes.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/container-instances/overview-of-container-instances.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengcomparingvirtualwithmanagednodes_topic.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.2,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "oci-cache"
+      ],
+      "near_miss": "oci-mysql-read-replica",
+      "hint_cue": "guarda en memoria",
+      "explanation": "OCI Cache crea clústeres de caché, soluciones de almacenamiento basadas en memoria, con los motores Valkey y Redis, para que la API lea la tabla de posiciones sin ir a la base de datos.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/ocicache/home.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/ocicache/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-queue"
+      ],
+      "near_miss": "oci-streaming",
+      "hint_cue": "si no, se vuelve a entregar",
+      "explanation": "OCI Queue esconde cada mensaje durante su visibility timeout mientras un trabajador lo procesa; el trabajador lo borra al terminar y, si no lo hace, se vuelve a entregar hasta el máximo de intentos.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-nosql-regional"
+      ],
+      "near_miss": "oci-object-storage",
+      "hint_cue": "solo la escribe si esa clave no existe",
+      "explanation": "Oracle NoSQL Database Cloud Service identifica cada fila por su llave primaria, y con la opción IfAbsent la escritura solo tiene éxito si la fila todavía no existe.",
+      "refs": [
+        "https://docs.oracle.com/en/cloud/paas/nosql-cloud/dtddt/designing-a-table-in-oracle-nosql-database-cloud-service.html",
+        "https://docs.oracle.com/en/cloud/paas/nosql-cloud/dtddt/using-apis-to-add-table-data.html",
+        "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "apuesta en el minuto 90",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 4,
+      "label": "encola la apuesta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "trabajadores la guardan",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s3",
+      "dir": "both",
+      "step": null,
+      "label": "posiciones",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "n-scores",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "cada gol",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es el proxy HTTP que recibe las apuestas por HTTPS, las reparte entre los contenedores y le pasa a la API la IP del jugador en el encabezado X-Forwarded-For."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} corre la API en contenedores sin que el equipo de dos personas administre servidores, nodos ni un clúster de Kubernetes."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda en memoria la tabla de posiciones de 2 millones de jugadores, ordenada por puntos, para no ir a la base de datos en cada consulta."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} absorbe el pico del minuto 90: los trabajadores sacan las apuestas a su ritmo y cada una se da por terminada solo cuando confirman que la procesaron; si no, se vuelve a entregar."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} es la base de datos NoSQL de las apuestas: guarda cada una con clave por jugador y partido y solo la escribe si esa clave no existe, para que nadie apueste dos veces."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El proveedor de marcadores manda cada gol a la API del slot 2, que actualiza la tabla de posiciones del slot 3."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-load-balancer"
+    },
+    {
+      "service": "oci-container-instances"
+    },
+    {
+      "service": "oci-cache"
+    },
+    {
+      "service": "oci-queue"
+    },
+    {
+      "service": "oci-nosql-regional"
+    },
+    {
+      "service": "oci-network-load-balancer",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "OCI Network Load Balancer es de paso y sin proxy, en las capas 3 y 4; el requisito pide un proxy HTTP que pase la IP del jugador en un encabezado."
+      }
+    },
+    {
+      "service": "oci-oke",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "OKE es Kubernetes, y con nodos administrados el equipo actualiza Kubernetes en ellos y administra la capacidad del clúster."
+      }
+    },
+    {
+      "service": "oci-mysql-read-replica",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una réplica de lectura de MySQL HeatWave es una copia de solo lectura de la instancia MySQL primaria; el requisito pide un clúster de caché en memoria.",
+        "s5": "Las conexiones a una réplica de lectura de MySQL HeatWave solo hacen operaciones de lectura: no pueden recibir la escritura de cada apuesta."
+      }
+    },
+    {
+      "service": "oci-streaming",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "OCI Streaming es un registro de solo anexado: el cliente controla qué mensajes lee moviendo su cursor, y los mensajes no se quitan al procesarse."
+      }
+    },
+    {
+      "service": "oci-object-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Object Storage guarda datos no estructurados como objetos dentro de buckets; el requisito pide una base de datos NoSQL."
+      }
+    }
+  ],
+  "review_notes": "Escenario 7 de ARCHITECTURES.md, rediseñado a balanceo de capa 7 (ver design-notes.md) para que las 4 nubes usen la misma pieza: un proxy HTTP frente a contenedores sin servidores. OCI Load Balancer registra backends por IP; que esa IP sea la privada de la instancia de contenedor es deducción, igual que con Network Load Balancer. Región de un solo AD: columnas como dominios de falla. Cola y base NoSQL fuera de la red, en la región. La tabla NoSQL del slot 5 es de una sola región, como el diagrama. Cada explicación y why_not cita su fuente en refs.",
+  "status": "published"
+}

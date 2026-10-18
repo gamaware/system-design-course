@@ -1,0 +1,74 @@
+{
+  "id": "e04-gcp",
+  "title": "An animation studio that renders at night",
+  "summary": "A Guadalajara studio renders a short film overnight on 200 VMs that read the same scenes. The artists work from their office and no scene can be lost.",
+  "requirements": {
+    "1": "{{s1}} holds the project folder that hundreds of Linux servers mount at the same time over NFS, available in both zones.",
+    "2": "{{s2}} keeps last night's version of the project folder, so a scene someone deletes by mistake can be recovered.",
+    "3": "{{s3}} stores the finished frames for years; they are read over HTTP and survive the loss of an entire zone.",
+    "4": "{{s4}} provides the render nodes: they can shut down with seconds or minutes of notice because the job resumes, and the lowest price with no commitment matters.",
+    "5": "{{s5}} joins the office to the cloud network today, encrypted, over the internet it already has.",
+    "6": "The artists work at the studio office in Guadalajara and upload their scenes from there."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "A regional Filestore instance fails over transparently if a zone fails, and many application instances use the same file system at the same time over NFS. Filestore is available in northamerica-south1, with three zones.",
+      "hint_cue": "mount at the same time over NFS"
+    },
+    "s2": {
+      "explanation": "A Filestore backup is a point-in-time copy with all the instance data, meant for disaster recovery. A replica, by contrast, is updated continuously with every change on the source.",
+      "hint_cue": "last night's version"
+    },
+    "s3": {
+      "explanation": "A regional Cloud Storage bucket stores data in at least two zones and is designed to tolerate the loss of any one of them. A zonal Filestore instance becomes unavailable if its zone goes down.",
+      "hint_cue": "survive the loss of an entire zone"
+    },
+    "s4": {
+      "explanation": "Spot VMs get a preemption notice (Google recommends 120 seconds), have no minimum or maximum runtime, and have discounts of up to 91% off the on-demand price.",
+      "hint_cue": "seconds or minutes of notice"
+    },
+    "s5": {
+      "explanation": "Cloud VPN extends the office network to the VPC through an IPsec VPN connection that encrypts traffic between the two networks, and HA VPN provides a 99.99% or 99.9% SLA depending on the topology.",
+      "hint_cue": "over the internet it already has"
+    }
+  },
+  "nodes": {
+    "n-artists": "Artists"
+  },
+  "edges": {
+    "e1": "its internet",
+    "e2": "uploads scenes",
+    "e3": "reads scenes over NFS",
+    "e4": "finished frames",
+    "e5": "nightly copy"
+  },
+  "groups": {
+    "g-office": "Office in GDL",
+    "g-cloud": "Google Cloud · studio project",
+    "g-region": "Region northamerica-south1",
+    "g-net": "VPC network",
+    "g-zone-a": "northamerica-south1-a",
+    "g-zone-b": "northamerica-south1-b",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "gcp-persistent-disk": {
+      "s1": "Persistent Disk is only shared between VMs in the same zone, with at most 2 VMs in multi-writer mode, and almost no file system is built for shared block storage.",
+      "s3": "Persistent Disk is block storage for VMs; it does not serve the frames over HTTP."
+    },
+    "gcp-filestore-replication": {
+      "s2": "The replica is a complete copy updated continuously with every change on the source and cannot be mounted, so it does not keep last night's version.",
+      "s1": "Instance replication copies an existing instance to another region; on its own it is not the folder the servers mount."
+    },
+    "gcp-filestore-zonal": {
+      "s3": "A zonal Filestore instance becomes unavailable if its zone fails, until that zone is restored, and it is read over NFS, not HTTP.",
+      "s1": "A zonal instance lives in a single zone and becomes unavailable if that zone fails; the requirement asks for both zones."
+    },
+    "gcp-cud": {
+      "s4": "A committed use discount lowers the price in exchange for committing to usage or spend for one or three years, and the requirement asks for no commitment."
+    },
+    "gcp-interconnect": {
+      "s5": "Cloud Interconnect is a separate link that does not cross the public internet, and with Partner Interconnect you must add IPsec encryption separately."
+    }
+  }
+}

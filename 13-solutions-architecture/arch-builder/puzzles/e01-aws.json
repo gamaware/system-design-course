@@ -1,0 +1,614 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e01-aws",
+  "version": 1,
+  "scenario": "e01",
+  "cloud": "aws",
+  "title": "Red privada con salida controlada",
+  "summary": "40 preparatorias de Jalisco publican calificaciones en un portal. La Secretaría exige que ni los servidores ni la base de datos se puedan alcanzar desde internet.",
+  "topics": [
+    "redes privadas",
+    "salida a internet",
+    "filtrado de salida",
+    "reglas con estado",
+    "acceso administrativo",
+    "registros de tráfico"
+  ],
+  "source_refs": [
+    {
+      "title": "Amazon VPC: NAT gateways",
+      "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html"
+    },
+    {
+      "title": "AWS Network Firewall: grupos de reglas con listas de dominios",
+      "url": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/stateful-rule-groups-domain-names.html"
+    },
+    {
+      "title": "Route 53 Resolver DNS Firewall: descripción general",
+      "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-dns-firewall-overview.html"
+    },
+    {
+      "title": "Amazon VPC: seguridad de la infraestructura (security groups y network ACL)",
+      "url": "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html"
+    },
+    {
+      "title": "AWS Systems Manager Session Manager",
+      "url": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html"
+    },
+    {
+      "title": "Gateway endpoints para Amazon S3",
+      "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html"
+    },
+    {
+      "title": "Amazon VPC: registro del tráfico IP con VPC Flow Logs",
+      "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html"
+    },
+    {
+      "title": "Amazon VPC: acceso a internet con un internet gateway",
+      "url": "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html"
+    },
+    {
+      "title": "AWS Client VPN: qué es",
+      "url": "https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/what-is.html"
+    },
+    {
+      "title": "AWS Client VPN: registro de conexiones",
+      "url": "https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/connection-logging.html"
+    },
+    {
+      "title": "Amazon VPC: qué es VPC peering",
+      "url": "https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 6.2
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.0,
+        "h": 6.18
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.88,
+        "h": 5.9
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 5.55,
+        "h": 4.53
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "az",
+      "label": "Zona de disp. A",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.48,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "az",
+      "label": "Zona de disp. B",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.65,
+        "r": 0.66,
+        "w": 1.62,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "public-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-app",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-db",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 3.6,
+        "w": 3.14,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-students",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-admin",
+      "icon": "gen-team",
+      "label": "Administrador",
+      "number": null,
+      "cell": {
+        "c": 0.46,
+        "r": 5.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-bank",
+      "icon": "gen-internet",
+      "label": "Banco",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-sat",
+      "icon": "gen-internet",
+      "label": "SAT",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 2.5
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "aws-alb",
+      "label": "Balanceador",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 1.15
+      },
+      "group": "g-pub"
+    },
+    {
+      "id": "n-app",
+      "icon": "aws-ec2",
+      "label": "Servidores de la app",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 2.5
+      },
+      "group": "g-app"
+    },
+    {
+      "id": "n-db",
+      "icon": "aws-rds",
+      "label": "BD de calificaciones",
+      "number": 7,
+      "cell": {
+        "c": 3.33,
+        "r": 3.85
+      },
+      "group": "g-db"
+    },
+    {
+      "id": "n-storage",
+      "icon": "aws-s3",
+      "label": "Almacenamiento de objetos",
+      "number": null,
+      "cell": {
+        "c": 6.6,
+        "r": 5.15
+      },
+      "group": "g-region"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 6.6,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "aws-nat-gateway"
+      ],
+      "near_miss": "aws-internet-gateway",
+      "hint_cue": "nadie de afuera puede abrirles una conexión",
+      "explanation": "Con un NAT gateway, las instancias de una subred privada se conectan a servicios fuera de la VPC, pero los servicios externos no pueden iniciar una conexión con ellas.",
+      "refs": [
+        "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+        "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 5.45,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "aws-network-firewall"
+      ],
+      "near_miss": "aws-dns-firewall",
+      "hint_cue": "solo deja llegar a los dominios",
+      "explanation": "Con un grupo de reglas de lista de dominios, Network Firewall deja pasar solo los dominios permitidos: lee el SNI en HTTPS y el encabezado Host en HTTP, y niega el resto del tráfico de ese protocolo.",
+      "refs": [
+        "https://docs.aws.amazon.com/network-firewall/latest/developerguide/stateful-rule-groups-domain-names.html",
+        "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-dns-firewall-overview.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.28,
+        "r": 3.85
+      },
+      "group": "g-db",
+      "accept": [
+        "aws-security-group"
+      ],
+      "near_miss": "aws-network-acl",
+      "hint_cue": "estén en la subred que estén",
+      "explanation": "Un security group trabaja por instancia y guarda estado, así que la respuesta regresa sola. Su regla puede usar como origen el security group de los servidores, sin importar su subred.",
+      "refs": [
+        "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.2,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-session-manager"
+      ],
+      "near_miss": "aws-client-vpn",
+      "hint_cue": "sin abrir el puerto 22 a internet",
+      "explanation": "Session Manager abre sesiones en nodos sin IP pública sin abrir puertos de entrada, sin bastiones ni llaves SSH, y puede guardar el registro de cada sesión en S3 o en CloudWatch Logs.",
+      "refs": [
+        "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+        "https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/what-is.html",
+        "https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/connection-logging.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.6,
+        "r": 3.85
+      },
+      "group": "g-net",
+      "accept": [
+        "aws-vpc-endpoint"
+      ],
+      "near_miss": "aws-vpc-peering",
+      "hint_cue": "sin salir a internet ni pasar por el slot 1",
+      "explanation": "Un gateway endpoint lleva el tráfico de la VPC a S3 sin internet gateway ni NAT, y no tiene cargo adicional.",
+      "refs": [
+        "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html",
+        "https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 3.33,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-vpc-flow-logs"
+      ],
+      "near_miss": "aws-cloudtrail",
+      "hint_cue": "el origen, el destino y el puerto",
+      "explanation": "VPC Flow Logs captura información del tráfico IP que entra y sale de las interfaces de red de la VPC. Sirve para vigilar el tráfico que llega a una instancia y revisar reglas de security group.",
+      "refs": [
+        "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+        "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-students",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "consulta",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "n-app",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "MySQL 3306",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "n-app",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "boletas PDF",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-storage",
+      "dir": "forward",
+      "step": 6,
+      "label": "red privada",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "n-app",
+      "to": "s2",
+      "dir": "forward",
+      "step": 7,
+      "label": "parches, SAT y banco",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 8,
+      "label": "dominios permitidos",
+      "style": "solid"
+    },
+    {
+      "id": "e9",
+      "from": "s1",
+      "to": "n-sat",
+      "dir": "forward",
+      "step": 9,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "n-bank",
+      "dir": "forward",
+      "step": 10,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e11",
+      "from": "n-admin",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "terminal",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s4",
+      "to": "n-app",
+      "dir": "forward",
+      "step": null,
+      "label": "sesión",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e13",
+      "from": "s3",
+      "to": "n-db",
+      "dir": "forward",
+      "step": null,
+      "label": "solo la app",
+      "style": "dashed"
+    },
+    {
+      "id": "e14",
+      "from": "n-db",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "tráfico",
+      "style": "dotted"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} deja que los servidores privados descarguen parches de internet, pero nadie de afuera puede abrirles una conexión."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "Todo el tráfico web de salida pasa por {{s2}}, un intermediario que solo deja llegar a los dominios del SAT, del banco y del repositorio de parches."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} hace que solo los servidores de la app hablen con la BD por el puerto 3306, estén en la subred que estén, y que la respuesta regrese sola."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da a los administradores una terminal en servidores sin IP pública, sin abrir el puerto 22 a internet, y deja registro de cada sesión."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} lleva las boletas PDF de los servidores al almacenamiento de objetos sin salir a internet ni pasar por el slot 1."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} guarda el origen, el destino y el puerto del tráfico de red de los servidores para investigar un escaneo."
+    },
+    {
+      "n": 7,
+      "slot": null,
+      "text": "La base de datos de calificaciones escucha en el puerto 3306 y vive en una subred privada, sin IP pública."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-nat-gateway"
+    },
+    {
+      "service": "aws-network-firewall"
+    },
+    {
+      "service": "aws-security-group"
+    },
+    {
+      "service": "aws-session-manager"
+    },
+    {
+      "service": "aws-vpc-endpoint"
+    },
+    {
+      "service": "aws-vpc-flow-logs"
+    },
+    {
+      "service": "aws-internet-gateway",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Un internet gateway deja que los recursos con IP pública se conecten a internet, pero también deja que los recursos de internet inicien una conexión con ellos."
+      }
+    },
+    {
+      "service": "aws-dns-firewall",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "DNS Firewall solo filtra por nombre de dominio la consulta DNS que pasa por el Resolver; no filtra protocolos de aplicación como HTTPS, así que el tráfico web no pasa por él."
+      }
+    },
+    {
+      "service": "aws-network-acl",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una network ACL se aplica a toda la subred y no guarda estado: la respuesta tiene que permitirse con una regla explícita."
+      }
+    },
+    {
+      "service": "aws-client-vpn",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Client VPN da acceso a los recursos de AWS desde el equipo del usuario, y su registro anota cuándo un cliente se conecta, lo intenta o se desconecta del endpoint. La terminal sin puertos de entrada ni llaves SSH es lo que da Session Manager."
+      }
+    },
+    {
+      "service": "aws-vpc-peering",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Un VPC peering es una conexión de red entre dos VPC para enrutar tráfico con IP privadas, no un acceso a S3. Además, los recursos del otro lado de un peering no pueden usar un gateway endpoint para llegar a S3."
+      }
+    },
+    {
+      "service": "aws-cloudtrail",
+      "role": "near-miss",
+      "why_not": {
+        "s6": "CloudTrail registra llamadas a la API, como las de Session Manager; no guarda el origen, el destino ni el puerto del tráfico de red."
+      }
+    }
+  ],
+  "review_notes": "Escenario 1 de ARCHITECTURES.md. Zonas como columnas que cruzan las subredes. Simplificación: en AWS el NAT gateway público vive en la subred pública y sale por el internet gateway; aquí se dibuja dentro de la VPC, fuera de las subredes, para compartir la topología con las otras nubes. El firewall también se dibuja sin su subred propia.",
+  "status": "published"
+}

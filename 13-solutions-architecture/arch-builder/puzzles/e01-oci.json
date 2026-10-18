@@ -1,0 +1,594 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e01-oci",
+  "version": 1,
+  "scenario": "e01",
+  "cloud": "oci",
+  "title": "Red privada con salida controlada",
+  "summary": "40 preparatorias de Jalisco publican calificaciones en un portal. La Secretaría exige que ni los servidores ni la base de datos se puedan alcanzar desde internet.",
+  "topics": [
+    "redes privadas",
+    "salida a internet",
+    "filtrado de salida",
+    "reglas con estado",
+    "acceso administrativo",
+    "registros de tráfico"
+  ],
+  "source_refs": [
+    {
+      "title": "OCI: NAT gateway",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/NATgateway.htm"
+    },
+    {
+      "title": "OCI Network Firewall: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/network-firewall/overview.htm"
+    },
+    {
+      "title": "OCI: reglas de seguridad (security lists y NSG)",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securityrules.htm"
+    },
+    {
+      "title": "OCI Bastion: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Bastion/Concepts/bastionoverview.htm"
+    },
+    {
+      "title": "OCI: service gateway",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/servicegateway.htm"
+    },
+    {
+      "title": "OCI: peering local entre VCN",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/localVCNpeering.htm"
+    },
+    {
+      "title": "OCI: VCN flow logs",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/vcn-flow-logs.htm"
+    },
+    {
+      "title": "OCI: Site-to-Site VPN",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/managingIPsec.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 6.2
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento portal",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.0,
+        "h": 6.18
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "oci-region",
+      "label": "Región Querétaro (AD único)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.88,
+        "h": 5.9
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 5.55,
+        "h": 4.53
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.48,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.65,
+        "r": 0.66,
+        "w": 1.62,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "oci-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-app",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-db",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 3.6,
+        "w": 3.14,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-students",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-admin",
+      "icon": "gen-team",
+      "label": "Administrador",
+      "number": null,
+      "cell": {
+        "c": 0.46,
+        "r": 5.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-bank",
+      "icon": "gen-internet",
+      "label": "Banco",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-sat",
+      "icon": "gen-internet",
+      "label": "SAT",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 2.5
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "oci-load-balancer",
+      "label": "Balanceador",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 1.15
+      },
+      "group": "g-pub"
+    },
+    {
+      "id": "n-app",
+      "icon": "oci-compute",
+      "label": "Servidores de la app",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 2.5
+      },
+      "group": "g-app"
+    },
+    {
+      "id": "n-db",
+      "icon": "oci-mysql",
+      "label": "BD de calificaciones",
+      "number": 7,
+      "cell": {
+        "c": 3.33,
+        "r": 3.85
+      },
+      "group": "g-db"
+    },
+    {
+      "id": "n-storage",
+      "icon": "oci-object-storage",
+      "label": "Almacenamiento de objetos",
+      "number": null,
+      "cell": {
+        "c": 6.6,
+        "r": 5.15
+      },
+      "group": "g-region"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 6.6,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "oci-nat-gateway"
+      ],
+      "near_miss": "oci-internet-gateway",
+      "hint_cue": "nadie de afuera puede abrirles una conexión",
+      "explanation": "Un NAT gateway da acceso a internet a recursos sin IP pública sin exponerlos a conexiones que llegan desde internet.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/NATgateway.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 5.45,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "oci-network-firewall"
+      ],
+      "near_miss": "oci-security-list",
+      "hint_cue": "solo deja llegar a los dominios",
+      "explanation": "OCI Network Firewall filtra por URL y FQDN: puede restringir el tráfico de salida a una lista de dominios, como los del SAT, el banco y los parches.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/network-firewall/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securityrules.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.28,
+        "r": 3.85
+      },
+      "group": "g-db",
+      "accept": [
+        "oci-nsg"
+      ],
+      "near_miss": "oci-security-list",
+      "hint_cue": "estén en la subred que estén",
+      "explanation": "Un NSG se aplica solo a las VNIC que eliges y su regla puede usar otro NSG como origen, así que el 3306 se abre a los servidores de la app sin depender de su subred; con reglas con estado, la respuesta pasa sola.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securityrules.htm"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.2,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-bastion"
+      ],
+      "near_miss": "oci-site-to-site-vpn",
+      "hint_cue": "sin abrir el puerto 22 a internet",
+      "explanation": "OCI Bastion da acceso restringido y por tiempo limitado, con sesiones SSH, a recursos sin endpoint público, y Audit registra cada llamada a la API de Bastion, como la que crea una sesión.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Bastion/Concepts/bastionoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/managingIPsec.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.6,
+        "r": 3.85
+      },
+      "group": "g-net",
+      "accept": [
+        "oci-service-gateway"
+      ],
+      "near_miss": "oci-lpg",
+      "hint_cue": "sin salir a internet ni pasar por el slot 1",
+      "explanation": "El service gateway deja que la VCN llegue en privado a servicios de Oracle como Object Storage, sin internet gateway ni NAT gateway; el tráfico va por la red de Oracle y nunca cruza internet.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/servicegateway.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/localVCNpeering.htm"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 3.33,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-vcn-flow-logs"
+      ],
+      "near_miss": "oci-audit",
+      "hint_cue": "el origen, el destino y el puerto",
+      "explanation": "Los flow logs de VCN registran detalles del tráfico que se aceptó o se rechazó según las reglas de las security lists o de los NSG.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/vcn-flow-logs.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Bastion/Concepts/bastionoverview.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-students",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "consulta",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "n-app",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "MySQL 3306",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "n-app",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "boletas PDF",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-storage",
+      "dir": "forward",
+      "step": 6,
+      "label": "red privada",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "n-app",
+      "to": "s2",
+      "dir": "forward",
+      "step": 7,
+      "label": "parches, SAT y banco",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 8,
+      "label": "dominios permitidos",
+      "style": "solid"
+    },
+    {
+      "id": "e9",
+      "from": "s1",
+      "to": "n-sat",
+      "dir": "forward",
+      "step": 9,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "n-bank",
+      "dir": "forward",
+      "step": 10,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e11",
+      "from": "n-admin",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "terminal",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s4",
+      "to": "n-app",
+      "dir": "forward",
+      "step": null,
+      "label": "sesión",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e13",
+      "from": "s3",
+      "to": "n-db",
+      "dir": "forward",
+      "step": null,
+      "label": "solo la app",
+      "style": "dashed"
+    },
+    {
+      "id": "e14",
+      "from": "n-db",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "tráfico",
+      "style": "dotted"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} deja que los servidores privados descarguen parches de internet, pero nadie de afuera puede abrirles una conexión."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "Todo el tráfico web de salida pasa por {{s2}}, un intermediario que solo deja llegar a los dominios del SAT, del banco y del repositorio de parches."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} hace que solo los servidores de la app hablen con la BD por el puerto 3306, estén en la subred que estén, y que la respuesta regrese sola."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da a los administradores una terminal en servidores sin IP pública, sin abrir el puerto 22 a internet, y deja registro de cada sesión."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} lleva las boletas PDF de los servidores al almacenamiento de objetos sin salir a internet ni pasar por el slot 1."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} guarda el origen, el destino y el puerto del tráfico de red de los servidores para investigar un escaneo."
+    },
+    {
+      "n": 7,
+      "slot": null,
+      "text": "La base de datos de calificaciones escucha en el puerto 3306 y vive en una subred privada, sin IP pública."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-nat-gateway"
+    },
+    {
+      "service": "oci-network-firewall"
+    },
+    {
+      "service": "oci-nsg"
+    },
+    {
+      "service": "oci-bastion"
+    },
+    {
+      "service": "oci-service-gateway"
+    },
+    {
+      "service": "oci-vcn-flow-logs"
+    },
+    {
+      "service": "oci-internet-gateway",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Con un internet gateway, las instancias de una subred pública inician conexiones a internet y también reciben conexiones de entrada desde internet."
+      }
+    },
+    {
+      "service": "oci-security-list",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Una security list aplica reglas de IP, protocolo y puerto a todas las VNIC de una subred; no filtra por nombre de dominio.",
+        "s3": "Una security list aplica sus reglas a todas las VNIC de la subred completa; Oracle recomienda NSG para separar la seguridad de la app de la forma de las subredes."
+      }
+    },
+    {
+      "service": "oci-site-to-site-vpn",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Site-to-Site VPN es una conexión IPSec entre la red local y la VCN; no son las sesiones SSH con acceso restringido y por tiempo limitado que da Bastion, cuya creación queda registrada en Audit."
+      }
+    },
+    {
+      "service": "oci-lpg",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Un local peering gateway conecta dos VCN de la misma región para que sus recursos se comuniquen con IP privadas; el acceso privado a Object Storage lo da el service gateway. Oracle recomienda enrutar entre VCN con un DRG actualizado."
+      }
+    },
+    {
+      "service": "oci-audit",
+      "role": "near-miss",
+      "why_not": {
+        "s6": "Audit registra llamadas a las APIs públicas, como las de Bastion; no guarda el tráfico de red entre las VNIC."
+      }
+    }
+  ],
+  "review_notes": "Escenario 1 de ARCHITECTURES.md. Querétaro tiene un solo AD, así que las columnas son dominios de falla. La security list es el near-miss de los slots 2 y 3, como en la tabla. El Local Peering Gateway sigue soportado, pero Oracle recomienda un DRG actualizado.",
+  "status": "published"
+}

@@ -1,0 +1,77 @@
+{
+  "id": "e08-gcp",
+  "title": "A parcel service that never loses an order",
+  "summary": "EnvíaYa delivers 80,000 parcels a day in the Bajío region. Each new order reaches billing, the customer SMS and driver assignment, and a failure in one does not stop the others.",
+  "requirements": {
+    "1": "{{s1}} makes the same order-created event reach several independent consumers, without the API knowing how many there are.",
+    "2": "{{s2}} receives its copy of each order and keeps it until a worker confirms it was processed; if the worker dies halfway, the order shows up again.",
+    "3": "{{s3}} runs the code that assigns a driver only when there are messages, scales on its own and costs nothing in the early morning.",
+    "4": "{{s4}} sets aside, on its own, an order that fails 5 times so it can be reviewed later, without blocking the line.",
+    "5": "{{s5}} receives the drivers' GPS, keeps it for 90 days in order, and analytics reads it again from the beginning as many times as it wants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "In a Pub/Sub topic, publishers do not need to know anything about their subscribers, and one message can reach several of them. Cloud Tasks, by contrast, delivers each task to the endpoint the publisher picks.",
+      "hint_cue": "reach several independent consumers"
+    },
+    "s2": {
+      "explanation": "The subscription receives the messages published to the topic. The subscriber has a deadline to acknowledge each message; if it passes without an ack, Pub/Sub delivers it again. Delivery is at least once.",
+      "hint_cue": "if the worker dies halfway, the order shows up again"
+    },
+    "s3": {
+      "explanation": "The push subscription calls the Cloud Run service with each message: a 200 or 204 code acknowledges it and an error retries it. Cloud Run incurs no cost until it receives requests; a Compute Engine VM does.",
+      "hint_cue": "only when there are messages"
+    },
+    "s4": {
+      "explanation": "After the maximum number of delivery attempts (5 by default), Pub/Sub forwards the message to the dead-letter topic; a subscription to that topic keeps it for review. A bucket does not count attempts.",
+      "hint_cue": "fails 5 times"
+    },
+    "s5": {
+      "explanation": "Managed Kafka runs open source Kafka and retention is set per topic. Each partition is an ordered, immutable sequence and events are not deleted after consumption, so they can be read as often as needed. Pub/Sub retains 31 days at most.",
+      "hint_cue": "keeps it for 90 days in order"
+    }
+  },
+  "nodes": {
+    "n-api": "Orders API",
+    "n-sms": "Customers (SMS)",
+    "n-analytics": "Analytics",
+    "n-gps": "Drivers (GPS)"
+  },
+  "edges": {
+    "e1": "order created",
+    "e2": "SMS via own code",
+    "e3": "copy of the order",
+    "e4": "orders to handle",
+    "e5": "after 5 failures",
+    "e6": "GPS positions",
+    "e7": "rereads from the start"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · envíaya project"
+  },
+  "why_not": {
+    "gcp-cloud-tasks": {
+      "s1": "Cloud Tasks delivers each task to a single endpoint the publisher picks; it does not hand the same order to several subscribers.",
+      "s2": "Cloud Tasks does not receive copies from a topic: the publisher creates each task and names the endpoint that handles it."
+    },
+    "gcp-memorystore": {
+      "s2": "Memorystore is an in-memory cache: its lists do not guarantee delivery or bring the order back if the worker dies halfway."
+    },
+    "gcp-compute-engine": {
+      "s3": "A Compute Engine VM bills while it is running, even with no orders in the early morning, and it does not start on its own for each message."
+    },
+    "gcp-cloud-storage": {
+      "s4": "A Cloud Storage bucket stores objects, but it does not count delivery attempts or set the message aside on its own.",
+      "s5": "Cloud Storage stores whole objects; it does not deliver positions in order for analytics to read them again from the beginning."
+    },
+    "gcp-dataflow": {
+      "s5": "Dataflow processes and moves data in transit; it does not keep the GPS for 90 days for analytics to read again."
+    },
+    "gcp-pubsub-topic": {
+      "s5": "A Pub/Sub topic retains messages for 31 days at most, so it cannot keep the GPS for the 90 days analytics needs."
+    },
+    "gcp-pubsub-subscription": {
+      "s5": "A Pub/Sub subscription retains messages for 31 days at most, so it cannot keep the GPS for the 90 days analytics needs."
+    }
+  }
+}

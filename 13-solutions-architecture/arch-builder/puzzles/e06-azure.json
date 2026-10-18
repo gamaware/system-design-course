@@ -1,0 +1,517 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e06-azure",
+  "version": 1,
+  "scenario": "e06",
+  "cloud": "azure",
+  "title": "Reservaciones en dos países",
+  "summary": "MesaLista reserva mesas en 2 mil restaurantes de México y Texas. Los pagos piden transacciones y los favoritos se escriben en ambos países.",
+  "topics": [
+    "bases de datos relacionales",
+    "alta disponibilidad",
+    "replicación",
+    "bases multirregión y CAP",
+    "migración",
+    "secretos"
+  ],
+  "source_refs": [
+    {
+      "title": "Azure Database for MySQL: alta disponibilidad",
+      "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-high-availability"
+    },
+    {
+      "title": "Azure Cosmos DB: escrituras multirregión",
+      "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/multi-region-writes"
+    },
+    {
+      "title": "Azure SQL Database: geo-replicación activa",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
+    },
+    {
+      "title": "Azure Database for MySQL: réplicas de lectura",
+      "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas"
+    },
+    {
+      "title": "Azure Database for MySQL: monitoreo",
+      "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-monitoring"
+    },
+    {
+      "title": "Key Vault: rotación de secretos",
+      "url": "https://learn.microsoft.com/en-us/azure/key-vault/secrets/tutorial-rotation"
+    },
+    {
+      "title": "Azure Monitor: registro de actividad",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/activity-log"
+    },
+    {
+      "title": "Azure App Configuration: descripción general",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-app-configuration/overview"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 8,
+    "rows": 7.1
+  },
+  "groups": [
+    {
+      "id": "g-rest",
+      "kind": "generic",
+      "label": "Restaurante piloto",
+      "parent": null,
+      "cell": {
+        "c": 2.1,
+        "r": 0,
+        "w": 2.2,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 0.02,
+        "r": 1.33,
+        "w": 6.77,
+        "h": 5.67
+      }
+    },
+    {
+      "id": "g-region-mx",
+      "kind": "azure-region",
+      "label": "Región Mexico Central",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 0.08,
+        "r": 1.55,
+        "w": 6.65,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-mx",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-region-mx",
+      "cell": {
+        "c": 1.2,
+        "r": 1.77,
+        "w": 4.3,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-mx-a",
+      "kind": "azure-zone",
+      "label": "Zona 1",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 1.99,
+        "w": 2.34,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-mx-b",
+      "kind": "azure-zone",
+      "label": "Zona 2",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 3.66,
+        "r": 1.99,
+        "w": 1.78,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-mx",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 2.23,
+        "w": 4.18,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-region-us",
+      "kind": "azure-region",
+      "label": "Región South Central US",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.5,
+        "r": 4.83,
+        "w": 4.23,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-us",
+      "kind": "azure-vnet",
+      "label": "VNet 10.1.0.0/16",
+      "parent": "g-region-us",
+      "cell": {
+        "c": 2.56,
+        "r": 5.05,
+        "w": 4.11,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-us-a",
+      "kind": "azure-zone",
+      "label": "Zona 1",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.27,
+        "w": 2.05,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-us-b",
+      "kind": "azure-zone",
+      "label": "Zona 2",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 4.73,
+        "r": 5.27,
+        "w": 1.88,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-us",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.51,
+        "w": 3.99,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-onprem",
+      "icon": "azure-generic-database",
+      "label": "MySQL del restaurante",
+      "number": 6,
+      "cell": {
+        "c": 2.65,
+        "r": 0.25
+      },
+      "group": "g-rest"
+    },
+    {
+      "id": "n-reports",
+      "icon": "gen-team",
+      "label": "Equipo de reportes",
+      "number": null,
+      "cell": {
+        "c": 6.95,
+        "r": 3.82
+      },
+      "group": null
+    },
+    {
+      "id": "n-app-mx",
+      "icon": "azure-vm",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 1.3,
+        "r": 2.48
+      },
+      "group": "g-priv-mx"
+    },
+    {
+      "id": "n-app-us",
+      "icon": "azure-vm",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 4.9,
+        "r": 5.76
+      },
+      "group": "g-priv-us"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.65,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "azure-mysql-flex-ha"
+      ],
+      "near_miss": "azure-sql-database",
+      "hint_cue": "toma el control sola",
+      "explanation": "Con HA con redundancia de zona, Flexible Server mantiene un standby en otra zona de la misma región; si la primaria deja de estar disponible, el standby se vuelve la primaria. El standby no atiende lecturas ni escrituras.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-high-availability",
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas",
+        "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.45,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "azure-mysql-read-replica"
+      ],
+      "near_miss": null,
+      "hint_cue": "una copia aparte",
+      "explanation": "La réplica de lectura de Flexible Server usa replicación asíncrona, con un retraso medible, y sirve como origen de los reportes; así la primaria solo atiende las escrituras.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas",
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-high-availability"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 1.3,
+        "r": 4.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-cosmos-db"
+      ],
+      "near_miss": "azure-sql-database",
+      "hint_cue": "ambas aceptan escrituras",
+      "explanation": "Con escrituras multirregión, Cosmos DB confirma cada escritura en la región local y la replica a las demás en forma asíncrona; por eso esa configuración no admite consistencia fuerte.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/multi-region-writes",
+        "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 5.7,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "azure-monitor"
+      ],
+      "near_miss": "azure-activity-log",
+      "hint_cue": "se atrasa más de 30 segundos",
+      "explanation": "Flexible Server publica la métrica Replication Lag In Seconds y la guía de réplicas recomienda una alerta para cuando el retraso pase del umbral; una alerta de métricas de Azure Monitor hace ese aviso.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-monitoring",
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas",
+        "https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/activity-log"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 0.15,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "azure-key-vault-secrets"
+      ],
+      "near_miss": "azure-app-configuration",
+      "hint_cue": "antes de que la contraseña venza",
+      "explanation": "Key Vault guarda la contraseña como secreto que la app lee. Treinta días antes de que venza, Key Vault publica el evento de vencimiento próximo en Event Grid y una función propia la cambia; la vigencia va en la etiqueta ValidityPeriodDays.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/key-vault/secrets/tutorial-rotation",
+        "https://learn.microsoft.com/en-us/azure/azure-app-configuration/overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "s5",
+      "to": "n-app-mx",
+      "dir": "forward",
+      "step": 1,
+      "label": "contraseña",
+      "style": "dashed"
+    },
+    {
+      "id": "e2",
+      "from": "n-app-mx",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "pagos",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 4,
+      "label": "reportes",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "n-app-mx",
+      "to": "s3",
+      "dir": "forward",
+      "step": 5,
+      "label": "favoritos",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "n-app-us",
+      "to": "s3",
+      "dir": "forward",
+      "step": 6,
+      "label": "favoritos",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 7,
+      "label": "retraso",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s4",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 8,
+      "label": "aviso",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e9",
+      "from": "n-onprem",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "migración",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda los pagos en MySQL administrado sin sacarlos de México, con una copia en otra zona que toma el control sola si cae la primaria."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} da a los reportes una copia aparte de la primaria del slot 1 para no frenarla, aunque lleve segundos de retraso."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda los favoritos: cada país escribe en milisegundos en su región y ambas aceptan escrituras. La otra región los ve después, porque se prefiere disponibilidad a consistencia."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} avisa al equipo de reportes si la copia del slot 2 se atrasa más de 30 segundos respecto a la primaria."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} guarda la contraseña de la BD fuera del código: la app la pide al arrancar y, antes de que la contraseña venza, el servicio avisa para que una función propia la cambie."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El MySQL del restaurante piloto corre en su propio local; sus pagos se migran al slot 1 antes de abrir a los 2 mil restaurantes."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-mysql-flex-ha",
+      "why_not": {
+        "s2": "El standby de HA no está disponible para lecturas ni escrituras: es pasivo y solo existe para conmutar rápido."
+      }
+    },
+    {
+      "service": "azure-mysql-read-replica",
+      "why_not": {
+        "s1": "Entre el origen y la réplica de lectura no hay conmutación automática: para usarla hay que detener la replicación a mano."
+      }
+    },
+    {
+      "service": "azure-cosmos-db"
+    },
+    {
+      "service": "azure-monitor"
+    },
+    {
+      "service": "azure-key-vault-secrets"
+    },
+    {
+      "service": "azure-sql-database",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "La geo-replicación activa es de Azure SQL Database, no de MySQL, y su geo-secundaria solo atiende consultas de lectura.",
+        "s2": "La geo-replicación activa copia una base de Azure SQL Database; no es una copia del MySQL del slot 1.",
+        "s3": "En la geo-replicación activa las transacciones se confirman en la primaria y la geo-secundaria solo atiende lecturas: no hay dos regiones que escriban."
+      }
+    },
+    {
+      "service": "azure-activity-log",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "El registro de actividad guarda operaciones de administración, como crear o cambiar un recurso; el retraso de la réplica es la métrica Replication Lag In Seconds, y la alerta sobre ella es de métricas."
+      }
+    },
+    {
+      "service": "azure-app-configuration",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "App Configuration guarda la configuración de la app y complementa a Key Vault, que es donde se guardan los secretos; el aviso de vencimiento por Event Grid del tutorial de rotación lo publica Key Vault."
+      }
+    },
+    {
+      "service": "azure-load-balancer",
+      "role": "filler"
+    }
+  ],
+  "review_notes": "Tabla del Escenario 6 de ARCHITECTURES.md. Regiones apiladas: México arriba y EE. UU. abajo; el slot 3 queda entre las dos, a nivel de nube. La réplica de lectura (distractor del slot 1) y el standby de HA (distractor del slot 2) son respuestas de otro slot, así que su why_not va en la ficha de respuesta. Sin rotación nativa en Azure, GCP y OCI (E6-5): la explicación dice que la rotación necesita código propio. El requisito 5 de Azure no fija 30 días: el evento de vencimiento próximo sale 30 días antes del vencimiento. La ficha de relleno es un balanceador.",
+  "status": "published"
+}

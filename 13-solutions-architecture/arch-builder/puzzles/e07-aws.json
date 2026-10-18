@@ -1,0 +1,470 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e07-aws",
+  "version": 1,
+  "scenario": "e07",
+  "cloud": "aws",
+  "title": "Quiniela del Mundial 2026",
+  "summary": "Una app mexicana espera 2 millones de jugadores durante los partidos del Mundial 2026, y las apuestas se disparan en el minuto 90.",
+  "topics": [
+    "balanceo L7",
+    "contenedores sin servidores",
+    "caché",
+    "cola",
+    "NoSQL"
+  ],
+  "source_refs": [
+    {
+      "title": "Application Load Balancer: qué es",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
+    },
+    {
+      "title": "Amazon ECS: Application Load Balancer",
+      "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/alb.html"
+    },
+    {
+      "title": "Application Load Balancer: encabezados X-Forwarded",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/x-forwarded-headers.html"
+    },
+    {
+      "title": "Network Load Balancer: qué es",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html"
+    },
+    {
+      "title": "AWS Fargate: preguntas frecuentes",
+      "url": "https://aws.amazon.com/fargate/faqs/"
+    },
+    {
+      "title": "Amazon EKS: opciones de cómputo",
+      "url": "https://docs.aws.amazon.com/eks/latest/userguide/eks-compute.html"
+    },
+    {
+      "title": "ElastiCache: comparación de Valkey, Memcached y Redis OSS",
+      "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html"
+    },
+    {
+      "title": "ElastiCache: casos de uso",
+      "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/elasticache-use-cases.html"
+    },
+    {
+      "title": "Amazon RDS: réplicas de lectura",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"
+    },
+    {
+      "title": "Amazon SQS: colas estándar",
+      "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html"
+    },
+    {
+      "title": "Amazon SQS: tiempo de visibilidad",
+      "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html"
+    },
+    {
+      "title": "Kinesis Data Streams: conceptos clave",
+      "url": "https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html"
+    },
+    {
+      "title": "Kinesis Data Streams: preguntas frecuentes",
+      "url": "https://aws.amazon.com/kinesis/data-streams/faqs/"
+    },
+    {
+      "title": "¿Qué es Amazon DynamoDB?",
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html"
+    },
+    {
+      "title": "DynamoDB: expresiones de condición",
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html"
+    },
+    {
+      "title": "¿Qué es Amazon S3?",
+      "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html"
+    },
+    {
+      "title": "DynamoDB: exportar a S3",
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/S3DataExport.HowItWorks.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.99,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 6.87,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "az",
+      "label": "Zona de disponibilidad A",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "az",
+      "label": "Zona de disponibilidad B",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "public-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Jugadores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-scores",
+      "icon": "gen-team",
+      "label": "Proveedor de marcadores",
+      "number": 6,
+      "cell": {
+        "c": 0.92,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "aws-alb"
+      ],
+      "near_miss": "aws-nlb",
+      "hint_cue": "en el encabezado X-Forwarded-For",
+      "explanation": "El Application Load Balancer funciona en la capa 7: recibe cada petición HTTP o HTTPS y la manda solo a destinos sanos, como las tareas de un servicio de ECS registradas por IP. La IP del jugador le llega a la API en el encabezado X-Forwarded-For.",
+      "refs": [
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/alb.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/x-forwarded-headers.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "aws-fargate"
+      ],
+      "near_miss": "aws-eks",
+      "hint_cue": "sin que el equipo de dos personas administre servidores",
+      "explanation": "AWS Fargate es un motor de cómputo sin servidores para contenedores que funciona con ECS: el equipo no aprovisiona ni administra servidores ni las instancias de cómputo de abajo.",
+      "refs": [
+        "https://aws.amazon.com/fargate/faqs/",
+        "https://docs.aws.amazon.com/eks/latest/userguide/eks-compute.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.2,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "aws-elasticache"
+      ],
+      "near_miss": "aws-rds-read-replica",
+      "hint_cue": "guarda en memoria",
+      "explanation": "ElastiCache con Valkey es un almacén llave-valor en memoria, y sus conjuntos ordenados (sorted sets) le pasan al clúster el cálculo de las tablas de posiciones.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html",
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/elasticache-use-cases.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-sqs"
+      ],
+      "near_miss": "aws-kinesis-data-streams",
+      "hint_cue": "si no, se vuelve a entregar",
+      "explanation": "Una cola estándar de SQS guarda cada mensaje en varias zonas y lo entrega al menos una vez. El trabajador lo borra al terminar; si no lo borra antes de que venza el tiempo de visibilidad, el mensaje vuelve a quedar visible.",
+      "refs": [
+        "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html",
+        "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html",
+        "https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html",
+        "https://aws.amazon.com/kinesis/data-streams/faqs/"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-dynamodb-regional"
+      ],
+      "near_miss": "aws-s3",
+      "hint_cue": "solo la escribe si esa clave no existe",
+      "explanation": "DynamoDB es una base NoSQL llave-valor y de documentos. Con una expresión de condición, si ya existe un elemento con esa clave, la condición es falsa y DynamoDB rechaza la escritura, sin sobrescribir la apuesta.",
+      "refs": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/S3DataExport.HowItWorks.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "apuesta en el minuto 90",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 4,
+      "label": "encola la apuesta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "trabajadores la guardan",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s3",
+      "dir": "both",
+      "step": null,
+      "label": "posiciones",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "n-scores",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "cada gol",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es el proxy HTTP que recibe las apuestas por HTTPS, las reparte entre los contenedores y le pasa a la API la IP del jugador en el encabezado X-Forwarded-For."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} corre la API en contenedores sin que el equipo de dos personas administre servidores, nodos ni un clúster de Kubernetes."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda en memoria la tabla de posiciones de 2 millones de jugadores, ordenada por puntos, para no ir a la base de datos en cada consulta."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} absorbe el pico del minuto 90: los trabajadores sacan las apuestas a su ritmo y cada una se da por terminada solo cuando confirman que la procesaron; si no, se vuelve a entregar."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} es la base de datos NoSQL de las apuestas: guarda cada una con clave por jugador y partido y solo la escribe si esa clave no existe, para que nadie apueste dos veces."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El proveedor de marcadores manda cada gol a la API del slot 2, que actualiza la tabla de posiciones del slot 3."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-alb"
+    },
+    {
+      "service": "aws-fargate"
+    },
+    {
+      "service": "aws-elasticache"
+    },
+    {
+      "service": "aws-sqs"
+    },
+    {
+      "service": "aws-dynamodb-regional"
+    },
+    {
+      "service": "aws-nlb",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "El Network Load Balancer funciona en la capa 4 del modelo OSI; el encabezado X-Forwarded-For es de los balanceadores HTTP o HTTPS, y el requisito pide un proxy HTTP."
+      }
+    },
+    {
+      "service": "aws-eks",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Amazon EKS es Kubernetes, y con grupos de nodos administrados el equipo todavía asegura, mantiene y parcha el sistema operativo de las instancias EC2."
+      }
+    },
+    {
+      "service": "aws-rds-read-replica",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una réplica de lectura de RDS es otra instancia de base de datos que solo acepta conexiones de lectura; el requisito pide guardar la tabla en memoria.",
+        "s5": "Una réplica de lectura de RDS solo acepta conexiones de lectura: no puede recibir la escritura de cada apuesta."
+      }
+    },
+    {
+      "service": "aws-kinesis-data-streams",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "En Kinesis Data Streams los registros siguen disponibles durante el periodo de retención y el consumidor guarda su punto de control; SQS, en cambio, lleva la confirmación y borra cada mensaje confirmado."
+      }
+    },
+    {
+      "service": "aws-s3",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Amazon S3 es almacenamiento de objetos en buckets, y la guía de DynamoDB lo usa para exportar e importar tablas; el requisito pide una base de datos NoSQL."
+      }
+    }
+  ],
+  "review_notes": "Escenario 7 de ARCHITECTURES.md, rediseñado a balanceo de capa 7 (ver design-notes.md): en Azure y GCP el balanceador de capa 4 no puede llegar a los contenedores sin servidores, así que las 4 nubes usan un proxy HTTP frente a ellos. Zonas como columnas que cruzan las subredes. Cola y base NoSQL fuera de la red, en la región, porque son servicios regionales. Los trabajadores de la cola son contenedores del slot 2. La base del slot 5 es de una sola región, como el diagrama. Cada explicación y why_not cita su fuente en refs.",
+  "status": "published"
+}

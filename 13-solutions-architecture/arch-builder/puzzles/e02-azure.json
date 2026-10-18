@@ -1,0 +1,453 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e02-azure",
+  "version": 1,
+  "scenario": "e02",
+  "cloud": "azure",
+  "title": "Tienda que aguanta el Buen Fin",
+  "summary": "Una cooperativa de artesanos de Tlaquepaque multiplica por diez su tráfico en el Buen Fin. La tienda debe crecer sola y no perder ventas si cae una zona.",
+  "topics": [
+    "cómputo",
+    "autoescalado",
+    "balanceo L7",
+    "terminación TLS",
+    "monitoreo"
+  ],
+  "source_refs": [
+    {
+      "title": "Azure Virtual Machines: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/overview"
+    },
+    {
+      "title": "Virtual Machine Scale Sets: autoescalado",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview"
+    },
+    {
+      "title": "Availability sets: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+    },
+    {
+      "title": "¿Qué es Azure Application Gateway?",
+      "url": "https://learn.microsoft.com/en-us/azure/application-gateway/overview"
+    },
+    {
+      "title": "Application Gateway: certificados en Key Vault",
+      "url": "https://learn.microsoft.com/en-us/azure/application-gateway/key-vault-certs"
+    },
+    {
+      "title": "Key Vault: llaves, secretos y certificados",
+      "url": "https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates"
+    },
+    {
+      "title": "Azure Monitor: tipos de alertas",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-types"
+    },
+    {
+      "title": "Azure Advisor: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/advisor/advisor-overview"
+    },
+    {
+      "title": "Key Vault: acerca de los certificados",
+      "url": "https://learn.microsoft.com/en-us/azure/key-vault/certificates/about-certificates"
+    },
+    {
+      "title": "Azure Functions: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 5.51,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "azure-region",
+      "label": "Región Mexico Central",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.39,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "azure-zone",
+      "label": "Zona de disponibilidad 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "azure-zone",
+      "label": "Zona de disponibilidad 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "azure-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-db",
+      "icon": "azure-mysql",
+      "label": "BD administrada",
+      "number": 6,
+      "cell": {
+        "c": 2.35,
+        "r": 2.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 7.55,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "azure-vm"
+      ],
+      "near_miss": "azure-functions",
+      "hint_cue": "sistema operativo que el equipo parcha",
+      "explanation": "Cada VM de Azure Virtual Machines es un servidor que el equipo configura y parcha, y donde instala su software; el scale set del slot 2 es el grupo que crea y administra esas VM.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/overview",
+        "https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-vmss"
+      ],
+      "near_miss": "azure-availability-set",
+      "hint_cue": "reemplaza las que fallan",
+      "explanation": "Virtual Machine Scale Sets crea VM idénticas repartidas en zonas, el autoescalado ajusta su número entre un mínimo y un máximo según la carga y se reemplazan las que fallan. Un availability set solo reparte VM y no escala.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "azure-app-gateway"
+      ],
+      "near_miss": "azure-load-balancer",
+      "hint_cue": "manda /api a un grupo y /tienda a otro",
+      "explanation": "Application Gateway v2 termina TLS, manda /api y /tienda a grupos de backend distintos con reglas por ruta y deja de enviar a los que fallan su sondeo de salud. Azure Load Balancer es de capa 4 y no lee la URL.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/application-gateway/overview"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 1.15
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-key-vault"
+      ],
+      "near_miss": "azure-managed-hsm",
+      "hint_cue": "presenta al navegador para probar que es tienda.mx",
+      "explanation": "Key Vault guarda el certificado de tienda.mx, lo pide a una CA asociada (DigiCert o GlobalSign) y lo renueva automáticamente; Application Gateway v2 busca la versión nueva cada cuatro horas. Managed HSM no admite certificados.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/application-gateway/key-vault-certs",
+        "https://learn.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates",
+        "https://learn.microsoft.com/en-us/azure/key-vault/certificates/about-certificates"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-monitor"
+      ],
+      "near_miss": "azure-advisor",
+      "hint_cue": "avisa a guardia",
+      "explanation": "Una alerta de métricas de Azure Monitor revisa la CPU cada minuto y dispara su grupo de acciones cuando el promedio pasa de 80 % durante 5 minutos. Azure Advisor solo da recomendaciones periódicas.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-types",
+        "https://learn.microsoft.com/en-us/azure/advisor/advisor-overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "compra en tienda.mx",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "/api y /tienda",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "consultas",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "TLS de tienda.mx",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "agrega y reemplaza",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "s1",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "CPU cada minuto",
+      "style": "dotted",
+      "route": "v-first"
+    },
+    {
+      "id": "e8",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 6,
+      "label": "aviso",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es cada servidor individual: tiene su propio sistema operativo que el equipo parcha, su agente de inventario instalado y atiende todo el día."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} mantiene de 2 a 20 copias en ambas zonas, agrega o quita según la carga y reemplaza las que fallan."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe y descifra el HTTPS, manda /api a un grupo y /tienda a otro, y solo envía a servidores sanos."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} obtiene de una autoridad emisora asociada, y renueva automáticamente, lo que el slot 3 presenta al navegador para probar que es tienda.mx."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} registra la CPU cada minuto y avisa a guardia si pasa de 80 % durante 5 minutos."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "La base de datos administrada guarda pedidos e inventario, y solo la consultan los servidores del slot 1."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-vm"
+    },
+    {
+      "service": "azure-vmss"
+    },
+    {
+      "service": "azure-app-gateway"
+    },
+    {
+      "service": "azure-key-vault"
+    },
+    {
+      "service": "azure-monitor"
+    },
+    {
+      "service": "azure-functions",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Azure Functions es una solución sin servidores que ejecuta código con disparadores por evento: en vez de desplegar y mantener servidores, el equipo escribe solo el código y Azure se encarga del resto."
+      }
+    },
+    {
+      "service": "azure-availability-set",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Un availability set reparte VM en dominios de falla y de actualización, pero no agrega ni quita VM según la carga."
+      }
+    },
+    {
+      "service": "azure-load-balancer",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Azure Load Balancer trabaja en capa 4: reparte flujos TCP y UDP, pero no descifra el HTTPS ni lee la URL."
+      }
+    },
+    {
+      "service": "azure-managed-hsm",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Managed HSM guarda llaves en un HSM dedicado, pero no admite certificados, que es lo que Application Gateway presenta en el HTTPS."
+      }
+    },
+    {
+      "service": "azure-advisor",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Azure Advisor analiza la configuración y da recomendaciones periódicas; no vigila la CPU minuto a minuto ni avisa a guardia."
+      }
+    }
+  ],
+  "review_notes": "Piloto del motor: tabla del Escenario 2 de ARCHITECTURES.md. Zonas como columnas que cruzan las subredes.",
+  "status": "published"
+}

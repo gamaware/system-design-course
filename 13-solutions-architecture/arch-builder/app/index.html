@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>Completa el diagrama</title>
+    <link rel="stylesheet" href="assets/app.css" />
+  </head>
+  <body>
+    <header class="gm-top">
+      <a class="gm-brand" href="#" data-i18n="app.brand"
+        >Completa el diagrama · Diseño de Sistemas Escalables</a
+      >
+      <button type="button" class="btn quiet" id="gm-lang" lang="en">English</button>
+    </header>
+    <main id="gm" class="gm-page" data-view="start">
+      <p class="gm-notice" id="gm-notice" role="status" hidden></p>
+      <section id="gm-start" class="gm-view" aria-labelledby="gm-start-title"></section>
+      <section id="gm-play" class="gm-view" aria-labelledby="gm-title" hidden></section>
+      <noscript><p>Este ejercicio necesita JavaScript.</p></noscript>
+    </main>
+    <div id="gm-live" class="vh" role="status" aria-live="polite" aria-atomic="true"></div>
+    <footer class="gm-foot"><p id="gm-foot-text"></p></footer>
+
+    <dialog class="sk-help gm-dialog" id="gm-help" aria-labelledby="gm-help-title">
+      <div class="sk-help-head">
+        <h2 id="gm-help-title" tabindex="-1" data-i18n="help.title">Cómo se juega</h2>
+        <button
+          type="button"
+          class="btn quiet icon-only"
+          data-close
+          data-i18n-aria="action.close"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+      <p class="sk-help-note" data-i18n="help.intro">
+        Lee los requisitos numerados y pon el servicio correcto en cada slot.
+      </p>
+      <table>
+        <tr>
+          <td><kbd>←</kbd> <kbd>→</kbd></td>
+          <td data-i18n="help.arrows">Moverse entre los servicios de la paleta</td>
+        </tr>
+        <tr>
+          <td><kbd>Enter</kbd> <kbd>Espacio</kbd></td>
+          <td data-i18n="help.enter">
+            Elegir un servicio, colocarlo en el slot enfocado o levantarlo
+          </td>
+        </tr>
+        <tr>
+          <td><kbd>1</kbd>–<kbd>9</kbd></td>
+          <td data-i18n="help.digits">Poner el servicio elegido en el slot N</td>
+        </tr>
+        <tr>
+          <td><kbd>Supr</kbd></td>
+          <td data-i18n="help.delete">Regresar a la paleta el servicio del slot enfocado</td>
+        </tr>
+        <tr>
+          <td><kbd>Esc</kbd></td>
+          <td data-i18n="help.esc">Cancelar la selección</td>
+        </tr>
+        <tr>
+          <td><kbd>H</kbd></td>
+          <td data-i18n="help.hint">Pista para el slot enfocado</td>
+        </tr>
+        <tr>
+          <td><kbd>S</kbd></td>
+          <td data-i18n="help.submit">Enviar</td>
+        </tr>
+        <tr>
+          <td><kbd>R</kbd></td>
+          <td data-i18n="help.reset">Vaciar los slots</td>
+        </tr>
+        <tr>
+          <td><kbd>N</kbd> <kbd>P</kbd></td>
+          <td data-i18n="help.next">Escenario siguiente o anterior</td>
+        </tr>
+        <tr>
+          <td><kbd>Z</kbd></td>
+          <td data-i18n="help.zoom">Ampliar el diagrama</td>
+        </tr>
+        <tr>
+          <td><kbd>?</kbd></td>
+          <td data-i18n="help.help">Esta lista</td>
+        </tr>
+      </table>
+      <p class="sk-help-note" data-i18n="help.letters">
+        En la paleta, una letra salta al siguiente servicio con ese nombre.
+      </p>
+    </dialog>
+
+    <dialog class="sk-help gm-dialog" id="gm-confirm" aria-labelledby="gm-confirm-title">
+      <h2 id="gm-confirm-title" tabindex="-1">Confirmar</h2>
+      <p class="gm-confirm-text" id="gm-confirm-text"></p>
+      <div class="gm-confirm-actions">
+        <button type="button" class="btn secondary" data-no>No</button>
+        <button type="button" class="btn primary" data-yes>Sí</button>
+      </div>
+    </dialog>
+
+    <dialog class="sk-help gm-dialog" id="gm-list" aria-labelledby="gm-list-title">
+      <div class="sk-help-head">
+        <h2 id="gm-list-title" tabindex="-1">Escenarios</h2>
+        <button
+          type="button"
+          class="btn quiet icon-only"
+          data-close
+          data-i18n-aria="action.close"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+      <ol class="gm-list" id="gm-list-items"></ol>
+    </dialog>
+
+    <dialog class="gm-zoom" id="gm-zoom" aria-labelledby="gm-zoom-title">
+      <div class="sk-help-head">
+        <h2 id="gm-zoom-title" tabindex="-1">Diagrama</h2>
+        <button
+          type="button"
+          class="btn quiet icon-only"
+          data-close
+          data-i18n-aria="action.close"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+      <div class="gm-zoom-body" id="gm-zoom-body"></div>
+    </dialog>
+
+    <script src="game-data.js"></script>
+    <script src="assets/core.js"></script>
+    <script src="assets/render.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+{
+  "id": "e01-oci",
+  "title": "A private network with controlled egress",
+  "summary": "40 high schools in Jalisco publish grades on a portal. The state Education Ministry requires that neither the servers nor the database can be reached from the internet.",
+  "requirements": {
+    "1": "{{s1}} lets the private servers download patches from the internet, but nobody outside can open a connection to them.",
+    "2": "All outbound web traffic goes through {{s2}}, an intermediary that only lets it reach the domains of the SAT, the bank and the patch repository.",
+    "3": "{{s3}} makes only the app servers talk to the database on port 3306, whatever subnet they are in, and lets the reply come back on its own.",
+    "4": "{{s4}} gives administrators a terminal on servers with no public IP, without opening port 22 to the internet, and keeps a record of every session.",
+    "5": "{{s5}} takes the PDF report cards from the servers to object storage without going out to the internet or through slot 1.",
+    "6": "{{s6}} keeps the source, destination and port of the servers' network traffic to investigate a scan.",
+    "7": "The grades database listens on port 3306 and lives in a private subnet, with no public IP."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "A NAT gateway gives resources without public IPs internet access without exposing them to incoming internet connections.",
+      "hint_cue": "nobody outside can open a connection to them"
+    },
+    "s2": {
+      "explanation": "OCI Network Firewall filters by URL and FQDN: it can restrict egress traffic to a list of domains, such as the SAT, bank and patch domains.",
+      "hint_cue": "only lets it reach the domains"
+    },
+    "s3": {
+      "explanation": "An NSG applies only to the VNICs you choose and its rule can use another NSG as the source, so 3306 opens to the app servers whatever their subnet; with stateful rules, the reply passes on its own.",
+      "hint_cue": "whatever subnet they are in"
+    },
+    "s4": {
+      "explanation": "OCI Bastion gives restricted, time-limited access over SSH sessions to resources with no public endpoint, and Audit records every call to the Bastion API, such as the one that creates a session.",
+      "hint_cue": "without opening port 22 to the internet"
+    },
+    "s5": {
+      "explanation": "The service gateway lets the VCN reach Oracle services such as Object Storage privately, with no internet gateway or NAT gateway; traffic stays on the Oracle network fabric and never crosses the internet.",
+      "hint_cue": "without going out to the internet or through slot 1"
+    },
+    "s6": {
+      "explanation": "VCN flow logs record details about traffic that was accepted or rejected by security list or NSG rules.",
+      "hint_cue": "source, destination and port"
+    }
+  },
+  "nodes": {
+    "n-students": "Students",
+    "n-internet": "Internet",
+    "n-admin": "Administrator",
+    "n-bank": "Bank",
+    "n-sat": "SAT (tax office)",
+    "n-lb": "Load balancer",
+    "n-app": "App servers",
+    "n-db": "Grades database",
+    "n-storage": "Object storage"
+  },
+  "edges": {
+    "e1": "checks grades",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "MySQL 3306",
+    "e5": "PDF report cards",
+    "e6": "private network",
+    "e7": "patches, SAT and bank",
+    "e8": "allowed domains",
+    "e9": "HTTPS",
+    "e10": "HTTPS",
+    "e11": "terminal",
+    "e12": "session",
+    "e13": "app only",
+    "e14": "traffic"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · portal compartment",
+    "g-region": "Region Querétaro (single AD)",
+    "g-net": "VCN 10.0.0.0/16",
+    "g-zone-a": "Fault domain 1",
+    "g-zone-b": "Fault domain 2",
+    "g-pub": "Public subnet",
+    "g-app": "Private subnet",
+    "g-db": "Private subnet"
+  },
+  "why_not": {
+    "oci-internet-gateway": {
+      "s1": "With an internet gateway, instances in a public subnet start connections to the internet and also receive inbound connections from the internet."
+    },
+    "oci-security-list": {
+      "s2": "A security list applies IP, protocol and port rules to every VNIC in a subnet; it does not filter by domain name.",
+      "s3": "A security list applies its rules to every VNIC in the whole subnet; Oracle recommends NSGs to separate application security from the subnet layout."
+    },
+    "oci-site-to-site-vpn": {
+      "s4": "Site-to-Site VPN is an IPSec connection between the on-premises network and the VCN; it is not the restricted, time-limited SSH sessions that Bastion provides, whose creation is recorded in Audit."
+    },
+    "oci-lpg": {
+      "s5": "A local peering gateway connects two VCNs in the same region so their resources can communicate over private IPs; private access to Object Storage comes from the service gateway. Oracle recommends routing between VCNs through an upgraded DRG."
+    },
+    "oci-audit": {
+      "s6": "Audit records calls to public APIs, such as Bastion's; it does not keep the network traffic between VNICs."
+    }
+  }
+}

@@ -1,0 +1,631 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e09-gcp",
+  "version": 1,
+  "scenario": "e09",
+  "cloud": "gcp",
+  "title": "El DNS elige la región y el balanceador elige la VM",
+  "summary": "Una tienda vende a México y a España con un solo dominio, tienda.mx, desde northamerica-south1 y europe-southwest1. Si cae una región, los compradores deben llegar a la otra en minutos.",
+  "topics": [
+    "DNS",
+    "balanceo",
+    "autoescalado",
+    "alta disponibilidad multirregión"
+  ],
+  "source_refs": [
+    {
+      "title": "Cloud DNS: políticas de enrutamiento",
+      "url": "https://docs.cloud.google.com/dns/docs/routing-policies-overview"
+    },
+    {
+      "title": "Cloud DNS: políticas de servidor",
+      "url": "https://docs.cloud.google.com/dns/docs/policies-overview"
+    },
+    {
+      "title": "Cloud DNS: administrar políticas de enrutamiento y health checks",
+      "url": "https://docs.cloud.google.com/dns/docs/zones/manage-routing-policies"
+    },
+    {
+      "title": "Balanceador de aplicaciones externo",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/https"
+    },
+    {
+      "title": "Autohealing en grupos de instancias administrados",
+      "url": "https://docs.cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs"
+    },
+    {
+      "title": "Autoscaler de grupos de instancias",
+      "url": "https://docs.cloud.google.com/compute/docs/autoscaler"
+    },
+    {
+      "title": "Cloud Monitoring: canales de notificación",
+      "url": "https://docs.cloud.google.com/monitoring/support/notification-options"
+    },
+    {
+      "title": "Acerca de API Gateway",
+      "url": "https://docs.cloud.google.com/api-gateway/docs/about-api-gateway"
+    },
+    {
+      "title": "Cloud Logging: información general",
+      "url": "https://docs.cloud.google.com/logging/docs/overview"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 7
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto tienda",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 7.9,
+        "h": 5.82
+      }
+    },
+    {
+      "id": "g-reg-a",
+      "kind": "gcp-region",
+      "label": "Región A (México)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.11,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-a",
+      "kind": "gcp-subnet",
+      "label": "Subred 10.0.0.0/20",
+      "parent": "g-reg-a",
+      "cell": {
+        "c": 1.17,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-a1",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 1.23,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-a2",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 2.71,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-reg-b",
+      "kind": "gcp-region",
+      "label": "Región B (España)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 5.69,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-b",
+      "kind": "gcp-subnet",
+      "label": "Subred 10.1.0.0/20",
+      "parent": "g-reg-b",
+      "cell": {
+        "c": 5.75,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-b1",
+      "kind": "gcp-zone",
+      "label": "europe-southwest1-a",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 5.81,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-b2",
+      "kind": "gcp-zone",
+      "label": "europe-southwest1-b",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 7.29,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.3
+      },
+      "group": null
+    },
+    {
+      "id": "n-vm-a1",
+      "icon": "gcp-compute-engine",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 1.47,
+        "r": 3.4
+      },
+      "group": "g-zone-a1"
+    },
+    {
+      "id": "n-vm-a2",
+      "icon": "gcp-compute-engine",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 2.95,
+        "r": 3.4
+      },
+      "group": "g-zone-a2"
+    },
+    {
+      "id": "n-vm-b1",
+      "icon": "gcp-compute-engine",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 6.05,
+        "r": 3.4
+      },
+      "group": "g-zone-b1"
+    },
+    {
+      "id": "n-vm-b2",
+      "icon": "gcp-compute-engine",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 7.53,
+        "r": 3.4
+      },
+      "group": "g-zone-b2"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 4.5,
+        "r": 5.9
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-cloud-dns"
+      ],
+      "near_miss": "gcp-dns-server-policy",
+      "hint_cue": "responde con la dirección de la región sana más cercana",
+      "explanation": "Las políticas de enrutamiento de Cloud DNS, en una zona pública, pueden ser de geolocalización (la coincidencia más cercana al origen de la consulta) o de failover, y solo devuelven las direcciones sanas.",
+      "refs": [
+        "https://docs.cloud.google.com/dns/docs/routing-policies-overview",
+        "https://docs.cloud.google.com/dns/docs/policies-overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.5,
+        "r": 2.15
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-dns-health-checks"
+      ],
+      "near_miss": "gcp-backend-health-check",
+      "hint_cue": "prueba desde varios puntos de internet",
+      "explanation": "Para endpoints externos se crea un health check que sondea desde tres regiones de Google Cloud, por ejemplo por HTTPS, cada 30 a 300 s; solo funciona en zonas públicas, y la política devuelve solo las direcciones sanas.",
+      "refs": [
+        "https://docs.cloud.google.com/dns/docs/zones/manage-routing-policies",
+        "https://docs.cloud.google.com/dns/docs/routing-policies-overview",
+        "https://docs.cloud.google.com/load-balancing/docs/https"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.21,
+        "r": 2.15
+      },
+      "group": "g-net-a",
+      "accept": [
+        "gcp-app-lb"
+      ],
+      "near_miss": "gcp-api-gateway",
+      "hint_cue": "termina TLS y reparte las peticiones",
+      "explanation": "El balanceador de aplicaciones externo regional es un proxy Envoy que termina TLS en una sola región con su proxy HTTPS de destino, y su backend service solo manda peticiones a los backends sanos.",
+      "refs": [
+        "https://docs.cloud.google.com/load-balancing/docs/https",
+        "https://docs.cloud.google.com/api-gateway/docs/about-api-gateway"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.21,
+        "r": 4.65
+      },
+      "group": "g-net-a",
+      "accept": [
+        "gcp-mig"
+      ],
+      "near_miss": "gcp-unmanaged-ig",
+      "hint_cue": "reemplaza la que falla y agrega más",
+      "explanation": "Un grupo de instancias administrado recrea las VM que su health check de autohealing detecta enfermas, y el autoscaler le agrega VM cuando sube la carga. Un grupo no administrado no puede usar el autoscaler.",
+      "refs": [
+        "https://docs.cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs",
+        "https://docs.cloud.google.com/compute/docs/autoscaler"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 4.5,
+        "r": 3.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-notification-channels"
+      ],
+      "near_miss": "gcp-cloud-logging",
+      "hint_cue": "le entrega a guardia el aviso",
+      "explanation": "Los canales de notificación de Cloud Monitoring avisan a guardia cuando se dispara una política de alertas, por correo, SMS, Slack, PagerDuty o la app móvil de la consola.",
+      "refs": [
+        "https://docs.cloud.google.com/monitoring/support/notification-options",
+        "https://docs.cloud.google.com/logging/docs/overview"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 6.79,
+        "r": 2.15
+      },
+      "group": "g-net-b",
+      "accept": [
+        "gcp-app-lb"
+      ],
+      "near_miss": "gcp-api-gateway",
+      "hint_cue": "termina TLS y reparte solo entre las VM web sanas",
+      "explanation": "En la región B otro balanceador de aplicaciones externo regional termina TLS en esa región, y su backend service solo manda peticiones a los backends sanos.",
+      "refs": [
+        "https://docs.cloud.google.com/load-balancing/docs/https",
+        "https://docs.cloud.google.com/api-gateway/docs/about-api-gateway"
+      ]
+    },
+    {
+      "id": "s7",
+      "number": 7,
+      "cell": {
+        "c": 6.79,
+        "r": 4.65
+      },
+      "group": "g-net-b",
+      "accept": [
+        "gcp-mig"
+      ],
+      "near_miss": "gcp-unmanaged-ig",
+      "hint_cue": "reemplaza la que falla y agrega más con la carga",
+      "explanation": "La región B lleva su propio grupo de instancias administrado: recrea las VM que su health check de autohealing detecta enfermas, y el autoscaler le agrega VM cuando sube la carga.",
+      "refs": [
+        "https://docs.cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs",
+        "https://docs.cloud.google.com/compute/docs/autoscaler"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "s1",
+      "dir": "both",
+      "step": 1,
+      "label": "¿tienda.mx? IP y TTL 60 s",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-users",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": 3,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e4",
+      "from": "s3",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "s6",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e6",
+      "from": "s6",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e9",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 4,
+      "label": "A cae",
+      "style": "dashed"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "s6",
+      "dir": "forward",
+      "step": 5,
+      "label": "ahora responde con B",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e11",
+      "from": "s2",
+      "to": "s5",
+      "dir": "forward",
+      "step": 6,
+      "label": "alarma",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 7,
+      "label": "aviso",
+      "style": "solid"
+    },
+    {
+      "id": "e13",
+      "from": "s4",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e14",
+      "from": "s4",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e15",
+      "from": "s7",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e16",
+      "from": "s7",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} publica un solo nombre, tienda.mx, y responde con la dirección de la región sana más cercana al comprador, con un TTL de 60 s."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} prueba desde varios puntos de internet, cada cierto intervalo, que el balanceador de cada región responda; si una falla, el slot 1 deja de anunciarla."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe el HTTPS en la región A, termina TLS y reparte las peticiones solo entre las VM web que pasan su revisión de salud."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} mantiene al menos 2 VM web de la región A en zonas distintas, reemplaza la que falla y agrega más cuando sube la carga."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} le entrega a guardia el aviso de la alarma cuando el slot 2 marca caída una región; desde ese aviso corre el tiempo de reparación."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} hace en la región B lo mismo que el slot 3 en la A: termina TLS y reparte solo entre las VM web sanas."
+    },
+    {
+      "n": 7,
+      "slot": "s7",
+      "text": "{{s7}} hace lo mismo que el slot 4 con las VM web de la región B: al menos 2 en zonas distintas, reemplaza la que falla y agrega más con la carga."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-cloud-dns"
+    },
+    {
+      "service": "gcp-dns-health-checks"
+    },
+    {
+      "service": "gcp-app-lb",
+      "uses": 2
+    },
+    {
+      "service": "gcp-mig",
+      "uses": 2
+    },
+    {
+      "service": "gcp-notification-channels"
+    },
+    {
+      "service": "gcp-dns-server-policy",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Las políticas de servidor aplican configuración DNS privada a una red de VPC, como reenvío y registro, para resoluciones híbridas; no publican tienda.mx ni eligen la región sana."
+      }
+    },
+    {
+      "service": "gcp-backend-health-check",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "El health check del backend service vigila los backends del balanceador para que solo los sanos reciban peticiones; en una zona pública, la política de DNS usa en cambio health checks de endpoints externos, que sondean desde tres regiones de Google Cloud."
+      }
+    },
+    {
+      "service": "gcp-api-gateway",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "API Gateway sirve para crear, compartir, mantener y proteger APIs REST; aquí se pide un proxy regional que termine TLS y reparta entre grupos de instancias de Compute Engine según su health check.",
+        "s6": "API Gateway sirve para crear, compartir, mantener y proteger APIs REST; aquí se pide un proxy regional que termine TLS y reparta entre grupos de instancias de Compute Engine según su health check."
+      }
+    },
+    {
+      "service": "gcp-unmanaged-ig",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un grupo de instancias no administrado agrupa VM, pero solo los grupos administrados pueden usar el autoscaler para agregar VM con la carga.",
+        "s7": "Un grupo de instancias no administrado agrupa VM, pero solo los grupos administrados pueden usar el autoscaler para agregar VM con la carga."
+      }
+    },
+    {
+      "service": "gcp-compute-engine",
+      "role": "distractor",
+      "why_not": {
+        "s4": "Cada VM web del diagrama ya es una VM de Compute Engine; el slot pide lo que recrea las VM enfermas y agrega más cuando sube la carga.",
+        "s7": "Cada VM web del diagrama ya es una VM de Compute Engine; el slot pide lo que recrea las VM enfermas y agrega más cuando sube la carga."
+      }
+    },
+    {
+      "service": "gcp-cloud-logging",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Cloud Logging es el sistema que guarda, busca y analiza registros; el slot pide la pieza por la que Cloud Monitoring le avisa a guardia cuando se dispara una política de alertas."
+      }
+    }
+  ],
+  "review_notes": "Escenario 9 (Lab 04). En GCP la red de VPC es global y la subred es regional: el recuadro dentro de cada región es la subred y las zonas cruzan la subred, con la misma geometría que en las otras nubes. Los health checks de endpoints externos solo funcionan en zonas públicas y exigen desactivar constraints/compute.disableInternetNetworkEndpointGroup; su intervalo va de 30 a 300 s, por eso el requisito 2 dice 'cada cierto intervalo'. No se usa el balanceador global porque reemplazaría al DNS por una IP anycast. Slots 6 y 7 = balanceador y MIG de la región B (uses 2). El autoscaler (fuente del escenario 2) respalda al near-miss del slot 4.",
+  "status": "published"
+}

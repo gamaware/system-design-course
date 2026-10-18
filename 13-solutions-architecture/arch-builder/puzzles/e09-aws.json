@@ -1,0 +1,629 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e09-aws",
+  "version": 1,
+  "scenario": "e09",
+  "cloud": "aws",
+  "title": "El DNS elige la región y el balanceador elige la VM",
+  "summary": "Una tienda vende a México y a España con un solo dominio, tienda.mx, desde mx-central-1 y eu-south-2. Si cae una región, los compradores deben llegar a la otra en minutos.",
+  "topics": [
+    "DNS",
+    "balanceo",
+    "autoescalado",
+    "alta disponibilidad multirregión"
+  ],
+  "source_refs": [
+    {
+      "title": "Route 53: failover activo-activo y activo-pasivo",
+      "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-types.html"
+    },
+    {
+      "title": "Amazon Route 53 VPC Resolver",
+      "url": "https://aws.amazon.com/route53/vpc-resolver/"
+    },
+    {
+      "title": "Route 53: monitorear health checks con CloudWatch",
+      "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-health-checks.html"
+    },
+    {
+      "title": "¿Qué es un Application Load Balancer?",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
+    },
+    {
+      "title": "¿Qué es Amazon API Gateway?",
+      "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html"
+    },
+    {
+      "title": "Amazon EC2 Auto Scaling: revisiones de salud",
+      "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html"
+    },
+    {
+      "title": "Amazon EC2 Auto Scaling: launch templates",
+      "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-templates.html"
+    },
+    {
+      "title": "¿Qué es Amazon CloudWatch Logs?",
+      "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 7
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 7.9,
+        "h": 5.82
+      }
+    },
+    {
+      "id": "g-reg-a",
+      "kind": "region",
+      "label": "Región A (México)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.11,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-a",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-reg-a",
+      "cell": {
+        "c": 1.17,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-a1",
+      "kind": "az",
+      "label": "mx-central-1a",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 1.23,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-a2",
+      "kind": "az",
+      "label": "mx-central-1b",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 2.71,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-reg-b",
+      "kind": "region",
+      "label": "Región B (España)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 5.69,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-b",
+      "kind": "vpc",
+      "label": "VPC 10.1.0.0/16",
+      "parent": "g-reg-b",
+      "cell": {
+        "c": 5.75,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-b1",
+      "kind": "az",
+      "label": "eu-south-2a",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 5.81,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-b2",
+      "kind": "az",
+      "label": "eu-south-2b",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 7.29,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.3
+      },
+      "group": null
+    },
+    {
+      "id": "n-vm-a1",
+      "icon": "aws-ec2",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 1.47,
+        "r": 3.4
+      },
+      "group": "g-zone-a1"
+    },
+    {
+      "id": "n-vm-a2",
+      "icon": "aws-ec2",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 2.95,
+        "r": 3.4
+      },
+      "group": "g-zone-a2"
+    },
+    {
+      "id": "n-vm-b1",
+      "icon": "aws-ec2",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 6.05,
+        "r": 3.4
+      },
+      "group": "g-zone-b1"
+    },
+    {
+      "id": "n-vm-b2",
+      "icon": "aws-ec2",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 7.53,
+        "r": 3.4
+      },
+      "group": "g-zone-b2"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 4.5,
+        "r": 5.9
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-route53"
+      ],
+      "near_miss": "aws-route53-resolver",
+      "hint_cue": "responde con la dirección de la región sana más cercana",
+      "explanation": "Con registros del mismo nombre y política de latencia, Route 53 contesta con cualquier registro sano y deja de incluir el que considera enfermo (failover activo-activo). VPC Resolver resuelve consultas de las VPC, no publica la tienda.",
+      "refs": [
+        "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-types.html",
+        "https://aws.amazon.com/route53/vpc-resolver/"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.5,
+        "r": 2.15
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-route53-health-checks"
+      ],
+      "near_miss": "aws-target-group-health-check",
+      "hint_cue": "prueba desde varios puntos de internet",
+      "explanation": "Varios health checkers de Route 53 vigilan el endpoint de cada región; si lo marcan enfermo, Route 53 deja de responder con ese registro. El health check del target group solo revisa los destinos del balanceador.",
+      "refs": [
+        "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-health-checks.html",
+        "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-types.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.21,
+        "r": 2.15
+      },
+      "group": "g-net-a",
+      "accept": [
+        "aws-alb"
+      ],
+      "near_miss": "aws-api-gateway",
+      "hint_cue": "termina TLS y reparte las peticiones",
+      "explanation": "El Application Load Balancer termina HTTPS con su certificado, reparte entre instancias EC2 de varias zonas y, con los health checks de su target group, solo manda tráfico a los destinos sanos.",
+      "refs": [
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+        "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.21,
+        "r": 4.65
+      },
+      "group": "g-net-a",
+      "accept": [
+        "aws-ec2-auto-scaling"
+      ],
+      "near_miss": "aws-launch-template",
+      "hint_cue": "reemplaza la que falla y agrega más",
+      "explanation": "El grupo de EC2 Auto Scaling vigila la salud de sus instancias y reemplaza la que falla para mantener la capacidad deseada; también sube o baja el número de instancias según la demanda.",
+      "refs": [
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-templates.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 4.5,
+        "r": 3.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-sns"
+      ],
+      "near_miss": "aws-cloudwatch-logs",
+      "hint_cue": "le entrega a guardia el aviso",
+      "explanation": "Una alarma de CloudWatch sobre el health check publica en un tema de SNS, y SNS manda el correo a guardia. La guía advierte que entre la falla y el aviso pueden pasar varios minutos.",
+      "refs": [
+        "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-health-checks.html",
+        "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 6.79,
+        "r": 2.15
+      },
+      "group": "g-net-b",
+      "accept": [
+        "aws-alb"
+      ],
+      "near_miss": "aws-api-gateway",
+      "hint_cue": "termina TLS y reparte solo entre las VM web sanas",
+      "explanation": "En la región B el Application Load Balancer también termina HTTPS, reparte entre las instancias EC2 de sus zonas y, con los health checks de su target group, solo manda tráfico a los destinos sanos.",
+      "refs": [
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+        "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html"
+      ]
+    },
+    {
+      "id": "s7",
+      "number": 7,
+      "cell": {
+        "c": 6.79,
+        "r": 4.65
+      },
+      "group": "g-net-b",
+      "accept": [
+        "aws-ec2-auto-scaling"
+      ],
+      "near_miss": "aws-launch-template",
+      "hint_cue": "reemplaza la que falla y agrega más con la carga",
+      "explanation": "La región B lleva su propio grupo de EC2 Auto Scaling: reemplaza la instancia que falla su revisión de salud y sube o baja el número de instancias según la demanda.",
+      "refs": [
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html",
+        "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-templates.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "s1",
+      "dir": "both",
+      "step": 1,
+      "label": "¿tienda.mx? IP y TTL 60 s",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-users",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": 3,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e4",
+      "from": "s3",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "s6",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e6",
+      "from": "s6",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e9",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 4,
+      "label": "A cae",
+      "style": "dashed"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "s6",
+      "dir": "forward",
+      "step": 5,
+      "label": "ahora responde con B",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e11",
+      "from": "s2",
+      "to": "s5",
+      "dir": "forward",
+      "step": 6,
+      "label": "alarma",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 7,
+      "label": "aviso",
+      "style": "solid"
+    },
+    {
+      "id": "e13",
+      "from": "s4",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e14",
+      "from": "s4",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e15",
+      "from": "s7",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e16",
+      "from": "s7",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} publica un solo nombre, tienda.mx, y responde con la dirección de la región sana más cercana al comprador, con un TTL de 60 s."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} prueba desde varios puntos de internet, cada cierto intervalo, que el balanceador de cada región responda; si una falla, el slot 1 deja de anunciarla."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe el HTTPS en la región A, termina TLS y reparte las peticiones solo entre las VM web que pasan su revisión de salud."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} mantiene al menos 2 VM web de la región A en zonas distintas, reemplaza la que falla y agrega más cuando sube la carga."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} le entrega a guardia el aviso de la alarma cuando el slot 2 marca caída una región; desde ese aviso corre el tiempo de reparación."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} hace en la región B lo mismo que el slot 3 en la A: termina TLS y reparte solo entre las VM web sanas."
+    },
+    {
+      "n": 7,
+      "slot": "s7",
+      "text": "{{s7}} hace lo mismo que el slot 4 con las VM web de la región B: al menos 2 en zonas distintas, reemplaza la que falla y agrega más con la carga."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-route53"
+    },
+    {
+      "service": "aws-route53-health-checks"
+    },
+    {
+      "service": "aws-alb",
+      "uses": 2
+    },
+    {
+      "service": "aws-ec2-auto-scaling",
+      "uses": 2
+    },
+    {
+      "service": "aws-sns"
+    },
+    {
+      "service": "aws-route53-resolver",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "VPC Resolver resuelve las consultas DNS de las VPC y de redes híbridas, y las reenvía a servidores locales; no publica tienda.mx ni deja de anunciar la región que enferma."
+      }
+    },
+    {
+      "service": "aws-target-group-health-check",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "El health check del target group lo hace el balanceador sobre sus destinos registrados, para mandarles tráfico solo a los sanos; el slot pide los health checkers de Route 53, que vigilan el endpoint de cada región para que Route 53 deje de responder con el registro enfermo."
+      }
+    },
+    {
+      "service": "aws-api-gateway",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "API Gateway sirve para crear, publicar y proteger APIs REST, HTTP y WebSocket; aquí se pide repartir entre las instancias registradas de la región y dejar fuera a las que fallan su revisión de salud.",
+        "s6": "API Gateway sirve para crear, publicar y proteger APIs REST, HTTP y WebSocket; aquí se pide repartir entre las instancias registradas de la región y dejar fuera a las que fallan su revisión de salud."
+      }
+    },
+    {
+      "service": "aws-launch-template",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "El launch template especifica la configuración con que se lanzan las instancias EC2, como la AMI, el tipo de instancia y los grupos de seguridad; el slot pide lo que vigila su salud y lanza con esa configuración el reemplazo de la que falla.",
+        "s7": "El launch template especifica la configuración con que se lanzan las instancias EC2, como la AMI, el tipo de instancia y los grupos de seguridad; el slot pide lo que vigila su salud y lanza con esa configuración el reemplazo de la que falla."
+      }
+    },
+    {
+      "service": "aws-ec2",
+      "role": "distractor",
+      "why_not": {
+        "s4": "Cada VM web del diagrama ya es una instancia de EC2; el slot pide lo que mantiene el número de instancias y lanza un reemplazo cuando una falla o termina.",
+        "s7": "Cada VM web del diagrama ya es una instancia de EC2; el slot pide lo que mantiene el número de instancias y lanza un reemplazo cuando una falla o termina."
+      }
+    },
+    {
+      "service": "aws-cloudwatch-logs",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "CloudWatch Logs sirve para monitorear, guardar y consultar archivos de registro; el slot pide el tema al que la alarma de CloudWatch manda su notificación para que el correo le llegue a guardia."
+      }
+    }
+  ],
+  "review_notes": "Escenario 9 de ARCHITECTURES.md (Lab 04, lab04-dns-plus-load-balancer-multi-region.drawio). El validador no deja repetir números, así que el balanceador y el grupo de la región B son los slots 6 y 7 (uses 2) en lugar de repetir 3 y 4. El requisito 2 dice 'cada cierto intervalo' y el 5 no promete un minuto: la guía de Route 53 avisa que el aviso puede tardar varios minutos (TTL no es MTTR).",
+  "status": "published"
+}

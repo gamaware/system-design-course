@@ -1,0 +1,76 @@
+{
+  "id": "e04-azure",
+  "title": "An animation studio that renders at night",
+  "summary": "A Guadalajara studio renders a short film overnight on 200 VMs that read the same scenes. The artists work from their office and no scene can be lost.",
+  "requirements": {
+    "1": "{{s1}} holds the project folder, which the artists edit in place and hundreds of Linux servers mount at the same time over NFS, available in both zones.",
+    "2": "{{s2}} keeps last night's version of the project folder, so a scene someone deletes by mistake can be recovered.",
+    "3": "{{s3}} stores the finished frames for years; they are read over HTTP and survive the loss of an entire zone.",
+    "4": "{{s4}} provides the render nodes: they can shut down with seconds or minutes of notice because the job resumes, and the lowest price with no commitment matters.",
+    "5": "{{s5}} joins the office to the cloud network today, encrypted, over the internet it already has.",
+    "6": "The artists work at the studio office in Guadalajara and upload their scenes from there."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Azure Files provides NFS shares with a fully POSIX-compliant file system, on SSD with ZRS, and thousands of Linux clients use them at the same time. For in-place file editing, Microsoft recommends Azure Files, not NFS 3.0 on Blob Storage.",
+      "hint_cue": "mount at the same time over NFS"
+    },
+    "s2": {
+      "explanation": "A share snapshot is a read-only point-in-time copy, also for NFS, and lets you recover files one by one. Azure Backup does not support file shares that use the NFS protocol.",
+      "hint_cue": "last night's version"
+    },
+    "s3": {
+      "explanation": "With ZRS, Blob Storage copies the data synchronously across three or more zones and it stays available for reads and writes even if a zone fails. With LRS it stays in a single datacenter.",
+      "hint_cue": "survive the loss of an entire zone"
+    },
+    "s4": {
+      "explanation": "Azure evicts Spot VMs with 30 seconds of notice when it needs the capacity and they have no SLA, in exchange for significant savings. The render resumes on another VM.",
+      "hint_cue": "seconds or minutes of notice"
+    },
+    "s5": {
+      "explanation": "A VPN Gateway site-to-site connection builds an IPsec/IKE tunnel and sends encrypted traffic between the VNet and the office over the public internet.",
+      "hint_cue": "over the internet it already has"
+    }
+  },
+  "nodes": {
+    "n-artists": "Artists"
+  },
+  "edges": {
+    "e1": "its internet",
+    "e2": "uploads scenes",
+    "e3": "reads scenes over NFS",
+    "e4": "finished frames",
+    "e5": "nightly copy"
+  },
+  "groups": {
+    "g-office": "Office in GDL",
+    "g-cloud": "Azure subscription",
+    "g-region": "Mexico Central region",
+    "g-net": "VNet 10.0.0.0/16",
+    "g-zone-a": "Availability zone 1",
+    "g-zone-b": "Availability zone 2",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "azure-managed-disks": {
+      "s1": "A managed disk is a block storage volume for VMs; sharing it across several VMs needs a cluster manager, and it is not an NFS share.",
+      "s3": "A managed disk is a block storage volume used with a VM; it does not serve the frames over HTTP."
+    },
+    "azure-backup": {
+      "s2": "According to its support matrix, Azure Backup does not support file shares that use the NFS protocol, so it cannot back up this folder."
+    },
+    "azure-blob-lrs": {
+      "s3": "LRS copies the data within a single datacenter, so the frames do not survive the loss of an entire zone.",
+      "s1": "With LRS the data stays in a single datacenter, and Microsoft advises against NFS 3.0 on Blob Storage for in-place file editing."
+    },
+    "azure-reservations": {
+      "s4": "A reservation lowers the price in exchange for committing to a one-year or three-year plan, and the requirement asks for the lowest price with no commitment."
+    },
+    "azure-expressroute": {
+      "s5": "ExpressRoute extends the on-premises network to the cloud over a private connection through a connectivity provider and does not go over the public internet: it does not use the office's internet."
+    },
+    "azure-blob-zrs": {
+      "s1": "Microsoft advises against NFS 3.0 on Blob Storage for general-purpose file shares and in-place file editing, because each edit rewrites the whole blob."
+    }
+  }
+}

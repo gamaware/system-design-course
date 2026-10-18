@@ -1,0 +1,448 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e02-gcp",
+  "version": 1,
+  "scenario": "e02",
+  "cloud": "gcp",
+  "title": "Tienda que aguanta el Buen Fin",
+  "summary": "Una cooperativa de artesanos de Tlaquepaque multiplica por diez su tráfico en el Buen Fin. La tienda debe crecer sola y no perder ventas si cae una zona.",
+  "topics": [
+    "cómputo",
+    "autoescalado",
+    "balanceo L7",
+    "terminación TLS",
+    "monitoreo"
+  ],
+  "source_refs": [
+    {
+      "title": "Compute Engine: información general",
+      "url": "https://docs.cloud.google.com/compute/docs/overview"
+    },
+    {
+      "title": "Cloud Run functions: comparación",
+      "url": "https://docs.cloud.google.com/run/docs/functions/comparison"
+    },
+    {
+      "title": "Compute Engine: escalador automático",
+      "url": "https://docs.cloud.google.com/compute/docs/autoscaler"
+    },
+    {
+      "title": "Balanceador de aplicaciones externo",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/https"
+    },
+    {
+      "title": "Balanceador de red de paso externo",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/network/networklb-backend-service"
+    },
+    {
+      "title": "Certificate Manager: información general",
+      "url": "https://docs.cloud.google.com/certificate-manager/docs/overview"
+    },
+    {
+      "title": "Cloud Monitoring: alertas",
+      "url": "https://docs.cloud.google.com/monitoring/alerts"
+    },
+    {
+      "title": "Recommender: información general",
+      "url": "https://docs.cloud.google.com/recommender/docs/overview"
+    },
+    {
+      "title": "Cloud KMS: información general",
+      "url": "https://docs.cloud.google.com/kms/docs/key-management-service"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto tienda",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 5.51,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.39,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "gcp-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-db",
+      "icon": "gcp-cloud-sql",
+      "label": "BD administrada",
+      "number": 6,
+      "cell": {
+        "c": 2.35,
+        "r": 2.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 7.55,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "gcp-compute-engine"
+      ],
+      "near_miss": "gcp-run-functions",
+      "hint_cue": "sistema operativo que el equipo parcha",
+      "explanation": "Compute Engine da VM con sistema operativo completo, donde el equipo instala su agente y aplica parches, y que corren sin límite de tiempo. Cloud Run functions ejecuta código por solicitud sin acceso al sistema operativo.",
+      "refs": [
+        "https://docs.cloud.google.com/compute/docs/overview",
+        "https://docs.cloud.google.com/run/docs/functions/comparison"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-mig"
+      ],
+      "near_miss": "gcp-unmanaged-ig",
+      "hint_cue": "reemplaza las que fallan",
+      "explanation": "Un grupo de instancias administrado regional reparte VM idénticas entre zonas, el escalador automático ajusta su número a la carga y la reparación automática recrea las que fallan. Un grupo no administrado no escala solo.",
+      "refs": [
+        "https://docs.cloud.google.com/compute/docs/autoscaler"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "gcp-app-lb"
+      ],
+      "near_miss": "gcp-passthrough-nlb",
+      "hint_cue": "manda /api a un grupo y /tienda a otro",
+      "explanation": "El balanceador de aplicaciones externo regional termina HTTPS, usa un mapa de URL para mandar /api y /tienda a servicios de backend distintos y solo envía a backends sanos. El de red de paso no lee la URL.",
+      "refs": [
+        "https://docs.cloud.google.com/load-balancing/docs/https",
+        "https://docs.cloud.google.com/load-balancing/docs/network/networklb-backend-service"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 1.15
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-certificate-manager"
+      ],
+      "near_miss": "gcp-cloud-kms",
+      "hint_cue": "presenta al navegador para probar que es tienda.mx",
+      "explanation": "Certificate Manager emite el certificado administrado por Google para tienda.mx, lo renueva automáticamente y lo despliega en el balanceador. Cloud KMS crea y administra llaves para cifrar y firmar, no certificados.",
+      "refs": [
+        "https://docs.cloud.google.com/certificate-manager/docs/overview",
+        "https://docs.cloud.google.com/kms/docs/key-management-service"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-cloud-monitoring"
+      ],
+      "near_miss": "gcp-recommender",
+      "hint_cue": "avisa a guardia",
+      "explanation": "Cloud Monitoring recibe la métrica de CPU de cada VM y una política de alertas notifica a guardia cuando pasa de 80 % durante 5 minutos. Recommender da sugerencias periódicas.",
+      "refs": [
+        "https://docs.cloud.google.com/monitoring/alerts",
+        "https://docs.cloud.google.com/recommender/docs/overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "compra en tienda.mx",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "/api y /tienda",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "consultas",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "TLS de tienda.mx",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "agrega y reemplaza",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "s1",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "CPU cada minuto",
+      "style": "dotted",
+      "route": "v-first"
+    },
+    {
+      "id": "e8",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 6,
+      "label": "aviso",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es cada servidor individual: tiene su propio sistema operativo que el equipo parcha, su agente de inventario instalado y atiende todo el día."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} mantiene de 2 a 20 copias en ambas zonas, agrega o quita según la carga y reemplaza las que fallan."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe y descifra el HTTPS, manda /api a un grupo y /tienda a otro, y solo envía a servidores sanos."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} emite y renueva automáticamente lo que el slot 3 presenta al navegador para probar que es tienda.mx."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} registra la CPU cada minuto y avisa a guardia si pasa de 80 % durante 5 minutos."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "La base de datos administrada guarda pedidos e inventario, y solo la consultan los servidores del slot 1."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-compute-engine"
+    },
+    {
+      "service": "gcp-mig"
+    },
+    {
+      "service": "gcp-app-lb"
+    },
+    {
+      "service": "gcp-certificate-manager"
+    },
+    {
+      "service": "gcp-cloud-monitoring"
+    },
+    {
+      "service": "gcp-run-functions",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Cloud Run functions ejecuta funciones por evento o solicitud; no deja parchar el sistema operativo ni instalar un agente propio."
+      }
+    },
+    {
+      "service": "gcp-unmanaged-ig",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Un grupo de instancias no administrado junta VM distintas para balancearlas, pero no tiene escalador automático ni repara instancias."
+      }
+    },
+    {
+      "service": "gcp-passthrough-nlb",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "El balanceador de red de paso externo trabaja en capa 4 y pasa las conexiones tal cual: no descifra el HTTPS ni lee la URL."
+      }
+    },
+    {
+      "service": "gcp-cloud-kms",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Cloud KMS crea llaves para cifrar y firmar, y puede rotar automáticamente las simétricas, pero el balanceador usa certificados, que despliega Certificate Manager."
+      }
+    },
+    {
+      "service": "gcp-recommender",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Recommender sugiere cambios de tamaño o de costo a partir del uso histórico; no avisa a guardia en minutos."
+      }
+    }
+  ],
+  "review_notes": "Piloto del motor: tabla del Escenario 2 de ARCHITECTURES.md. Zonas como columnas que cruzan las subredes.",
+  "status": "published"
+}

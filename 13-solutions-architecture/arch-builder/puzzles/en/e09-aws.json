@@ -1,0 +1,96 @@
+{
+  "id": "e09-aws",
+  "title": "DNS picks the region and the balancer picks the VM",
+  "summary": "A store sells to Mexico and Spain under a single domain, tienda.mx, from mx-central-1 and eu-south-2. If a region fails, shoppers must reach the other one within minutes.",
+  "requirements": {
+    "1": "{{s1}} publishes a single name, tienda.mx, and answers with the address of the healthy region closest to the shopper, with a 60 s TTL.",
+    "2": "{{s2}} probes from several points on the internet, at a set interval, that each region's balancer answers; if one fails, slot 1 stops announcing it.",
+    "3": "{{s3}} receives HTTPS in region A, terminates TLS and spreads requests only across the web VMs that pass their health check.",
+    "4": "{{s4}} keeps at least 2 web VMs in region A in different zones, replaces the one that fails and adds more when the load goes up.",
+    "5": "{{s5}} delivers the alarm's alert to the on-call team when slot 2 marks a region as down; the repair clock starts with that alert.",
+    "6": "{{s6}} does in region B what slot 3 does in A: terminates TLS and spreads requests only across the healthy web VMs.",
+    "7": "{{s7}} does what slot 4 does, for the web VMs in region B: at least 2 in different zones, replaces the one that fails and adds more with the load."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "With records that share a name and a latency policy, Route 53 answers with any healthy record and stops including the one it considers unhealthy (active-active failover). VPC Resolver resolves queries for VPCs; it does not publish the store.",
+      "hint_cue": "answers with the address of the healthy region closest"
+    },
+    "s2": {
+      "explanation": "Several Route 53 health checkers watch each region's endpoint; if they mark it unhealthy, Route 53 stops answering with that record. The target group health check only checks the balancer's targets.",
+      "hint_cue": "probes from several points on the internet"
+    },
+    "s3": {
+      "explanation": "The Application Load Balancer terminates HTTPS with its certificate, spreads traffic across EC2 instances in several zones and, with its target group health checks, only sends traffic to healthy targets.",
+      "hint_cue": "terminates TLS and spreads requests"
+    },
+    "s4": {
+      "explanation": "The EC2 Auto Scaling group watches the health of its instances and replaces the one that fails to keep the desired capacity; it also raises or lowers the number of instances with demand.",
+      "hint_cue": "replaces the one that fails and adds more"
+    },
+    "s5": {
+      "explanation": "A CloudWatch alarm on the health check publishes to an SNS topic, and SNS sends the email to the on-call team. The guide warns that several minutes can pass between the failure and the alert.",
+      "hint_cue": "delivers the alarm's alert to the on-call team"
+    },
+    "s6": {
+      "explanation": "In region B the Application Load Balancer also terminates HTTPS, spreads traffic across the EC2 instances in its zones and, with its target group health checks, only sends traffic to healthy targets.",
+      "hint_cue": "terminates TLS and spreads requests only across the healthy web VMs"
+    },
+    "s7": {
+      "explanation": "Region B has its own EC2 Auto Scaling group: it replaces the instance that fails its health check and raises or lowers the number of instances with demand.",
+      "hint_cue": "replaces the one that fails and adds more with the load"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-vm-a1": "Web VM",
+    "n-vm-a2": "Web VM",
+    "n-vm-b1": "Web VM",
+    "n-vm-b2": "Web VM",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "tienda.mx? IP and TTL 60 s",
+    "e2": "HTTPS",
+    "e7": "probe",
+    "e8": "probe",
+    "e9": "A down",
+    "e10": "now answers with B",
+    "e11": "alarm",
+    "e12": "alert"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud",
+    "g-reg-a": "Region A (Mexico)",
+    "g-net-a": "VPC 10.0.0.0/16",
+    "g-zone-a1": "mx-central-1a",
+    "g-zone-a2": "mx-central-1b",
+    "g-reg-b": "Region B (Spain)",
+    "g-net-b": "VPC 10.1.0.0/16",
+    "g-zone-b1": "eu-south-2a",
+    "g-zone-b2": "eu-south-2b"
+  },
+  "why_not": {
+    "aws-route53-resolver": {
+      "s1": "VPC Resolver resolves DNS queries for VPCs and hybrid networks and forwards them to on-premises servers; it does not publish tienda.mx or stop announcing the region that fails."
+    },
+    "aws-target-group-health-check": {
+      "s2": "The target group health check is run by the balancer on its registered targets, so it only sends traffic to the healthy ones; the slot asks for the Route 53 health checkers, which watch each region's endpoint so Route 53 stops answering with the unhealthy record."
+    },
+    "aws-api-gateway": {
+      "s3": "API Gateway is for creating, publishing and securing REST, HTTP and WebSocket APIs; this slot must spread traffic across the region's registered instances and leave out those that fail their health check.",
+      "s6": "API Gateway is for creating, publishing and securing REST, HTTP and WebSocket APIs; this slot must spread traffic across the region's registered instances and leave out those that fail their health check."
+    },
+    "aws-launch-template": {
+      "s4": "The launch template specifies the settings used to launch EC2 instances, such as the AMI, the instance type and the security groups; the slot asks for what watches their health and uses those settings to launch a replacement for the one that fails.",
+      "s7": "The launch template specifies the settings used to launch EC2 instances, such as the AMI, the instance type and the security groups; the slot asks for what watches their health and uses those settings to launch a replacement for the one that fails."
+    },
+    "aws-ec2": {
+      "s4": "Each web VM in the diagram is already an EC2 instance; the slot asks for what keeps the number of instances and launches a replacement when one fails or terminates.",
+      "s7": "Each web VM in the diagram is already an EC2 instance; the slot asks for what keeps the number of instances and launches a replacement when one fails or terminates."
+    },
+    "aws-cloudwatch-logs": {
+      "s5": "CloudWatch Logs is for monitoring, storing and accessing log files; the slot asks for the topic the CloudWatch alarm sends its notification to, so the email reaches the on-call team."
+    }
+  }
+}

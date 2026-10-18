@@ -1,0 +1,76 @@
+{
+  "id": "e07-azure",
+  "title": "World Cup 2026 betting pool",
+  "summary": "A Mexican app expects 2 million players during the 2026 World Cup matches, and bets spike at minute 90.",
+  "requirements": {
+    "1": "{{s1}} is the HTTP proxy that receives bets over HTTPS, spreads the requests across the containers and passes the player's IP to the API in the X-Forwarded-For header.",
+    "2": "{{s2}} runs the API in containers without the two-person team managing servers, nodes or a Kubernetes cluster.",
+    "3": "{{s3}} keeps the leaderboard of 2 million players in memory, sorted by points, so the API does not hit the database on every lookup.",
+    "4": "{{s4}} absorbs the minute-90 spike: workers pull bets at their own pace and each one is done only when they confirm they processed it; otherwise it is delivered again.",
+    "5": "{{s5}} is the NoSQL store for the bets: it saves each one keyed by player and match and writes it only if that key does not exist yet, so nobody bets twice.",
+    "6": "The score provider sends each goal to the slot 2 API, which updates the slot 3 leaderboard."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Application Gateway works at layer 7 and can sit in front of Container Apps in an internal environment integrated with the virtual network; it adds the x-forwarded-for header with the player's IP and port.",
+      "hint_cue": "in the X-Forwarded-For header"
+    },
+    "s2": {
+      "explanation": "Azure Container Apps is a serverless platform for containers: the team does not configure servers or orchestrate containers, and apps scale on HTTP traffic or events.",
+      "hint_cue": "without the two-person team managing servers"
+    },
+    "s3": {
+      "explanation": "Azure Managed Redis is an in-memory data store that builds leaderboards with the sorted set structure, and Redis is typically much faster than a relational database.",
+      "hint_cue": "in memory"
+    },
+    "s4": {
+      "explanation": "In a Service Bus queue several workers read and each message is processed by only one. In peek lock mode the message is locked; if it is not completed before the lock expires, Service Bus delivers it again.",
+      "hint_cue": "otherwise it is delivered again"
+    },
+    "s5": {
+      "explanation": "In Azure Cosmos DB each item has an id that is unique within its logical partition, and creating a document with an id already taken returns 409 Conflict. Writes take less than 10 ms at the 99th percentile.",
+      "hint_cue": "writes it only if that key does not exist yet"
+    }
+  },
+  "nodes": {
+    "n-users": "Players",
+    "n-internet": "Internet",
+    "n-scores": "Score provider"
+  },
+  "edges": {
+    "e1": "bets at minute 90",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "enqueues the bet",
+    "e5": "workers store it",
+    "e6": "standings",
+    "e7": "each goal"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription",
+    "g-region": "Mexico Central region",
+    "g-net": "VNet 10.0.0.0/16",
+    "g-zone-a": "Availability zone 1",
+    "g-zone-b": "Availability zone 2",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "azure-load-balancer": {
+      "s1": "Azure Load Balancer spreads layer 4 TCP or UDP traffic, and its IP-based backend pool only accepts virtual machines or scale sets, not other PaaS services such as Container Apps."
+    },
+    "azure-aks": {
+      "s2": "AKS is a Kubernetes cluster, which the requirement rules out, and in AKS Standard the team creates and manages the node pools by hand."
+    },
+    "azure-mysql-read-replica": {
+      "s3": "A MySQL read replica is another copy of the relational database, and the Azure Managed Redis guide explains that Redis is typically much faster than a relational database.",
+      "s5": "MySQL read replicas are read-only, so they cannot take the write of each bet."
+    },
+    "azure-event-hubs": {
+      "s4": "In Event Hubs the consumer stores its own checkpoints and events cannot be deleted explicitly; the requirement asks to confirm each bet one by one."
+    },
+    "azure-blob-storage": {
+      "s5": "Blob Storage is optimized for storing massive amounts of unstructured data; the requirement asks for a NoSQL database."
+    }
+  }
+}

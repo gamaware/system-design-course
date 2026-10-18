@@ -150,7 +150,20 @@ LFU eviction, TTL expiration, cache invalidation, eviction policies
 
 #### [12 — Proxies](./12-proxies)
 
-#### [13 — Solutions Architecture](./13-solutions-architecture) _(coming soon)_
+#### [13 — Solutions Architecture](./13-solutions-architecture)
+
+Browser-based "complete the diagram" exercise: 9 scenarios, each on AWS, Azure, Google Cloud, and
+Oracle Cloud. Students learn to:
+
+- Map written requirements to the managed service that meets them
+- Rebuild the multi-Region DNS plus load balancer pattern from Lab 04
+- Compare how four cloud providers implement the same topology
+- Identify services without a clean equivalent on another cloud
+
+**Technologies**: AWS, Azure, Google Cloud, Oracle Cloud, static HTML/JavaScript site
+
+**Key Concepts**: Requirement-driven design, managed services, multi-Region high availability,
+DNS failover, cross-cloud service equivalence
 
 #### [14 — Distributed Messaging](./14-distributed-messaging)
 

@@ -1,0 +1,77 @@
+{
+  "id": "e02-oci",
+  "title": "A store that survives Buen Fin",
+  "summary": "An artisan cooperative from Tlaquepaque gets ten times its usual traffic during Buen Fin. The store must grow on its own and keep selling if a fault domain fails.",
+  "requirements": {
+    "1": "{{s1}} is each individual server: it has its own operating system the team patches, its inventory agent installed, and runs all day.",
+    "2": "{{s2}} keeps 2 to 20 copies across both fault domains, adds or removes them with the load and replaces the ones that are terminated.",
+    "3": "{{s3}} receives and decrypts HTTPS, sends /api to one group and /tienda to another, and only forwards to healthy servers.",
+    "4": "{{s4}} stores what slot 3 presents to the browser to prove it is tienda.mx (an external authority issues it and it is imported here) and manages its versions.",
+    "5": "{{s5}} records CPU every minute and alerts the on-call team if it stays above 80 % for 5 minutes.",
+    "6": "The managed database stores orders and inventory, and only the slot 1 servers query it."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "OCI Compute provides VM instances: each one is an independent computing environment whose image determines the operating system and other software, and Oracle recommends applying the latest security patches to them. OCI Functions stops each run at 300 seconds.",
+      "hint_cue": "operating system the team patches"
+    },
+    "s2": {
+      "explanation": "An instance pool creates identical instances from an instance configuration and spreads them across fault domains; autoscaling sets their number to the CPU between a minimum and a maximum, and if an instance is terminated the pool creates another.",
+      "hint_cue": "adds or removes them with the load"
+    },
+    "s3": {
+      "explanation": "OCI Load Balancer terminates TLS with the slot 4 certificate, sends /api and /tienda to different backend sets with path rules and only forwards to backends that pass their health check. The Network Load Balancer works at layer 4.",
+      "hint_cue": "sends /api to one group and /tienda to another"
+    },
+    "s4": {
+      "explanation": "OCI Certificates imports the tienda.mx certificate issued by an external CA, keeps its versions, marks the current one and the Load Balancer uses it through the integration. An OCI Vault key also has versions, but it is not a certificate.",
+      "hint_cue": "presents to the browser to prove it is tienda.mx"
+    },
+    "s5": {
+      "explanation": "OCI Monitoring receives the instance CPU every minute and an alarm alerts the on-call team through Notifications when it stays above 80 % for 5 minutes. Cloud Advisor only gives periodic recommendations.",
+      "hint_cue": "alerts the on-call team"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-internet": "Internet",
+    "n-db": "Managed database",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "buys at tienda.mx",
+    "e2": "HTTPS",
+    "e3": "/api and /tienda",
+    "e4": "queries",
+    "e5": "TLS for tienda.mx",
+    "e6": "adds and replaces",
+    "e7": "CPU every minute",
+    "e8": "alert"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · tienda compartment",
+    "g-region": "Querétaro region (single AD)",
+    "g-net": "VCN 10.0.0.0/16",
+    "g-zone-a": "Fault domain 1",
+    "g-zone-b": "Fault domain 2",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "oci-functions": {
+      "s1": "OCI Functions stops each run at 300 seconds and does not let the team patch the operating system or install agents."
+    },
+    "oci-instance-configuration": {
+      "s2": "An instance configuration is the template to create instances: it does not keep copies or scale with the load."
+    },
+    "oci-network-load-balancer": {
+      "s3": "OCI Network Load Balancer works at layers 3 and 4: it passes packets through without decrypting HTTPS or reading the URL."
+    },
+    "oci-vault": {
+      "s4": "An OCI Vault key has versions and is used to encrypt or sign, but it is not a certificate: the Load Balancer uses certificates from the Certificates service."
+    },
+    "oci-cloud-advisor": {
+      "s5": "Cloud Advisor gives periodic cost, performance and security recommendations; it does not measure CPU every minute or alert the on-call team."
+    }
+  }
+}

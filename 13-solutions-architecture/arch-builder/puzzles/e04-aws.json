@@ -1,0 +1,404 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e04-aws",
+  "version": 1,
+  "scenario": "e04",
+  "cloud": "aws",
+  "title": "Estudio de animación que renderiza de noche",
+  "summary": "Un estudio tapatío renderiza un cortometraje de noche en 200 VM que leen las mismas escenas. Los artistas trabajan desde su oficina y ninguna escena se puede perder.",
+  "topics": [
+    "archivos compartidos NFS",
+    "almacenamiento de objetos",
+    "respaldo frente a réplica",
+    "cómputo interrumpible",
+    "conexión híbrida cifrada"
+  ],
+  "source_refs": [
+    {
+      "title": "Amazon EFS: cómo funciona",
+      "url": "https://docs.aws.amazon.com/efs/latest/ug/how-it-works.html"
+    },
+    {
+      "title": "Amazon EBS: Multi-Attach",
+      "url": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-multi.html"
+    },
+    {
+      "title": "Amazon EFS: respaldos con AWS Backup",
+      "url": "https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html"
+    },
+    {
+      "title": "Amazon S3: protección y durabilidad de datos",
+      "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/DataDurability.html"
+    },
+    {
+      "title": "re:Post: interrupción de instancias Spot de EC2",
+      "url": "https://repost.aws/knowledge-center/ec2-spot-instance-unexpected-termination"
+    },
+    {
+      "title": "Savings Plans: referencia de la API",
+      "url": "https://docs.aws.amazon.com/savingsplans/latest/APIReference/Welcome.html"
+    },
+    {
+      "title": "AWS Site-to-Site VPN: protección de datos",
+      "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/data-protection.html"
+    },
+    {
+      "title": "Amazon EFS: replicación de sistemas de archivos",
+      "url": "https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html"
+    },
+    {
+      "title": "Amazon EC2: instancias Spot",
+      "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html"
+    },
+    {
+      "title": "¿Qué es AWS Site-to-Site VPN?",
+      "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html"
+    },
+    {
+      "title": "Conectividad híbrida: conexiones de red híbridas",
+      "url": "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-network-connections.html"
+    },
+    {
+      "title": "AWS Direct Connect: bienvenida",
+      "url": "https://docs.aws.amazon.com/directconnect/latest/APIReference/Welcome.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.5
+  },
+  "groups": [
+    {
+      "id": "g-office",
+      "kind": "corporate-dc",
+      "label": "Oficina en GDL",
+      "parent": null,
+      "cell": {
+        "c": 0,
+        "r": 2.6,
+        "w": 1.5,
+        "h": 1.45
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.7,
+        "r": 0,
+        "w": 7.25,
+        "h": 4.5
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.76,
+        "r": 0.22,
+        "w": 7.13,
+        "h": 4.22
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 3.05,
+        "r": 0.44,
+        "w": 3.9,
+        "h": 3.94
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "az",
+      "label": "Zona de disponibilidad A",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "az",
+      "label": "Zona de disponibilidad B",
+      "parent": "g-net",
+      "cell": {
+        "c": 5.03,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.9,
+        "w": 3.78,
+        "h": 3.36
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-artists",
+      "icon": "gen-team",
+      "label": "Artistas",
+      "number": 6,
+      "cell": {
+        "c": 0.25,
+        "r": 2.9
+      },
+      "group": "g-office"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 2.9
+      },
+      "group": "g-priv",
+      "accept": [
+        "aws-efs"
+      ],
+      "near_miss": "aws-ebs",
+      "hint_cue": "montan a la vez por NFS",
+      "explanation": "Amazon EFS es regional: tiene un mount target en cada zona y varios clientes NFS lo usan a la vez. EBS Multi-Attach solo sirve con io1 e io2 y hasta 16 instancias de la misma zona.",
+      "refs": [
+        "https://docs.aws.amazon.com/efs/latest/ug/how-it-works.html",
+        "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-multi.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 7.4,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-backup"
+      ],
+      "near_miss": "aws-efs-replication",
+      "hint_cue": "versión de anoche",
+      "explanation": "AWS Backup respalda el sistema de archivos cada día con su plan predeterminado y permite restaurar por elementos, así que se recupera solo la carpeta borrada. La replicación solo mantiene la copia sincronizada con el origen.",
+      "refs": [
+        "https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html",
+        "https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 7.4,
+        "r": 1.2
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-s3"
+      ],
+      "near_miss": "aws-s3-one-zone-ia",
+      "hint_cue": "sobreviven a la pérdida de una zona completa",
+      "explanation": "S3 Standard guarda los objetos en al menos tres zonas y está diseñado para conservarlos aunque se pierda una zona completa. S3 One Zone-IA los guarda en una sola zona.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/DataDurability.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 4.5,
+        "r": 1.2
+      },
+      "group": "g-priv",
+      "accept": [
+        "aws-ec2-spot"
+      ],
+      "near_miss": "aws-savings-plans",
+      "hint_cue": "segundos o minutos de aviso",
+      "explanation": "Una instancia Spot usa capacidad sobrante de EC2 por menos del precio bajo demanda y recibe un aviso dos minutos antes de que EC2 la interrumpa. Savings Plans baja el precio solo a cambio de comprometer uso durante uno o tres años.",
+      "refs": [
+        "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
+        "https://repost.aws/knowledge-center/ec2-spot-instance-unexpected-termination",
+        "https://docs.aws.amazon.com/savingsplans/latest/APIReference/Welcome.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 1.95,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-site-to-site-vpn"
+      ],
+      "near_miss": "aws-direct-connect",
+      "hint_cue": "por el internet que ya tiene",
+      "explanation": "Site-to-Site VPN conecta la red de la oficina con la VPC por dos túneles IPsec cifrados, y una VPN de sitio a sitio puede ir por internet. Direct Connect usa un cable de fibra dedicado y evita a los proveedores de internet.",
+      "refs": [
+        "https://docs.aws.amazon.com/vpn/latest/s2svpn/data-protection.html",
+        "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html",
+        "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-network-connections.html",
+        "https://docs.aws.amazon.com/directconnect/latest/APIReference/Welcome.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-artists",
+      "to": "s5",
+      "dir": "forward",
+      "step": 1,
+      "label": "su internet",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s5",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "sube escenas",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s4",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "lee escenas por NFS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "cuadros terminados",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "copia de cada noche",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda la carpeta de proyectos que cientos de servidores Linux montan a la vez por NFS, disponible en ambas zonas."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} conserva la versión de anoche de la carpeta de proyectos, para recuperar una escena que alguien borre por error."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda por años los cuadros terminados, que se leen por HTTP y sobreviven a la pérdida de una zona completa."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da los nodos de render: pueden apagarse con segundos o minutos de aviso porque el trabajo se reanuda, e importa el precio más bajo sin compromiso."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} une hoy mismo la oficina con la red de la nube, cifrada, por el internet que ya tiene."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "Los artistas trabajan en la oficina del estudio en Guadalajara y desde ahí suben sus escenas."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-efs"
+    },
+    {
+      "service": "aws-backup"
+    },
+    {
+      "service": "aws-s3"
+    },
+    {
+      "service": "aws-ec2-spot"
+    },
+    {
+      "service": "aws-site-to-site-vpn"
+    },
+    {
+      "service": "aws-ebs",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Un volumen EBS con Multi-Attach se conecta a máximo 16 instancias de la misma zona, y los sistemas de archivos comunes no aguantan varios servidores a la vez.",
+        "s3": "Un volumen EBS se conecta a instancias de una sola zona; no sirve los cuadros por HTTP ni sobrevive a la pérdida de esa zona."
+      }
+    },
+    {
+      "service": "aws-efs-replication",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "La replicación mantiene la copia de destino sincronizada con el origen, así que refleja el estado actual de la carpeta y no la versión de anoche.",
+        "s1": "La replicación copia un sistema de archivos que ya existe; por sí sola no es la carpeta que montan los servidores."
+      }
+    },
+    {
+      "service": "aws-s3-one-zone-ia",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "S3 One Zone-IA guarda los objetos en una sola zona de disponibilidad, así que no está diseñado para sobrevivir a la pérdida de esa zona."
+      }
+    },
+    {
+      "service": "aws-savings-plans",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Savings Plans baja el precio a cambio de comprometer un uso por hora durante uno o tres años, y el requisito pide no comprometerse."
+      }
+    },
+    {
+      "service": "aws-direct-connect",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Direct Connect enlaza la red con una ubicación de Direct Connect por un cable de fibra Ethernet y evita a los proveedores de internet: no usa el internet que la oficina ya tiene."
+      }
+    }
+  ],
+  "review_notes": "Escenario 4 de ARCHITECTURES.md. Topología: el almacenamiento de objetos (s3) y el respaldo (s2) quedan en la región, fuera de la VPC, porque son servicios regionales; s1 y s4 van sobre la línea entre zonas. Requisito 2 sin 'restaurar todo el disco' (Filestore no documenta restauración por archivo en la fuente). Revisión a ciegas: AWS Backup ya no lleva el modo 'para EFS' (delataba s1). La réplica se explica con la página de replicación de EFS (copia sincronizada), Spot con la guía de EC2 y Direct Connect con su referencia de API.",
+  "status": "published"
+}

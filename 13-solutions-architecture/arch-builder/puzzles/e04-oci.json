@@ -1,0 +1,384 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e04-oci",
+  "version": 1,
+  "scenario": "e04",
+  "cloud": "oci",
+  "title": "Estudio de animación que renderiza de noche",
+  "summary": "Un estudio tapatío renderiza un cortometraje de noche en 200 VM que leen las mismas escenas. Los artistas trabajan desde su oficina y ninguna escena se puede perder.",
+  "topics": [
+    "archivos compartidos NFS",
+    "almacenamiento de objetos",
+    "respaldo frente a réplica",
+    "cómputo interrumpible",
+    "conexión híbrida cifrada"
+  ],
+  "source_refs": [
+    {
+      "title": "OCI File Storage: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/File/Concepts/filestorageoverview.htm"
+    },
+    {
+      "title": "OCI File Storage: instantáneas",
+      "url": "https://docs.oracle.com/iaas/Content/File/Tasks/managingsnapshots.htm"
+    },
+    {
+      "title": "OCI Object Storage: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm"
+    },
+    {
+      "title": "OCI Compute: instancias preemptible",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/preemptible.htm"
+    },
+    {
+      "title": "OCI Compute: reservas de capacidad",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/reserve-capacity.htm"
+    },
+    {
+      "title": "OCI Site-to-Site VPN: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/overviewIPsec.htm"
+    },
+    {
+      "title": "OCI File Storage: replicación",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/File/Tasks/FSreplication.htm"
+    },
+    {
+      "title": "OCI Block Volume: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm"
+    },
+    {
+      "title": "OCI FastConnect: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/fastconnect.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.5
+  },
+  "groups": [
+    {
+      "id": "g-office",
+      "kind": "corporate-dc",
+      "label": "Oficina en GDL",
+      "parent": null,
+      "cell": {
+        "c": 0,
+        "r": 2.6,
+        "w": 1.5,
+        "h": 1.45
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento estudio",
+      "parent": null,
+      "cell": {
+        "c": 1.7,
+        "r": 0,
+        "w": 7.25,
+        "h": 4.5
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "oci-region",
+      "label": "Región Querétaro (AD único)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.76,
+        "r": 0.22,
+        "w": 7.13,
+        "h": 4.22
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 3.05,
+        "r": 0.44,
+        "w": 3.9,
+        "h": 3.94
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 5.03,
+        "r": 0.66,
+        "w": 1.86,
+        "h": 3.66
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.11,
+        "r": 0.9,
+        "w": 3.78,
+        "h": 3.36
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-artists",
+      "icon": "gen-team",
+      "label": "Artistas",
+      "number": 6,
+      "cell": {
+        "c": 0.25,
+        "r": 2.9
+      },
+      "group": "g-office"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 2.9
+      },
+      "group": "g-priv",
+      "accept": [
+        "oci-file-storage"
+      ],
+      "near_miss": "oci-block-volume",
+      "hint_cue": "montan a la vez por NFS",
+      "explanation": "OCI File Storage usa NFSv3; cada mount target vive en una subred y acepta hasta 100,000 conexiones NFS. Dentro del dominio de disponibilidad replica de forma síncrona y tiene failover.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/File/Concepts/filestorageoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 7.4,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-fss-snapshots"
+      ],
+      "near_miss": "oci-fss-replication",
+      "hint_cue": "versión de anoche",
+      "explanation": "Una instantánea de File Storage es una vista consistente de un momento dado que queda en .snapshot/nombre, en la raíz del sistema de archivos, de donde se copia la escena borrada.",
+      "refs": [
+        "https://docs.oracle.com/iaas/Content/File/Tasks/managingsnapshots.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/File/Concepts/filestorageoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/File/Tasks/FSreplication.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 7.4,
+        "r": 1.2
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-object-storage"
+      ],
+      "near_miss": "oci-block-volume",
+      "hint_cue": "no dependen de ninguna instancia",
+      "explanation": "Object Storage es un servicio regional que no depende de ninguna instancia de cómputo; se lee desde internet o desde la nube y guarda los datos de forma redundante en varios servidores.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 4.5,
+        "r": 1.2
+      },
+      "group": "g-priv",
+      "accept": [
+        "oci-preemptible"
+      ],
+      "near_miss": "oci-capacity-reservation",
+      "hint_cue": "segundos o minutos de aviso",
+      "explanation": "Las instancias preemptible pueden terminarse en cualquier momento, con un evento dos minutos antes, y cuestan 50 % menos que la capacidad bajo demanda: sirven para trabajo que tolera interrupciones.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/preemptible.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/reserve-capacity.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 1.95,
+        "r": 2.9
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-site-to-site-vpn"
+      ],
+      "near_miss": "oci-fastconnect",
+      "hint_cue": "por el internet que ya tiene",
+      "explanation": "Site-to-Site VPN usa líneas públicas de internet y cifra con IPsec toda la comunicación entre la oficina y la VCN, que pasa por el DRG.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/overviewIPsec.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/fastconnect.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-artists",
+      "to": "s5",
+      "dir": "forward",
+      "step": 1,
+      "label": "su internet",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s5",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "sube escenas",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s4",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "lee escenas por NFS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "cuadros terminados",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "copia de cada noche",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda la carpeta de proyectos que cientos de servidores Linux montan a la vez por NFS, disponible en ambos dominios de falla."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} conserva la versión de anoche de la carpeta de proyectos, para recuperar una escena que alguien borre por error."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda por años los cuadros terminados, que se leen por HTTP desde internet y no dependen de ninguna instancia."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da los nodos de render: pueden apagarse con segundos o minutos de aviso porque el trabajo se reanuda, e importa el precio más bajo sin compromiso."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} une hoy mismo la oficina con la red de la nube, cifrada, por el internet que ya tiene."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "Los artistas trabajan en la oficina del estudio en Guadalajara y desde ahí suben sus escenas."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-file-storage"
+    },
+    {
+      "service": "oci-fss-snapshots"
+    },
+    {
+      "service": "oci-object-storage"
+    },
+    {
+      "service": "oci-preemptible"
+    },
+    {
+      "service": "oci-site-to-site-vpn"
+    },
+    {
+      "service": "oci-block-volume",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Un volumen de bloques se usa como el disco duro de una instancia; conectarlo a varias a la vez exige instalar una solución para clústeres, y no es una carpeta NFS.",
+        "s3": "Un volumen de bloques se usa como el disco duro de una instancia; no guarda objetos que se lean por HTTP desde internet."
+      }
+    },
+    {
+      "service": "oci-fss-replication",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "La replicación deja el destino con la misma estructura de archivos y carpetas que el origen y, en cada intervalo, borra la instantánea de replicación anterior: no conserva la versión de anoche.",
+        "s1": "La replicación copia un sistema de archivos que ya existe; por sí sola no es la carpeta que montan los servidores."
+      }
+    },
+    {
+      "service": "oci-capacity-reservation",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una reserva de capacidad aparta instancias, pero se cobran a la tarifa normal y la capacidad sin usar se cobra al 85 %: no abarata los nodos."
+      }
+    },
+    {
+      "service": "oci-fastconnect",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "FastConnect crea una conexión dedicada y privada entre el centro de datos y Oracle Cloud, no el túnel cifrado por el internet que la oficina ya tiene."
+      }
+    }
+  ],
+  "review_notes": "Escenario 4 de ARCHITECTURES.md. Querétaro tiene un solo AD: las columnas son dominios de falla y los requisitos 1 y 3 se ajustan (OCI no documenta redundancia por zona de Object Storage; el requisito 3 pide no depender de ninguna instancia). Block Volume es near-miss de s1 y s3. Revisión a ciegas: Block Volume, la replicación de File Storage y FastConnect ya se apoyan en sus propias páginas de Oracle.",
+  "status": "published"
+}

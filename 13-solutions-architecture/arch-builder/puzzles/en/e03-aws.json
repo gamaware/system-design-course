@@ -1,0 +1,77 @@
+{
+  "id": "e03-aws",
+  "title": "Video courses for 300,000 students",
+  "summary": "CursosMX sells recorded courses to 300,000 students in Mexico and Central America. Videos must arrive fast, raw recordings must cost little, and the login receives SQL injection attempts.",
+  "requirements": {
+    "1": "{{s1}} keeps copies of videos and images at points close to each student, so requests do not travel to the region every time.",
+    "2": "{{s2}} is the origin of millions of videos that students watch every day over HTTP, in a single region; you pay per stored GB and there are no servers to manage.",
+    "3": "{{s3}} keeps the raw recordings for 5 years, and they are almost never opened. What matters is the lowest cost per stored GB, even if reading them later costs more or takes longer.",
+    "4": "{{s4}} holds the records for cursosmx.com and answers anyone on the internet who asks for that name, so they reach slot 1.",
+    "5": "{{s5}} checks every HTTP request to the login and blocks SQL injection before it reaches the app.",
+    "6": "The app load balancer spreads login and payments across the servers in the region."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "CloudFront caches copies of files in edge locations around the world and serves each request from the one with the lowest latency; if the file is missing, it fetches it from the origin. Global Accelerator proxies TCP and UDP packets.",
+      "hint_cue": "points close to each student"
+    },
+    "s2": {
+      "explanation": "An S3 bucket can be the CloudFront origin: it stores the definitive version of each object and serves it over HTTP with no servers to manage. An EBS volume attaches to instances in a single zone.",
+      "hint_cue": "no servers to manage"
+    },
+    "s3": {
+      "explanation": "S3 Glacier Deep Archive is designed for long-term retention of data read once or twice a year; its objects are restored within 12 hours, so reading them later is slower.",
+      "hint_cue": "the lowest cost per stored GB"
+    },
+    "s4": {
+      "explanation": "A Route 53 public hosted zone routes internet traffic to your resources with a record per name, such as cursosmx.com to the distribution. A private hosted zone only routes inside a VPC.",
+      "hint_cue": "answers anyone on the internet"
+    },
+    "s5": {
+      "explanation": "AWS WAF inspects the HTTP and HTTPS requests sent to the protected resource, such as an Application Load Balancer, and can block the ones carrying malicious SQL code (SQL injection). Shield Standard helps against DDoS attacks.",
+      "hint_cue": "blocks SQL injection"
+    }
+  },
+  "nodes": {
+    "n-users": "Students",
+    "n-internet": "Internet",
+    "n-team": "Production team",
+    "n-lb": "App load balancer",
+    "n-app": "Login and payment servers"
+  },
+  "edges": {
+    "e1": "cursosmx.com",
+    "e2": "cursosmx.com?",
+    "e3": "HTTPS",
+    "e4": "missing video",
+    "e5": "login and payments",
+    "e6": "associated policy",
+    "e7": "spreads",
+    "e8": "raw recordings"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud",
+    "g-edge": "Entry from the internet",
+    "g-region": "Region mx-central-1",
+    "g-net": "VPC 10.0.0.0/16"
+  },
+  "why_not": {
+    "aws-global-accelerator": {
+      "s1": "Global Accelerator improves TCP and UDP applications by proxying packets from the edge to the Region; in the AWS FAQ, cacheable content such as images and videos is sped up by another service."
+    },
+    "aws-ebs": {
+      "s2": "An EBS volume attaches to EC2 instances in a single zone (up to 16 with Multi-Attach); it does not serve videos over HTTP without a server in front.",
+      "s3": "EBS is a block disk for EC2 instances, not a storage class for keeping recordings for years at the lowest cost."
+    },
+    "aws-s3-standard-ia": {
+      "s3": "Standard-IA is for data read once a month that must open in milliseconds; raw recordings are read less than once a year, and AWS designed another archive class for that.",
+      "s2": "Standard-IA charges for every GB retrieved and is designed for data read once a month; the videos are watched every day."
+    },
+    "aws-route53-private": {
+      "s4": "A private hosted zone only routes traffic inside a VPC; students on the internet do not get its answers."
+    },
+    "aws-shield": {
+      "s5": "Shield Standard is included at no extra cost and helps against distributed denial of service attacks; it does not look for SQL code in each login request."
+    }
+  }
+}

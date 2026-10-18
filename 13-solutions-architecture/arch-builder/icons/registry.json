@@ -1,0 +1,5100 @@
+{
+  "version": 1,
+  "about": "Id de servicio -> icono oficial de cada nube. Solo nombres de archivo: las imágenes se descargan en el build (scripts/fetch-icons.sh) y nunca se commitean. Detalle y términos de uso: ICONS.md.",
+  "clouds": {
+    "aws": {
+      "label": "AWS",
+      "name": "Amazon Web Services",
+      "package": "aws",
+      "logo": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/AWS-Cloud-logo_32.svg"
+      }
+    },
+    "azure": {
+      "label": "Azure",
+      "name": "Microsoft Azure",
+      "package": "azure",
+      "logo": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/other/10018-icon-service-Azure-A.svg"
+      }
+    },
+    "gcp": {
+      "label": "Google Cloud",
+      "name": "Google Cloud",
+      "package": "gcp-core",
+      "logo": {
+        "package": "gcp-logo",
+        "file": "Google_Cloud_Logos/RGB-20260806T162906Z-1-001/RGB/Full Color/GC_Logo_FullColor_rgb.svg"
+      },
+      "logo_wordmark": true
+    },
+    "oci": {
+      "label": "Oracle Cloud",
+      "name": "Oracle Cloud Infrastructure",
+      "package": "oci",
+      "logo": {
+        "package": "oci",
+        "shape": "Cloud"
+      },
+      "logo_note": "La librería de draw.io de Oracle no trae el logotipo de la marca (su figura \"Logical - Grouping - Oracle Cloud\" es un rectángulo con el texto, no un logo); se usa su figura genérica de nube."
+    }
+  },
+  "categories": {
+    "compute": {
+      "es": "cómputo",
+      "en": "compute"
+    },
+    "networking": {
+      "es": "redes y entrega de contenido",
+      "en": "networking and content delivery"
+    },
+    "security": {
+      "es": "seguridad e identidad",
+      "en": "security and identity"
+    },
+    "management": {
+      "es": "monitoreo y administración",
+      "en": "monitoring and management"
+    },
+    "database": {
+      "es": "bases de datos",
+      "en": "databases"
+    },
+    "storage": {
+      "es": "almacenamiento",
+      "en": "storage"
+    },
+    "integration": {
+      "es": "integración y mensajería",
+      "en": "integration and messaging"
+    },
+    "containers": {
+      "es": "contenedores",
+      "en": "containers"
+    },
+    "general": {
+      "es": "general",
+      "en": "general"
+    }
+  },
+  "services": {
+    "gen-users": {
+      "cloud": null,
+      "label": "Usuarios",
+      "short": "Usuarios",
+      "category": "general",
+      "role": {
+        "es": "Personas que usan la aplicación",
+        "en": "People using the application"
+      },
+      "icon": {
+        "builtin": "users"
+      }
+    },
+    "gen-internet": {
+      "cloud": null,
+      "label": "Internet",
+      "short": "Internet",
+      "category": "general",
+      "role": {
+        "es": "La red pública",
+        "en": "The public internet"
+      },
+      "icon": {
+        "builtin": "internet"
+      }
+    },
+    "gen-team": {
+      "cloud": null,
+      "label": "Equipo",
+      "short": "Equipo",
+      "category": "general",
+      "role": {
+        "es": "Personas que operan el sistema",
+        "en": "People who operate the system"
+      },
+      "icon": {
+        "builtin": "team"
+      }
+    },
+    "aws-ec2": {
+      "cloud": "aws",
+      "label": "Amazon EC2",
+      "short": "EC2",
+      "category": "compute",
+      "aliases": [
+        "Elastic Compute Cloud"
+      ],
+      "role": {
+        "es": "Servidores virtuales con sistema operativo propio",
+        "en": "Virtual servers with their own operating system"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Compute/64/Arch_Amazon-EC2_64.svg"
+      }
+    },
+    "aws-ec2-auto-scaling": {
+      "cloud": "aws",
+      "label": "Amazon EC2 Auto Scaling",
+      "short": "EC2 Auto Scaling",
+      "mode": {
+        "es": "grupo",
+        "en": "group"
+      },
+      "category": "compute",
+      "aliases": [
+        "Auto Scaling",
+        "Auto Scaling group",
+        "grupo de Auto Scaling"
+      ],
+      "role": {
+        "es": "Mantiene el número de instancias entre un mínimo y un máximo",
+        "en": "Keeps the number of instances between a minimum and a maximum"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Compute/64/Arch_Amazon-EC2-Auto-Scaling_64.svg"
+      }
+    },
+    "aws-launch-template": {
+      "cloud": "aws",
+      "label": "Launch template",
+      "short": "Launch template",
+      "category": "compute",
+      "aliases": [
+        "plantilla de lanzamiento"
+      ],
+      "role": {
+        "es": "Plantilla con la configuración para lanzar instancias",
+        "en": "Template with the settings to launch instances"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Compute/Res_Amazon-EC2_AMI_48.svg"
+      },
+      "icon_note": "El paquete no trae icono de launch template; se usa el recurso AMI, que es parte de la plantilla."
+    },
+    "aws-lambda": {
+      "cloud": "aws",
+      "label": "AWS Lambda",
+      "short": "Lambda",
+      "category": "compute",
+      "role": {
+        "es": "Funciones sin servidor de hasta 15 minutos",
+        "en": "Serverless functions that run up to 15 minutes"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Compute/64/Arch_AWS-Lambda_64.svg"
+      }
+    },
+    "aws-alb": {
+      "cloud": "aws",
+      "label": "Application Load Balancer",
+      "short": "ALB",
+      "category": "networking",
+      "aliases": [
+        "ALB"
+      ],
+      "role": {
+        "es": "Balanceador de capa 7 con reglas por ruta y host",
+        "en": "Layer 7 load balancer with path and host rules"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Elastic-Load-Balancing_Application-Load-Balancer_48.svg"
+      }
+    },
+    "aws-nlb": {
+      "cloud": "aws",
+      "label": "Network Load Balancer",
+      "short": "NLB",
+      "category": "networking",
+      "aliases": [
+        "NLB"
+      ],
+      "role": {
+        "es": "Balanceador de capa 4 para TCP y UDP",
+        "en": "Layer 4 load balancer for TCP and UDP"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Elastic-Load-Balancing_Network-Load-Balancer_48.svg"
+      }
+    },
+    "aws-acm": {
+      "cloud": "aws",
+      "label": "AWS Certificate Manager",
+      "short": "ACM",
+      "category": "security",
+      "aliases": [
+        "ACM",
+        "Certificate Manager"
+      ],
+      "role": {
+        "es": "Emite y renueva certificados TLS públicos",
+        "en": "Issues and renews public TLS certificates"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-Certificate-Manager_64.svg"
+      }
+    },
+    "aws-kms": {
+      "cloud": "aws",
+      "label": "AWS Key Management Service",
+      "short": "KMS",
+      "category": "security",
+      "aliases": [
+        "KMS"
+      ],
+      "role": {
+        "es": "Llaves de cifrado administradas",
+        "en": "Managed encryption keys"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-Key-Management-Service_64.svg"
+      }
+    },
+    "aws-cloudwatch": {
+      "cloud": "aws",
+      "label": "Amazon CloudWatch",
+      "short": "CloudWatch",
+      "mode": {
+        "es": "alarmas",
+        "en": "alarms"
+      },
+      "category": "management",
+      "role": {
+        "es": "Métricas, alarmas y registros",
+        "en": "Metrics, alarms and logs"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Management-Tools/64/Arch_Amazon-CloudWatch_64.svg"
+      }
+    },
+    "aws-trusted-advisor": {
+      "cloud": "aws",
+      "label": "AWS Trusted Advisor",
+      "short": "Trusted Advisor",
+      "category": "management",
+      "role": {
+        "es": "Revisiones periódicas de buenas prácticas",
+        "en": "Periodic best-practice checks"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Management-Tools/64/Arch_AWS-Trusted-Advisor_64.svg"
+      }
+    },
+    "aws-rds": {
+      "cloud": "aws",
+      "label": "Amazon RDS",
+      "short": "RDS",
+      "category": "database",
+      "aliases": [
+        "Relational Database Service"
+      ],
+      "role": {
+        "es": "Bases de datos relacionales administradas",
+        "en": "Managed relational databases"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Databases/64/Arch_Amazon-RDS_64.svg"
+      }
+    },
+    "azure-vm": {
+      "cloud": "azure",
+      "label": "Azure Virtual Machines",
+      "short": "Azure Virtual Machines",
+      "category": "compute",
+      "aliases": [
+        "Virtual Machine",
+        "máquina virtual",
+        "máquinas virtuales"
+      ],
+      "role": {
+        "es": "Máquinas virtuales con sistema operativo propio",
+        "en": "Virtual machines with their own operating system"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/compute/10021-icon-service-Virtual-Machine.svg"
+      }
+    },
+    "azure-vmss": {
+      "cloud": "azure",
+      "label": "Virtual Machine Scale Sets",
+      "short": "Virtual Machine Scale Sets",
+      "category": "compute",
+      "aliases": [
+        "VMSS",
+        "scale set",
+        "scale sets",
+        "conjunto de escalado"
+      ],
+      "role": {
+        "es": "Grupo de VM idénticas que escala y se repara solo",
+        "en": "Group of identical VMs that scales and heals itself"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/compute/10034-icon-service-VM-Scale-Sets.svg"
+      }
+    },
+    "azure-availability-set": {
+      "cloud": "azure",
+      "label": "Availability set",
+      "short": "Availability set",
+      "category": "compute",
+      "aliases": [
+        "conjunto de disponibilidad"
+      ],
+      "role": {
+        "es": "Reparte VM en dominios de falla, sin escalar",
+        "en": "Spreads VMs across fault domains without scaling"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/compute/10025-icon-service-Availability-Sets.svg"
+      }
+    },
+    "azure-functions": {
+      "cloud": "azure",
+      "label": "Azure Functions",
+      "short": "Azure Functions",
+      "category": "compute",
+      "role": {
+        "es": "Funciones sin servidor",
+        "en": "Serverless functions"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/compute/10029-icon-service-Function-Apps.svg"
+      }
+    },
+    "azure-app-gateway": {
+      "cloud": "azure",
+      "label": "Azure Application Gateway",
+      "short": "Azure Application Gateway",
+      "mode": {
+        "es": "v2",
+        "en": "v2"
+      },
+      "category": "networking",
+      "aliases": [
+        "App Gateway"
+      ],
+      "role": {
+        "es": "Balanceador de capa 7 con reglas por ruta",
+        "en": "Layer 7 load balancer with path rules"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10076-icon-service-Application-Gateways.svg"
+      }
+    },
+    "azure-load-balancer": {
+      "cloud": "azure",
+      "label": "Azure Load Balancer",
+      "short": "Azure Load Balancer",
+      "category": "networking",
+      "role": {
+        "es": "Balanceador de capa 4",
+        "en": "Layer 4 load balancer"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10062-icon-service-Load-Balancers.svg"
+      }
+    },
+    "azure-key-vault": {
+      "cloud": "azure",
+      "label": "Azure Key Vault",
+      "short": "Azure Key Vault",
+      "mode": {
+        "es": "certificados",
+        "en": "certificates"
+      },
+      "category": "security",
+      "role": {
+        "es": "Guarda secretos, llaves y certificados",
+        "en": "Stores secrets, keys and certificates"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/security/10245-icon-service-Key-Vaults.svg"
+      }
+    },
+    "azure-managed-hsm": {
+      "cloud": "azure",
+      "label": "Azure Key Vault Managed HSM",
+      "short": "Azure Key Vault Managed HSM",
+      "category": "security",
+      "role": {
+        "es": "Llaves en HSM dedicado, sin certificados",
+        "en": "Keys in a dedicated HSM, no certificates"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/security/10245-icon-service-Key-Vaults.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Managed HSM; se usa el de Key Vault, la familia a la que pertenece."
+    },
+    "azure-monitor": {
+      "cloud": "azure",
+      "label": "Azure Monitor",
+      "short": "Azure Monitor",
+      "mode": {
+        "es": "alertas de métricas",
+        "en": "metric alerts"
+      },
+      "category": "management",
+      "role": {
+        "es": "Métricas, registros y alertas",
+        "en": "Metrics, logs and alerts"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/monitor/00001-icon-service-Monitor.svg"
+      }
+    },
+    "azure-advisor": {
+      "cloud": "azure",
+      "label": "Azure Advisor",
+      "short": "Azure Advisor",
+      "category": "management",
+      "role": {
+        "es": "Recomendaciones periódicas",
+        "en": "Periodic recommendations"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/management + governance/00003-icon-service-Advisor.svg"
+      }
+    },
+    "azure-mysql": {
+      "cloud": "azure",
+      "label": "Azure Database for MySQL",
+      "short": "Azure Database for MySQL",
+      "category": "database",
+      "role": {
+        "es": "MySQL administrado",
+        "en": "Managed MySQL"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/10122-icon-service-Azure-Database-MySQL-Server.svg"
+      }
+    },
+    "gcp-compute-engine": {
+      "cloud": "gcp",
+      "label": "Compute Engine",
+      "short": "Compute Engine",
+      "category": "compute",
+      "aliases": [
+        "GCE"
+      ],
+      "role": {
+        "es": "Máquinas virtuales con sistema operativo propio",
+        "en": "Virtual machines with their own operating system"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Compute Engine/SVG/ComputeEngine-512-color-rgb.svg"
+      }
+    },
+    "gcp-mig": {
+      "cloud": "gcp",
+      "label": "Managed instance group",
+      "short": "Managed instance group",
+      "category": "compute",
+      "aliases": [
+        "MIG",
+        "grupo de instancias administrado"
+      ],
+      "role": {
+        "es": "Grupo de VM idénticas con autoescalado y reparación",
+        "en": "Group of identical VMs with autoscaling and autohealing"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Compute/SVG/Compute-512-color.svg"
+      }
+    },
+    "gcp-unmanaged-ig": {
+      "cloud": "gcp",
+      "label": "Unmanaged instance group",
+      "short": "Unmanaged instance group",
+      "category": "compute",
+      "aliases": [
+        "grupo de instancias no administrado"
+      ],
+      "role": {
+        "es": "Agrupa VM distintas sin escalar ni reparar",
+        "en": "Groups different VMs without scaling or healing"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Compute/SVG/Compute-512-color.svg"
+      }
+    },
+    "gcp-run-functions": {
+      "cloud": "gcp",
+      "label": "Cloud Run functions",
+      "short": "Cloud Run functions",
+      "category": "compute",
+      "aliases": [
+        "Cloud Functions"
+      ],
+      "role": {
+        "es": "Funciones sin servidor",
+        "en": "Serverless functions"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Serverless Computing/SVG/ServerlessComputing-512-color.svg"
+      }
+    },
+    "gcp-app-lb": {
+      "cloud": "gcp",
+      "label": "Regional external Application Load Balancer",
+      "short": "Application Load Balancer",
+      "mode": {
+        "es": "externo regional",
+        "en": "regional external"
+      },
+      "category": "networking",
+      "aliases": [
+        "Application Load Balancer",
+        "balanceador de aplicaciones"
+      ],
+      "role": {
+        "es": "Balanceador de capa 7 con mapas de URL",
+        "en": "Layer 7 load balancer with URL maps"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-passthrough-nlb": {
+      "cloud": "gcp",
+      "label": "External passthrough Network Load Balancer",
+      "short": "Passthrough Network Load Balancer",
+      "category": "networking",
+      "aliases": [
+        "Network Load Balancer",
+        "balanceador de red de paso"
+      ],
+      "role": {
+        "es": "Balanceador de capa 4 que no termina TLS",
+        "en": "Layer 4 load balancer that does not terminate TLS"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-certificate-manager": {
+      "cloud": "gcp",
+      "label": "Certificate Manager",
+      "short": "Certificate Manager",
+      "category": "security",
+      "role": {
+        "es": "Emite y renueva certificados TLS",
+        "en": "Issues and renews TLS certificates"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-cloud-kms": {
+      "cloud": "gcp",
+      "label": "Cloud Key Management Service",
+      "short": "Cloud KMS",
+      "category": "security",
+      "aliases": [
+        "Cloud KMS",
+        "KMS"
+      ],
+      "role": {
+        "es": "Llaves de cifrado administradas",
+        "en": "Managed encryption keys"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-cloud-monitoring": {
+      "cloud": "gcp",
+      "label": "Cloud Monitoring",
+      "short": "Cloud Monitoring",
+      "mode": {
+        "es": "alertas",
+        "en": "alerting"
+      },
+      "category": "management",
+      "role": {
+        "es": "Métricas, paneles y alertas",
+        "en": "Metrics, dashboards and alerting"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Observability/SVG/Observability-512-color.svg"
+      }
+    },
+    "gcp-recommender": {
+      "cloud": "gcp",
+      "label": "Recommender",
+      "short": "Recommender",
+      "category": "management",
+      "role": {
+        "es": "Recomendaciones de uso y costo",
+        "en": "Usage and cost recommendations"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Management Tools/SVG/ManagementTools-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no lista Recommender; se usa la categoría Management Tools."
+    },
+    "gcp-cloud-sql": {
+      "cloud": "gcp",
+      "label": "Cloud SQL",
+      "short": "Cloud SQL",
+      "category": "database",
+      "role": {
+        "es": "MySQL, PostgreSQL y SQL Server administrados",
+        "en": "Managed MySQL, PostgreSQL and SQL Server"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud SQL/SVG/CloudSQL-512-color.svg"
+      }
+    },
+    "oci-compute": {
+      "cloud": "oci",
+      "label": "OCI Compute",
+      "short": "Compute",
+      "mode": {
+        "es": "VM",
+        "en": "VM"
+      },
+      "category": "compute",
+      "role": {
+        "es": "Máquinas virtuales con sistema operativo propio",
+        "en": "Virtual machines with their own operating system"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Compute - Virtual Machine VM"
+      }
+    },
+    "oci-instance-pool": {
+      "cloud": "oci",
+      "label": "Instance pool",
+      "short": "Instance pool",
+      "mode": {
+        "es": "con autoscaling",
+        "en": "with autoscaling"
+      },
+      "category": "compute",
+      "aliases": [
+        "instance pools",
+        "Autoscaling"
+      ],
+      "role": {
+        "es": "Grupo de instancias que crece, decrece y se repara",
+        "en": "Group of instances that grows, shrinks and heals"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Compute - Instance Pools"
+      }
+    },
+    "oci-instance-configuration": {
+      "cloud": "oci",
+      "label": "Instance configuration",
+      "short": "Instance configuration",
+      "category": "compute",
+      "role": {
+        "es": "Plantilla para crear instancias",
+        "en": "Template to create instances"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Compute - Virtual Machine VM"
+      },
+      "icon_note": "La librería no trae icono de instance configuration; se usa el de VM, que es lo que describe."
+    },
+    "oci-functions": {
+      "cloud": "oci",
+      "label": "OCI Functions",
+      "short": "Functions",
+      "category": "compute",
+      "role": {
+        "es": "Funciones sin servidor de hasta 300 s",
+        "en": "Serverless functions that run up to 300 s"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Compute - Functions"
+      }
+    },
+    "oci-load-balancer": {
+      "cloud": "oci",
+      "label": "OCI Load Balancer",
+      "short": "Load Balancer",
+      "mode": {
+        "es": "flexible",
+        "en": "flexible"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Balanceador de capa 7 con terminación TLS",
+        "en": "Layer 7 load balancer with TLS termination"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Flexible Load Balancer"
+      }
+    },
+    "oci-network-load-balancer": {
+      "cloud": "oci",
+      "label": "OCI Network Load Balancer",
+      "short": "Network Load Balancer",
+      "category": "networking",
+      "role": {
+        "es": "Balanceador de capa 4",
+        "en": "Layer 4 load balancer"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Load Balancer"
+      },
+      "icon_note": "La librería no trae icono de Network Load Balancer; se usa el de Load Balancer."
+    },
+    "oci-certificates": {
+      "cloud": "oci",
+      "label": "OCI Certificates",
+      "short": "Certificates",
+      "category": "security",
+      "role": {
+        "es": "Emite certificados desde CA propias, importa los de CA externas y administra sus versiones",
+        "en": "Issues certificates from its own CAs, imports external CA ones and manages their versions"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Certificates"
+      }
+    },
+    "oci-vault": {
+      "cloud": "oci",
+      "label": "OCI Vault",
+      "short": "Vault",
+      "mode": {
+        "es": "llaves",
+        "en": "keys"
+      },
+      "category": "security",
+      "role": {
+        "es": "Llaves de cifrado y secretos",
+        "en": "Encryption keys and secrets"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Vault"
+      }
+    },
+    "oci-monitoring": {
+      "cloud": "oci",
+      "label": "OCI Monitoring",
+      "short": "Monitoring",
+      "mode": {
+        "es": "alarmas",
+        "en": "alarms"
+      },
+      "category": "management",
+      "role": {
+        "es": "Métricas y alarmas",
+        "en": "Metrics and alarms"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - Monitoring"
+      }
+    },
+    "oci-cloud-advisor": {
+      "cloud": "oci",
+      "label": "OCI Cloud Advisor",
+      "short": "Cloud Advisor",
+      "category": "management",
+      "role": {
+        "es": "Recomendaciones periódicas",
+        "en": "Periodic recommendations"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Governance and Administration - Cloud Advisor"
+      }
+    },
+    "oci-mysql": {
+      "cloud": "oci",
+      "label": "MySQL HeatWave",
+      "short": "MySQL HeatWave",
+      "category": "database",
+      "role": {
+        "es": "MySQL administrado",
+        "en": "Managed MySQL"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database - MySQL"
+      }
+    },
+    "aws-nat-gateway": {
+      "cloud": "aws",
+      "label": "NAT gateway",
+      "short": "NAT gateway",
+      "category": "networking",
+      "aliases": [
+        "NAT",
+        "puerta de enlace NAT"
+      ],
+      "role": {
+        "es": "Da salida a internet a instancias privadas sin aceptar conexiones de afuera",
+        "en": "Gives private instances outbound internet access without accepting connections from outside"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-VPC_NAT-Gateway_48.svg"
+      }
+    },
+    "aws-internet-gateway": {
+      "cloud": "aws",
+      "label": "Internet gateway",
+      "short": "Internet gateway",
+      "category": "networking",
+      "aliases": [
+        "IGW"
+      ],
+      "role": {
+        "es": "Conecta la VPC con internet",
+        "en": "Connects the VPC to the internet"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-VPC_Internet-Gateway_48.svg"
+      }
+    },
+    "aws-network-firewall": {
+      "cloud": "aws",
+      "label": "AWS Network Firewall",
+      "short": "Network Firewall",
+      "mode": {
+        "es": "lista de dominios",
+        "en": "domain list"
+      },
+      "category": "security",
+      "role": {
+        "es": "Firewall administrado con estado para el tráfico de la VPC",
+        "en": "Managed stateful firewall for VPC traffic"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-Network-Firewall_64.svg"
+      }
+    },
+    "aws-dns-firewall": {
+      "cloud": "aws",
+      "label": "Route 53 Resolver DNS Firewall",
+      "short": "DNS Firewall",
+      "category": "networking",
+      "role": {
+        "es": "Filtra las consultas DNS que salen de la VPC",
+        "en": "Filters DNS queries leaving the VPC"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-Route-53_Resolver-DNS-Firewall_48.svg"
+      }
+    },
+    "aws-security-group": {
+      "cloud": "aws",
+      "label": "Security group",
+      "short": "Security group",
+      "category": "security",
+      "aliases": [
+        "grupo de seguridad",
+        "grupos de seguridad",
+        "SG"
+      ],
+      "role": {
+        "es": "Reglas con estado a nivel de instancia",
+        "en": "Stateful rules at the instance level"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_General-Icons/Res_48_Light/Res_Shield_48_Light.svg"
+      },
+      "icon_note": "El paquete no trae icono de security group (solo el estilo de grupo); se usa el icono general Shield de los Resource Icons."
+    },
+    "aws-network-acl": {
+      "cloud": "aws",
+      "label": "Network ACL",
+      "short": "Network ACL",
+      "category": "security",
+      "aliases": [
+        "NACL"
+      ],
+      "role": {
+        "es": "Reglas sin estado a nivel de subred",
+        "en": "Stateless rules at the subnet level"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-VPC_Network-Access-Control-List_48.svg"
+      }
+    },
+    "aws-session-manager": {
+      "cloud": "aws",
+      "label": "AWS Systems Manager Session Manager",
+      "short": "Session Manager",
+      "category": "management",
+      "aliases": [
+        "Session Manager",
+        "Systems Manager",
+        "SSM"
+      ],
+      "role": {
+        "es": "Sesiones de terminal administradas en los nodos",
+        "en": "Managed terminal sessions on nodes"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Management-Governance/Res_AWS-Systems-Manager_Session-Manager_48.svg"
+      }
+    },
+    "aws-client-vpn": {
+      "cloud": "aws",
+      "label": "AWS Client VPN",
+      "short": "Client VPN",
+      "category": "networking",
+      "role": {
+        "es": "VPN administrada desde equipos de usuarios",
+        "en": "Managed VPN from user devices"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_AWS-Client-VPN_64.svg"
+      }
+    },
+    "aws-vpc-endpoint": {
+      "cloud": "aws",
+      "label": "Gateway VPC endpoint",
+      "short": "Gateway endpoint",
+      "mode": {
+        "es": "S3",
+        "en": "S3"
+      },
+      "category": "networking",
+      "aliases": [
+        "VPC endpoint",
+        "endpoint de VPC",
+        "endpoint de gateway",
+        "gateway endpoint"
+      ],
+      "role": {
+        "es": "Ruta privada de la VPC a un servicio de AWS",
+        "en": "Private route from the VPC to an AWS service"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-VPC_Endpoints_48.svg"
+      }
+    },
+    "aws-vpc-peering": {
+      "cloud": "aws",
+      "label": "VPC peering",
+      "short": "VPC peering",
+      "category": "networking",
+      "aliases": [
+        "peering connection"
+      ],
+      "role": {
+        "es": "Conexión de red entre dos VPC",
+        "en": "Network connection between two VPCs"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-VPC_Peering-Connection_48.svg"
+      }
+    },
+    "aws-vpc-flow-logs": {
+      "cloud": "aws",
+      "label": "VPC Flow Logs",
+      "short": "VPC Flow Logs",
+      "category": "networking",
+      "aliases": [
+        "flow logs",
+        "flow log",
+        "registros de flujo"
+      ],
+      "role": {
+        "es": "Registra el tráfico IP de las interfaces de red",
+        "en": "Records IP traffic of network interfaces"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-VPC_Flow-Logs_48.svg"
+      }
+    },
+    "aws-cloudtrail": {
+      "cloud": "aws",
+      "label": "AWS CloudTrail",
+      "short": "CloudTrail",
+      "category": "management",
+      "role": {
+        "es": "Registra llamadas a la API",
+        "en": "Records API calls"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Management-Tools/64/Arch_AWS-CloudTrail_64.svg"
+      }
+    },
+    "aws-s3": {
+      "cloud": "aws",
+      "label": "Amazon S3",
+      "short": "S3",
+      "category": "storage",
+      "aliases": [
+        "Simple Storage Service",
+        "almacenamiento de objetos",
+        "object storage"
+      ],
+      "role": {
+        "es": "Almacenamiento de objetos",
+        "en": "Object storage"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Storage/64/Arch_Amazon-Simple-Storage-Service_64.svg"
+      }
+    },
+    "azure-nat-gateway": {
+      "cloud": "azure",
+      "label": "Azure NAT Gateway",
+      "short": "Azure NAT Gateway",
+      "category": "networking",
+      "aliases": [
+        "NAT"
+      ],
+      "role": {
+        "es": "Salida a internet para subredes sin entrada no solicitada",
+        "en": "Outbound internet for subnets with no unsolicited inbound"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10310-icon-service-NAT.svg"
+      }
+    },
+    "azure-public-ip": {
+      "cloud": "azure",
+      "label": "Public IP address",
+      "short": "Public IP address",
+      "mode": {
+        "es": "en la VM",
+        "en": "on the VM"
+      },
+      "category": "networking",
+      "aliases": [
+        "IP pública"
+      ],
+      "role": {
+        "es": "Dirección IP pública asignada a un recurso",
+        "en": "Public IP address assigned to a resource"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10069-icon-service-Public-IP-Addresses.svg"
+      }
+    },
+    "azure-firewall": {
+      "cloud": "azure",
+      "label": "Azure Firewall",
+      "short": "Azure Firewall",
+      "mode": {
+        "es": "reglas FQDN",
+        "en": "FQDN rules"
+      },
+      "category": "security",
+      "role": {
+        "es": "Firewall administrado con estado para la red",
+        "en": "Managed stateful network firewall"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10084-icon-service-Firewalls.svg"
+      }
+    },
+    "azure-nsg": {
+      "cloud": "azure",
+      "label": "Network security group",
+      "short": "Network security group",
+      "category": "security",
+      "aliases": [
+        "NSG",
+        "grupo de seguridad de red",
+        "grupos de seguridad de red"
+      ],
+      "role": {
+        "es": "Reglas con estado para subredes e interfaces de red",
+        "en": "Stateful rules for subnets and network interfaces"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10067-icon-service-Network-Security-Groups.svg"
+      }
+    },
+    "azure-asg": {
+      "cloud": "azure",
+      "label": "Application security group",
+      "short": "Application security group",
+      "category": "security",
+      "aliases": [
+        "ASG"
+      ],
+      "role": {
+        "es": "Agrupa VMs para usarlas en reglas de seguridad",
+        "en": "Groups VMs for use in security rules"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/security/10244-icon-service-Application-Security-Groups.svg"
+      }
+    },
+    "azure-bastion": {
+      "cloud": "azure",
+      "label": "Azure Bastion",
+      "short": "Azure Bastion",
+      "category": "networking",
+      "aliases": [
+        "Bastion",
+        "bastión",
+        "host bastión"
+      ],
+      "role": {
+        "es": "RDP y SSH administrados hacia VMs privadas",
+        "en": "Managed RDP and SSH to private VMs"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/02422-icon-service-Bastions.svg"
+      }
+    },
+    "azure-vpn-gateway": {
+      "cloud": "azure",
+      "label": "Azure VPN Gateway",
+      "short": "VPN Gateway",
+      "mode": {
+        "es": "punto a sitio",
+        "en": "point-to-site"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Túneles VPN hacia la red virtual",
+        "en": "VPN tunnels into the virtual network"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10063-icon-service-Virtual-Network-Gateways.svg"
+      },
+      "icon_note": "Icono oficial de Virtual Network Gateways, el recurso que crea VPN Gateway.",
+      "aliases": [
+        "VPN",
+        "puerta de enlace de VPN"
+      ]
+    },
+    "azure-private-endpoint": {
+      "cloud": "azure",
+      "label": "Private endpoint",
+      "short": "Private endpoint",
+      "mode": {
+        "es": "Private Link",
+        "en": "Private Link"
+      },
+      "category": "networking",
+      "aliases": [
+        "Private Link",
+        "endpoint privado",
+        "punto de conexión privado"
+      ],
+      "role": {
+        "es": "IP privada de la red virtual para un servicio",
+        "en": "Private IP from the virtual network for a service"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/other/02579-icon-service-Private-Endpoints.svg"
+      }
+    },
+    "azure-vnet-peering": {
+      "cloud": "azure",
+      "label": "Virtual network peering",
+      "short": "Virtual network peering",
+      "category": "networking",
+      "aliases": [
+        "VNet peering"
+      ],
+      "role": {
+        "es": "Conexión de red entre dos VNet",
+        "en": "Network connection between two VNets"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/other/01285-icon-service-Peerings.svg"
+      }
+    },
+    "azure-vnet-flow-logs": {
+      "cloud": "azure",
+      "label": "Virtual network flow logs",
+      "short": "VNet flow logs",
+      "category": "networking",
+      "aliases": [
+        "VNet flow logs",
+        "flow logs",
+        "registros de flujo",
+        "Network Watcher"
+      ],
+      "role": {
+        "es": "Registra el tráfico IP de la red virtual",
+        "en": "Records IP traffic in the virtual network"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10066-icon-service-Network-Watcher.svg"
+      },
+      "icon_note": "Los flow logs son una función de Network Watcher; el paquete no trae icono propio de flow logs."
+    },
+    "azure-activity-log": {
+      "cloud": "azure",
+      "label": "Azure Monitor activity log",
+      "short": "Activity log",
+      "category": "management",
+      "aliases": [
+        "registro de actividad",
+        "activity log"
+      ],
+      "role": {
+        "es": "Registro de operaciones sobre los recursos",
+        "en": "Log of operations on resources"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/monitor/00007-icon-service-Activity-Log.svg"
+      }
+    },
+    "azure-storage-account": {
+      "cloud": "azure",
+      "label": "Azure Storage account",
+      "short": "Azure Storage account",
+      "category": "storage",
+      "aliases": [
+        "Blob Storage",
+        "storage account"
+      ],
+      "role": {
+        "es": "Cuenta de almacenamiento de blobs y archivos",
+        "en": "Storage account for blobs and files"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      }
+    },
+    "gcp-cloud-nat": {
+      "cloud": "gcp",
+      "label": "Cloud NAT",
+      "short": "Cloud NAT",
+      "category": "networking",
+      "aliases": [
+        "NAT",
+        "Public NAT"
+      ],
+      "role": {
+        "es": "Salida a internet para VMs sin IP externa",
+        "en": "Outbound internet for VMs without external IPs"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-external-ip": {
+      "cloud": "gcp",
+      "label": "External IP address",
+      "short": "External IP address",
+      "mode": {
+        "es": "en la VM",
+        "en": "on the VM"
+      },
+      "category": "networking",
+      "aliases": [
+        "IP externa"
+      ],
+      "role": {
+        "es": "Dirección IPv4 externa de una VM",
+        "en": "External IPv4 address of a VM"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-secure-web-proxy": {
+      "cloud": "gcp",
+      "label": "Secure Web Proxy",
+      "short": "Secure Web Proxy",
+      "category": "security",
+      "aliases": [
+        "SWP"
+      ],
+      "role": {
+        "es": "Proxy administrado para el tráfico web de salida",
+        "en": "Managed proxy for outbound web traffic"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-vpc-firewall-rules": {
+      "cloud": "gcp",
+      "label": "VPC firewall rules",
+      "short": "VPC firewall rules",
+      "mode": {
+        "es": "Cloud NGFW",
+        "en": "Cloud NGFW"
+      },
+      "category": "security",
+      "aliases": [
+        "Cloud NGFW",
+        "firewall rules",
+        "reglas de firewall",
+        "reglas de firewall de VPC"
+      ],
+      "role": {
+        "es": "Reglas con estado para el tráfico de las VMs",
+        "en": "Stateful rules for VM traffic"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-cloud-armor": {
+      "cloud": "gcp",
+      "label": "Google Cloud Armor",
+      "short": "Cloud Armor",
+      "category": "security",
+      "role": {
+        "es": "Políticas de seguridad para backends de balanceadores",
+        "en": "Security policies for load balancer backends"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      },
+      "aliases": [
+        "WAF",
+        "firewall de aplicaciones web"
+      ]
+    },
+    "gcp-iap": {
+      "cloud": "gcp",
+      "label": "Identity-Aware Proxy",
+      "short": "Identity-Aware Proxy",
+      "mode": {
+        "es": "reenvío TCP",
+        "en": "TCP forwarding"
+      },
+      "category": "security",
+      "aliases": [
+        "IAP"
+      ],
+      "role": {
+        "es": "Acceso con identidad a apps y VMs",
+        "en": "Identity-based access to apps and VMs"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-cloud-vpn": {
+      "cloud": "gcp",
+      "label": "Cloud VPN",
+      "short": "Cloud VPN",
+      "category": "networking",
+      "role": {
+        "es": "Túneles VPN IPsec hacia la VPC",
+        "en": "IPsec VPN tunnels into the VPC"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      },
+      "aliases": [
+        "VPN",
+        "HA VPN"
+      ]
+    },
+    "gcp-private-google-access": {
+      "cloud": "gcp",
+      "label": "Private Google Access",
+      "short": "Private Google Access",
+      "category": "networking",
+      "aliases": [
+        "acceso privado a Google"
+      ],
+      "role": {
+        "es": "Acceso a APIs de Google para VMs con solo IP interna",
+        "en": "Google API access for VMs with only internal IPs"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-vpc-peering": {
+      "cloud": "gcp",
+      "label": "VPC Network Peering",
+      "short": "VPC Network Peering",
+      "category": "networking",
+      "role": {
+        "es": "Conexión entre dos redes de VPC",
+        "en": "Connection between two VPC networks"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-vpc-flow-logs": {
+      "cloud": "gcp",
+      "label": "VPC Flow Logs",
+      "short": "VPC Flow Logs",
+      "category": "networking",
+      "aliases": [
+        "flow logs",
+        "registros de flujo"
+      ],
+      "role": {
+        "es": "Muestras de los flujos de red de las VMs",
+        "en": "Samples of VM network flows"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-cloud-audit-logs": {
+      "cloud": "gcp",
+      "label": "Cloud Audit Logs",
+      "short": "Cloud Audit Logs",
+      "category": "management",
+      "aliases": [
+        "registros de auditoría",
+        "Audit Logs"
+      ],
+      "role": {
+        "es": "Registros de auditoría de accesos y operaciones",
+        "en": "Audit logs of access and operations"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Observability/SVG/Observability-512-color.svg"
+      }
+    },
+    "gcp-cloud-storage": {
+      "cloud": "gcp",
+      "label": "Cloud Storage",
+      "short": "Cloud Storage",
+      "category": "storage",
+      "role": {
+        "es": "Almacenamiento de objetos",
+        "en": "Object storage"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud Storage/SVG/Cloud_Storage-512-color.svg"
+      },
+      "aliases": [
+        "almacenamiento de objetos",
+        "object storage",
+        "GCS"
+      ]
+    },
+    "oci-nat-gateway": {
+      "cloud": "oci",
+      "label": "OCI NAT Gateway",
+      "short": "NAT Gateway",
+      "category": "networking",
+      "aliases": [
+        "NAT"
+      ],
+      "role": {
+        "es": "Salida a internet sin exponer a conexiones de entrada",
+        "en": "Outbound internet without exposure to inbound connections"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - NAT Gateway"
+      }
+    },
+    "oci-internet-gateway": {
+      "cloud": "oci",
+      "label": "OCI Internet Gateway",
+      "short": "Internet Gateway",
+      "category": "networking",
+      "role": {
+        "es": "Conecta la VCN con internet",
+        "en": "Connects the VCN to the internet"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Internet Gateway"
+      }
+    },
+    "oci-network-firewall": {
+      "cloud": "oci",
+      "label": "OCI Network Firewall",
+      "short": "Network Firewall",
+      "category": "security",
+      "role": {
+        "es": "Firewall administrado para el tráfico de la VCN",
+        "en": "Managed firewall for VCN traffic"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Firewall"
+      }
+    },
+    "oci-nsg": {
+      "cloud": "oci",
+      "label": "Network security group",
+      "short": "NSG",
+      "category": "security",
+      "aliases": [
+        "grupo de seguridad de red",
+        "grupos de seguridad de red"
+      ],
+      "role": {
+        "es": "Reglas para un grupo elegido de VNICs",
+        "en": "Rules for a chosen group of VNICs"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - NSG"
+      }
+    },
+    "oci-security-list": {
+      "cloud": "oci",
+      "label": "Security list",
+      "short": "Security list",
+      "category": "security",
+      "aliases": [
+        "lista de seguridad"
+      ],
+      "role": {
+        "es": "Reglas para todas las VNICs de una subred",
+        "en": "Rules for every VNIC in a subnet"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Security Lists"
+      }
+    },
+    "oci-bastion": {
+      "cloud": "oci",
+      "label": "OCI Bastion",
+      "short": "Bastion",
+      "category": "security",
+      "aliases": [
+        "bastión",
+        "host bastión"
+      ],
+      "role": {
+        "es": "Sesiones SSH temporales hacia recursos privados",
+        "en": "Time-limited SSH sessions to private resources"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Bastion"
+      }
+    },
+    "oci-site-to-site-vpn": {
+      "cloud": "oci",
+      "label": "OCI Site-to-Site VPN",
+      "short": "Site-to-Site VPN",
+      "category": "networking",
+      "role": {
+        "es": "Túneles IPsec entre una red local y la VCN",
+        "en": "IPsec tunnels between an on-premises network and the VCN"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Dynamic Routing Gateway DRG"
+      },
+      "icon_note": "La librería no trae icono de VPN (solo un conector); se usa el DRG, donde termina la VPN.",
+      "aliases": [
+        "VPN",
+        "IPSec VPN"
+      ]
+    },
+    "oci-service-gateway": {
+      "cloud": "oci",
+      "label": "OCI Service Gateway",
+      "short": "Service Gateway",
+      "category": "networking",
+      "role": {
+        "es": "Acceso privado de la VCN a servicios de Oracle",
+        "en": "Private access from the VCN to Oracle services"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Service Gateway"
+      }
+    },
+    "oci-lpg": {
+      "cloud": "oci",
+      "label": "Local Peering Gateway",
+      "short": "Local Peering Gateway",
+      "category": "networking",
+      "aliases": [
+        "LPG"
+      ],
+      "role": {
+        "es": "Conecta dos VCN de la misma región",
+        "en": "Connects two VCNs in the same region"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Remote Peering Gateway"
+      },
+      "icon_note": "La librería v24.2 no trae icono de LPG; se usa el de Remote Peering Gateway, de la misma familia de peering."
+    },
+    "oci-vcn-flow-logs": {
+      "cloud": "oci",
+      "label": "VCN flow logs",
+      "short": "VCN flow logs",
+      "category": "networking",
+      "aliases": [
+        "flow logs",
+        "registros de flujo"
+      ],
+      "role": {
+        "es": "Registra el tráfico aceptado o rechazado en la VCN",
+        "en": "Records accepted or rejected traffic in the VCN"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - VCN Flow Logs"
+      }
+    },
+    "oci-audit": {
+      "cloud": "oci",
+      "label": "OCI Audit",
+      "short": "Audit",
+      "category": "management",
+      "role": {
+        "es": "Registra llamadas a las APIs públicas",
+        "en": "Records calls to public APIs"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - Auditing"
+      }
+    },
+    "oci-object-storage": {
+      "cloud": "oci",
+      "label": "OCI Object Storage",
+      "short": "Object Storage",
+      "category": "storage",
+      "role": {
+        "es": "Almacenamiento de objetos",
+        "en": "Object storage"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - Object Storage"
+      },
+      "aliases": [
+        "almacenamiento de objetos"
+      ]
+    },
+    "aws-cloudfront": {
+      "cloud": "aws",
+      "label": "Amazon CloudFront",
+      "short": "CloudFront",
+      "category": "networking",
+      "aliases": [
+        "CDN",
+        "red de entrega de contenido",
+        "content delivery network"
+      ],
+      "role": {
+        "es": "Red de entrega de contenido con caché en ubicaciones de borde",
+        "en": "Content delivery network that caches at edge locations"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_Amazon-CloudFront_64.svg"
+      }
+    },
+    "aws-global-accelerator": {
+      "cloud": "aws",
+      "label": "AWS Global Accelerator",
+      "short": "Global Accelerator",
+      "category": "networking",
+      "role": {
+        "es": "Reenvía paquetes TCP y UDP desde IP anycast",
+        "en": "Proxies TCP and UDP packets from anycast IPs"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_AWS-Global-Accelerator_64.svg"
+      }
+    },
+    "aws-s3-glacier-deep-archive": {
+      "cloud": "aws",
+      "label": "Amazon S3 Glacier Deep Archive",
+      "short": "S3 Glacier Deep Archive",
+      "category": "storage",
+      "aliases": [
+        "Glacier Deep Archive",
+        "Deep Archive"
+      ],
+      "role": {
+        "es": "Clase de S3 para retención larga; se restaura en horas",
+        "en": "S3 class for long-term retention; restores take hours"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Storage/Res_Amazon-Simple-Storage-Service_S3-Glacier-Deep-Archive_48.svg"
+      }
+    },
+    "aws-s3-standard-ia": {
+      "cloud": "aws",
+      "label": "Amazon S3 Standard-IA",
+      "short": "S3 Standard-IA",
+      "category": "storage",
+      "aliases": [
+        "Standard-IA"
+      ],
+      "role": {
+        "es": "Clase de S3 para datos que se leen poco",
+        "en": "S3 class for infrequently read data"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Storage/Res_Amazon-Simple-Storage-Service_S3-Standard-IA_48.svg"
+      }
+    },
+    "aws-ebs": {
+      "cloud": "aws",
+      "label": "Amazon EBS",
+      "short": "EBS",
+      "category": "storage",
+      "aliases": [
+        "Elastic Block Store"
+      ],
+      "role": {
+        "es": "Volúmenes de bloques para instancias EC2",
+        "en": "Block volumes for EC2 instances"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Storage/64/Arch_Amazon-Elastic-Block-Store_64.svg"
+      }
+    },
+    "aws-route53": {
+      "cloud": "aws",
+      "label": "Amazon Route 53",
+      "short": "Route 53",
+      "mode": {
+        "es": "zona pública",
+        "en": "public hosted zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "DNS administrado con zonas alojadas",
+        "en": "Managed DNS with hosted zones"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_Amazon-Route-53_64.svg"
+      }
+    },
+    "aws-route53-private": {
+      "cloud": "aws",
+      "label": "Amazon Route 53",
+      "short": "Route 53",
+      "mode": {
+        "es": "zona privada",
+        "en": "private hosted zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Zona alojada que solo responde dentro de una VPC",
+        "en": "Hosted zone that only answers inside a VPC"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-Route-53-Hosted-Zone_48.svg"
+      }
+    },
+    "aws-waf": {
+      "cloud": "aws",
+      "label": "AWS WAF",
+      "short": "WAF",
+      "category": "security",
+      "aliases": [
+        "Web Application Firewall",
+        "firewall de aplicaciones web"
+      ],
+      "role": {
+        "es": "Firewall de aplicaciones web que filtra peticiones HTTP",
+        "en": "Web application firewall that filters HTTP requests"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-WAF_64.svg"
+      }
+    },
+    "aws-shield": {
+      "cloud": "aws",
+      "label": "AWS Shield",
+      "short": "Shield",
+      "mode": {
+        "es": "Standard",
+        "en": "Standard"
+      },
+      "category": "security",
+      "role": {
+        "es": "Protección contra ataques DDoS",
+        "en": "Protection against DDoS attacks"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-Shield_64.svg"
+      }
+    },
+    "azure-front-door": {
+      "cloud": "azure",
+      "label": "Azure Front Door",
+      "short": "Azure Front Door",
+      "mode": {
+        "es": "Standard/Premium",
+        "en": "Standard/Premium"
+      },
+      "category": "networking",
+      "aliases": [
+        "Front Door",
+        "CDN",
+        "red de entrega de contenido",
+        "content delivery network"
+      ],
+      "role": {
+        "es": "CDN y entrada global en la red de borde de Microsoft",
+        "en": "CDN and global entry point on the Microsoft edge network"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10073-icon-service-Front-Door-and-CDN-Profiles.svg"
+      }
+    },
+    "azure-traffic-manager": {
+      "cloud": "azure",
+      "label": "Azure Traffic Manager",
+      "short": "Azure Traffic Manager",
+      "category": "networking",
+      "aliases": [
+        "Traffic Manager"
+      ],
+      "role": {
+        "es": "Balanceo por DNS; no es proxy",
+        "en": "DNS-based load balancing; not a proxy"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10065-icon-service-Traffic-Manager-Profiles.svg"
+      }
+    },
+    "azure-blob": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Azure Blob Storage",
+      "mode": {
+        "es": "nivel Hot",
+        "en": "hot tier"
+      },
+      "category": "storage",
+      "aliases": [
+        "Blob Storage",
+        "almacenamiento de objetos",
+        "object storage"
+      ],
+      "role": {
+        "es": "Almacenamiento de objetos que se leen por HTTP",
+        "en": "Object storage read over HTTP"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Blob Storage; se usa el de cuentas de almacenamiento, que lo contienen."
+    },
+    "azure-blob-archive": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Azure Blob Storage",
+      "mode": {
+        "es": "nivel Archive",
+        "en": "archive tier"
+      },
+      "category": "storage",
+      "aliases": [
+        "Blob Storage"
+      ],
+      "role": {
+        "es": "Nivel sin conexión de menor costo; se rehidrata en horas",
+        "en": "Lowest-cost offline tier; rehydration takes hours"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Blob Storage; se usa el de cuentas de almacenamiento, que lo contienen."
+    },
+    "azure-blob-cool": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Azure Blob Storage",
+      "mode": {
+        "es": "nivel Cool",
+        "en": "cool tier"
+      },
+      "category": "storage",
+      "aliases": [
+        "Blob Storage"
+      ],
+      "role": {
+        "es": "Nivel en línea para datos que se leen poco",
+        "en": "Online tier for infrequently read data"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Blob Storage; se usa el de cuentas de almacenamiento, que lo contienen."
+    },
+    "azure-blob-cold": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Azure Blob Storage",
+      "mode": {
+        "es": "nivel Cold",
+        "en": "cold tier"
+      },
+      "category": "storage",
+      "aliases": [
+        "Blob Storage"
+      ],
+      "role": {
+        "es": "Nivel en línea para datos que casi nunca se leen; 90 días mínimos",
+        "en": "Online tier for rarely read data; 90-day minimum"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Blob Storage; se usa el de cuentas de almacenamiento, que lo contienen."
+    },
+    "azure-managed-disks": {
+      "cloud": "azure",
+      "label": "Azure Managed Disks",
+      "short": "Managed Disks",
+      "category": "storage",
+      "aliases": [
+        "Managed Disks",
+        "discos administrados",
+        "disco administrado"
+      ],
+      "role": {
+        "es": "Discos de bloques para máquinas virtuales",
+        "en": "Block disks for virtual machines"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/compute/10032-icon-service-Disks.svg"
+      }
+    },
+    "azure-dns": {
+      "cloud": "azure",
+      "label": "Azure DNS",
+      "short": "Azure DNS",
+      "mode": {
+        "es": "zona pública",
+        "en": "public zone"
+      },
+      "category": "networking",
+      "aliases": [
+        "Azure Public DNS"
+      ],
+      "role": {
+        "es": "Hospeda dominios públicos y sus registros",
+        "en": "Hosts public domains and their records"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10064-icon-service-DNS-Zones.svg"
+      }
+    },
+    "azure-private-dns": {
+      "cloud": "azure",
+      "label": "Azure Private DNS",
+      "short": "Azure Private DNS",
+      "mode": {
+        "es": "zona privada",
+        "en": "private zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Resuelve nombres solo dentro de redes virtuales",
+        "en": "Resolves names only inside virtual networks"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10064-icon-service-DNS-Zones.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Private DNS; se usa el de zonas DNS."
+    },
+    "azure-waf": {
+      "cloud": "azure",
+      "label": "Azure Web Application Firewall",
+      "short": "Azure WAF",
+      "mode": {
+        "es": "en Front Door Premium",
+        "en": "on Front Door Premium"
+      },
+      "category": "security",
+      "aliases": [
+        "WAF",
+        "Web Application Firewall",
+        "firewall de aplicaciones web"
+      ],
+      "role": {
+        "es": "Firewall de aplicaciones web con reglas administradas",
+        "en": "Web application firewall with managed rules"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10362-icon-service-Web-Application-Firewall-Policies(WAF).svg"
+      }
+    },
+    "azure-ddos-protection": {
+      "cloud": "azure",
+      "label": "Azure DDoS Protection",
+      "short": "Azure DDoS Protection",
+      "category": "security",
+      "aliases": [
+        "DDoS Protection"
+      ],
+      "role": {
+        "es": "Protección contra DDoS en capas 3 y 4",
+        "en": "DDoS protection at layers 3 and 4"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10072-icon-service-DDoS-Protection-Plans.svg"
+      }
+    },
+    "gcp-cloud-cdn": {
+      "cloud": "gcp",
+      "label": "Cloud CDN",
+      "short": "Cloud CDN",
+      "category": "networking",
+      "aliases": [
+        "CDN",
+        "red de entrega de contenido",
+        "content delivery network"
+      ],
+      "role": {
+        "es": "Caché en la red de borde de Google",
+        "en": "Caching on the Google edge network"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Cloud CDN; se usa la categoría Networking."
+    },
+    "gcp-storage-dual-region": {
+      "cloud": "gcp",
+      "label": "Cloud Storage",
+      "short": "Cloud Storage",
+      "mode": {
+        "es": "birregional, Standard",
+        "en": "dual-region, Standard"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Bucket que replica cada objeto en dos regiones",
+        "en": "Bucket that replicates each object in two regions"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud Storage/SVG/Cloud_Storage-512-color.svg"
+      }
+    },
+    "gcp-storage-archive": {
+      "cloud": "gcp",
+      "label": "Cloud Storage",
+      "short": "Cloud Storage",
+      "mode": {
+        "es": "clase Archive",
+        "en": "Archive class"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Clase de menor costo, con 365 días mínimos",
+        "en": "Lowest-cost class, 365-day minimum"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud Storage/SVG/Cloud_Storage-512-color.svg"
+      }
+    },
+    "gcp-storage-nearline": {
+      "cloud": "gcp",
+      "label": "Cloud Storage",
+      "short": "Cloud Storage",
+      "mode": {
+        "es": "clase Nearline",
+        "en": "Nearline class"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Clase de bajo costo para datos que se leen poco",
+        "en": "Low-cost class for infrequently read data"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud Storage/SVG/Cloud_Storage-512-color.svg"
+      }
+    },
+    "gcp-persistent-disk": {
+      "cloud": "gcp",
+      "label": "Persistent Disk",
+      "short": "Persistent Disk",
+      "category": "storage",
+      "aliases": [
+        "disco persistente"
+      ],
+      "role": {
+        "es": "Almacenamiento en bloques para VM de Compute Engine",
+        "en": "Block storage for Compute Engine VMs"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Storage/SVG/Storage-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Persistent Disk; se usa la categoría Storage."
+    },
+    "gcp-cloud-dns": {
+      "cloud": "gcp",
+      "label": "Cloud DNS",
+      "short": "Cloud DNS",
+      "mode": {
+        "es": "zona pública",
+        "en": "public zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Zonas públicas y privadas administradas",
+        "en": "Managed public and private zones"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Cloud DNS; se usa la categoría Networking."
+    },
+    "gcp-cloud-dns-private": {
+      "cloud": "gcp",
+      "label": "Cloud DNS",
+      "short": "Cloud DNS",
+      "mode": {
+        "es": "zona privada",
+        "en": "private zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Zona que solo responde a redes de VPC autorizadas",
+        "en": "Zone that only answers authorized VPC networks"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Cloud DNS; se usa la categoría Networking."
+    },
+    "gcp-vpc-firewall": {
+      "cloud": "gcp",
+      "label": "VPC firewall rules",
+      "short": "VPC firewall rules",
+      "category": "networking",
+      "aliases": [
+        "reglas de firewall de VPC",
+        "firewall de VPC"
+      ],
+      "role": {
+        "es": "Permiten o niegan conexiones hacia las VM",
+        "en": "Allow or deny connections to VMs"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de las reglas de firewall; se usa la categoría Networking."
+    },
+    "oci-web-app-acceleration": {
+      "cloud": "oci",
+      "label": "OCI Web Application Acceleration",
+      "short": "Web Application Acceleration",
+      "category": "networking",
+      "aliases": [
+        "WAA",
+        "aceleración de aplicaciones web"
+      ],
+      "role": {
+        "es": "Caché y compresión en un balanceador HTTP",
+        "en": "Caching and compression on an HTTP load balancer"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Load Balancer"
+      },
+      "icon_note": "La librería no trae icono de Web Application Acceleration; se usa el de Load Balancer, al que se asigna la política."
+    },
+    "oci-dns-traffic-management": {
+      "cloud": "oci",
+      "label": "OCI DNS Traffic Management",
+      "short": "Traffic Management",
+      "mode": {
+        "es": "steering",
+        "en": "steering"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Función del DNS público para dirigir tráfico",
+        "en": "Public DNS feature to steer traffic"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - DNS"
+      },
+      "icon_note": "La librería no trae icono de Traffic Management; se usa el de DNS, del que es parte."
+    },
+    "oci-object-storage-archive": {
+      "cloud": "oci",
+      "label": "OCI Object Storage",
+      "short": "Object Storage",
+      "mode": {
+        "es": "nivel Archive",
+        "en": "Archive tier"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Nivel de menor costo; se restaura antes de leer",
+        "en": "Lowest-cost tier; restore before reading"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - Object Storage"
+      }
+    },
+    "oci-object-storage-ia": {
+      "cloud": "oci",
+      "label": "OCI Object Storage",
+      "short": "Object Storage",
+      "mode": {
+        "es": "nivel Infrequent Access",
+        "en": "Infrequent Access tier"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Nivel más barato que Standard, con cargo por leer",
+        "en": "Cheaper than Standard, with a retrieval fee"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - Object Storage"
+      }
+    },
+    "oci-block-volume": {
+      "cloud": "oci",
+      "label": "OCI Block Volume",
+      "short": "Block Volume",
+      "category": "storage",
+      "role": {
+        "es": "Volúmenes de bloques para instancias",
+        "en": "Block volumes for instances"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - Block Storage"
+      },
+      "icon_note": "La librería llama Block Storage a la figura del servicio Block Volume."
+    },
+    "oci-dns": {
+      "cloud": "oci",
+      "label": "OCI DNS",
+      "short": "DNS",
+      "mode": {
+        "es": "zona pública",
+        "en": "public zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Zonas de internet y privadas administradas",
+        "en": "Managed internet and private zones"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - DNS"
+      }
+    },
+    "oci-dns-private": {
+      "cloud": "oci",
+      "label": "OCI DNS",
+      "short": "DNS",
+      "mode": {
+        "es": "zona privada",
+        "en": "private zone"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Zona que solo responde desde una VCN",
+        "en": "Zone that only answers from a VCN"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - DNS"
+      }
+    },
+    "oci-waf": {
+      "cloud": "oci",
+      "label": "OCI Web Application Firewall",
+      "short": "WAF",
+      "category": "security",
+      "aliases": [
+        "Web Application Firewall",
+        "firewall de aplicaciones web"
+      ],
+      "role": {
+        "es": "Reglas contra amenazas web como inyección SQL",
+        "en": "Rules against web threats such as SQL injection"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - WAF"
+      }
+    },
+    "aws-efs": {
+      "cloud": "aws",
+      "label": "Amazon EFS",
+      "short": "EFS",
+      "mode": {
+        "es": "regional",
+        "en": "Regional"
+      },
+      "category": "storage",
+      "aliases": [
+        "Elastic File System"
+      ],
+      "role": {
+        "es": "Sistema de archivos NFS compartido y regional",
+        "en": "Shared Regional NFS file system"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Storage/64/Arch_Amazon-EFS_64.svg"
+      }
+    },
+    "aws-backup": {
+      "cloud": "aws",
+      "label": "AWS Backup",
+      "short": "Backup",
+      "category": "storage",
+      "role": {
+        "es": "Respaldos programados con restauración completa o por elementos",
+        "en": "Scheduled backups with full or item-level restore"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Storage/64/Arch_AWS-Backup_64.svg"
+      }
+    },
+    "aws-efs-replication": {
+      "cloud": "aws",
+      "label": "Amazon EFS replication",
+      "short": "EFS replication",
+      "category": "storage",
+      "role": {
+        "es": "Copia continua de un sistema de archivos a otro",
+        "en": "Continuous copy of one file system to another"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Storage/Res_Amazon-Elastic-File-System_File-System_48.svg"
+      },
+      "icon_note": "El paquete no trae icono de replicación de EFS; se usa el recurso File System de EFS, que es lo que se replica."
+    },
+    "aws-s3-one-zone-ia": {
+      "cloud": "aws",
+      "label": "Amazon S3 One Zone-IA",
+      "short": "S3 One Zone-IA",
+      "category": "storage",
+      "aliases": [
+        "One Zone-IA"
+      ],
+      "role": {
+        "es": "Clase de S3 que guarda los objetos en una sola zona",
+        "en": "S3 class that stores objects in a single zone"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Storage/Res_Amazon-Simple-Storage-Service_S3-One-Zone-IA_48.svg"
+      }
+    },
+    "aws-ec2-spot": {
+      "cloud": "aws",
+      "label": "Amazon EC2 Spot Instances",
+      "short": "Spot Instances",
+      "category": "compute",
+      "aliases": [
+        "Spot",
+        "Spot Instance",
+        "instancias Spot"
+      ],
+      "role": {
+        "es": "Instancias EC2 que se pueden interrumpir con aviso",
+        "en": "EC2 instances that can be interrupted with notice"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Compute/Res_Amazon-EC2_Spot-Instance_48.svg"
+      }
+    },
+    "aws-savings-plans": {
+      "cloud": "aws",
+      "label": "AWS Savings Plans",
+      "short": "Savings Plans",
+      "category": "management",
+      "role": {
+        "es": "Precio más bajo a cambio de un compromiso de uso",
+        "en": "Lower price in exchange for a usage commitment"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Cloud-Financial-Management/64/Arch_Savings-Plans_64.svg"
+      }
+    },
+    "aws-site-to-site-vpn": {
+      "cloud": "aws",
+      "label": "AWS Site-to-Site VPN",
+      "short": "Site-to-Site VPN",
+      "category": "networking",
+      "aliases": [
+        "VPN"
+      ],
+      "role": {
+        "es": "Túneles IPsec cifrados entre una red local y la VPC",
+        "en": "Encrypted IPsec tunnels between an on-premises network and the VPC"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_AWS-Site-to-Site-VPN_64.svg"
+      }
+    },
+    "aws-direct-connect": {
+      "cloud": "aws",
+      "label": "AWS Direct Connect",
+      "short": "Direct Connect",
+      "category": "networking",
+      "role": {
+        "es": "Conexión de red dedicada hacia AWS",
+        "en": "Dedicated network connection to AWS"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_AWS-Direct-Connect_64.svg"
+      }
+    },
+    "azure-files": {
+      "cloud": "azure",
+      "label": "Azure Files",
+      "short": "Azure Files",
+      "mode": {
+        "es": "SSD",
+        "en": "SSD"
+      },
+      "category": "storage",
+      "aliases": [
+        "file share",
+        "recurso compartido de archivos"
+      ],
+      "role": {
+        "es": "Recursos compartidos de archivos administrados (SMB y NFS)",
+        "en": "Managed file shares (SMB and NFS)"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10400-icon-service-Azure-Fileshares.svg"
+      }
+    },
+    "azure-files-snapshots": {
+      "cloud": "azure",
+      "label": "Azure Files share snapshots",
+      "short": "Share snapshots",
+      "category": "storage",
+      "aliases": [
+        "instantánea de recurso compartido",
+        "instantáneas de recurso compartido"
+      ],
+      "role": {
+        "es": "Copias de solo lectura de un momento dado de un recurso compartido",
+        "en": "Read-only point-in-time copies of a file share"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10400-icon-service-Azure-Fileshares.svg"
+      },
+      "icon_note": "El paquete no trae icono de instantánea de recurso compartido; se usa el de Azure Fileshares, al que pertenece."
+    },
+    "azure-zrs": {
+      "cloud": "azure",
+      "label": "Zone-redundant storage (ZRS)",
+      "short": "ZRS",
+      "mode": {
+        "es": "del recurso compartido",
+        "en": "for the file share"
+      },
+      "category": "storage",
+      "aliases": [
+        "redundancia de zona"
+      ],
+      "role": {
+        "es": "Copia síncrona de una cuenta de almacenamiento en varias zonas",
+        "en": "Synchronous copy of a storage account across zones"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      },
+      "icon_note": "ZRS es una opción de la cuenta de almacenamiento y no tiene icono propio; se usa el de Storage Accounts."
+    },
+    "azure-backup": {
+      "cloud": "azure",
+      "label": "Azure Backup",
+      "short": "Azure Backup",
+      "category": "storage",
+      "role": {
+        "es": "Respaldos administrados en una bóveda",
+        "en": "Managed backups in a vault"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/other/02361-icon-service-Backup-Vault.svg"
+      },
+      "icon_note": "El paquete no trae icono con el nombre Azure Backup; se usa el de Backup Vault, donde guarda los respaldos."
+    },
+    "azure-blob-zrs": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Blob Storage",
+      "mode": {
+        "es": "ZRS",
+        "en": "ZRS"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Almacenamiento de objetos",
+        "en": "Object storage"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/general/10780-icon-service-Blob-Block.svg"
+      }
+    },
+    "azure-blob-lrs": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Blob Storage",
+      "mode": {
+        "es": "LRS",
+        "en": "LRS"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Almacenamiento de objetos",
+        "en": "Object storage"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/general/10780-icon-service-Blob-Block.svg"
+      }
+    },
+    "azure-spot-vm": {
+      "cloud": "azure",
+      "label": "Azure Spot Virtual Machines",
+      "short": "Spot VMs",
+      "category": "compute",
+      "aliases": [
+        "Spot VM",
+        "Spot",
+        "Spot Virtual Machine"
+      ],
+      "role": {
+        "es": "VM con capacidad sobrante que Azure puede desalojar",
+        "en": "VMs on spare capacity that Azure can evict"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/02695-icon-service-Spot-VM.svg"
+      }
+    },
+    "azure-reservations": {
+      "cloud": "azure",
+      "label": "Azure Reservations",
+      "short": "Reservations",
+      "category": "management",
+      "aliases": [
+        "reservaciones"
+      ],
+      "role": {
+        "es": "Precio más bajo a cambio de un compromiso",
+        "en": "Lower price in exchange for a commitment"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/general/10003-icon-service-Reservations.svg"
+      }
+    },
+    "azure-expressroute": {
+      "cloud": "azure",
+      "label": "Azure ExpressRoute",
+      "short": "ExpressRoute",
+      "category": "networking",
+      "role": {
+        "es": "Conectividad híbrida que no es la VPN",
+        "en": "Hybrid connectivity other than the VPN"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10079-icon-service-ExpressRoute-Circuits.svg"
+      }
+    },
+    "gcp-filestore": {
+      "cloud": "gcp",
+      "label": "Filestore",
+      "short": "Filestore",
+      "mode": {
+        "es": "regional",
+        "en": "regional"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Recursos compartidos NFS administrados",
+        "en": "Managed NFS file shares"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Storage/SVG/Storage-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Filestore; se usa la categoría Storage."
+    },
+    "gcp-filestore-zonal": {
+      "cloud": "gcp",
+      "label": "Filestore",
+      "short": "Filestore",
+      "mode": {
+        "es": "zonal",
+        "en": "zonal"
+      },
+      "category": "storage",
+      "role": {
+        "es": "Recursos compartidos NFS administrados",
+        "en": "Managed NFS file shares"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Storage/SVG/Storage-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Filestore; se usa la categoría Storage."
+    },
+    "gcp-filestore-backups": {
+      "cloud": "gcp",
+      "label": "Filestore backups",
+      "short": "Filestore backups",
+      "category": "storage",
+      "aliases": [
+        "respaldos de Filestore"
+      ],
+      "role": {
+        "es": "Copias de un momento dado de una instancia de Filestore",
+        "en": "Point-in-time copies of a Filestore instance"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Storage/SVG/Storage-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono de respaldos de Filestore; se usa la categoría Storage."
+    },
+    "gcp-filestore-replication": {
+      "cloud": "gcp",
+      "label": "Filestore instance replication",
+      "short": "Instance replication",
+      "category": "storage",
+      "role": {
+        "es": "Copia asíncrona de una instancia a otra región",
+        "en": "Asynchronous copy of an instance to another region"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Storage/SVG/Storage-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono de replicación de Filestore; se usa la categoría Storage."
+    },
+    "gcp-spot-vm": {
+      "cloud": "gcp",
+      "label": "Spot VMs",
+      "short": "Spot VMs",
+      "category": "compute",
+      "aliases": [
+        "Spot VM",
+        "Spot"
+      ],
+      "role": {
+        "es": "VM de Compute Engine que se pueden expropiar",
+        "en": "Compute Engine VMs that can be preempted"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Compute Engine/SVG/ComputeEngine-512-color-rgb.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono de Spot VMs; se usa el de Compute Engine, que las crea."
+    },
+    "gcp-cud": {
+      "cloud": "gcp",
+      "label": "Committed use discounts",
+      "short": "Committed use discounts",
+      "category": "management",
+      "aliases": [
+        "CUD",
+        "descuentos por compromiso"
+      ],
+      "role": {
+        "es": "Descuento a cambio de comprometer uso",
+        "en": "Discount in exchange for committed usage"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Compute/SVG/Compute-512-color.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono de descuentos por compromiso; se usa la categoría Compute, a la que aplican."
+    },
+    "gcp-interconnect": {
+      "cloud": "gcp",
+      "label": "Cloud Interconnect",
+      "short": "Cloud Interconnect",
+      "category": "networking",
+      "aliases": [
+        "Interconnect"
+      ],
+      "role": {
+        "es": "Enlace a la VPC que no pasa por el internet público",
+        "en": "Link to the VPC that does not cross the public internet"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      },
+      "icon_note": "La guía de iconos de Google no trae icono propio de Cloud Interconnect; se usa la categoría Networking."
+    },
+    "oci-file-storage": {
+      "cloud": "oci",
+      "label": "OCI File Storage",
+      "short": "File Storage",
+      "category": "storage",
+      "role": {
+        "es": "Sistemas de archivos NFS compartidos",
+        "en": "Shared NFS file systems"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - File Storage"
+      }
+    },
+    "oci-fss-snapshots": {
+      "cloud": "oci",
+      "label": "File Storage snapshots",
+      "short": "Snapshots",
+      "category": "storage",
+      "aliases": [
+        "instantáneas"
+      ],
+      "role": {
+        "es": "Vistas de un momento dado de un sistema de archivos",
+        "en": "Point-in-time views of a file system"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - Back up Restore"
+      },
+      "icon_note": "La librería no trae icono de instantánea de File Storage; se usa el de Back up Restore."
+    },
+    "oci-fss-replication": {
+      "cloud": "oci",
+      "label": "File Storage replication",
+      "short": "Replication",
+      "category": "storage",
+      "role": {
+        "es": "Copia de un sistema de archivos a otro destino",
+        "en": "Copy of a file system to another target"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Storage - File Storage"
+      },
+      "icon_note": "La librería no trae icono de replicación de File Storage; se usa el de File Storage, que es lo que se replica."
+    },
+    "oci-preemptible": {
+      "cloud": "oci",
+      "label": "Preemptible instances",
+      "short": "Preemptible",
+      "category": "compute",
+      "aliases": [
+        "preemptible",
+        "instancias preemptible"
+      ],
+      "role": {
+        "es": "Instancias más baratas que pueden terminarse en cualquier momento",
+        "en": "Cheaper instances that can be terminated at any time"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Compute - Virtual Machine VM"
+      },
+      "icon_note": "La librería no trae icono de instancia preemptible; se usa el de VM, que es lo que se crea."
+    },
+    "oci-capacity-reservation": {
+      "cloud": "oci",
+      "label": "Capacity reservation",
+      "short": "Capacity reservation",
+      "category": "compute",
+      "aliases": [
+        "reserva de capacidad"
+      ],
+      "role": {
+        "es": "Aparta capacidad de cómputo por adelantado",
+        "en": "Sets compute capacity aside in advance"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Compute - Virtual Machine VM"
+      },
+      "icon_note": "La librería no trae icono de reserva de capacidad; se usa el de VM, que es lo que se reserva."
+    },
+    "oci-fastconnect": {
+      "cloud": "oci",
+      "label": "OCI FastConnect",
+      "short": "FastConnect",
+      "category": "networking",
+      "role": {
+        "es": "Conexión dedicada y privada hacia Oracle Cloud",
+        "en": "Dedicated private connection to Oracle Cloud"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Dynamic Routing Gateway DRG"
+      },
+      "icon_note": "La figura de FastConnect de la librería es un conector sin trazos; se usa el DRG, por donde pasa su tráfico."
+    },
+    "aws-cognito": {
+      "cloud": "aws",
+      "label": "Amazon Cognito",
+      "short": "Cognito",
+      "mode": {
+        "es": "grupos de usuarios",
+        "en": "user pools"
+      },
+      "category": "security",
+      "aliases": [
+        "user pool",
+        "user pools",
+        "grupo de usuarios"
+      ],
+      "role": {
+        "es": "Registro e inicio de sesión de los usuarios de una app",
+        "en": "Sign-up and sign-in for app users"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_Amazon-Cognito_64.svg"
+      }
+    },
+    "aws-iam": {
+      "cloud": "aws",
+      "label": "AWS Identity and Access Management",
+      "short": "IAM",
+      "category": "security",
+      "aliases": [
+        "IAM"
+      ],
+      "role": {
+        "es": "Permisos para administrar la cuenta de AWS",
+        "en": "Permissions to manage the AWS account"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-Identity-and-Access-Management_64.svg"
+      }
+    },
+    "aws-api-gateway": {
+      "cloud": "aws",
+      "label": "Amazon API Gateway",
+      "short": "API Gateway",
+      "category": "networking",
+      "role": {
+        "es": "Puerta de entrada administrada para API",
+        "en": "Managed front door for APIs"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_Amazon-API-Gateway_64.svg"
+      }
+    },
+    "aws-secrets-manager": {
+      "cloud": "aws",
+      "label": "AWS Secrets Manager",
+      "short": "Secrets Manager",
+      "category": "security",
+      "role": {
+        "es": "Guarda y rota secretos de aplicaciones",
+        "en": "Stores and rotates application secrets"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_AWS-Secrets-Manager_64.svg"
+      }
+    },
+    "aws-guardduty": {
+      "cloud": "aws",
+      "label": "Amazon GuardDuty",
+      "short": "GuardDuty",
+      "category": "security",
+      "role": {
+        "es": "Detección de amenazas",
+        "en": "Threat detection"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_Amazon-GuardDuty_64.svg"
+      }
+    },
+    "aws-inspector": {
+      "cloud": "aws",
+      "label": "Amazon Inspector",
+      "short": "Inspector",
+      "category": "security",
+      "role": {
+        "es": "Escaneo de vulnerabilidades",
+        "en": "Vulnerability scanning"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Security-Identity/64/Arch_Amazon-Inspector_64.svg"
+      }
+    },
+    "azure-entra-external-id": {
+      "cloud": "azure",
+      "label": "Microsoft Entra External ID",
+      "short": "Entra External ID",
+      "category": "security",
+      "aliases": [
+        "External ID"
+      ],
+      "role": {
+        "es": "Identidad de clientes para apps",
+        "en": "Customer identity for apps"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/identity/03425-icon-service-external-id.svg"
+      }
+    },
+    "azure-rbac": {
+      "cloud": "azure",
+      "label": "Azure RBAC",
+      "short": "Azure RBAC",
+      "category": "security",
+      "aliases": [
+        "RBAC",
+        "control de acceso basado en roles"
+      ],
+      "role": {
+        "es": "Roles para administrar recursos de Azure",
+        "en": "Roles to manage Azure resources"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/identity/10340-icon-service-Entra-Identity-Roles-and-Administrators.svg"
+      }
+    },
+    "azure-api-management": {
+      "cloud": "azure",
+      "label": "Azure API Management",
+      "short": "API Management",
+      "category": "integration",
+      "aliases": [
+        "APIM"
+      ],
+      "role": {
+        "es": "Puerta de entrada administrada para API",
+        "en": "Managed front door for APIs"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/integration/10042-icon-service-API-Management-Services.svg"
+      }
+    },
+    "azure-key-vault-keys": {
+      "cloud": "azure",
+      "label": "Azure Key Vault",
+      "short": "Azure Key Vault",
+      "mode": {
+        "es": "llaves",
+        "en": "keys"
+      },
+      "category": "security",
+      "role": {
+        "es": "Llaves, secretos y certificados",
+        "en": "Keys, secrets and certificates"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/security/10245-icon-service-Key-Vaults.svg"
+      }
+    },
+    "azure-app-configuration": {
+      "cloud": "azure",
+      "label": "Azure App Configuration",
+      "short": "App Configuration",
+      "category": "integration",
+      "role": {
+        "es": "Configuración central de la aplicación",
+        "en": "Central application settings"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/integration/10219-icon-service-App-Configuration.svg"
+      }
+    },
+    "azure-defender-for-cloud": {
+      "cloud": "azure",
+      "label": "Microsoft Defender for Cloud",
+      "short": "Defender for Cloud",
+      "category": "security",
+      "role": {
+        "es": "Postura de seguridad y protección de cargas",
+        "en": "Security posture and workload protection"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/security/10241-icon-service-Microsoft-Defender-for-Cloud.svg"
+      }
+    },
+    "azure-policy": {
+      "cloud": "azure",
+      "label": "Azure Policy",
+      "short": "Azure Policy",
+      "category": "management",
+      "role": {
+        "es": "Reglas de cumplimiento para los recursos",
+        "en": "Compliance rules for resources"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/management + governance/10316-icon-service-Policy.svg"
+      }
+    },
+    "gcp-identity-platform": {
+      "cloud": "gcp",
+      "label": "Identity Platform",
+      "short": "Identity Platform",
+      "category": "security",
+      "role": {
+        "es": "Identidad de clientes para apps",
+        "en": "Customer identity for apps"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-iam": {
+      "cloud": "gcp",
+      "label": "Identity and Access Management",
+      "short": "IAM",
+      "category": "security",
+      "aliases": [
+        "IAM",
+        "Cloud IAM"
+      ],
+      "role": {
+        "es": "Permisos para administrar recursos de Google Cloud",
+        "en": "Permissions to manage Google Cloud resources"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-api-gateway": {
+      "cloud": "gcp",
+      "label": "API Gateway",
+      "short": "API Gateway",
+      "category": "integration",
+      "role": {
+        "es": "Puerta de entrada administrada para API",
+        "en": "Managed front door for APIs"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Serverless Computing/SVG/ServerlessComputing-512-color.svg"
+      },
+      "aliases": [
+        "Cloud API Gateway"
+      ]
+    },
+    "gcp-apigee": {
+      "cloud": "gcp",
+      "label": "Apigee",
+      "short": "Apigee",
+      "category": "integration",
+      "aliases": [
+        "Apigee X",
+        "Apigee API Management"
+      ],
+      "role": {
+        "es": "Plataforma administrada para publicar y proteger API",
+        "en": "Managed platform to publish and secure APIs"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Apigee/SVG/Apigee-512-color-rgb.svg"
+      }
+    },
+    "gcp-secret-manager": {
+      "cloud": "gcp",
+      "label": "Secret Manager",
+      "short": "Secret Manager",
+      "category": "security",
+      "role": {
+        "es": "Guarda secretos de aplicaciones",
+        "en": "Stores application secrets"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      }
+    },
+    "gcp-security-command-center": {
+      "cloud": "gcp",
+      "label": "Security Command Center",
+      "short": "Security Command Center",
+      "mode": {
+        "es": "nivel Premium",
+        "en": "Premium tier"
+      },
+      "category": "security",
+      "aliases": [
+        "SCC",
+        "Event Threat Detection"
+      ],
+      "role": {
+        "es": "Seguridad y riesgos de la organización",
+        "en": "Organization security and risk"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Security Command Center/SVG/SecurityCommandCenter-512-color.svg"
+      }
+    },
+    "gcp-artifact-analysis": {
+      "cloud": "gcp",
+      "label": "Artifact Analysis",
+      "short": "Artifact Analysis",
+      "category": "security",
+      "role": {
+        "es": "Escaneo de vulnerabilidades de artefactos",
+        "en": "Artifact vulnerability scanning"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/DevOps/SVG/DevOps-512-color.svg"
+      }
+    },
+    "oci-identity-domains": {
+      "cloud": "oci",
+      "label": "OCI IAM identity domains",
+      "short": "Identity domains",
+      "category": "security",
+      "aliases": [
+        "identity domain",
+        "dominios de identidad",
+        "dominio de identidad"
+      ],
+      "role": {
+        "es": "Usuarios, inicio de sesión y proveedores de identidad",
+        "en": "Users, sign-in and identity providers"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Identity"
+      }
+    },
+    "oci-iam-policies": {
+      "cloud": "oci",
+      "label": "OCI IAM policies",
+      "short": "IAM policies",
+      "category": "security",
+      "aliases": [
+        "políticas de IAM"
+      ],
+      "role": {
+        "es": "Permisos para administrar recursos de la tenencia",
+        "en": "Permissions to manage tenancy resources"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Policies"
+      }
+    },
+    "oci-api-gateway": {
+      "cloud": "oci",
+      "label": "OCI API Gateway",
+      "short": "API Gateway",
+      "category": "integration",
+      "role": {
+        "es": "Puerta de entrada administrada para API",
+        "en": "Managed front door for APIs"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Developer Services - API Gateway"
+      }
+    },
+    "oci-secret-management": {
+      "cloud": "oci",
+      "label": "OCI Secret Management",
+      "short": "Secret Management",
+      "category": "security",
+      "role": {
+        "es": "Guarda secretos de aplicaciones",
+        "en": "Stores application secrets"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Vault"
+      }
+    },
+    "oci-cloud-guard": {
+      "cloud": "oci",
+      "label": "Oracle Cloud Guard",
+      "short": "Cloud Guard",
+      "category": "security",
+      "role": {
+        "es": "Problemas de seguridad en la tenencia",
+        "en": "Security problems in the tenancy"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Cloud Guard"
+      }
+    },
+    "oci-vulnerability-scanning": {
+      "cloud": "oci",
+      "label": "OCI Vulnerability Scanning",
+      "short": "Vulnerability Scanning",
+      "category": "security",
+      "role": {
+        "es": "Escaneo de vulnerabilidades",
+        "en": "Vulnerability scanning"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Vulnerability Scanning"
+      }
+    },
+    "aws-rds-multi-az": {
+      "cloud": "aws",
+      "label": "Amazon RDS for MySQL",
+      "short": "RDS for MySQL",
+      "mode": {
+        "es": "Multi-AZ",
+        "en": "Multi-AZ"
+      },
+      "category": "database",
+      "aliases": [
+        "RDS Multi-AZ"
+      ],
+      "role": {
+        "es": "MySQL administrado con standby síncrono en otra zona",
+        "en": "Managed MySQL with a synchronous standby in another zone"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Databases/Res_Amazon-RDS_Multi-AZ_48.svg"
+      }
+    },
+    "aws-rds-read-replica": {
+      "cloud": "aws",
+      "label": "Amazon RDS read replica",
+      "short": "RDS read replica",
+      "mode": {
+        "es": "réplica de lectura",
+        "en": "read replica"
+      },
+      "category": "database",
+      "aliases": [
+        "read replica",
+        "read replicas",
+        "réplica de lectura",
+        "réplicas de lectura",
+        "Relational Database Service"
+      ],
+      "role": {
+        "es": "Copia asíncrona de una instancia de RDS que atiende lecturas",
+        "en": "Asynchronous copy of an RDS instance that serves reads"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Databases/64/Arch_Amazon-RDS_64.svg"
+      },
+      "icon_note": "El paquete no trae icono de réplica de lectura; se usa el de Amazon RDS."
+    },
+    "aws-dynamodb": {
+      "cloud": "aws",
+      "label": "Amazon DynamoDB",
+      "short": "DynamoDB",
+      "mode": {
+        "es": "tablas globales",
+        "en": "global tables"
+      },
+      "category": "database",
+      "aliases": [
+        "global tables",
+        "tablas globales"
+      ],
+      "role": {
+        "es": "Base NoSQL administrada; las tablas globales replican entre regiones",
+        "en": "Managed NoSQL database; global tables replicate across Regions"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Databases/64/Arch_Amazon-DynamoDB_64.svg"
+      }
+    },
+    "aws-aurora-global": {
+      "cloud": "aws",
+      "label": "Amazon Aurora Global Database",
+      "short": "Aurora Global Database",
+      "category": "database",
+      "aliases": [
+        "Aurora"
+      ],
+      "role": {
+        "es": "Una región primaria escribe y las secundarias solo leen",
+        "en": "One primary Region writes and the secondaries only read"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Databases/64/Arch_Amazon-Aurora_64.svg"
+      }
+    },
+    "aws-parameter-store": {
+      "cloud": "aws",
+      "label": "AWS Systems Manager Parameter Store",
+      "short": "Parameter Store",
+      "category": "management",
+      "role": {
+        "es": "Guarda parámetros y valores de configuración",
+        "en": "Stores parameters and configuration values"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Management-Governance/Res_AWS-Systems-Manager_Parameter-Store_48.svg"
+      }
+    },
+    "aws-generic-database": {
+      "cloud": "aws",
+      "label": "Base de datos",
+      "short": "Base de datos",
+      "category": "database",
+      "role": {
+        "es": "Base de datos fuera de la nube",
+        "en": "Database outside the cloud"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_General-Icons/Res_48_Light/Res_Database_48_Light.svg"
+      },
+      "icon_note": "Icono general Database del paquete de AWS; representa una base que no es un servicio de AWS."
+    },
+    "azure-mysql-flex-ha": {
+      "cloud": "azure",
+      "label": "Azure Database for MySQL Flexible Server",
+      "short": "Azure Database for MySQL Flexible Server",
+      "mode": {
+        "es": "HA con redundancia de zona",
+        "en": "zone-redundant HA"
+      },
+      "category": "database",
+      "aliases": [
+        "Flexible Server"
+      ],
+      "role": {
+        "es": "MySQL administrado con standby en otra zona",
+        "en": "Managed MySQL with a standby in another zone"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/10122-icon-service-Azure-Database-MySQL-Server.svg"
+      }
+    },
+    "azure-mysql-read-replica": {
+      "cloud": "azure",
+      "label": "Azure Database for MySQL read replica",
+      "short": "Azure Database for MySQL read replica",
+      "mode": {
+        "es": "réplica de lectura",
+        "en": "read replica"
+      },
+      "category": "database",
+      "aliases": [
+        "read replica",
+        "read replicas",
+        "réplica de lectura",
+        "réplicas de lectura"
+      ],
+      "role": {
+        "es": "Copia asíncrona del servidor que atiende lecturas",
+        "en": "Asynchronous copy of the server that serves reads"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/10122-icon-service-Azure-Database-MySQL-Server.svg"
+      },
+      "icon_note": "El paquete no trae icono de réplica de lectura; se usa el de Azure Database for MySQL."
+    },
+    "azure-cosmos-db": {
+      "cloud": "azure",
+      "label": "Azure Cosmos DB",
+      "short": "Azure Cosmos DB",
+      "mode": {
+        "es": "escrituras multirregión",
+        "en": "multi-region writes"
+      },
+      "category": "database",
+      "role": {
+        "es": "Base NoSQL distribuida en varias regiones",
+        "en": "NoSQL database distributed across regions"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/10121-icon-service-Azure-Cosmos-DB.svg"
+      }
+    },
+    "azure-sql-database": {
+      "cloud": "azure",
+      "label": "Azure SQL Database",
+      "short": "Azure SQL Database",
+      "mode": {
+        "es": "geo-replicación activa",
+        "en": "active geo-replication"
+      },
+      "category": "database",
+      "role": {
+        "es": "Base relacional con secundarias geográficas de solo lectura",
+        "en": "Relational database with read-only geo-secondaries"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/10130-icon-service-SQL-Database.svg"
+      }
+    },
+    "azure-key-vault-secrets": {
+      "cloud": "azure",
+      "label": "Azure Key Vault",
+      "short": "Azure Key Vault",
+      "mode": {
+        "es": "secretos",
+        "en": "secrets"
+      },
+      "category": "security",
+      "role": {
+        "es": "Guarda secretos, llaves y certificados",
+        "en": "Stores secrets, keys and certificates"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/security/10245-icon-service-Key-Vaults.svg"
+      }
+    },
+    "azure-generic-database": {
+      "cloud": "azure",
+      "label": "Base de datos",
+      "short": "Base de datos",
+      "category": "database",
+      "role": {
+        "es": "Base de datos fuera de la nube",
+        "en": "Database outside the cloud"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/general/10829-icon-service-Production-Ready-Database.svg"
+      },
+      "icon_note": "Icono general de base de datos del paquete de Azure; representa una base que no es un servicio de Azure."
+    },
+    "gcp-cloud-sql-ha": {
+      "cloud": "gcp",
+      "label": "Cloud SQL for MySQL",
+      "short": "Cloud SQL for MySQL",
+      "mode": {
+        "es": "HA",
+        "en": "HA"
+      },
+      "category": "database",
+      "role": {
+        "es": "MySQL administrado con standby en otra zona",
+        "en": "Managed MySQL with a standby in another zone"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud SQL/SVG/CloudSQL-512-color.svg"
+      }
+    },
+    "gcp-cloud-sql-replica": {
+      "cloud": "gcp",
+      "label": "Cloud SQL read replica",
+      "short": "Cloud SQL read replica",
+      "mode": {
+        "es": "réplica de lectura",
+        "en": "read replica"
+      },
+      "category": "database",
+      "aliases": [
+        "read replica",
+        "read replicas",
+        "réplica de lectura",
+        "réplicas de lectura"
+      ],
+      "role": {
+        "es": "Copia de solo lectura que atiende consultas",
+        "en": "Read-only copy that serves queries"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud SQL/SVG/CloudSQL-512-color.svg"
+      }
+    },
+    "gcp-bigtable": {
+      "cloud": "gcp",
+      "label": "Bigtable",
+      "short": "Bigtable",
+      "mode": {
+        "es": "replicación",
+        "en": "replication"
+      },
+      "category": "database",
+      "aliases": [
+        "Cloud Bigtable"
+      ],
+      "role": {
+        "es": "Base NoSQL con clústeres replicados en varias regiones",
+        "en": "NoSQL database with clusters replicated across regions"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Databases/SVG/Databases-512-color.svg"
+      },
+      "icon_note": "Bigtable no tiene icono propio en la guía de iconos de Google Cloud; se usa la categoría Databases."
+    },
+    "gcp-spanner": {
+      "cloud": "gcp",
+      "label": "Spanner",
+      "short": "Spanner",
+      "category": "database",
+      "aliases": [
+        "Cloud Spanner"
+      ],
+      "role": {
+        "es": "Base relacional distribuida con consistencia externa",
+        "en": "Distributed relational database with external consistency"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud Spanner/SVG/CloudSpanner-512-color.svg"
+      }
+    },
+    "gcp-audit-logs": {
+      "cloud": "gcp",
+      "label": "Cloud Audit Logs",
+      "short": "Cloud Audit Logs",
+      "category": "management",
+      "aliases": [
+        "Audit Logs"
+      ],
+      "role": {
+        "es": "Registro de quién hizo qué en los recursos",
+        "en": "Record of who did what on resources"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Observability/SVG/Observability-512-color.svg"
+      },
+      "icon_note": "Cloud Audit Logs no tiene icono propio; se usa la categoría Observability, la de Cloud Logging."
+    },
+    "gcp-parameter-manager": {
+      "cloud": "gcp",
+      "label": "Parameter Manager",
+      "short": "Parameter Manager",
+      "category": "management",
+      "role": {
+        "es": "Guarda parámetros de las cargas de trabajo",
+        "en": "Stores workload parameters"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Security Identity/SVG/SecurityIdentity-512-color.svg"
+      },
+      "icon_note": "Parameter Manager no tiene icono propio; es una extensión de Secret Manager y usa la categoría Security Identity."
+    },
+    "gcp-generic-database": {
+      "cloud": "gcp",
+      "label": "Base de datos",
+      "short": "Base de datos",
+      "category": "database",
+      "role": {
+        "es": "Base de datos fuera de la nube",
+        "en": "Database outside the cloud"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Databases/SVG/Databases-512-color.svg"
+      },
+      "icon_note": "Google Cloud no publica un icono genérico de base de datos; se usa la categoría Databases."
+    },
+    "oci-mysql-ha": {
+      "cloud": "oci",
+      "label": "MySQL HeatWave",
+      "short": "MySQL HeatWave",
+      "mode": {
+        "es": "alta disponibilidad",
+        "en": "high availability"
+      },
+      "category": "database",
+      "role": {
+        "es": "MySQL administrado con secundarias en otros dominios",
+        "en": "Managed MySQL with secondaries in other domains"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database - MySQL"
+      }
+    },
+    "oci-mysql-read-replica": {
+      "cloud": "oci",
+      "label": "MySQL HeatWave read replica",
+      "short": "HeatWave read replica",
+      "mode": {
+        "es": "réplica de lectura",
+        "en": "read replica"
+      },
+      "category": "database",
+      "aliases": [
+        "read replica",
+        "read replicas",
+        "réplica de lectura",
+        "réplicas de lectura"
+      ],
+      "role": {
+        "es": "Copia asíncrona de solo lectura",
+        "en": "Read-only asynchronous copy"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database - MySQL"
+      },
+      "icon_note": "La librería no trae icono de réplica de lectura; se usa el de MySQL."
+    },
+    "oci-nosql": {
+      "cloud": "oci",
+      "label": "Oracle NoSQL Database Cloud Service",
+      "short": "NoSQL Database",
+      "mode": {
+        "es": "Global Active Tables",
+        "en": "Global Active Tables"
+      },
+      "category": "database",
+      "aliases": [
+        "NoSQL Database Cloud Service",
+        "Global Active Tables"
+      ],
+      "role": {
+        "es": "Base NoSQL administrada con tablas activas en varias regiones",
+        "en": "Managed NoSQL database with tables active in several regions"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database - NoSQL"
+      }
+    },
+    "oci-autonomous-db": {
+      "cloud": "oci",
+      "label": "Autonomous AI Database",
+      "short": "Autonomous AI Database",
+      "mode": {
+        "es": "Data Guard",
+        "en": "Data Guard"
+      },
+      "category": "database",
+      "aliases": [
+        "Autonomous Database",
+        "Autonomous Data Guard"
+      ],
+      "role": {
+        "es": "Base Oracle administrada; Data Guard le agrega un standby",
+        "en": "Managed Oracle database; Data Guard adds a standby"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database - Autonomous DB"
+      }
+    },
+    "oci-vault-secrets": {
+      "cloud": "oci",
+      "label": "OCI Vault",
+      "short": "Vault",
+      "mode": {
+        "es": "secretos",
+        "en": "secrets"
+      },
+      "category": "security",
+      "aliases": [
+        "Secret Management",
+        "OCI Secret Management"
+      ],
+      "role": {
+        "es": "Guarda llaves y secretos",
+        "en": "Stores keys and secrets"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Identity and Security - Vault"
+      }
+    },
+    "oci-generic-database": {
+      "cloud": "oci",
+      "label": "Base de datos",
+      "short": "Base de datos",
+      "category": "database",
+      "role": {
+        "es": "Base de datos fuera de la nube",
+        "en": "Database outside the cloud"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database"
+      },
+      "icon_note": "Figura general Database de la librería OCI; representa una base que no es un servicio de OCI."
+    },
+    "aws-fargate": {
+      "cloud": "aws",
+      "label": "AWS Fargate",
+      "short": "Fargate",
+      "mode": {
+        "es": "con ECS",
+        "en": "with ECS"
+      },
+      "category": "containers",
+      "aliases": [
+        "ECS en Fargate",
+        "ECS on Fargate"
+      ],
+      "role": {
+        "es": "Cómputo sin servidores para contenedores",
+        "en": "Serverless compute for containers"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Containers/64/Arch_AWS-Fargate_64.svg"
+      }
+    },
+    "aws-eks": {
+      "cloud": "aws",
+      "label": "Amazon EKS",
+      "short": "EKS",
+      "mode": {
+        "es": "nodos EC2",
+        "en": "EC2 nodes"
+      },
+      "category": "containers",
+      "aliases": [
+        "Elastic Kubernetes Service"
+      ],
+      "role": {
+        "es": "Kubernetes administrado, aquí con nodos EC2 propios",
+        "en": "Managed Kubernetes, here with your own EC2 nodes"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Containers/64/Arch_Amazon-Elastic-Kubernetes-Service_64.svg"
+      }
+    },
+    "aws-elasticache": {
+      "cloud": "aws",
+      "label": "Amazon ElastiCache",
+      "short": "ElastiCache",
+      "mode": {
+        "es": "Valkey",
+        "en": "Valkey"
+      },
+      "category": "database",
+      "role": {
+        "es": "Almacén llave-valor en memoria",
+        "en": "In-memory key-value store"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Databases/64/Arch_Amazon-ElastiCache_64.svg"
+      }
+    },
+    "aws-sqs": {
+      "cloud": "aws",
+      "label": "Amazon SQS",
+      "short": "SQS",
+      "mode": {
+        "es": "cola estándar",
+        "en": "standard queue"
+      },
+      "category": "integration",
+      "aliases": [
+        "Simple Queue Service",
+        "SQS"
+      ],
+      "role": {
+        "es": "Colas de mensajes administradas",
+        "en": "Managed message queues"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Application-Integration/64/Arch_Amazon-Simple-Queue-Service_64.svg"
+      }
+    },
+    "aws-kinesis-data-streams": {
+      "cloud": "aws",
+      "label": "Amazon Kinesis Data Streams",
+      "short": "Kinesis Data Streams",
+      "category": "integration",
+      "aliases": [
+        "Kinesis"
+      ],
+      "role": {
+        "es": "Flujos de datos en tiempo real",
+        "en": "Real-time data streams"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Analytics/64/Arch_Amazon-Kinesis-Data-Streams_64.svg"
+      }
+    },
+    "azure-container-apps": {
+      "cloud": "azure",
+      "label": "Azure Container Apps",
+      "short": "Azure Container Apps",
+      "category": "containers",
+      "role": {
+        "es": "Contenedores sin servidores",
+        "en": "Serverless containers"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/other/02989-icon-service-Container-Apps-Environments.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Container Apps; se usa el de Container Apps Environments, el entorno donde corren las apps."
+    },
+    "azure-aks": {
+      "cloud": "azure",
+      "label": "Azure Kubernetes Service",
+      "short": "Azure Kubernetes Service",
+      "category": "containers",
+      "aliases": [
+        "AKS"
+      ],
+      "role": {
+        "es": "Clúster de Kubernetes administrado",
+        "en": "Managed Kubernetes cluster"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/containers/10023-icon-service-Kubernetes-Services.svg"
+      }
+    },
+    "azure-managed-redis": {
+      "cloud": "azure",
+      "label": "Azure Managed Redis",
+      "short": "Azure Managed Redis",
+      "category": "database",
+      "role": {
+        "es": "Almacén de datos en memoria basado en Redis Enterprise",
+        "en": "In-memory data store based on Redis Enterprise"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/03675-icon-service-Azure-Managed-Redis.svg"
+      }
+    },
+    "azure-service-bus": {
+      "cloud": "azure",
+      "label": "Azure Service Bus",
+      "short": "Azure Service Bus",
+      "mode": {
+        "es": "cola",
+        "en": "queue"
+      },
+      "category": "integration",
+      "role": {
+        "es": "Colas y temas de mensajes",
+        "en": "Message queues and topics"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/integration/10836-icon-service-Azure-Service-Bus.svg"
+      }
+    },
+    "azure-event-hubs": {
+      "cloud": "azure",
+      "label": "Azure Event Hubs",
+      "short": "Azure Event Hubs",
+      "category": "integration",
+      "role": {
+        "es": "Ingesta de flujos de eventos",
+        "en": "Event stream ingestion"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/analytics/00039-icon-service-Event-Hubs.svg"
+      },
+      "aliases": [
+        "event hub"
+      ]
+    },
+    "azure-blob-storage": {
+      "cloud": "azure",
+      "label": "Azure Blob Storage",
+      "short": "Azure Blob Storage",
+      "category": "storage",
+      "role": {
+        "es": "Almacenamiento de objetos",
+        "en": "Object storage"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/storage/10086-icon-service-Storage-Accounts.svg"
+      },
+      "icon_note": "El paquete no trae icono propio de Blob Storage; se usa el de Storage Accounts, la cuenta donde viven los blobs."
+    },
+    "gcp-cloud-run": {
+      "cloud": "gcp",
+      "label": "Cloud Run",
+      "short": "Cloud Run",
+      "category": "containers",
+      "role": {
+        "es": "Contenedores sin servidores",
+        "en": "Serverless containers"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud Run/SVG/CloudRun-512-color-rgb.svg"
+      }
+    },
+    "gcp-gke-standard": {
+      "cloud": "gcp",
+      "label": "Google Kubernetes Engine",
+      "short": "GKE",
+      "mode": {
+        "es": "Standard",
+        "en": "Standard"
+      },
+      "category": "containers",
+      "aliases": [
+        "GKE Standard",
+        "Kubernetes Engine"
+      ],
+      "role": {
+        "es": "Kubernetes con nodos que opera el equipo",
+        "en": "Kubernetes with nodes the team operates"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/GKE/SVG/GKE-512-color.svg"
+      }
+    },
+    "gcp-memorystore-valkey": {
+      "cloud": "gcp",
+      "label": "Memorystore for Valkey",
+      "short": "Memorystore",
+      "category": "database",
+      "role": {
+        "es": "Valkey administrado para caché",
+        "en": "Managed Valkey for caching"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Databases/SVG/Databases-512-color.svg"
+      },
+      "icon_note": "Memorystore no tiene icono propio en el sistema de iconos de 2025; se usa la categoría Databases."
+    },
+    "gcp-cloud-sql-read-replica": {
+      "cloud": "gcp",
+      "label": "Cloud SQL",
+      "short": "Cloud SQL",
+      "mode": {
+        "es": "réplica de lectura",
+        "en": "read replica"
+      },
+      "category": "database",
+      "role": {
+        "es": "Copia de solo lectura de la base relacional",
+        "en": "Read-only copy of the relational database"
+      },
+      "icon": {
+        "package": "gcp-core",
+        "file": "Unique Icons/Cloud SQL/SVG/CloudSQL-512-color.svg"
+      }
+    },
+    "gcp-pubsub": {
+      "cloud": "gcp",
+      "label": "Pub/Sub",
+      "short": "Pub/Sub",
+      "mode": {
+        "es": "suscripción pull",
+        "en": "pull subscription"
+      },
+      "category": "integration",
+      "aliases": [
+        "Cloud Pub/Sub"
+      ],
+      "role": {
+        "es": "Mensajería con suscripciones",
+        "en": "Messaging with subscriptions"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Integration Services/SVG/IntegrationServices-512-color.svg"
+      },
+      "icon_note": "Pub/Sub no tiene icono propio en el sistema de iconos de 2025; se usa la categoría Integration Services."
+    },
+    "gcp-managed-kafka": {
+      "cloud": "gcp",
+      "label": "Managed Service for Apache Kafka",
+      "short": "Managed Kafka",
+      "category": "integration",
+      "aliases": [
+        "Apache Kafka",
+        "Kafka"
+      ],
+      "role": {
+        "es": "Apache Kafka administrado",
+        "en": "Managed Apache Kafka"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Data Analytics/SVG/DataAnalytics-512-color.svg"
+      },
+      "icon_note": "Managed Service for Apache Kafka no tiene icono propio en el sistema de iconos de 2025; se usa la categoría Data Analytics."
+    },
+    "gcp-firestore": {
+      "cloud": "gcp",
+      "label": "Firestore",
+      "short": "Firestore",
+      "category": "database",
+      "role": {
+        "es": "Base de datos NoSQL de documentos",
+        "en": "NoSQL document database"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Databases/SVG/Databases-512-color.svg"
+      },
+      "icon_note": "Firestore no tiene icono propio en el sistema de iconos de 2025; se usa la categoría Databases."
+    },
+    "oci-container-instances": {
+      "cloud": "oci",
+      "label": "OCI Container Instances",
+      "short": "Container Instances",
+      "category": "containers",
+      "role": {
+        "es": "Contenedores en cómputo sin servidores",
+        "en": "Containers on serverless compute"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Container"
+      },
+      "icon_note": "La librería de abril de 2024 no trae icono de Container Instances; se usa la figura genérica Container."
+    },
+    "oci-oke": {
+      "cloud": "oci",
+      "label": "OCI Kubernetes Engine",
+      "short": "OKE",
+      "category": "containers",
+      "aliases": [
+        "Oracle Kubernetes Engine",
+        "Container Engine for Kubernetes"
+      ],
+      "role": {
+        "es": "Clúster de Kubernetes administrado",
+        "en": "Managed Kubernetes cluster"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Developer Services - Container Engine for Kubernetes"
+      }
+    },
+    "oci-cache": {
+      "cloud": "oci",
+      "label": "OCI Cache",
+      "short": "OCI Cache",
+      "category": "database",
+      "role": {
+        "es": "Clústeres de caché en memoria con Redis o Valkey",
+        "en": "In-memory cache clusters with Redis or Valkey"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database"
+      },
+      "icon_note": "La librería de abril de 2024 no trae icono de OCI Cache; se usa la figura genérica Database."
+    },
+    "oci-queue": {
+      "cloud": "oci",
+      "label": "OCI Queue",
+      "short": "OCI Queue",
+      "category": "integration",
+      "role": {
+        "es": "Colas de mensajes sin servidores",
+        "en": "Serverless message queues"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - Queuing"
+      },
+      "icon_note": "La librería de abril de 2024 no trae icono de OCI Queue; se usa Message Listener, la figura de mensajería más cercana."
+    },
+    "oci-streaming": {
+      "cloud": "oci",
+      "label": "OCI Streaming",
+      "short": "OCI Streaming",
+      "category": "integration",
+      "role": {
+        "es": "Flujos de datos en tiempo real",
+        "en": "Real-time data streams"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Analytics and AI - Streaming"
+      }
+    },
+    "aws-sns": {
+      "cloud": "aws",
+      "label": "Amazon Simple Notification Service",
+      "short": "SNS",
+      "mode": {
+        "es": "tema",
+        "en": "topic"
+      },
+      "category": "integration",
+      "aliases": [
+        "SNS",
+        "Simple Notification Service"
+      ],
+      "role": {
+        "es": "Tema que empuja cada mensaje a sus suscriptores",
+        "en": "Topic that pushes each message to its subscribers"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Application-Integration/64/Arch_Amazon-Simple-Notification-Service_64.svg"
+      }
+    },
+    "aws-sqs-dlq": {
+      "cloud": "aws",
+      "label": "Amazon SQS dead-letter queue",
+      "short": "SQS",
+      "mode": {
+        "es": "DLQ con redrive",
+        "en": "DLQ with redrive"
+      },
+      "category": "integration",
+      "aliases": [
+        "DLQ",
+        "dead-letter queue",
+        "cola de mensajes fallidos"
+      ],
+      "role": {
+        "es": "Cola aparte para los mensajes que fallaron varias veces",
+        "en": "Separate queue for messages that failed several times"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Application-Integration/Res_Amazon-Simple-Queue-Service_Queue_48.svg"
+      },
+      "icon_note": "El paquete no trae icono de DLQ; se usa el recurso Queue de SQS, que es lo que es una DLQ."
+    },
+    "aws-firehose": {
+      "cloud": "aws",
+      "label": "Amazon Data Firehose",
+      "short": "Data Firehose",
+      "category": "integration",
+      "aliases": [
+        "Firehose"
+      ],
+      "role": {
+        "es": "Entrega flujos de datos a un destino como S3",
+        "en": "Delivers streaming data to a destination such as S3"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Analytics/64/Arch_Amazon-Data-Firehose_64.svg"
+      }
+    },
+    "azure-service-bus-topic": {
+      "cloud": "azure",
+      "label": "Azure Service Bus",
+      "short": "Azure Service Bus",
+      "mode": {
+        "es": "tema y suscripciones",
+        "en": "topic and subscriptions"
+      },
+      "category": "integration",
+      "role": {
+        "es": "Mensajería con colas, temas y suscripciones",
+        "en": "Messaging with queues, topics and subscriptions"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/integration/10836-icon-service-Azure-Service-Bus.svg"
+      }
+    },
+    "azure-service-bus-queue": {
+      "cloud": "azure",
+      "label": "Azure Service Bus",
+      "short": "Azure Service Bus",
+      "mode": {
+        "es": "cola destino del reenvío",
+        "en": "autoforwarding destination queue"
+      },
+      "category": "integration",
+      "role": {
+        "es": "Mensajería con colas, temas y suscripciones",
+        "en": "Messaging with queues, topics and subscriptions"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/integration/10836-icon-service-Azure-Service-Bus.svg"
+      }
+    },
+    "azure-service-bus-dlq": {
+      "cloud": "azure",
+      "label": "Azure Service Bus",
+      "short": "Azure Service Bus",
+      "mode": {
+        "es": "subcola de mensajes fallidos",
+        "en": "dead-letter subqueue"
+      },
+      "category": "integration",
+      "aliases": [
+        "DLQ",
+        "dead-letter queue",
+        "cola de mensajes fallidos"
+      ],
+      "role": {
+        "es": "Mensajería con colas, temas y suscripciones",
+        "en": "Messaging with queues, topics and subscriptions"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/integration/10836-icon-service-Azure-Service-Bus.svg"
+      }
+    },
+    "azure-stream-analytics": {
+      "cloud": "azure",
+      "label": "Azure Stream Analytics",
+      "short": "Azure Stream Analytics",
+      "category": "integration",
+      "role": {
+        "es": "Procesa flujos de datos en tiempo real",
+        "en": "Processes data streams in real time"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/analytics/00042-icon-service-Stream-Analytics-Jobs.svg"
+      }
+    },
+    "gcp-pubsub-topic": {
+      "cloud": "gcp",
+      "label": "Pub/Sub",
+      "short": "Pub/Sub",
+      "mode": {
+        "es": "tema",
+        "en": "topic"
+      },
+      "category": "integration",
+      "role": {
+        "es": "Mensajería de publicar y suscribir",
+        "en": "Publish and subscribe messaging"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Data Analytics/SVG/DataAnalytics-512-color.svg"
+      }
+    },
+    "gcp-pubsub-subscription": {
+      "cloud": "gcp",
+      "label": "Pub/Sub",
+      "short": "Pub/Sub",
+      "mode": {
+        "es": "suscripción push",
+        "en": "push subscription"
+      },
+      "category": "integration",
+      "role": {
+        "es": "Mensajería de publicar y suscribir",
+        "en": "Publish and subscribe messaging"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Data Analytics/SVG/DataAnalytics-512-color.svg"
+      }
+    },
+    "gcp-pubsub-dlt": {
+      "cloud": "gcp",
+      "label": "Pub/Sub",
+      "short": "Pub/Sub",
+      "mode": {
+        "es": "tema de mensajes fallidos",
+        "en": "dead-letter topic"
+      },
+      "category": "integration",
+      "aliases": [
+        "dead-letter topic",
+        "dead-letter queue",
+        "tema de mensajes fallidos"
+      ],
+      "role": {
+        "es": "Mensajería de publicar y suscribir",
+        "en": "Publish and subscribe messaging"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Data Analytics/SVG/DataAnalytics-512-color.svg"
+      }
+    },
+    "gcp-cloud-tasks": {
+      "cloud": "gcp",
+      "label": "Cloud Tasks",
+      "short": "Cloud Tasks",
+      "category": "integration",
+      "role": {
+        "es": "Tareas que el publicador envía a un endpoint elegido",
+        "en": "Tasks the publisher sends to a chosen endpoint"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Developer Tools/SVG/Developer_Tools-512-color.svg"
+      }
+    },
+    "gcp-memorystore": {
+      "cloud": "gcp",
+      "label": "Memorystore",
+      "short": "Memorystore",
+      "mode": {
+        "es": "caché en memoria",
+        "en": "in-memory cache"
+      },
+      "category": "database",
+      "role": {
+        "es": "Caché de datos en memoria",
+        "en": "In-memory data cache"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Databases/SVG/Databases-512-color.svg"
+      }
+    },
+    "gcp-dataflow": {
+      "cloud": "gcp",
+      "label": "Dataflow",
+      "short": "Dataflow",
+      "category": "integration",
+      "role": {
+        "es": "Procesa datos por lotes y en flujo",
+        "en": "Processes batch and streaming data"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Data Analytics/SVG/DataAnalytics-512-color.svg"
+      }
+    },
+    "oci-notifications": {
+      "cloud": "oci",
+      "label": "OCI Notifications",
+      "short": "Notifications",
+      "mode": {
+        "es": "tema",
+        "en": "topic"
+      },
+      "category": "integration",
+      "role": {
+        "es": "Temas que envían cada mensaje a todas sus suscripciones",
+        "en": "Topics that send each message to all their subscriptions"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Developer Services - Notifications"
+      }
+    },
+    "oci-queue-dlq": {
+      "cloud": "oci",
+      "label": "OCI Queue dead letter queue",
+      "short": "Queue",
+      "mode": {
+        "es": "DLQ",
+        "en": "DLQ"
+      },
+      "category": "integration",
+      "aliases": [
+        "DLQ",
+        "dead letter queue",
+        "cola de mensajes fallidos"
+      ],
+      "role": {
+        "es": "Cola aparte para los mensajes que fallaron varias veces",
+        "en": "Separate queue for messages that failed several times"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - Queuing"
+      },
+      "icon_note": "La librería no trae icono de OCI Queue ni de su DLQ; se usa la figura Queuing."
+    },
+    "oci-connector-hub": {
+      "cloud": "oci",
+      "label": "OCI Connector Hub",
+      "short": "Connector Hub",
+      "category": "integration",
+      "aliases": [
+        "Service Connector Hub"
+      ],
+      "role": {
+        "es": "Mueve datos de un servicio de origen a uno de destino",
+        "en": "Moves data from a source service to a target service"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Analytics and AI - Service Connector Hub"
+      }
+    },
+    "aws-route53-health-checks": {
+      "cloud": "aws",
+      "label": "Amazon Route 53",
+      "short": "Route 53",
+      "mode": {
+        "es": "health checks",
+        "en": "health checks"
+      },
+      "category": "networking",
+      "aliases": [
+        "Route 53 health checks",
+        "health checks de Route 53"
+      ],
+      "role": {
+        "es": "Revisa desde fuera la salud de un endpoint",
+        "en": "Checks an endpoint's health from outside"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_Amazon-Route-53_64.svg"
+      },
+      "icon_note": "El paquete no trae icono de los health checks de Route 53; se usa el de Route 53, el servicio al que pertenecen."
+    },
+    "aws-route53-resolver": {
+      "cloud": "aws",
+      "label": "Amazon Route 53 VPC Resolver",
+      "short": "Route 53 VPC Resolver",
+      "category": "networking",
+      "aliases": [
+        "Route 53 Resolver"
+      ],
+      "role": {
+        "es": "Resuelve consultas DNS de las VPC y de redes híbridas",
+        "en": "Resolves DNS queries for VPCs and hybrid networks"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Networking-Content-Delivery/Res_Amazon-Route-53_Resolver_48.svg"
+      }
+    },
+    "aws-target-group-health-check": {
+      "cloud": "aws",
+      "label": "Target group health check",
+      "short": "Target group",
+      "mode": {
+        "es": "health check",
+        "en": "health check"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Revisa los destinos registrados del balanceador",
+        "en": "Checks the load balancer's registered targets"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Networking-Content-Delivery/64/Arch_Elastic-Load-Balancing_64.svg"
+      },
+      "icon_note": "El paquete no trae icono de target group; se usa el de Elastic Load Balancing, al que pertenece."
+    },
+    "aws-cloudwatch-logs": {
+      "cloud": "aws",
+      "label": "Amazon CloudWatch Logs",
+      "short": "CloudWatch Logs",
+      "category": "management",
+      "role": {
+        "es": "Guarda y consulta registros",
+        "en": "Stores and queries logs"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Resource-Icons_07312026/Res_Management-Governance/Res_Amazon-CloudWatch_Logs_48.svg"
+      }
+    },
+    "azure-traffic-manager-monitoring": {
+      "cloud": "azure",
+      "label": "Azure Traffic Manager",
+      "short": "Azure Traffic Manager",
+      "mode": {
+        "es": "monitoreo de endpoints",
+        "en": "endpoint monitoring"
+      },
+      "category": "networking",
+      "aliases": [
+        "monitoreo de endpoints",
+        "endpoint monitoring"
+      ],
+      "role": {
+        "es": "Revisa la salud de cada endpoint del perfil",
+        "en": "Checks the health of each endpoint in the profile"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10065-icon-service-Traffic-Manager-Profiles.svg"
+      },
+      "icon_note": "El monitoreo de endpoints es parte del perfil de Traffic Manager y no tiene icono propio; se usa el del perfil."
+    },
+    "azure-action-groups": {
+      "cloud": "azure",
+      "label": "Azure Monitor",
+      "short": "Azure Monitor",
+      "mode": {
+        "es": "grupos de acciones",
+        "en": "action groups"
+      },
+      "category": "management",
+      "aliases": [
+        "action group",
+        "action groups",
+        "grupo de acciones",
+        "grupos de acciones"
+      ],
+      "role": {
+        "es": "Define a quién avisar y por qué medio cuando se dispara una alerta",
+        "en": "Defines who is notified, and how, when an alert fires"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/management + governance/00002-icon-service-Alerts.svg"
+      },
+      "icon_note": "El paquete no trae icono de grupos de acciones; se usa el de Alertas, la parte de Azure Monitor a la que se adjuntan."
+    },
+    "azure-dns-private-resolver": {
+      "cloud": "azure",
+      "label": "Azure DNS Private Resolver",
+      "short": "Azure DNS Private Resolver",
+      "category": "networking",
+      "role": {
+        "es": "Resuelve DNS privado entre redes virtuales y redes locales",
+        "en": "Resolves private DNS between virtual networks and on-premises"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/02882-icon-service-DNS-Private-Resolver.svg"
+      }
+    },
+    "azure-app-gateway-probe": {
+      "cloud": "azure",
+      "label": "Azure Application Gateway",
+      "short": "Azure Application Gateway",
+      "mode": {
+        "es": "sondeo de estado",
+        "en": "health probe"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Revisa los servidores del pool de backend del balanceador",
+        "en": "Checks the servers in the gateway's backend pool"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10076-icon-service-Application-Gateways.svg"
+      },
+      "icon_note": "El sondeo es parte de Application Gateway y no tiene icono propio; se usa el del servicio."
+    },
+    "azure-log-analytics": {
+      "cloud": "azure",
+      "label": "Log Analytics workspace",
+      "short": "Log Analytics workspace",
+      "category": "management",
+      "role": {
+        "es": "Guarda datos de registro para consultarlos",
+        "en": "Stores log data for queries"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/monitor/00009-icon-service-Log-Analytics-Workspaces.svg"
+      }
+    },
+    "gcp-dns-health-checks": {
+      "cloud": "gcp",
+      "label": "Cloud DNS",
+      "short": "Cloud DNS",
+      "mode": {
+        "es": "health checks de endpoints externos",
+        "en": "external endpoint health checks"
+      },
+      "category": "networking",
+      "aliases": [
+        "health checks de endpoints externos",
+        "external endpoint health checks"
+      ],
+      "role": {
+        "es": "Sondea endpoints externos para las políticas de una zona pública",
+        "en": "Probes external endpoints for the routing policies of a public zone"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-dns-server-policy": {
+      "cloud": "gcp",
+      "label": "Cloud DNS",
+      "short": "Cloud DNS",
+      "mode": {
+        "es": "políticas de servidor",
+        "en": "server policies"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Configuración DNS privada de una red de VPC",
+        "en": "Private DNS settings for a VPC network"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-backend-health-check": {
+      "cloud": "gcp",
+      "label": "Backend service health check",
+      "short": "Backend service",
+      "mode": {
+        "es": "health check",
+        "en": "health check"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Vigila los backends de un balanceador",
+        "en": "Monitors a load balancer's backends"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "gcp-notification-channels": {
+      "cloud": "gcp",
+      "label": "Cloud Monitoring",
+      "short": "Cloud Monitoring",
+      "mode": {
+        "es": "canales de notificación",
+        "en": "notification channels"
+      },
+      "category": "management",
+      "aliases": [
+        "canales de notificación",
+        "notification channels"
+      ],
+      "role": {
+        "es": "Avisa a guardia cuando se dispara una política de alertas",
+        "en": "Notifies the on-call team when an alerting policy fires"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Observability/SVG/Observability-512-color.svg"
+      }
+    },
+    "gcp-cloud-logging": {
+      "cloud": "gcp",
+      "label": "Cloud Logging",
+      "short": "Cloud Logging",
+      "category": "management",
+      "role": {
+        "es": "Guarda y consulta entradas de registro",
+        "en": "Stores and queries log entries"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Observability/SVG/Observability-512-color.svg"
+      }
+    },
+    "oci-steering-policies": {
+      "cloud": "oci",
+      "label": "OCI Traffic Management",
+      "short": "Traffic Management",
+      "mode": {
+        "es": "steering policies",
+        "en": "steering policies"
+      },
+      "category": "networking",
+      "aliases": [
+        "Traffic Management Steering Policies",
+        "steering policies"
+      ],
+      "role": {
+        "es": "Sirve respuestas DNS según reglas y la salud de cada respuesta",
+        "en": "Serves DNS answers by rules and by each answer's health"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - DNS"
+      },
+      "icon_note": "La librería no trae icono de Traffic Management; se usa el de DNS, donde viven las steering policies."
+    },
+    "oci-health-checks": {
+      "cloud": "oci",
+      "label": "OCI Health Checks",
+      "short": "Health Checks",
+      "category": "management",
+      "role": {
+        "es": "Monitorea desde fuera servicios públicos",
+        "en": "Monitors public-facing services from outside"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - Health Checks"
+      }
+    },
+    "oci-dns-private-resolver": {
+      "cloud": "oci",
+      "label": "OCI DNS",
+      "short": "DNS",
+      "mode": {
+        "es": "resolver privado",
+        "en": "private resolver"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Resuelve nombres dentro de las VCN",
+        "en": "Resolves names inside VCNs"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - DNS"
+      }
+    },
+    "oci-lb-health-check": {
+      "cloud": "oci",
+      "label": "OCI Load Balancer",
+      "short": "Load Balancer",
+      "mode": {
+        "es": "health check del backend set",
+        "en": "backend set health check"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Revisa los servidores de un backend set",
+        "en": "Checks the servers in a backend set"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Flexible Load Balancer"
+      },
+      "icon_note": "La política de health check es parte del balanceador y no tiene icono propio; se usa el de Flexible Load Balancer."
+    },
+    "oci-logging": {
+      "cloud": "oci",
+      "label": "OCI Logging",
+      "short": "Logging",
+      "category": "management",
+      "role": {
+        "es": "Guarda los registros de la tenancy",
+        "en": "Stores the tenancy's logs"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Observability and Management - Logging"
+      }
+    },
+    "gcp-global-app-lb": {
+      "cloud": "gcp",
+      "label": "Global external Application Load Balancer",
+      "short": "Application Load Balancer",
+      "mode": {
+        "es": "externo global",
+        "en": "global external"
+      },
+      "category": "networking",
+      "aliases": [
+        "Application Load Balancer",
+        "balanceador de aplicaciones"
+      ],
+      "role": {
+        "es": "Balanceador de capa 7 global; el único tipo, con el clásico, que usa Cloud CDN",
+        "en": "Global layer 7 load balancer; with the classic one, the only type Cloud CDN works with"
+      },
+      "icon": {
+        "package": "gcp-category",
+        "file": "Category Icons/Networking/SVG/Networking-512-color-rgb.svg"
+      }
+    },
+    "azure-waf-app-gateway": {
+      "cloud": "azure",
+      "label": "Azure Web Application Firewall",
+      "short": "Azure WAF",
+      "mode": {
+        "es": "en Application Gateway",
+        "en": "on Application Gateway"
+      },
+      "category": "security",
+      "aliases": [
+        "WAF",
+        "Web Application Firewall",
+        "firewall de aplicaciones web"
+      ],
+      "role": {
+        "es": "Firewall de aplicaciones web asociado a un Application Gateway WAF_v2",
+        "en": "Web application firewall associated with a WAF_v2 Application Gateway"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10362-icon-service-Web-Application-Firewall-Policies(WAF).svg"
+      }
+    },
+    "azure-vpn-gateway-s2s": {
+      "cloud": "azure",
+      "label": "Azure VPN Gateway",
+      "short": "VPN Gateway",
+      "mode": {
+        "es": "sitio a sitio",
+        "en": "site-to-site"
+      },
+      "category": "networking",
+      "role": {
+        "es": "Túneles IPsec entre una red local y la red virtual",
+        "en": "IPsec tunnels between an on-premises network and the virtual network"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10063-icon-service-Virtual-Network-Gateways.svg"
+      },
+      "icon_note": "Icono oficial de Virtual Network Gateways, el recurso que crea VPN Gateway.",
+      "aliases": [
+        "VPN",
+        "puerta de enlace de VPN"
+      ]
+    },
+    "aws-dynamodb-regional": {
+      "cloud": "aws",
+      "label": "Amazon DynamoDB",
+      "short": "DynamoDB",
+      "mode": {
+        "es": "una región",
+        "en": "single Region"
+      },
+      "category": "database",
+      "role": {
+        "es": "Base NoSQL llave-valor y de documentos, aquí con una tabla en una sola región",
+        "en": "Key-value and document NoSQL database, here with a table in a single Region"
+      },
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Service-Icons_07312026/Arch_Databases/64/Arch_Amazon-DynamoDB_64.svg"
+      }
+    },
+    "azure-cosmos-db-regional": {
+      "cloud": "azure",
+      "label": "Azure Cosmos DB",
+      "short": "Azure Cosmos DB",
+      "mode": {
+        "es": "una región",
+        "en": "single region"
+      },
+      "category": "database",
+      "role": {
+        "es": "Base NoSQL distribuida, aquí con una cuenta en una sola región",
+        "en": "Distributed NoSQL database, here with an account in a single region"
+      },
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/databases/10121-icon-service-Azure-Cosmos-DB.svg"
+      }
+    },
+    "oci-nosql-regional": {
+      "cloud": "oci",
+      "label": "Oracle NoSQL Database Cloud Service",
+      "short": "NoSQL Database",
+      "mode": {
+        "es": "una región",
+        "en": "single region"
+      },
+      "category": "database",
+      "aliases": [
+        "NoSQL Database Cloud Service"
+      ],
+      "role": {
+        "es": "Base NoSQL administrada, aquí con tablas en una sola región",
+        "en": "Managed NoSQL database, here with tables in a single region"
+      },
+      "icon": {
+        "package": "oci",
+        "shape": "Database - NoSQL"
+      }
+    }
+  },
+  "groups": {
+    "aws-cloud": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/AWS-Cloud-logo_32.svg"
+      }
+    },
+    "region": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/Region_32.svg"
+      }
+    },
+    "vpc": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/Virtual-private-cloud-VPC_32.svg"
+      }
+    },
+    "public-subnet": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/Public-subnet_32.svg"
+      }
+    },
+    "private-subnet": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/Private-subnet_32.svg"
+      }
+    },
+    "auto-scaling-group": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/Auto-Scaling-group_32.svg"
+      }
+    },
+    "corporate-dc": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/Corporate-data-center_32.svg"
+      }
+    },
+    "aws-account": {
+      "icon": {
+        "package": "aws",
+        "file": "Architecture-Group-Icons_07312026/AWS-Account_32.svg"
+      }
+    },
+    "azure-resource-group": {
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/general/10007-icon-service-Resource-Groups.svg"
+      }
+    },
+    "azure-vnet": {
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/10061-icon-service-Virtual-Networks.svg"
+      }
+    },
+    "azure-subnet": {
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/networking/02742-icon-service-Subnet.svg"
+      }
+    },
+    "oci-vcn": {
+      "icon": {
+        "package": "oci",
+        "shape": "Networking - Virtual Cloud Network VCN"
+      }
+    },
+    "azure-subscription": {
+      "icon": {
+        "package": "azure",
+        "file": "Azure_Public_Service_Icons/Icons/general/10002-icon-service-Subscriptions.svg"
+      }
+    }
+  }
+}

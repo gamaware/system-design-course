@@ -1,0 +1,439 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e03-azure",
+  "version": 1,
+  "scenario": "e03",
+  "cloud": "azure",
+  "title": "Cursos en video para 300 mil alumnos",
+  "summary": "CursosMX vende cursos grabados a 300 mil alumnos de México y Centroamérica. Los videos deben llegar rápido, las grabaciones crudas deben costar poco y el login recibe intentos de inyección SQL.",
+  "topics": [
+    "entrega de contenido",
+    "caché",
+    "clases de almacenamiento",
+    "nombres públicos",
+    "filtrado HTTP"
+  ],
+  "source_refs": [
+    {
+      "title": "Azure Front Door: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview"
+    },
+    {
+      "title": "Cómo funciona Traffic Manager",
+      "url": "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-how-it-works"
+    },
+    {
+      "title": "Blob Storage: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview"
+    },
+    {
+      "title": "Niveles de acceso de Blob Storage",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+    },
+    {
+      "title": "Azure DNS: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/dns/dns-overview"
+    },
+    {
+      "title": "Azure DDoS Protection: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview"
+    },
+    {
+      "title": "Azure WAF en Application Gateway",
+      "url": "https://learn.microsoft.com/en-us/azure/web-application-firewall/ag/ag-overview"
+    },
+    {
+      "title": "Azure Managed Disks: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
+    },
+    {
+      "title": "Productos de Azure disponibles por región",
+      "url": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 7.0,
+        "h": 5.24
+      }
+    },
+    {
+      "id": "g-edge",
+      "kind": "generic",
+      "label": "Entrada desde internet",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 1.3,
+        "w": 1.53,
+        "h": 2.7
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "azure-region",
+      "label": "Región Mexico Central",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 3.6,
+        "r": 0.22,
+        "w": 5.29,
+        "h": 4.96
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 5.3,
+        "r": 2.55,
+        "w": 3.53,
+        "h": 1.5
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de producción",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 4.0
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "azure-app-gateway",
+      "label": "Balanceador de la app",
+      "number": 6,
+      "cell": {
+        "c": 5.7,
+        "r": 2.95
+      },
+      "group": "g-net"
+    },
+    {
+      "id": "n-app",
+      "icon": "azure-vm",
+      "label": "Servidores de login y pagos",
+      "number": null,
+      "cell": {
+        "c": 7.5,
+        "r": 2.95
+      },
+      "group": "g-net"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.26,
+        "r": 1.6
+      },
+      "group": "g-edge",
+      "accept": [
+        "azure-front-door"
+      ],
+      "near_miss": "azure-traffic-manager",
+      "hint_cue": "puntos cercanos a cada alumno",
+      "explanation": "Azure Front Door es una CDN que usa la red de borde de Microsoft, con puntos de presencia cerca de los usuarios, y guarda en caché el contenido. Traffic Manager solo responde por DNS y no ve el tráfico.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview",
+        "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-how-it-works"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.2,
+        "r": 1.6
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-blob"
+      ],
+      "near_miss": "azure-managed-disks",
+      "hint_cue": "no hay servidores que administrar",
+      "explanation": "Blob Storage guarda cantidades masivas de datos no estructurados, está pensado para streaming de video y se lee por HTTP o HTTPS desde cualquier lugar. El nivel Hot es el de datos que se leen seguido.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview",
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.2,
+        "r": 4.0
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-blob-cold"
+      ],
+      "near_miss": "azure-blob-cool",
+      "hint_cue": "el menor costo por GB guardado",
+      "explanation": "Mexico Central ofrece los niveles Hot, Cool y Cold de Blob Storage, pero no Archive. De esos tres, Cold tiene el menor costo por GB; pide 90 días mínimos y cobra más cada lectura, aunque responde en milisegundos.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview",
+        "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.26,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-dns"
+      ],
+      "near_miss": "azure-private-dns",
+      "hint_cue": "responde a cualquiera en internet",
+      "explanation": "Azure Public DNS hospeda dominios como cursosmx.com y sus registros para que internet los resuelva. Azure Private DNS solo resuelve nombres dentro de las redes virtuales.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/dns/dns-overview"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 2.26,
+        "r": 2.95
+      },
+      "group": "g-edge",
+      "accept": [
+        "azure-waf-app-gateway"
+      ],
+      "near_miss": "azure-ddos-protection",
+      "hint_cue": "bloquea la inyección SQL",
+      "explanation": "El WAF de Application Gateway protege contra inyección SQL; su política se asocia al Application Gateway y bloquea la petición sin reenviarla al back end. DDoS Protection cubre las capas 3 y 4.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/web-application-firewall/ag/ag-overview",
+        "https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "cursosmx.com",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s4",
+      "dir": "forward",
+      "step": 2,
+      "label": "¿cursosmx.com?",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 4,
+      "label": "video que falta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 5,
+      "label": "login y pagos",
+      "style": "solid",
+      "route": "points",
+      "points": [
+        {
+          "c": 2.76,
+          "r": 2.85
+        },
+        {
+          "c": 6.2,
+          "r": 2.85
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-lb",
+      "dir": "none",
+      "step": null,
+      "label": "política asociada",
+      "style": "dotted"
+    },
+    {
+      "id": "e7",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 6,
+      "label": "reparte",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "n-team",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "grabaciones crudas",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda copias de videos e imágenes en puntos cercanos a cada alumno, para no viajar hasta la región en cada petición."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} es el origen de millones de videos que los alumnos ven a diario por HTTP, en una sola región; se paga por GB guardado y no hay servidores que administrar."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda 5 años las grabaciones crudas, que casi nunca se abren. Importa el menor costo por GB guardado que ofrece la región, aunque leerlas después sea más caro."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} guarda los registros de cursosmx.com y responde a cualquiera en internet que pregunte por ese nombre, para que llegue al slot 1."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} revisa cada petición HTTP del login y bloquea la inyección SQL antes de que llegue a la app."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El balanceador de la app reparte el login y los pagos entre los servidores de la región."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-front-door"
+    },
+    {
+      "service": "azure-blob"
+    },
+    {
+      "service": "azure-blob-cold"
+    },
+    {
+      "service": "azure-dns"
+    },
+    {
+      "service": "azure-waf-app-gateway"
+    },
+    {
+      "service": "azure-traffic-manager",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Traffic Manager trabaja a nivel DNS: el alumno se conecta directo al endpoint elegido y Traffic Manager no es proxy ni ve el tráfico, así que no guarda copias.",
+        "s4": "Traffic Manager solo elige un endpoint; los registros de cursosmx.com los guarda el servicio que hospeda el dominio, que apunta a él con un CNAME."
+      }
+    },
+    {
+      "service": "azure-managed-disks",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Un disco administrado es un volumen de bloques que se usa con máquinas virtuales de Azure; el origen de los videos debe servirse por HTTP sin servidores que administrar.",
+        "s3": "Un disco administrado es un volumen de bloques para máquinas virtuales, no uno de los niveles de acceso de Blob Storage."
+      }
+    },
+    {
+      "service": "azure-blob-cool",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "El nivel Cool cuesta menos por GB que Hot, pero más que Cold; Microsoft lo pone para datos que se leen poco y a Cold para los que casi nunca se leen.",
+        "s2": "El nivel Cool es para datos que se leen o cambian poco y cobra cada GB que se lee; los videos se ven a diario."
+      }
+    },
+    {
+      "service": "azure-private-dns",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Azure Private DNS administra y resuelve nombres dentro de la red virtual; los alumnos en internet no reciben sus respuestas."
+      }
+    },
+    {
+      "service": "azure-ddos-protection",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "DDoS Protection protege en las capas 3 y 4; para proteger una aplicación web en la capa 7 hace falta otra pieza."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 3 de ARCHITECTURES.md. Topología común: alumnos, internet, slot 4 fuera de la región, slots 1 y 5 en un cuadro de entrada, orígenes 2 (videos) y balanceador fijo, slot 3 para las grabaciones crudas que sube el equipo. Revisión a ciegas: el slot 5 ya no se dibuja como un salto de red; la flecha 5 va del slot 1 al balanceador y la política del slot 5 se une al balanceador con una línea punteada sin paso. En Azure la política WAF se asocia al Application Gateway del login (WAF_v2). El WAF de Front Door Premium correría dentro del slot 1 y no se puede dibujar con la topología común; ver design-notes.md. Revisión final: la tabla de productos por región de Azure lista en Mexico Central los niveles Hot/Cool/Cold y no Archive Storage (la API de precios tampoco trae medidores de Archive ahí). Se conservó la región y el slot 3 pasa a nivel Cold; el requisito 3 pide el menor costo que ofrece la región y Archive salió de la paleta.",
+  "status": "published"
+}

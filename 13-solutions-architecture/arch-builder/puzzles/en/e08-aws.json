@@ -1,0 +1,67 @@
+{
+  "id": "e08-aws",
+  "title": "A parcel service that never loses an order",
+  "summary": "EnvíaYa delivers 80,000 parcels a day in the Bajío region. Each new order reaches billing, the customer SMS and driver assignment, and a failure in one does not stop the others.",
+  "requirements": {
+    "1": "{{s1}} makes the same order-created event reach several independent consumers, without the API knowing how many there are.",
+    "2": "{{s2}} receives its copy of each order and keeps it until a worker confirms it was processed; if the worker dies halfway, the order shows up again.",
+    "3": "{{s3}} runs the code that assigns a driver only when there are messages, scales on its own and costs nothing in the early morning.",
+    "4": "{{s4}} sets aside, on its own, an order that fails 5 times so it can be reviewed later, without blocking the line.",
+    "5": "{{s5}} receives the drivers' GPS, keeps it for 7 days in order, and analytics reads it again from the beginning as many times as it wants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Amazon SNS pushes each message published to the topic to all its subscribers, and the slot 2 queue gets its own copy. The API only publishes to the topic. SQS does not hand out copies: it is a queue read by polling.",
+      "hint_cue": "reach several independent consumers"
+    },
+    "s2": {
+      "explanation": "The SQS standard queue keeps the order until it is deleted. While the worker processes it, it stays hidden; if the worker fails, it becomes visible again when the visibility timeout expires. It may deliver more than one copy, so the worker must be idempotent.",
+      "hint_cue": "if the worker dies halfway, the order shows up again"
+    },
+    "s3": {
+      "explanation": "With an event source mapping, Lambda polls the queue, invokes the function only when there are batches of messages and deletes the ones processed successfully. An EC2 instance would stay on and billing even with no orders.",
+      "hint_cue": "only when there are messages"
+    },
+    "s4": {
+      "explanation": "With maxReceiveCount set to 5, an order received 5 times moves to the DLQ for review and can go back with redrive. So that only the failing one counts, the function reports its failures with ReportBatchItemFailures; otherwise the whole batch returns to the queue. S3 does not count receives.",
+      "hint_cue": "fails 5 times"
+    },
+    "s5": {
+      "explanation": "Kinesis Data Streams gives each record a sequence number within its shard and keeps it available for the retention period, which can go from 24 hours to 7 days or more; each application reads the stream on its own. Firehose only delivers to a destination.",
+      "hint_cue": "reads it again from the beginning"
+    }
+  },
+  "nodes": {
+    "n-api": "Orders API",
+    "n-sms": "Customers (SMS)",
+    "n-analytics": "Analytics",
+    "n-gps": "Drivers (GPS)"
+  },
+  "edges": {
+    "e1": "order created",
+    "e2": "customer SMS",
+    "e3": "copy of the order",
+    "e4": "orders to handle",
+    "e5": "after 5 failures",
+    "e6": "GPS positions",
+    "e7": "rereads from the start"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud"
+  },
+  "why_not": {
+    "aws-elasticache": {
+      "s2": "ElastiCache is an in-memory cache: its lists do not guarantee delivery or bring the order back if the worker dies halfway."
+    },
+    "aws-ec2": {
+      "s3": "An EC2 instance bills while it is running, even with no orders in the early morning, and it is not invoked on its own for each batch of messages."
+    },
+    "aws-s3": {
+      "s4": "An S3 bucket stores objects, but it does not count how many times an order failed or set it aside on its own.",
+      "s5": "S3 stores whole objects (Firehose, for example, joins several records into one object); it does not number each position so it can be reread in order."
+    },
+    "aws-firehose": {
+      "s5": "Data Firehose delivers records to a destination such as S3; it does not keep them for analytics to read again from the beginning."
+    }
+  }
+}

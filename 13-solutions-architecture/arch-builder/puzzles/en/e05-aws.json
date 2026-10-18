@@ -1,0 +1,78 @@
+{
+  "id": "e05-aws",
+  "title": "Scholarship payments",
+  "summary": "BecaPay deposits grants to 15,000 university students through an app. The auditor requires a standard login, the company's own keys and a trail of every change.",
+  "requirements": {
+    "1": "{{s1}} lets students sign in with email or with their Google account, and the app receives OAuth 2.0 / OIDC tokens that expire and are renewed with a refresh token.",
+    "2": "{{s2}} rejects any call to /pagos with an invalid, expired or foreign-issuer token before it reaches the service.",
+    "3": "{{s3}} encrypts the database and backups with company keys that rotate every year, and every use of those keys can be logged.",
+    "4": "{{s4}} alerts if someone operates the cloud resources from a suspicious IP address.",
+    "5": "{{s5}} shows the auditor who changed a firewall rule or deleted a resource, when and from where.",
+    "6": "The payments service runs in the private subnet and only receives calls that slot 2 already validated.",
+    "7": "The database stores the scholarship holders' accounts and deposits, encrypted with the slot 3 keys."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "A Cognito user pool adds the Google button, handles the OAuth 2.0 and OIDC exchange, and gives the app ID and access tokens that expire (5 minutes to 1 day) plus a refresh token to get new ones.",
+      "hint_cue": "with their Google account"
+    },
+    "s2": {
+      "explanation": "With a JWT authorizer on the route, API Gateway checks the signature, issuer (iss), audience and expiration (exp) and denies the request if any check fails. It reaches the private subnet through a private integration: a VPC link to a load balancer or Cloud Map.",
+      "hint_cue": "invalid, expired or foreign-issuer token"
+    },
+    "s3": {
+      "explanation": "A customer managed KMS key can rotate on its own, every 365 days unless another period is set, and CloudTrail logs every cryptographic operation with it, such as Decrypt or GenerateDataKey.",
+      "hint_cue": "company keys that rotate every year"
+    },
+    "s4": {
+      "explanation": "GuardDuty analyzes CloudTrail events, VPC Flow Logs and DNS queries; its MaliciousIPCaller finding warns when someone invokes an AWS API from a known malicious IP address.",
+      "hint_cue": "suspicious IP address"
+    },
+    "s5": {
+      "explanation": "Each CloudTrail event stores who made the request (userIdentity), when (eventTime) and from which IP (sourceIPAddress), and CloudTrail shows resource creation, changes and deletion.",
+      "hint_cue": "who changed a firewall rule"
+    }
+  },
+  "nodes": {
+    "n-app": "Students' app",
+    "n-pay": "Payments service",
+    "n-db": "Scholarship database",
+    "n-sec": "Security team",
+    "n-aud": "Auditor"
+  },
+  "edges": {
+    "e1": "signs in",
+    "e2": "token",
+    "e3": "/pagos",
+    "e4": "queries",
+    "e5": "encryption keys",
+    "e6": "activity",
+    "e7": "alert",
+    "e8": "trail"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud",
+    "g-region": "Region mx-central-1",
+    "g-net": "VPC 10.0.0.0/16",
+    "g-zone-a": "AZ mx-central-1a",
+    "g-zone-b": "AZ mx-central-1b",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "aws-iam": {
+      "s1": "IAM controls who is authenticated and authorized to use AWS resources; it does not offer sign-up or sign-in for the app's students."
+    },
+    "aws-nlb": {
+      "s2": "The Network Load Balancer works at layer 4: it picks a target with a hash of protocol, IP and port, without opening the HTTP request that carries the token."
+    },
+    "aws-secrets-manager": {
+      "s3": "Secrets Manager stores and rotates secrets, such as database credentials and API keys, and encrypts them with KMS keys; it is not the service that creates and rotates those encryption keys."
+    },
+    "aws-inspector": {
+      "s4": "Inspector looks for software vulnerabilities and unintended network exposure in EC2, ECR images and Lambda; it does not alert on API calls that come from a suspicious IP address."
+    },
+    "aws-vpc-flow-logs": {
+      "s5": "VPC Flow Logs capture information about IP traffic going to and from network interfaces; they do not say which user changed a firewall rule or who deleted a resource."
+    }
+  }
+}

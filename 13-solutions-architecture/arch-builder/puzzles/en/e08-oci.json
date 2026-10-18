@@ -1,0 +1,71 @@
+{
+  "id": "e08-oci",
+  "title": "A parcel service that never loses an order",
+  "summary": "EnvíaYa delivers 80,000 parcels a day in the Bajío region. Each new order reaches billing, the customer SMS and driver assignment, and a failure in one does not stop the others.",
+  "requirements": {
+    "1": "{{s1}} sends the customer SMS by itself and delivers the same order-created event to other subscribers, without the API knowing how many there are.",
+    "2": "{{s2}} receives its copy of each order and keeps it until a worker confirms it was processed; if the worker dies halfway, the order shows up again.",
+    "3": "{{s3}} runs the code that assigns a driver only when there are messages, scales on its own and costs nothing in the early morning.",
+    "4": "{{s4}} sets aside the order that fails 5 times so it can be reviewed later, so it is not retried forever.",
+    "5": "{{s5}} receives the drivers' GPS, keeps it for 7 days in order, and analytics reads it again from the beginning as many times as it wants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "When a message is published to a Notifications topic, the service sends it to all of the topic's subscriptions, including SMS and a function, at least once for each one. Queue is not a subscription protocol, so a function forwards the copy.",
+      "hint_cue": "sends the customer SMS by itself"
+    },
+    "s2": {
+      "explanation": "OCI Queue hides a delivered message for its visibility timeout and the consumer must delete it when done; if it is not deleted, the message can be delivered again to another consumer.",
+      "hint_cue": "if the worker dies halfway, the order shows up again"
+    },
+    "s3": {
+      "explanation": "A Connector Hub connector takes the messages from the queue, sends them to the function and then deletes them from the queue, so the code runs when there are messages. A Compute instance would stay on.",
+      "hint_cue": "only when there are messages"
+    },
+    "s4": {
+      "explanation": "If the function fails, the whole batch returns to the queue and each message adds a delivery; with 1-message batches in the connector, only the failing order reaches the maximum (1 to 20) and OCI Queue moves it to its DLQ. A bucket does not count deliveries.",
+      "hint_cue": "fails 5 times"
+    },
+    "s5": {
+      "explanation": "OCI Streaming delivers each partition's messages in order and does not delete them when read: analytics can replay them from any offset within the configured retention. Connector Hub only moves data.",
+      "hint_cue": "reads it again from the beginning"
+    }
+  },
+  "nodes": {
+    "n-api": "Orders API",
+    "n-sms": "Customers (SMS)",
+    "n-analytics": "Analytics",
+    "n-gps": "Drivers (GPS)"
+  },
+  "edges": {
+    "e1": "order created",
+    "e2": "customer SMS",
+    "e3": "copy, via own code",
+    "e4": "orders via a connector",
+    "e5": "after 5 failures",
+    "e6": "GPS positions",
+    "e7": "rereads from the start"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · envíaya compartment"
+  },
+  "why_not": {
+    "oci-cache": {
+      "s2": "OCI Cache is an in-memory cache: its lists do not guarantee delivery or bring the order back if the worker dies halfway."
+    },
+    "oci-compute": {
+      "s3": "A Compute instance bills while it is running, even with no orders in the early morning, and it does not run on its own for each message."
+    },
+    "oci-object-storage": {
+      "s4": "An Object Storage bucket stores objects, but it does not count a message's deliveries or set it aside on its own.",
+      "s5": "Object Storage stores whole objects; it does not deliver positions in order per partition or with offsets to read them again."
+    },
+    "oci-connector-hub": {
+      "s3": "Connector Hub moves the messages from the queue to a target, but it does not run the code that assigns a driver: that code lives in the target.",
+      "s5": "Connector Hub moves data from a source to a target and the source sets the retention; it does not keep the GPS to read it again."
+    },
+    "oci-streaming": {
+      "s1": "In Streaming, consumers read messages from partitions by offset; delivering to subscriptions over SMS is what a Notifications topic does."
+    }
+  }
+}

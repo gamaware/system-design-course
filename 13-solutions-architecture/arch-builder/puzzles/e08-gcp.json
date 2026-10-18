@@ -1,0 +1,370 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e08-gcp",
+  "version": 1,
+  "scenario": "e08",
+  "cloud": "gcp",
+  "title": "Paquetería que no pierde pedidos",
+  "summary": "EnvíaYa reparte 80 mil paquetes al día en el Bajío. Cada pedido creado llega a facturación, al SMS del cliente y a la asignación de repartidor, y una falla en uno no detiene a los demás.",
+  "topics": [
+    "publicar/suscribir",
+    "colas",
+    "entrega al menos una vez",
+    "DLQ",
+    "streaming"
+  ],
+  "source_refs": [
+    {
+      "title": "Cloud Tasks frente a Pub/Sub",
+      "url": "https://docs.cloud.google.com/tasks/docs/comp-pub-sub"
+    },
+    {
+      "title": "Pub/Sub: tipos de suscripción",
+      "url": "https://docs.cloud.google.com/pubsub/docs/subscription-overview"
+    },
+    {
+      "title": "Cloud Run: activar con una suscripción push de Pub/Sub",
+      "url": "https://docs.cloud.google.com/run/docs/triggering/pubsub-push"
+    },
+    {
+      "title": "Pub/Sub: manejo de fallas y temas de mensajes fallidos",
+      "url": "https://docs.cloud.google.com/pubsub/docs/handling-failures"
+    },
+    {
+      "title": "Managed Service for Apache Kafka: descripción general",
+      "url": "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/overview"
+    },
+    {
+      "title": "Managed Service for Apache Kafka: crear un tema",
+      "url": "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/create-topic"
+    },
+    {
+      "title": "Apache Kafka: introducción",
+      "url": "https://kafka.apache.org/intro"
+    },
+    {
+      "title": "Pub/Sub: crear un tema (retención de mensajes)",
+      "url": "https://docs.cloud.google.com/pubsub/docs/create-topic"
+    },
+    {
+      "title": "Pub/Sub: propiedades de la suscripción (retención de mensajes)",
+      "url": "https://docs.cloud.google.com/pubsub/docs/subscription-properties"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto envíaya",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 6.85,
+        "h": 4.2
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-api",
+      "icon": "gcp-apigee",
+      "label": "API de pedidos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-sms",
+      "icon": "gen-users",
+      "label": "Clientes (SMS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-analytics",
+      "icon": "gen-team",
+      "label": "Analítica",
+      "number": null,
+      "cell": {
+        "c": 3.6,
+        "r": 3.1
+      },
+      "group": "g-cloud"
+    },
+    {
+      "id": "n-gps",
+      "icon": "gen-users",
+      "label": "Repartidores (GPS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 3.1
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 1.45,
+        "r": 0.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-pubsub-topic"
+      ],
+      "near_miss": "gcp-cloud-tasks",
+      "hint_cue": "llegue a varios consumidores independientes",
+      "explanation": "En un tema de Pub/Sub, el publicador no necesita saber nada de sus suscriptores y un mismo mensaje puede llegar a varios. Cloud Tasks, en cambio, entrega cada tarea al endpoint que el publicador elige.",
+      "refs": [
+        "https://docs.cloud.google.com/tasks/docs/comp-pub-sub"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 1.45,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-pubsub-subscription"
+      ],
+      "near_miss": "gcp-memorystore",
+      "hint_cue": "si el trabajador muere a la mitad, el pedido reaparece",
+      "explanation": "La suscripción recibe los mensajes que se publican en el tema. El suscriptor tiene un plazo para confirmar cada mensaje; si vence sin confirmación, Pub/Sub lo vuelve a entregar. La entrega es al menos una vez.",
+      "refs": [
+        "https://docs.cloud.google.com/pubsub/docs/subscription-overview",
+        "https://docs.cloud.google.com/tasks/docs/comp-pub-sub"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.6,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-cloud-run"
+      ],
+      "near_miss": "gcp-compute-engine",
+      "hint_cue": "solo cuando hay mensajes",
+      "explanation": "La suscripción push llama al servicio de Cloud Run con cada mensaje: un código 200 o 204 lo confirma y un error lo reintenta. Cloud Run no genera costos mientras no recibe solicitudes; una VM de Compute Engine sí.",
+      "refs": [
+        "https://docs.cloud.google.com/run/docs/triggering/pubsub-push"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 1.45,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-pubsub-dlt"
+      ],
+      "near_miss": "gcp-cloud-storage",
+      "hint_cue": "falla 5 veces",
+      "explanation": "Tras el máximo de intentos de entrega (5 por omisión), Pub/Sub reenvía el mensaje al tema de mensajes fallidos; una suscripción a ese tema lo guarda para revisarlo. Un bucket no cuenta intentos.",
+      "refs": [
+        "https://docs.cloud.google.com/pubsub/docs/handling-failures"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.0,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-managed-kafka"
+      ],
+      "near_miss": "gcp-dataflow",
+      "hint_cue": "lo conserva 90 días en orden",
+      "explanation": "Managed Kafka corre el Kafka de código abierto y la retención se fija por tema. Cada partición es una secuencia ordenada e inmutable y los eventos no se borran al consumirse, así que se releen cuantas veces haga falta. Pub/Sub retiene 31 días como máximo.",
+      "refs": [
+        "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/overview",
+        "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/create-topic",
+        "https://kafka.apache.org/intro",
+        "https://docs.cloud.google.com/pubsub/docs/create-topic",
+        "https://docs.cloud.google.com/pubsub/docs/subscription-properties"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-api",
+      "to": "s1",
+      "dir": "forward",
+      "step": 1,
+      "label": "pedido creado",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s1",
+      "to": "n-sms",
+      "dir": "forward",
+      "step": 2,
+      "label": "SMS vía código propio",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia del pedido",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "pedidos por atender",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "tras 5 fallas",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "n-gps",
+      "to": "s5",
+      "dir": "forward",
+      "step": null,
+      "label": "posiciones GPS",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "s5",
+      "to": "n-analytics",
+      "dir": "forward",
+      "step": null,
+      "label": "relee desde el inicio",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} hace que un mismo pedido creado llegue a varios consumidores independientes, sin que la API sepa cuántos son."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} recibe su copia de cada pedido y la guarda hasta que un trabajador confirma que la procesó; si el trabajador muere a la mitad, el pedido reaparece."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} corre el código que asigna repartidor solo cuando hay mensajes, escala solo y no cuesta de madrugada."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} aparta solo el pedido que falla 5 veces para revisarlo después, sin bloquear la fila."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} recibe el GPS de los repartidores, lo conserva 90 días en orden y analítica lo relee desde el principio cuantas veces quiera."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-pubsub-topic",
+      "why_not": {
+        "s5": "Un tema de Pub/Sub retiene mensajes 31 días como máximo, así que no conserva el GPS los 90 días que pide analítica."
+      }
+    },
+    {
+      "service": "gcp-pubsub-subscription",
+      "why_not": {
+        "s5": "Una suscripción de Pub/Sub retiene mensajes 31 días como máximo, así que no conserva el GPS los 90 días que pide analítica."
+      }
+    },
+    {
+      "service": "gcp-cloud-run"
+    },
+    {
+      "service": "gcp-pubsub-dlt"
+    },
+    {
+      "service": "gcp-managed-kafka"
+    },
+    {
+      "service": "gcp-cloud-tasks",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Cloud Tasks entrega cada tarea a un solo endpoint que el publicador elige; no reparte el mismo pedido a varios suscriptores.",
+        "s2": "Cloud Tasks no recibe copias de un tema: el publicador crea cada tarea y nombra el endpoint que la atiende."
+      }
+    },
+    {
+      "service": "gcp-memorystore",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Memorystore es una caché en memoria: sus listas no garantizan la entrega ni hacen reaparecer el pedido si el trabajador muere a la mitad."
+      }
+    },
+    {
+      "service": "gcp-compute-engine",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una VM de Compute Engine cobra mientras está encendida, aunque no lleguen pedidos de madrugada, y no arranca sola con cada mensaje."
+      }
+    },
+    {
+      "service": "gcp-cloud-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un bucket de Cloud Storage guarda objetos, pero no cuenta los intentos de entrega ni aparta el mensaje por sí solo.",
+        "s5": "Cloud Storage guarda objetos completos; no entrega las posiciones en orden para que analítica las relea desde el principio."
+      }
+    },
+    {
+      "service": "gcp-dataflow",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Dataflow procesa y mueve datos en tránsito; no conserva el GPS 90 días para que analítica lo relea."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 8 de ARCHITECTURES.md. Los slots 1, 2 y 4 son recursos de Pub/Sub (tema, suscripción y tema de mensajes fallidos), con fichas distintas por modalidad. La tabla dice suscripción pull para el slot 2, pero el slot 3 es Cloud Run por suscripción push, así que la ficha es suscripción push; el requisito 2 dice que el trabajador confirma, válido para ambos modos. El requisito 2 dice que recibe su copia, para que Cloud Tasks no sea una segunda respuesta. Revisión a ciegas: con 7 días el tema de Pub/Sub (retención, orden y seek) también cumplía el slot 5; el requisito 5 de GCP pide 90 días, más que los 31 días máximos del tema y de la suscripción de Pub/Sub, y ambas fichas llevan why_not en s5. Las notas de la versión de Kafka se cambiaron por la descripción general, la página de crear un tema y la introducción de Apache Kafka (el servicio corre el mismo software de código abierto), que respaldan retención por tema, orden por partición y relectura. Revisión final: Pub/Sub no envía SMS por sí mismo; la flecha 2 dice SMS vía código propio (un consumidor de la suscripción manda el SMS), igual que la flecha 3 de OCI. En AWS y OCI el tema sí entrega por SMS. El nodo fijo API de pedidos usa el icono de Apigee, como el slot 2 del escenario 5, porque API Gateway no se despliega en la región de México.",
+  "status": "published"
+}

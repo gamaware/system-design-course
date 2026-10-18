@@ -1,0 +1,523 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e06-oci",
+  "version": 1,
+  "scenario": "e06",
+  "cloud": "oci",
+  "title": "Reservaciones en dos países",
+  "summary": "MesaLista reserva mesas en 2 mil restaurantes de México y Texas. Los pagos piden transacciones y los favoritos se escriben en ambos países.",
+  "topics": [
+    "bases de datos relacionales",
+    "alta disponibilidad",
+    "replicación",
+    "bases multirregión y CAP",
+    "migración",
+    "secretos"
+  ],
+  "source_refs": [
+    {
+      "title": "MySQL HeatWave: alta disponibilidad",
+      "url": "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-high-availability.html"
+    },
+    {
+      "title": "MySQL HeatWave: réplicas de lectura",
+      "url": "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html"
+    },
+    {
+      "title": "Oracle NoSQL Database Cloud Service: Global Active Tables",
+      "url": "https://docs.oracle.com/en/cloud/paas/nosql-cloud/gasnd/index.html"
+    },
+    {
+      "title": "Autonomous AI Database: Autonomous Data Guard",
+      "url": "https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/autonomous-data-guard.html"
+    },
+    {
+      "title": "MySQL HeatWave: métricas",
+      "url": "https://docs.oracle.com/en-us/iaas/mysql-database/doc/metrics.html"
+    },
+    {
+      "title": "OCI Vault: crear un secreto",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/secret-management/Tasks/create-secret.htm"
+    },
+    {
+      "title": "OCI Monitoring: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm"
+    },
+    {
+      "title": "OCI Audit: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Audit/Concepts/auditoverview.htm"
+    },
+    {
+      "title": "OCI Object Storage: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 8,
+    "rows": 7.1
+  },
+  "groups": [
+    {
+      "id": "g-rest",
+      "kind": "generic",
+      "label": "Restaurante piloto",
+      "parent": null,
+      "cell": {
+        "c": 2.1,
+        "r": 0,
+        "w": 2.2,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento mesalista",
+      "parent": null,
+      "cell": {
+        "c": 0.02,
+        "r": 1.33,
+        "w": 6.77,
+        "h": 5.67
+      }
+    },
+    {
+      "id": "g-region-mx",
+      "kind": "oci-region",
+      "label": "Región Querétaro (AD único)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 0.08,
+        "r": 1.55,
+        "w": 6.65,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-mx",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-region-mx",
+      "cell": {
+        "c": 1.2,
+        "r": 1.77,
+        "w": 4.3,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-mx-a",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 1.99,
+        "w": 2.34,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-mx-b",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 3.66,
+        "r": 1.99,
+        "w": 1.78,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-mx",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 2.23,
+        "w": 4.18,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-region-us",
+      "kind": "oci-region",
+      "label": "Región San José (AD único)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.5,
+        "r": 4.83,
+        "w": 4.23,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-us",
+      "kind": "oci-vcn",
+      "label": "VCN 10.1.0.0/16",
+      "parent": "g-region-us",
+      "cell": {
+        "c": 2.56,
+        "r": 5.05,
+        "w": 4.11,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-us-a",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.27,
+        "w": 2.05,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-us-b",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 4.73,
+        "r": 5.27,
+        "w": 1.88,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-us",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.51,
+        "w": 3.99,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-onprem",
+      "icon": "oci-generic-database",
+      "label": "MySQL del restaurante",
+      "number": 6,
+      "cell": {
+        "c": 2.65,
+        "r": 0.25
+      },
+      "group": "g-rest"
+    },
+    {
+      "id": "n-reports",
+      "icon": "gen-team",
+      "label": "Equipo de reportes",
+      "number": null,
+      "cell": {
+        "c": 6.95,
+        "r": 3.82
+      },
+      "group": null
+    },
+    {
+      "id": "n-app-mx",
+      "icon": "oci-compute",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 1.3,
+        "r": 2.48
+      },
+      "group": "g-priv-mx"
+    },
+    {
+      "id": "n-app-us",
+      "icon": "oci-compute",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 4.9,
+        "r": 5.76
+      },
+      "group": "g-priv-us"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.65,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "oci-mysql-ha"
+      ],
+      "near_miss": "oci-autonomous-db",
+      "hint_cue": "toma el control sola",
+      "explanation": "MySQL HeatWave con HA pone las secundarias en otros dominios de falla cuando la región tiene un solo AD y, si falla la primaria, promueve sola a una secundaria sin perder datos. Solo la primaria da lectura y escritura.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-high-availability.html",
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html",
+        "https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/autonomous-data-guard.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.45,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "oci-mysql-read-replica"
+      ],
+      "near_miss": null,
+      "hint_cue": "una copia aparte",
+      "explanation": "Las réplicas de lectura de HeatWave son copias de solo lectura que se actualizan en forma asíncrona y reparten las lecturas; pueden quedar atrás de la primaria, y eso se mide con su métrica de retraso.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html",
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-high-availability.html",
+        "https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/autonomous-data-guard.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 1.3,
+        "r": 4.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-nosql"
+      ],
+      "near_miss": "oci-autonomous-db",
+      "hint_cue": "ambas aceptan escrituras",
+      "explanation": "Con Global Active Tables todas las regiones atienden lecturas y escrituras con latencia de milisegundos de un dígito; la replicación entre regiones es asíncrona y lo replicado se lee con consistencia eventual.",
+      "refs": [
+        "https://docs.oracle.com/en/cloud/paas/nosql-cloud/gasnd/index.html",
+        "https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/autonomous-data-guard.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 5.7,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "oci-monitoring"
+      ],
+      "near_miss": "oci-audit",
+      "hint_cue": "se atrasa más de 30 segundos",
+      "explanation": "La guía de réplicas de HeatWave mide el retraso con la métrica de retraso de réplica de lectura y permite crear alarmas sobre ella; la alarma de Monitoring avisa al equipo cuando la métrica pasa de 30 segundos.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/overview-read-replica.html",
+        "https://docs.oracle.com/en-us/iaas/mysql-database/doc/metrics.html",
+        "https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Audit/Concepts/auditoverview.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 0.15,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "oci-vault-secrets"
+      ],
+      "near_miss": "oci-object-storage",
+      "hint_cue": "con una función propia como destino",
+      "explanation": "OCI Vault guarda la contraseña como secreto y puede rotarlo solo, por ejemplo cada 30 días (P30D), cuando el destino es Autonomous AI Database o una función. Para MySQL, la rotación necesita esa función propia.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/secret-management/Tasks/create-secret.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "s5",
+      "to": "n-app-mx",
+      "dir": "forward",
+      "step": 1,
+      "label": "contraseña",
+      "style": "dashed"
+    },
+    {
+      "id": "e2",
+      "from": "n-app-mx",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "pagos",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 4,
+      "label": "reportes",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "n-app-mx",
+      "to": "s3",
+      "dir": "forward",
+      "step": 5,
+      "label": "favoritos",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "n-app-us",
+      "to": "s3",
+      "dir": "forward",
+      "step": 6,
+      "label": "favoritos",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 7,
+      "label": "retraso",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s4",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 8,
+      "label": "aviso",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e9",
+      "from": "n-onprem",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "migración",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda los pagos en MySQL administrado sin sacarlos de México, con una copia en otro dominio de falla que toma el control sola si cae la primaria."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} da a los reportes una copia aparte de la primaria del slot 1 para no frenarla, aunque lleve segundos de retraso."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda los favoritos: cada país escribe en milisegundos en su región y ambas aceptan escrituras. La otra región los ve después, porque se prefiere disponibilidad a consistencia."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} avisa al equipo de reportes si la copia del slot 2 se atrasa más de 30 segundos respecto a la primaria."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} guarda la contraseña de la BD fuera del código: la app la pide al arrancar y una rotación programada cada 30 días, con una función propia como destino, la cambia."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El MySQL del restaurante piloto corre en su propio local; sus pagos se migran al slot 1 antes de abrir a los 2 mil restaurantes."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-mysql-ha",
+      "why_not": {
+        "s2": "En HA solo la primaria da acceso de lectura y escritura; las secundarias no atienden los reportes."
+      }
+    },
+    {
+      "service": "oci-mysql-read-replica",
+      "why_not": {
+        "s1": "Una réplica de lectura es una copia de solo lectura que se actualiza en forma asíncrona para repartir lecturas; la que toma el lugar de la primaria es una secundaria de HA."
+      }
+    },
+    {
+      "service": "oci-nosql"
+    },
+    {
+      "service": "oci-monitoring"
+    },
+    {
+      "service": "oci-vault-secrets"
+    },
+    {
+      "service": "oci-autonomous-db",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Autonomous AI Database no es un sistema MySQL: Data Guard le crea un standby que se actualiza con los cambios de la primaria, pero los pagos necesitan MySQL administrado.",
+        "s2": "Autonomous AI Database con Data Guard es otra base de datos; no es una copia del MySQL del slot 1.",
+        "s3": "Con Autonomous Data Guard el standby se actualiza continuamente con los cambios de la primaria: las escrituras llegan por la primaria, no por las dos regiones."
+      }
+    },
+    {
+      "service": "oci-audit",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Audit registra como eventos las llamadas a las API públicas de OCI; el retraso de la réplica es una métrica, y las alarmas sobre métricas son de Monitoring."
+      }
+    },
+    {
+      "service": "oci-object-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Object Storage guarda objetos dentro de buckets; la rotación programada con intervalo y sistema destino que describe la guía de OCI Vault es una opción de los secretos de Vault."
+      }
+    },
+    {
+      "service": "oci-network-load-balancer",
+      "role": "filler"
+    }
+  ],
+  "review_notes": "Tabla del Escenario 6 de ARCHITECTURES.md. Regiones apiladas: México arriba y EE. UU. abajo; el slot 3 queda entre las dos, a nivel de nube. La réplica de lectura (distractor del slot 1) y el standby de HA (distractor del slot 2) son respuestas de otro slot, así que su why_not va en la ficha de respuesta. Sin rotación nativa en Azure, GCP y OCI (E6-5): la explicación dice que la rotación necesita código propio. La tabla de métricas de HeatWave no lista el nombre de la métrica de retraso de réplica; la guía de réplicas sí dice que existe y que admite alarmas. La ficha de relleno es un balanceador.",
+  "status": "published"
+}

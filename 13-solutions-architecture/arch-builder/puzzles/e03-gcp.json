@@ -1,0 +1,436 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e03-gcp",
+  "version": 1,
+  "scenario": "e03",
+  "cloud": "gcp",
+  "title": "Cursos en video para 300 mil alumnos",
+  "summary": "CursosMX vende cursos grabados a 300 mil alumnos de México y Centroamérica. Los videos deben llegar rápido, las grabaciones crudas deben costar poco y el login recibe intentos de inyección SQL.",
+  "topics": [
+    "entrega de contenido",
+    "caché",
+    "clases de almacenamiento",
+    "nombres públicos",
+    "filtrado HTTP"
+  ],
+  "source_refs": [
+    {
+      "title": "Cloud CDN: información general",
+      "url": "https://docs.cloud.google.com/cdn/docs/overview"
+    },
+    {
+      "title": "Cloud Storage: ubicaciones de buckets",
+      "url": "https://docs.cloud.google.com/storage/docs/locations"
+    },
+    {
+      "title": "Cloud Storage: introducción",
+      "url": "https://docs.cloud.google.com/storage/docs/introduction"
+    },
+    {
+      "title": "Cloud Storage: clases de almacenamiento",
+      "url": "https://docs.cloud.google.com/storage/docs/storage-classes"
+    },
+    {
+      "title": "Cloud DNS: tipos de zonas",
+      "url": "https://docs.cloud.google.com/dns/docs/zones/zones-overview"
+    },
+    {
+      "title": "Cloud Armor: reglas WAF preconfiguradas",
+      "url": "https://docs.cloud.google.com/armor/docs/waf-rules"
+    },
+    {
+      "title": "Cloud Armor: políticas de seguridad",
+      "url": "https://docs.cloud.google.com/armor/docs/security-policy-overview"
+    },
+    {
+      "title": "Reglas de firewall de VPC",
+      "url": "https://docs.cloud.google.com/firewall/docs/firewalls"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto cursos",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 7.0,
+        "h": 5.24
+      }
+    },
+    {
+      "id": "g-edge",
+      "kind": "generic",
+      "label": "Entrada desde internet",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 1.3,
+        "w": 1.53,
+        "h": 2.7
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 3.6,
+        "r": 0.22,
+        "w": 5.29,
+        "h": 4.96
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region",
+      "cell": {
+        "c": 5.3,
+        "r": 2.55,
+        "w": 3.53,
+        "h": 1.5
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de producción",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 4.0
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "gcp-global-app-lb",
+      "label": "Balanceador de la app",
+      "number": 6,
+      "cell": {
+        "c": 5.7,
+        "r": 2.95
+      },
+      "group": "g-net"
+    },
+    {
+      "id": "n-app",
+      "icon": "gcp-compute-engine",
+      "label": "Servidores de login y pagos",
+      "number": null,
+      "cell": {
+        "c": 7.5,
+        "r": 2.95
+      },
+      "group": "g-net"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.26,
+        "r": 1.6
+      },
+      "group": "g-edge",
+      "accept": [
+        "gcp-cloud-cdn"
+      ],
+      "near_miss": "gcp-storage-dual-region",
+      "hint_cue": "puntos cercanos a cada alumno",
+      "explanation": "Cloud CDN usa la red de borde global de Google para servir el contenido más cerca de los usuarios; trabaja con el balanceador de aplicaciones externo global. Un bucket birregional solo replica en dos regiones.",
+      "refs": [
+        "https://docs.cloud.google.com/cdn/docs/overview",
+        "https://docs.cloud.google.com/storage/docs/locations"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.2,
+        "r": 1.6
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-cloud-storage"
+      ],
+      "near_miss": "gcp-persistent-disk",
+      "hint_cue": "no hay servidores que administrar",
+      "explanation": "Cloud Storage guarda objetos en buckets; un bucket regional en northamerica-south1 deja los datos en una sola región de México y la clase Standard es para datos que se leen seguido. Un bucket puede ser el origen de Cloud CDN.",
+      "refs": [
+        "https://docs.cloud.google.com/storage/docs/introduction",
+        "https://docs.cloud.google.com/storage/docs/locations",
+        "https://docs.cloud.google.com/storage/docs/storage-classes",
+        "https://docs.cloud.google.com/cdn/docs/overview"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.2,
+        "r": 4.0
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-storage-archive"
+      ],
+      "near_miss": "gcp-storage-nearline",
+      "hint_cue": "el menor costo por GB guardado",
+      "explanation": "Archive es la clase de menor costo de Cloud Storage, con 365 días mínimos y los mayores costos de acceso; los datos se leen en milisegundos, pero cada lectura se cobra.",
+      "refs": [
+        "https://docs.cloud.google.com/storage/docs/storage-classes"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.26,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-cloud-dns"
+      ],
+      "near_miss": "gcp-cloud-dns-private",
+      "hint_cue": "responde a cualquiera en internet",
+      "explanation": "En Cloud DNS, una consulta que llega desde internet la responde la zona pública. La zona privada solo responde a las VM de redes de VPC autorizadas.",
+      "refs": [
+        "https://docs.cloud.google.com/dns/docs/zones/zones-overview"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 2.26,
+        "r": 2.95
+      },
+      "group": "g-edge",
+      "accept": [
+        "gcp-cloud-armor"
+      ],
+      "near_miss": "gcp-vpc-firewall",
+      "hint_cue": "bloquea la inyección SQL",
+      "explanation": "Cloud Armor se adjunta al servicio de backend del balanceador y bloquea antes de que la petición llegue a los backends; sus reglas WAF preconfiguradas traen firmas para detectar inyección SQL.",
+      "refs": [
+        "https://docs.cloud.google.com/armor/docs/waf-rules",
+        "https://docs.cloud.google.com/armor/docs/security-policy-overview",
+        "https://docs.cloud.google.com/firewall/docs/firewalls"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "cursosmx.com",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s4",
+      "dir": "forward",
+      "step": 2,
+      "label": "¿cursosmx.com?",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 4,
+      "label": "video que falta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 5,
+      "label": "login y pagos",
+      "style": "solid",
+      "route": "points",
+      "points": [
+        {
+          "c": 2.76,
+          "r": 2.85
+        },
+        {
+          "c": 6.2,
+          "r": 2.85
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-lb",
+      "dir": "none",
+      "step": null,
+      "label": "política asociada",
+      "style": "dotted"
+    },
+    {
+      "id": "e7",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 6,
+      "label": "reparte",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "n-team",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "grabaciones crudas",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda copias de videos e imágenes en puntos cercanos a cada alumno, para no viajar hasta la región en cada petición."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} es el origen de millones de videos que los alumnos ven a diario por HTTP; los datos se quedan en una sola región de México y no hay servidores que administrar."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda 5 años las grabaciones crudas, que casi nunca se abren. Importa el menor costo por GB guardado, aunque leerlas después sea más caro o más lento."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} guarda los registros de cursosmx.com y responde a cualquiera en internet que pregunte por ese nombre, para que llegue al slot 1."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} revisa cada petición HTTP del login y bloquea la inyección SQL antes de que llegue a la app."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El balanceador de la app reparte el login y los pagos entre los servidores de la región."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-cloud-cdn"
+    },
+    {
+      "service": "gcp-cloud-storage"
+    },
+    {
+      "service": "gcp-storage-archive"
+    },
+    {
+      "service": "gcp-cloud-dns"
+    },
+    {
+      "service": "gcp-cloud-armor"
+    },
+    {
+      "service": "gcp-storage-dual-region",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Un bucket birregional replica cada objeto en un par de regiones, no en puntos cerca de cada alumno.",
+        "s2": "Un bucket birregional guarda cada objeto en un par de regiones y Querétaro no forma parte de ningún par; el requisito pide una sola región de México.",
+        "s3": "Es de clase Standard, pensada para datos que se leen seguido; no es la clase de menor costo por GB."
+      }
+    },
+    {
+      "service": "gcp-persistent-disk",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Persistent Disk agrega almacenamiento en bloques a una VM de Compute Engine; no es un bucket que sirva videos por HTTP.",
+        "s3": "Persistent Disk es el disco de una VM, no una clase de Cloud Storage para guardar años grabaciones al menor costo."
+      }
+    },
+    {
+      "service": "gcp-storage-nearline",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Nearline es de bajo costo, pero no es la clase más barata; tiene 30 días mínimos y es para datos que se leen poco.",
+        "s2": "Nearline cobra por recuperar los datos y es para acceso poco frecuente; los videos se ven a diario."
+      }
+    },
+    {
+      "service": "gcp-cloud-dns-private",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una zona privada solo responde a las VM de redes de VPC autorizadas; desde internet responde la zona pública."
+      }
+    },
+    {
+      "service": "gcp-vpc-firewall",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Las reglas de firewall de VPC permiten o niegan conexiones según protocolo, puertos, origen y destino; las firmas de inyección SQL están en las reglas WAF de otro servicio."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 3 de ARCHITECTURES.md. Topología común: alumnos, internet, slot 4 fuera de la región, slots 1 y 5 en un cuadro de entrada, orígenes 2 (videos) y balanceador fijo, slot 3 para las grabaciones crudas que sube el equipo. Revisión a ciegas: el slot 5 ya no se dibuja como un salto de red; la flecha 5 va del slot 1 al balanceador y la política del slot 5 se une al balanceador con una línea punteada sin paso. En Google Cloud la caché y el balanceador son el mismo balanceador de aplicaciones externo global (Cloud CDN solo funciona con ese tipo); se dibujan separados para conservar la topología común. La política de Cloud Armor se adjunta al servicio de backend del login; a los backend buckets solo se les aplican políticas de borde. Revisión final: el requisito 2 ya no pide el menor precio de almacenamiento (eso apuntaba a Nearline o Archive); pide acceso diario y una sola región de México.",
+  "status": "published"
+}

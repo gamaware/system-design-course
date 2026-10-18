@@ -1,0 +1,76 @@
+{
+  "id": "e07-oci",
+  "title": "World Cup 2026 betting pool",
+  "summary": "A Mexican app expects 2 million players during the 2026 World Cup matches, and bets spike at minute 90.",
+  "requirements": {
+    "1": "{{s1}} is the HTTP proxy that receives bets over HTTPS, spreads the requests across the containers and passes the player's IP to the API in the X-Forwarded-For header.",
+    "2": "{{s2}} runs the API in containers without the two-person team managing servers, nodes or a Kubernetes cluster.",
+    "3": "{{s3}} keeps the leaderboard of 2 million players in memory, sorted by points, so the API does not hit the database on every lookup.",
+    "4": "{{s4}} absorbs the minute-90 spike: workers pull bets at their own pace and each one is done only when they confirm they processed it; otherwise it is delivered again.",
+    "5": "{{s5}} is the NoSQL store for the bets: it saves each one keyed by player and match and writes it only if that key does not exist yet, so nobody bets twice.",
+    "6": "The score provider sends each goal to the slot 2 API, which updates the slot 3 leaderboard."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "OCI Load Balancer is a layer 7 reverse proxy for HTTP and HTTPS. Its backends are registered by OCID or by IP, and the player's IP reaches the API in the X-Forwarded-For and X-Real-IP headers.",
+      "hint_cue": "in the X-Forwarded-For header"
+    },
+    "s2": {
+      "explanation": "OCI Container Instances runs containers on serverless compute without managing servers, and it is meant for workloads such as APIs that do not need an orchestration platform like Kubernetes.",
+      "hint_cue": "without the two-person team managing servers"
+    },
+    "s3": {
+      "explanation": "OCI Cache builds Cache clusters, memory-based storage solutions, with the Valkey and Redis engines, so the API reads the leaderboard without going to the database.",
+      "hint_cue": "in memory"
+    },
+    "s4": {
+      "explanation": "OCI Queue hides each message during its visibility timeout while a worker processes it; the worker deletes it when done and, if it does not, the message is delivered again up to the maximum attempts.",
+      "hint_cue": "otherwise it is delivered again"
+    },
+    "s5": {
+      "explanation": "Oracle NoSQL Database Cloud Service identifies each row by its primary key, and with the IfAbsent option the write only succeeds if the row does not exist yet.",
+      "hint_cue": "writes it only if that key does not exist yet"
+    }
+  },
+  "nodes": {
+    "n-users": "Players",
+    "n-internet": "Internet",
+    "n-scores": "Score provider"
+  },
+  "edges": {
+    "e1": "bets at minute 90",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "enqueues the bet",
+    "e5": "workers store it",
+    "e6": "standings",
+    "e7": "each goal"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · quiniela compartment",
+    "g-region": "Querétaro region (single AD)",
+    "g-net": "VCN 10.0.0.0/16",
+    "g-zone-a": "Fault domain 1",
+    "g-zone-b": "Fault domain 2",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "oci-network-load-balancer": {
+      "s1": "OCI Network Load Balancer is pass-through and non-proxy, at layers 3 and 4; the requirement asks for an HTTP proxy that passes the player's IP in a header."
+    },
+    "oci-oke": {
+      "s2": "OKE is Kubernetes, and with managed nodes the team upgrades Kubernetes on them and manages the cluster capacity."
+    },
+    "oci-mysql-read-replica": {
+      "s3": "A MySQL HeatWave read replica is a read-only copy of the primary MySQL instance; the requirement asks for an in-memory cache cluster.",
+      "s5": "Connections to a MySQL HeatWave read replica only perform read operations: they cannot take the write of each bet."
+    },
+    "oci-streaming": {
+      "s4": "OCI Streaming is an append-only log: the client controls which messages it reads by moving its cursor, and messages are not removed when processed."
+    },
+    "oci-object-storage": {
+      "s5": "Object Storage stores unstructured data as objects inside buckets; the requirement asks for a NoSQL database."
+    }
+  }
+}

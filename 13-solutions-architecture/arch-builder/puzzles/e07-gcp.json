@@ -1,0 +1,465 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e07-gcp",
+  "version": 1,
+  "scenario": "e07",
+  "cloud": "gcp",
+  "title": "Quiniela del Mundial 2026",
+  "summary": "Una app mexicana espera 2 millones de jugadores durante los partidos del Mundial 2026, y las apuestas se disparan en el minuto 90.",
+  "topics": [
+    "balanceo L7",
+    "contenedores sin servidores",
+    "caché",
+    "cola",
+    "NoSQL"
+  ],
+  "source_refs": [
+    {
+      "title": "Application Load Balancer: información general",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/application-load-balancer"
+    },
+    {
+      "title": "NEG sin servidores",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/negs/serverless-neg-concepts"
+    },
+    {
+      "title": "Application Load Balancer externo: encabezados",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/https"
+    },
+    {
+      "title": "¿Qué es Cloud Run?",
+      "url": "https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run"
+    },
+    {
+      "title": "GKE: elegir el modo de clúster",
+      "url": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/choose-cluster-mode"
+    },
+    {
+      "title": "Memorystore for Valkey: notas de versión",
+      "url": "https://docs.cloud.google.com/memorystore/docs/valkey/release-notes"
+    },
+    {
+      "title": "Memorystore for Valkey: ejemplos de código",
+      "url": "https://docs.cloud.google.com/memorystore/docs/valkey/client-library-code-samples"
+    },
+    {
+      "title": "Memorystore",
+      "url": "https://cloud.google.com/memorystore"
+    },
+    {
+      "title": "Cloud SQL para MySQL: réplicas",
+      "url": "https://docs.cloud.google.com/sql/docs/mysql/replication"
+    },
+    {
+      "title": "Pub/Sub: suscripciones",
+      "url": "https://docs.cloud.google.com/pubsub/docs/subscription-overview"
+    },
+    {
+      "title": "Managed Service for Apache Kafka: grupos de consumidores",
+      "url": "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/edit-consumer-group"
+    },
+    {
+      "title": "Elegir entre Managed Kafka y Pub/Sub",
+      "url": "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/choose-kafka-pubsub"
+    },
+    {
+      "title": "Firestore: información general",
+      "url": "https://docs.cloud.google.com/firestore/native/docs/overview"
+    },
+    {
+      "title": "Firestore REST: Precondition",
+      "url": "https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Precondition"
+    },
+    {
+      "title": "Cloud Storage: objetos",
+      "url": "https://docs.cloud.google.com/storage/docs/objects"
+    },
+    {
+      "url": "https://docs.cloud.google.com/run/docs/configuring/vpc-direct-vpc",
+      "title": "Cloud Run: salida de VPC directa"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto quiniela",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.99,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 6.87,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "gcp-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "gcp-subnet",
+      "label": "Subred privada (VPC directa)",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Jugadores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-scores",
+      "icon": "gen-team",
+      "label": "Proveedor de marcadores",
+      "number": 6,
+      "cell": {
+        "c": 0.92,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "gcp-app-lb"
+      ],
+      "near_miss": "gcp-passthrough-nlb",
+      "hint_cue": "en el encabezado X-Forwarded-For",
+      "explanation": "El balanceador de aplicaciones externo regional es un proxy de capa 7 para HTTP y HTTPS; con un NEG sin servidores llega a Cloud Run en la misma región y le pasa la IP del jugador en X-Forwarded-For.",
+      "refs": [
+        "https://docs.cloud.google.com/load-balancing/docs/application-load-balancer",
+        "https://docs.cloud.google.com/load-balancing/docs/negs/serverless-neg-concepts",
+        "https://docs.cloud.google.com/load-balancing/docs/https"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "gcp-cloud-run"
+      ],
+      "near_miss": "gcp-gke-standard",
+      "hint_cue": "sin que el equipo de dos personas administre servidores",
+      "explanation": "Cloud Run es una plataforma totalmente administrada para correr contenedores: no hay que crear un clúster ni administrar infraestructura, y escala solo con las peticiones.",
+      "refs": [
+        "https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run",
+        "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/choose-cluster-mode",
+        "https://docs.cloud.google.com/run/docs/configuring/vpc-direct-vpc"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.2,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "gcp-memorystore-valkey"
+      ],
+      "near_miss": "gcp-cloud-sql-read-replica",
+      "hint_cue": "guarda en memoria",
+      "explanation": "Memorystore for Valkey es un servicio de Valkey administrado y en memoria que se puede desplegar en northamerica-south1 (México); Google lo usa como capa de caché para dar tablas de posiciones en tiempo real.",
+      "refs": [
+        "https://docs.cloud.google.com/memorystore/docs/valkey/release-notes",
+        "https://docs.cloud.google.com/memorystore/docs/valkey/client-library-code-samples",
+        "https://cloud.google.com/memorystore",
+        "https://docs.cloud.google.com/sql/docs/mysql/replication"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-pubsub"
+      ],
+      "near_miss": "gcp-managed-kafka",
+      "hint_cue": "si no, se vuelve a entregar",
+      "explanation": "Con una suscripción pull de Pub/Sub, los trabajadores piden mensajes cuando pueden y deben confirmar (ack) cada uno; si no lo confirman antes del plazo, Pub/Sub lo vuelve a entregar.",
+      "refs": [
+        "https://docs.cloud.google.com/pubsub/docs/subscription-overview",
+        "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/edit-consumer-group",
+        "https://docs.cloud.google.com/managed-service-for-apache-kafka/docs/choose-kafka-pubsub"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-firestore"
+      ],
+      "near_miss": "gcp-cloud-storage",
+      "hint_cue": "solo la escribe si esa clave no existe",
+      "explanation": "Firestore es una base NoSQL de documentos que escala sola con la carga. Una escritura con la precondición de que el documento no exista solo se aplica si todavía no está, así que la apuesta no se duplica.",
+      "refs": [
+        "https://docs.cloud.google.com/firestore/native/docs/overview",
+        "https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Precondition",
+        "https://docs.cloud.google.com/storage/docs/objects",
+        "https://docs.cloud.google.com/sql/docs/mysql/replication"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "apuesta en el minuto 90",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 4,
+      "label": "encola la apuesta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "trabajadores la guardan",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s3",
+      "dir": "both",
+      "step": null,
+      "label": "posiciones",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "n-scores",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "cada gol",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es el proxy HTTP que recibe las apuestas por HTTPS, las reparte entre los contenedores y le pasa a la API la IP del jugador en el encabezado X-Forwarded-For."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} corre la API en contenedores sin que el equipo de dos personas administre servidores, nodos ni un clúster de Kubernetes."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda en memoria la tabla de posiciones de 2 millones de jugadores, ordenada por puntos, para no ir a la base de datos en cada consulta."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} absorbe el pico del minuto 90: los trabajadores sacan las apuestas a su ritmo y cada una se da por terminada solo cuando confirman que la procesaron; si no, se vuelve a entregar."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} es la base de datos NoSQL de las apuestas: guarda cada una con clave por jugador y partido y solo la escribe si esa clave no existe, para que nadie apueste dos veces."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El proveedor de marcadores manda cada gol a la API del slot 2, que actualiza la tabla de posiciones del slot 3."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-app-lb"
+    },
+    {
+      "service": "gcp-cloud-run"
+    },
+    {
+      "service": "gcp-memorystore-valkey"
+    },
+    {
+      "service": "gcp-pubsub"
+    },
+    {
+      "service": "gcp-firestore"
+    },
+    {
+      "service": "gcp-passthrough-nlb",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Los balanceadores de red de paso no admiten NEG sin servidores, así que no pueden llevar el tráfico a Cloud Run; además, el requisito pide un proxy HTTP."
+      }
+    },
+    {
+      "service": "gcp-gke-standard",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "En GKE Standard el equipo configura sus propios grupos de nodos y planea su capacidad, y el requisito excluye operar un clúster de Kubernetes."
+      }
+    },
+    {
+      "service": "gcp-cloud-sql-read-replica",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una réplica de lectura de Cloud SQL es una copia de solo lectura de la base relacional; el requisito pide guardar la tabla de posiciones en memoria.",
+        "s5": "Las réplicas de lectura de Cloud SQL son de solo lectura: no se puede escribir en ellas la apuesta."
+      }
+    },
+    {
+      "service": "gcp-managed-kafka",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "En Managed Service for Apache Kafka lo que recibe un grupo de consumidores se controla con los offsets de cada partición, y Google recomienda Pub/Sub cuando hace falta seguir el procesamiento de cada mensaje."
+      }
+    },
+    {
+      "service": "gcp-cloud-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Cloud Storage guarda objetos inmutables, que no cambian durante su vida de almacenamiento; el requisito pide una base de datos NoSQL."
+      }
+    }
+  ],
+  "review_notes": "Escenario 7 de ARCHITECTURES.md, rediseñado a balanceo de capa 7 (ver design-notes.md): los NEG sin servidores solo funcionan con balanceadores de aplicaciones, así que el slot 1 es el balanceador de aplicaciones externo regional frente a Cloud Run. Cloud Run vive fuera de la VPC y se dibuja en la subred privada por simplicidad. Zonas como columnas que cruzan las subredes. La cola es una suscripción pull de Pub/Sub. El requisito 5 ya no promete un volumen: la cola del slot 4 marca el ritmo de escritura, y Firestore pide subir el tráfico de forma gradual. Cada explicación y why_not cita su fuente en refs.",
+  "status": "published"
+}

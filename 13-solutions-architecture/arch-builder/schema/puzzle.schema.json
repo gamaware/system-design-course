@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iteso-dse.local/arch-builder/puzzle.schema.json",
+  "title": "Puzzle \"completa el diagrama\" (arch-builder, versión 1)",
+  "description": "Un puzzle por archivo: puzzles/<escenario>-<nube>.json (texto base en español). Guía: AUTHORING.md. Las reglas entre campos las aplica tools/build.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "scenario",
+    "cloud",
+    "title",
+    "summary",
+    "source_refs",
+    "layout",
+    "groups",
+    "nodes",
+    "slots",
+    "edges",
+    "requirements",
+    "palette",
+    "status"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^e[0-9]{2}-(aws|azure|gcp|oci)$",
+      "description": "<escenario>-<nube>, estable (el progreso se guarda con este id)"
+    },
+    "version": { "const": 1 },
+    "scenario": { "type": "string", "pattern": "^e[0-9]{2}$" },
+    "cloud": { "enum": ["aws", "azure", "gcp", "oci"] },
+    "title": { "type": "string", "minLength": 8, "maxLength": 90 },
+    "summary": { "type": "string", "minLength": 20, "maxLength": 220 },
+    "topics": {
+      "type": "array",
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 2, "maxLength": 40 }
+    },
+    "source_refs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ref" } },
+    "difficulty_override": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["level", "reason"],
+          "properties": {
+            "level": { "$ref": "#/$defs/level" },
+            "reason": { "type": "string", "minLength": 10 }
+          }
+        }
+      ]
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cols", "rows"],
+      "properties": {
+        "cols": { "type": "integer", "minimum": 3, "maximum": 12 },
+        "rows": { "type": "number", "minimum": 2, "maximum": 10 }
+      }
+    },
+    "groups": { "type": "array", "items": { "$ref": "#/$defs/group" } },
+    "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+    "slots": { "type": "array", "minItems": 2, "maxItems": 9, "items": { "$ref": "#/$defs/slot" } },
+    "edges": { "type": "array", "items": { "$ref": "#/$defs/edge" } },
+    "requirements": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/requirement" } },
+    "palette": { "type": "array", "minItems": 3, "maxItems": 24, "items": { "$ref": "#/$defs/tile" } },
+    "allow_mention": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason"],
+        "properties": {
+          "id": { "$ref": "#/$defs/serviceId" },
+          "reason": { "type": "string", "minLength": 10 }
+        }
+      }
+    },
+    "review_notes": { "type": "string" },
+    "status": { "enum": ["draft", "reviewed", "published"] }
+  },
+  "$defs": {
+    "level": { "enum": ["easy", "medium", "hard"] },
+    "serviceId": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "url": { "type": "string", "pattern": "^https://[^\\s]+$" },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url"],
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 120 },
+        "url": { "$ref": "#/$defs/url" }
+      }
+    },
+    "coord": { "type": "number", "minimum": 0 },
+    "size": { "type": "number", "exclusiveMinimum": 0 },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["c", "r"],
+      "properties": { "c": { "$ref": "#/$defs/coord" }, "r": { "$ref": "#/$defs/coord" } }
+    },
+    "box": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["c", "r", "w", "h"],
+      "properties": {
+        "c": { "$ref": "#/$defs/coord" },
+        "r": { "$ref": "#/$defs/coord" },
+        "w": { "$ref": "#/$defs/size" },
+        "h": { "$ref": "#/$defs/size" }
+      }
+    },
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "label", "parent", "cell"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^g-[a-z0-9-]+$" },
+        "kind": {
+          "enum": [
+            "aws-cloud",
+            "aws-account",
+            "region",
+            "az",
+            "vpc",
+            "public-subnet",
+            "private-subnet",
+            "security-group",
+            "auto-scaling-group",
+            "corporate-dc",
+            "azure-subscription",
+            "azure-resource-group",
+            "azure-region",
+            "azure-vnet",
+            "azure-subnet",
+            "azure-zone",
+            "gcp-cloud",
+            "gcp-project",
+            "gcp-region",
+            "gcp-vpc",
+            "gcp-subnet",
+            "gcp-zone",
+            "oci-tenancy",
+            "oci-compartment",
+            "oci-region",
+            "oci-ad",
+            "oci-fault-domain",
+            "oci-vcn",
+            "oci-subnet",
+            "generic"
+          ]
+        },
+        "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "parent": { "type": ["string", "null"] },
+        "cell": { "$ref": "#/$defs/box" }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "icon", "cell", "group"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^n-[a-z0-9-]+$" },
+        "icon": { "$ref": "#/$defs/serviceId" },
+        "label": { "type": "string", "maxLength": 40 },
+        "number": { "type": ["integer", "null"], "minimum": 1 },
+        "cell": { "$ref": "#/$defs/cell" },
+        "group": { "type": ["string", "null"] }
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "number",
+        "cell",
+        "group",
+        "accept",
+        "near_miss",
+        "hint_cue",
+        "explanation",
+        "refs"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^s[0-9]{1,2}$" },
+        "number": { "type": "integer", "minimum": 1 },
+        "cell": { "$ref": "#/$defs/cell" },
+        "group": { "type": ["string", "null"] },
+        "accept": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": { "$ref": "#/$defs/serviceId" }
+        },
+        "near_miss": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/serviceId" }] },
+        "hint_cue": { "type": "string", "minLength": 3 },
+        "category": { "type": "string" },
+        "label": { "type": "string", "maxLength": 40 },
+        "niche": { "type": "boolean" },
+        "explanation": { "type": "string", "minLength": 20, "maxLength": 300 },
+        "refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/url" },
+          "description": "URLs oficiales que respaldan la respuesta y el distractor de este slot"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "dir", "step", "style"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^e[0-9]{1,2}$" },
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "dir": { "enum": ["forward", "both", "none"] },
+        "step": { "type": ["integer", "null"], "minimum": 1 },
+        "label": { "type": "string", "maxLength": 32 },
+        "style": { "enum": ["solid", "dashed", "dotted"] },
+        "route": { "enum": ["auto", "h-first", "v-first", "points"] },
+        "points": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/cell" } }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n", "slot", "text"],
+      "properties": {
+        "n": { "type": "integer", "minimum": 1 },
+        "slot": { "type": ["string", "null"] },
+        "text": { "type": "string", "minLength": 10, "maxLength": 260 }
+      }
+    },
+    "tile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service"],
+      "properties": {
+        "service": { "$ref": "#/$defs/serviceId" },
+        "uses": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "role": { "enum": ["answer", "near-miss", "distractor", "filler"] },
+        "why_not": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 15, "maxLength": 300 },
+          "propertyNames": { "pattern": "^(s[0-9]{1,2}|\\*)$" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,464 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e02-oci",
+  "version": 1,
+  "scenario": "e02",
+  "cloud": "oci",
+  "title": "Tienda que aguanta el Buen Fin",
+  "summary": "Una cooperativa de artesanos de Tlaquepaque multiplica por diez su tráfico en el Buen Fin. La tienda debe crecer sola y no perder ventas si cae un dominio de falla.",
+  "topics": [
+    "cómputo",
+    "autoescalado",
+    "balanceo L7",
+    "terminación TLS",
+    "monitoreo"
+  ],
+  "source_refs": [
+    {
+      "title": "OCI Functions: tiempo de espera",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Functions/Tasks/functionscustomizing.htm"
+    },
+    {
+      "title": "OCI: autoscaling de instance pools",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscalinginstancepools.htm"
+    },
+    {
+      "title": "OCI Load Balancer: certificados",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm"
+    },
+    {
+      "title": "OCI Network Load Balancer: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/NetworkLoadBalancer/overview.htm"
+    },
+    {
+      "title": "OCI Certificates: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm"
+    },
+    {
+      "title": "OCI Monitoring: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm"
+    },
+    {
+      "title": "OCI Cloud Advisor: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/CloudAdvisor/Concepts/cloudadvisoroverview.htm"
+    },
+    {
+      "title": "OCI Vault: llaves y versiones",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm"
+    },
+    {
+      "title": "OCI: instance pools y dominios de falla",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instance-pools.htm"
+    },
+    {
+      "title": "OCI: autoscaling por métricas, mínimo y máximo",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscaling-create-metric-based_tabs.htm"
+    },
+    {
+      "title": "OCI: instance configurations",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instancemanagement.htm"
+    },
+    {
+      "title": "OCI Compute: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/computeoverview.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento tienda",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 5.51,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "oci-region",
+      "label": "Región Querétaro (AD único)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.39,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "oci-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "oci-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-db",
+      "icon": "oci-mysql",
+      "label": "BD administrada",
+      "number": 6,
+      "cell": {
+        "c": 2.35,
+        "r": 2.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 7.55,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "oci-compute"
+      ],
+      "near_miss": "oci-functions",
+      "hint_cue": "sistema operativo que el equipo parcha",
+      "explanation": "OCI Compute da instancias de VM: cada una es un entorno de cómputo independiente cuya imagen define el sistema operativo y el demás software, y Oracle recomienda aplicarles los parches de seguridad más recientes. OCI Functions corta cada ejecución a los 300 segundos.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Functions/Tasks/functionscustomizing.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/computeoverview.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-instance-pool"
+      ],
+      "near_miss": "oci-instance-configuration",
+      "hint_cue": "agrega o quita según la carga",
+      "explanation": "Un instance pool crea instancias idénticas desde una instance configuration y las reparte entre dominios de falla; el autoscaling ajusta su número a la CPU entre un mínimo y un máximo, y si se termina una instancia el pool crea otra.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscalinginstancepools.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instance-pools.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscaling-create-metric-based_tabs.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instancemanagement.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "oci-load-balancer"
+      ],
+      "near_miss": "oci-network-load-balancer",
+      "hint_cue": "manda /api a un grupo y /tienda a otro",
+      "explanation": "OCI Load Balancer termina TLS con el certificado del slot 4, manda /api y /tienda a conjuntos de backends distintos con reglas por ruta y solo envía a los que pasan su revisión de salud. El Network Load Balancer es de capa 4.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/NetworkLoadBalancer/overview.htm"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 1.15
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-certificates"
+      ],
+      "near_miss": "oci-vault",
+      "hint_cue": "presenta al navegador para probar que es tienda.mx",
+      "explanation": "OCI Certificates importa el certificado de tienda.mx que emitió una CA externa, guarda sus versiones, marca cuál es la vigente y el Load Balancer lo usa por integración. Una llave de OCI Vault también tiene versiones, pero no es un certificado.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "oci-monitoring"
+      ],
+      "near_miss": "oci-cloud-advisor",
+      "hint_cue": "avisa a guardia",
+      "explanation": "OCI Monitoring recibe la CPU de las instancias cada minuto y una alarma avisa a guardia por Notifications cuando pasa de 80 % durante 5 minutos. Cloud Advisor solo da recomendaciones periódicas.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/CloudAdvisor/Concepts/cloudadvisoroverview.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "compra en tienda.mx",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "/api y /tienda",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "consultas",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "TLS de tienda.mx",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "agrega y reemplaza",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "s1",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "CPU cada minuto",
+      "style": "dotted",
+      "route": "v-first"
+    },
+    {
+      "id": "e8",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 6,
+      "label": "aviso",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es cada servidor individual: tiene su propio sistema operativo que el equipo parcha, su agente de inventario instalado y atiende todo el día."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} mantiene de 2 a 20 copias en ambos dominios de falla, agrega o quita según la carga y repone las que se terminan."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe y descifra el HTTPS, manda /api a un grupo y /tienda a otro, y solo envía a servidores sanos."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} guarda lo que el slot 3 presenta al navegador para probar que es tienda.mx (lo emite una autoridad externa y aquí se importa) y administra sus versiones."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} registra la CPU cada minuto y avisa a guardia si pasa de 80 % durante 5 minutos."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "La base de datos administrada guarda pedidos e inventario, y solo la consultan los servidores del slot 1."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-compute"
+    },
+    {
+      "service": "oci-instance-pool"
+    },
+    {
+      "service": "oci-load-balancer"
+    },
+    {
+      "service": "oci-certificates"
+    },
+    {
+      "service": "oci-monitoring"
+    },
+    {
+      "service": "oci-functions",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "OCI Functions corta cada ejecución a los 300 segundos y no deja parchar el sistema operativo ni instalar agentes."
+      }
+    },
+    {
+      "service": "oci-instance-configuration",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Una instance configuration es la plantilla para crear instancias: no mantiene copias ni escala con la carga."
+      }
+    },
+    {
+      "service": "oci-network-load-balancer",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "OCI Network Load Balancer trabaja en capa 3 y 4: pasa los paquetes sin descifrar el HTTPS ni leer la URL."
+      }
+    },
+    {
+      "service": "oci-vault",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una llave de OCI Vault tiene versiones y sirve para cifrar o firmar, pero no es un certificado: el Load Balancer usa los certificados del servicio Certificates."
+      }
+    },
+    {
+      "service": "oci-cloud-advisor",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Cloud Advisor da recomendaciones periódicas de costo, rendimiento y seguridad; no mide la CPU cada minuto ni avisa a guardia."
+      }
+    }
+  ],
+  "review_notes": "Piloto del motor: tabla del Escenario 2 de ARCHITECTURES.md. Zonas como columnas que cruzan las subredes.",
+  "status": "published"
+}

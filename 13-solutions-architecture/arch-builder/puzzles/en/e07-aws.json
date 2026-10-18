@@ -1,0 +1,76 @@
+{
+  "id": "e07-aws",
+  "title": "World Cup 2026 betting pool",
+  "summary": "A Mexican app expects 2 million players during the 2026 World Cup matches, and bets spike at minute 90.",
+  "requirements": {
+    "1": "{{s1}} is the HTTP proxy that receives bets over HTTPS, spreads the requests across the containers and passes the player's IP to the API in the X-Forwarded-For header.",
+    "2": "{{s2}} runs the API in containers without the two-person team managing servers, nodes or a Kubernetes cluster.",
+    "3": "{{s3}} keeps the leaderboard of 2 million players in memory, sorted by points, so the API does not hit the database on every lookup.",
+    "4": "{{s4}} absorbs the minute-90 spike: workers pull bets at their own pace and each one is done only when they confirm they processed it; otherwise it is delivered again.",
+    "5": "{{s5}} is the NoSQL store for the bets: it saves each one keyed by player and match and writes it only if that key does not exist yet, so nobody bets twice.",
+    "6": "The score provider sends each goal to the slot 2 API, which updates the slot 3 leaderboard."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "The Application Load Balancer works at layer 7: it takes each HTTP or HTTPS request and sends it only to healthy targets, such as the tasks of an ECS service registered by IP. The player's IP reaches the API in the X-Forwarded-For header.",
+      "hint_cue": "in the X-Forwarded-For header"
+    },
+    "s2": {
+      "explanation": "AWS Fargate is a serverless compute engine for containers that works with ECS: the team does not provision or manage servers or the underlying compute instances.",
+      "hint_cue": "without the two-person team managing servers"
+    },
+    "s3": {
+      "explanation": "ElastiCache with Valkey is an in-memory key-value store, and its sorted sets move the work of computing leaderboards from the app to the cluster.",
+      "hint_cue": "in memory"
+    },
+    "s4": {
+      "explanation": "An SQS standard queue stores each message across several zones and delivers it at least once. The worker deletes it when done; if it is not deleted before the visibility timeout expires, the message becomes visible again.",
+      "hint_cue": "otherwise it is delivered again"
+    },
+    "s5": {
+      "explanation": "DynamoDB is a key-value and document NoSQL database. With a condition expression, if an item with that key already exists, the condition is false and DynamoDB rejects the write, so the bet is not overwritten.",
+      "hint_cue": "writes it only if that key does not exist yet"
+    }
+  },
+  "nodes": {
+    "n-users": "Players",
+    "n-internet": "Internet",
+    "n-scores": "Score provider"
+  },
+  "edges": {
+    "e1": "bets at minute 90",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "enqueues the bet",
+    "e5": "workers store it",
+    "e6": "standings",
+    "e7": "each goal"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud",
+    "g-region": "Region mx-central-1",
+    "g-net": "VPC 10.0.0.0/16",
+    "g-zone-a": "Availability Zone A",
+    "g-zone-b": "Availability Zone B",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "aws-nlb": {
+      "s1": "The Network Load Balancer works at layer 4 of the OSI model; the X-Forwarded-For header belongs to HTTP or HTTPS load balancers, and the requirement asks for an HTTP proxy."
+    },
+    "aws-eks": {
+      "s2": "Amazon EKS is Kubernetes, and with managed node groups the team still secures, maintains and patches the operating system of the EC2 instances."
+    },
+    "aws-rds-read-replica": {
+      "s3": "An RDS read replica is another database instance that only accepts read-only connections; the requirement asks to keep the leaderboard in memory.",
+      "s5": "An RDS read replica only accepts read-only connections: it cannot take the write of each bet."
+    },
+    "aws-kinesis-data-streams": {
+      "s4": "In Kinesis Data Streams records stay available for the retention period and the consumer keeps its own checkpoint; SQS instead tracks the acknowledgment and deletes each acknowledged message."
+    },
+    "aws-s3": {
+      "s5": "Amazon S3 is object storage in buckets, and the DynamoDB guide uses it to export and import tables; the requirement asks for a NoSQL database."
+    }
+  }
+}

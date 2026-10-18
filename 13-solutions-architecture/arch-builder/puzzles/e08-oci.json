@@ -1,0 +1,342 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e08-oci",
+  "version": 1,
+  "scenario": "e08",
+  "cloud": "oci",
+  "title": "Paquetería que no pierde pedidos",
+  "summary": "EnvíaYa reparte 80 mil paquetes al día en el Bajío. Cada pedido creado llega a facturación, al SMS del cliente y a la asignación de repartidor, y una falla en uno no detiene a los demás.",
+  "topics": [
+    "publicar/suscribir",
+    "colas",
+    "entrega al menos una vez",
+    "DLQ",
+    "streaming"
+  ],
+  "source_refs": [
+    {
+      "title": "OCI Notifications: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm"
+    },
+    {
+      "title": "OCI Queue: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm"
+    },
+    {
+      "title": "OCI Connector Hub: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/connector-hub/overview.htm"
+    },
+    {
+      "title": "OCI Streaming: descripción general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm"
+    },
+    {
+      "title": "Connector Hub: de Queue a Functions",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/connector-hub/queue-to-function.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 4.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "oci-compartment",
+      "label": "Oracle Cloud · compartimento envíaya",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 6.85,
+        "h": 4.2
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-api",
+      "icon": "oci-api-gateway",
+      "label": "API de pedidos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-sms",
+      "icon": "gen-users",
+      "label": "Clientes (SMS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 0.4
+      },
+      "group": null
+    },
+    {
+      "id": "n-analytics",
+      "icon": "gen-team",
+      "label": "Analítica",
+      "number": null,
+      "cell": {
+        "c": 3.6,
+        "r": 3.1
+      },
+      "group": "g-cloud"
+    },
+    {
+      "id": "n-gps",
+      "icon": "gen-users",
+      "label": "Repartidores (GPS)",
+      "number": null,
+      "cell": {
+        "c": 8.0,
+        "r": 3.1
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 1.45,
+        "r": 0.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-notifications"
+      ],
+      "near_miss": null,
+      "hint_cue": "envía por sí mismo el SMS al cliente",
+      "explanation": "Al publicar en un tema de Notifications, el servicio envía el mensaje a todas sus suscripciones, entre ellas SMS y una función, al menos una vez por cada una. Queue no es un protocolo de suscripción; por eso una función reenvía la copia.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 1.45,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-queue"
+      ],
+      "near_miss": "oci-cache",
+      "hint_cue": "si el trabajador muere a la mitad, el pedido reaparece",
+      "explanation": "OCI Queue oculta el mensaje entregado durante su tiempo de visibilidad y el consumidor debe borrarlo al terminar; si no lo borra, el mensaje puede entregarse de nuevo a otro consumidor.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 3.6,
+        "r": 1.75
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-functions"
+      ],
+      "near_miss": "oci-compute",
+      "hint_cue": "solo cuando hay mensajes",
+      "explanation": "Un conector de Connector Hub toma los mensajes de la cola, los envía a la función y luego los borra de la cola, así que el código corre cuando hay mensajes. Una instancia de Compute seguiría encendida.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/connector-hub/overview.htm"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 1.45,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-queue-dlq"
+      ],
+      "near_miss": "oci-object-storage",
+      "hint_cue": "falla 5 veces",
+      "explanation": "Si la función falla, todo el lote vuelve a la cola y cada mensaje suma una entrega; con lotes de 1 mensaje en el conector, solo el pedido que falla llega al máximo (de 1 a 20) y OCI Queue lo pasa a su DLQ. Un bucket no cuenta entregas.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/connector-hub/queue-to-function.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.0,
+        "r": 3.1
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-streaming"
+      ],
+      "near_miss": "oci-connector-hub",
+      "hint_cue": "relee desde el principio",
+      "explanation": "OCI Streaming entrega en orden los mensajes de cada partición y no los borra al leerlos: analítica puede repetirlos desde cualquier offset dentro de la retención que se configure. Connector Hub solo mueve datos.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/connector-hub/overview.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-api",
+      "to": "s1",
+      "dir": "forward",
+      "step": 1,
+      "label": "pedido creado",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s1",
+      "to": "n-sms",
+      "dir": "forward",
+      "step": 2,
+      "label": "SMS al cliente",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia, vía código propio",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": 4,
+      "label": "pedidos vía un conector",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "tras 5 fallas",
+      "style": "dashed"
+    },
+    {
+      "id": "e6",
+      "from": "n-gps",
+      "to": "s5",
+      "dir": "forward",
+      "step": null,
+      "label": "posiciones GPS",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "s5",
+      "to": "n-analytics",
+      "dir": "forward",
+      "step": null,
+      "label": "relee desde el inicio",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} envía por sí mismo el SMS al cliente y entrega el mismo pedido creado a otros suscriptores, sin que la API sepa cuántos son."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} recibe su copia de cada pedido y la guarda hasta que un trabajador confirma que la procesó; si el trabajador muere a la mitad, el pedido reaparece."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} corre el código que asigna repartidor solo cuando hay mensajes, escala solo y no cuesta de madrugada."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} aparta el pedido que falla 5 veces para revisarlo después, para que no se reintente sin fin."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} recibe el GPS de los repartidores, lo conserva 7 días en orden y analítica lo relee desde el principio cuantas veces quiera."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-notifications"
+    },
+    {
+      "service": "oci-queue"
+    },
+    {
+      "service": "oci-functions"
+    },
+    {
+      "service": "oci-queue-dlq"
+    },
+    {
+      "service": "oci-streaming",
+      "why_not": {
+        "s1": "En Streaming los consumidores leen los mensajes de las particiones por offset; quien entrega a suscripciones por SMS es un tema de Notifications."
+      }
+    },
+    {
+      "service": "oci-cache",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "OCI Cache es una caché en memoria: sus listas no garantizan la entrega ni hacen reaparecer el pedido si el trabajador muere a la mitad."
+      }
+    },
+    {
+      "service": "oci-compute",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una instancia de Compute cobra mientras está encendida, aunque no lleguen pedidos de madrugada, y no se ejecuta sola con cada mensaje."
+      }
+    },
+    {
+      "service": "oci-object-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un bucket de Object Storage guarda objetos, pero no cuenta las entregas de un mensaje ni lo aparta de la cola por sí solo.",
+        "s5": "Object Storage guarda objetos completos; no entrega las posiciones en orden por partición ni con offsets para releerlas."
+      }
+    },
+    {
+      "service": "oci-connector-hub",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Connector Hub mueve los mensajes de la cola a un destino, pero no corre el código que asigna repartidor: ese código vive en el destino.",
+        "s5": "Connector Hub mueve datos de un origen a un destino y la retención la pone el origen; no guarda el GPS para releerlo."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 8 de ARCHITECTURES.md. Equivalencia dudosa E8-1 a 2: Notifications no entrega a Queue (no es protocolo de suscripción), así que entre los slots 1 y 2 hay una función que encola, y el slot 3 se conecta con Connector Hub (Queue como origen, Functions como destino). Para no romper la topología común no se agregan nodos: ambos pasos van en las etiquetas de las flechas e3 (código propio) y e4 (conector) y se explican en los slots 1 y 3. La DLQ es de la cola del slot 2. Revisión a ciegas: Streaming con varios grupos de consumidores también repartía a consumidores independientes; el requisito 1 de OCI pide que el servicio envíe por sí mismo el SMS (protocolo de suscripción de Notifications) y Streaming lleva why_not en s1. Revisión final: Connector Hub no admite fallas parciales de un lote de Queue a Functions y reintenta el lote hasta que la función responda bien, así que el requisito 4 de OCI ya no dice solo el pedido ni sin bloquear la fila; pide que el pedido deje de reintentarse, y la explicación pide lotes de 1 mensaje.",
+  "status": "published"
+}

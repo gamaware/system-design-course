@@ -1,0 +1,100 @@
+{
+  "id": "e01-gcp",
+  "title": "A private network with controlled egress",
+  "summary": "40 high schools in Jalisco publish grades on a portal. The state Education Ministry requires that neither the servers nor the database can be reached from the internet.",
+  "requirements": {
+    "1": "{{s1}} lets the private servers download patches from the internet, but nobody outside can open a connection to them.",
+    "2": "{{s2}} is the proxy each server has configured for its outbound web traffic; with TLS inspection it checks the URL of every HTTPS request and only lets it reach the SAT, the bank and the patch repository.",
+    "3": "{{s3}} makes only the app servers talk to the database on port 3306, whatever subnet they are in, and lets the reply come back on its own.",
+    "4": "{{s4}} gives administrators a terminal on servers with no public IP, without opening port 22 to the internet, and keeps a record of every session.",
+    "5": "{{s5}} lets the servers, which only have internal IPs, take the PDF report cards to object storage without going through slot 1.",
+    "6": "{{s6}} keeps the source, destination and port of the servers' network traffic to investigate a scan.",
+    "7": "The grades database listens on port 3306 and lives in a private subnet, with no public IP."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Cloud NAT lets VMs without external IPs talk to the internet and does not allow unsolicited inbound connections: it only translates responses to established connections.",
+      "hint_cue": "nobody outside can open a connection to them"
+    },
+    "s2": {
+      "explanation": "In explicit proxy mode, each server points directly to Secure Web Proxy, which filters destinations by hostname or URL (for HTTPS, with TLS inspection). Traffic then goes out to the internet, typically through Cloud NAT.",
+      "hint_cue": "the proxy each server has configured"
+    },
+    "s3": {
+      "explanation": "VPC firewall rules are stateful, so the reply passes on its own, and they can use service accounts as target and source: port 3306 opens only from the app's service account.",
+      "hint_cue": "whatever subnet they are in"
+    },
+    "s4": {
+      "explanation": "With IAP TCP forwarding you SSH into VMs with no external IP; the firewall only admits IAP's 35.235.240.0/20 range on port 22, and Cloud Audit Logs shows each access request.",
+      "hint_cue": "without opening port 22 to the internet"
+    },
+    "s5": {
+      "explanation": "Private Google Access is enabled per subnet and lets VMs with only internal IPs reach Google APIs, including Cloud Storage. That traffic uses Private Google Access even if the VM uses Cloud NAT.",
+      "hint_cue": "which only have internal IPs"
+    },
+    "s6": {
+      "explanation": "VPC Flow Logs samples the packets VMs send and receive and aggregates them by connection (5-tuple): source and destination IP and port, and protocol.",
+      "hint_cue": "source, destination and port"
+    }
+  },
+  "nodes": {
+    "n-students": "Students",
+    "n-internet": "Internet",
+    "n-admin": "Administrator",
+    "n-bank": "Bank",
+    "n-sat": "SAT (tax office)",
+    "n-lb": "Load balancer",
+    "n-app": "App servers",
+    "n-db": "Grades database",
+    "n-storage": "Object storage"
+  },
+  "edges": {
+    "e1": "checks grades",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "MySQL 3306",
+    "e5": "PDF report cards",
+    "e6": "private network",
+    "e7": "patches, SAT and bank",
+    "e8": "allowed domains",
+    "e9": "HTTPS",
+    "e10": "HTTPS",
+    "e11": "terminal",
+    "e12": "session",
+    "e13": "app only",
+    "e14": "traffic"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · portal project",
+    "g-region": "Region northamerica-south1",
+    "g-net": "VPC network",
+    "g-zone-a": "northamerica-south1-a",
+    "g-zone-b": "northamerica-south1-b",
+    "g-pub": "Public subnet",
+    "g-app": "Private subnet",
+    "g-db": "Private subnet"
+  },
+  "why_not": {
+    "gcp-cloud-nat": {
+      "s2": "Cloud NAT only translates addresses and is not a proxy. It is the intermediary's usual way out to the internet, but it does not decide which domains can be reached."
+    },
+    "gcp-external-ip": {
+      "s1": "Cloud NAT exists so each VM does not need its own external IP; with an external IP, the server has a public address on the internet."
+    },
+    "gcp-cloud-armor": {
+      "s3": "Cloud Armor filters traffic at the Google Cloud edge before it reaches a load balancer's backends; it does not control which server talks to the database on 3306."
+    },
+    "gcp-cloud-vpn": {
+      "s4": "Cloud VPN extends another network to the VPC through an IPsec tunnel; it is a network-to-network connection, not the IAP tunnel to a VM with no external IP with each access request visible in Cloud Audit Logs."
+    },
+    "gcp-vpc-peering": {
+      "s5": "VPC Network Peering connects two VPC networks so their resources can communicate; what lets a VM with only an internal IP reach Cloud Storage is Private Google Access, enabled on the subnet."
+    },
+    "gcp-cloud-audit-logs": {
+      "s6": "Cloud Audit Logs records access requests and operations, such as IAP's; it does not keep samples of network traffic between VMs."
+    },
+    "gcp-vpc-firewall-rules": {
+      "s2": "Cloud NGFW also filters by domain, but it intercepts traffic transparently, without the server configuring it as a proxy, and when it decrypts TLS it only reads the domain in the host header, not the full URL."
+    }
+  }
+}

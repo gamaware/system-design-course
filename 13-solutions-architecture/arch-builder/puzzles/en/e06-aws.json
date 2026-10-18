@@ -1,0 +1,85 @@
+{
+  "id": "e06-aws",
+  "title": "Reservations in two countries",
+  "summary": "MesaLista books tables at 2,000 restaurants in Mexico and Texas. Payments need transactions and favorites are written in both countries.",
+  "requirements": {
+    "1": "{{s1}} keeps payments in managed MySQL without leaving Mexico, with a copy in another zone that takes over on its own if the primary fails.",
+    "2": "{{s2}} gives reporting a separate copy of the slot 1 primary so it does not slow it down, even if the copy runs a few seconds behind.",
+    "3": "{{s3}} stores favorites: each country writes in milliseconds to its own region and both accept writes. The other region sees them later, because availability is preferred over consistency.",
+    "4": "{{s4}} alerts the reporting team if the slot 2 copy falls more than 30 seconds behind the primary.",
+    "5": "{{s5}} keeps the database password out of the code: the app requests it at startup and a rotation schedule in the same service changes it every 30 days.",
+    "6": "The pilot restaurant's MySQL runs on its own premises; its payments are migrated to slot 1 before opening to all 2,000 restaurants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "With Multi-AZ, RDS for MySQL copies every change synchronously to a standby in another zone, which serves no reads, and if the primary fails RDS switches to the standby on its own. A read replica copies asynchronously and you are the one who promotes it.",
+      "hint_cue": "takes over on its own"
+    },
+    "s2": {
+      "explanation": "An RDS read replica receives changes asynchronously and serves the reporting queries, so the primary does not carry them even if the copy runs a few seconds behind.",
+      "hint_cue": "a separate copy"
+    },
+    "s3": {
+      "explanation": "DynamoDB global tables are multi-active: a change in any replica reaches the others, typically within a second, and by default reads across Regions are eventually consistent.",
+      "hint_cue": "both accept writes"
+    },
+    "s4": {
+      "explanation": "RDS publishes the replica lag to CloudWatch as the ReplicaLag metric; a CloudWatch alarm watches that metric against a threshold and notifies the team through SNS when it goes over 30 seconds.",
+      "hint_cue": "falls more than 30 seconds behind"
+    },
+    "s5": {
+      "explanation": "Secrets Manager keeps the password out of the code and rotates it on a schedule, for example rate(30 days). Parameter Store can point to that secret, but it does not provide automatic rotation for the secrets it stores.",
+      "hint_cue": "changes it every 30 days"
+    }
+  },
+  "nodes": {
+    "n-onprem": "Pilot restaurant MySQL",
+    "n-reports": "Reporting team",
+    "n-app-mx": "App servers",
+    "n-app-us": "App servers"
+  },
+  "edges": {
+    "e1": "password",
+    "e2": "payments",
+    "e3": "copy",
+    "e4": "reports",
+    "e5": "favorites",
+    "e6": "favorites",
+    "e7": "lag",
+    "e8": "alert",
+    "e9": "migration"
+  },
+  "groups": {
+    "g-rest": "Pilot restaurant",
+    "g-cloud": "AWS Cloud",
+    "g-region-mx": "Region mx-central-1",
+    "g-vpc-mx": "VPC 10.0.0.0/16",
+    "g-zone-mx-a": "Zone A",
+    "g-zone-mx-b": "Zone B",
+    "g-priv-mx": "Private subnet",
+    "g-region-us": "Region us-east-1",
+    "g-vpc-us": "VPC 10.1.0.0/16",
+    "g-zone-us-a": "Zone A",
+    "g-zone-us-b": "Zone B",
+    "g-priv-us": "Private subnet"
+  },
+  "why_not": {
+    "aws-rds-multi-az": {
+      "s2": "The Multi-AZ standby receives the synchronous copy, but unlike a read replica it cannot serve read traffic."
+    },
+    "aws-rds-read-replica": {
+      "s1": "The read replica receives changes asynchronously and you are the one who promotes it; it does not replace the primary on its own."
+    },
+    "aws-aurora-global": {
+      "s1": "Aurora Global Database copies the data to read-only secondary Regions, and the payments must not leave Mexico.",
+      "s2": "Aurora Global Database copies an Aurora cluster to other Regions; it is not a copy of the slot 1 MySQL.",
+      "s3": "In Aurora Global Database only the primary cluster performs writes and the secondary Regions are read-only: there are not two Regions accepting writes."
+    },
+    "aws-cloudtrail": {
+      "s4": "CloudTrail records the actions of users, roles and services as events; the lag is the ReplicaLag metric, which RDS publishes to CloudWatch, and the alarm lives there."
+    },
+    "aws-parameter-store": {
+      "s5": "Parameter Store stores passwords as parameter values, but it does not provide automatic rotation for the secrets it stores."
+    }
+  }
+}

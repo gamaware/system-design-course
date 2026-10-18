@@ -1,0 +1,526 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e06-aws",
+  "version": 1,
+  "scenario": "e06",
+  "cloud": "aws",
+  "title": "Reservaciones en dos países",
+  "summary": "MesaLista reserva mesas en 2 mil restaurantes de México y Texas. Los pagos piden transacciones y los favoritos se escriben en ambos países.",
+  "topics": [
+    "bases de datos relacionales",
+    "alta disponibilidad",
+    "replicación",
+    "bases multirregión y CAP",
+    "migración",
+    "secretos"
+  ],
+  "source_refs": [
+    {
+      "title": "Amazon RDS: réplicas de lectura",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"
+    },
+    {
+      "title": "DynamoDB: consistencia de lectura y tablas globales",
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html"
+    },
+    {
+      "title": "Amazon Aurora Global Database",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"
+    },
+    {
+      "title": "Amazon RDS: monitorear la replicación de lectura",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.Monitoring.html"
+    },
+    {
+      "title": "Secrets Manager: secretos referenciados desde Parameter Store",
+      "url": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_parameterstore.html"
+    },
+    {
+      "title": "Amazon RDS: despliegues Multi-AZ DB instance",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html"
+    },
+    {
+      "title": "Amazon RDS: conmutación por error de una instancia Multi-AZ",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.Failover.html"
+    },
+    {
+      "title": "Amazon RDS: alarmas de CloudWatch",
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/creating_alarms.html"
+    },
+    {
+      "title": "AWS CloudTrail: qué es",
+      "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html"
+    },
+    {
+      "title": "Secrets Manager: calendarios de rotación",
+      "url": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_schedule.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 8,
+    "rows": 7.1
+  },
+  "groups": [
+    {
+      "id": "g-rest",
+      "kind": "corporate-dc",
+      "label": "Restaurante piloto",
+      "parent": null,
+      "cell": {
+        "c": 2.1,
+        "r": 0,
+        "w": 2.2,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 0.02,
+        "r": 1.33,
+        "w": 6.77,
+        "h": 5.67
+      }
+    },
+    {
+      "id": "g-region-mx",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 0.08,
+        "r": 1.55,
+        "w": 6.65,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-mx",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region-mx",
+      "cell": {
+        "c": 1.2,
+        "r": 1.77,
+        "w": 4.3,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-mx-a",
+      "kind": "az",
+      "label": "Zona A",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 1.99,
+        "w": 2.34,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-mx-b",
+      "kind": "az",
+      "label": "Zona B",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 3.66,
+        "r": 1.99,
+        "w": 1.78,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-mx",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 2.23,
+        "w": 4.18,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-region-us",
+      "kind": "region",
+      "label": "Región us-east-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.5,
+        "r": 4.83,
+        "w": 4.23,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-us",
+      "kind": "vpc",
+      "label": "VPC 10.1.0.0/16",
+      "parent": "g-region-us",
+      "cell": {
+        "c": 2.56,
+        "r": 5.05,
+        "w": 4.11,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-us-a",
+      "kind": "az",
+      "label": "Zona A",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.27,
+        "w": 2.05,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-us-b",
+      "kind": "az",
+      "label": "Zona B",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 4.73,
+        "r": 5.27,
+        "w": 1.88,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-us",
+      "kind": "private-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.51,
+        "w": 3.99,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-onprem",
+      "icon": "aws-generic-database",
+      "label": "MySQL del restaurante",
+      "number": 6,
+      "cell": {
+        "c": 2.65,
+        "r": 0.25
+      },
+      "group": "g-rest"
+    },
+    {
+      "id": "n-reports",
+      "icon": "gen-team",
+      "label": "Equipo de reportes",
+      "number": null,
+      "cell": {
+        "c": 6.95,
+        "r": 3.82
+      },
+      "group": null
+    },
+    {
+      "id": "n-app-mx",
+      "icon": "aws-ec2",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 1.3,
+        "r": 2.48
+      },
+      "group": "g-priv-mx"
+    },
+    {
+      "id": "n-app-us",
+      "icon": "aws-ec2",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 4.9,
+        "r": 5.76
+      },
+      "group": "g-priv-us"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.65,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "aws-rds-multi-az"
+      ],
+      "near_miss": "aws-aurora-global",
+      "hint_cue": "toma el control sola",
+      "explanation": "Con Multi-AZ, RDS for MySQL copia cada cambio en forma síncrona a un standby en otra zona, que no atiende lecturas, y si falla la primaria RDS cambia sola al standby. Una réplica de lectura copia en forma asíncrona y eres tú quien la promueve.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.Failover.html"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.45,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "aws-rds-read-replica"
+      ],
+      "near_miss": null,
+      "hint_cue": "una copia aparte",
+      "explanation": "Una réplica de lectura de RDS recibe los cambios en forma asíncrona y atiende las consultas de reportes, así la primaria no carga con ellas aunque la copia vaya unos segundos atrás.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 1.3,
+        "r": 4.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-dynamodb"
+      ],
+      "near_miss": "aws-aurora-global",
+      "hint_cue": "ambas aceptan escrituras",
+      "explanation": "Las tablas globales de DynamoDB son multiactivas: un cambio en cualquier réplica pasa a las demás, por lo general en menos de un segundo, y por defecto la lectura entre regiones es eventualmente consistente.",
+      "refs": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 5.7,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "aws-cloudwatch"
+      ],
+      "near_miss": "aws-cloudtrail",
+      "hint_cue": "se atrasa más de 30 segundos",
+      "explanation": "RDS publica el retraso de la réplica en CloudWatch como la métrica ReplicaLag; una alarma de CloudWatch vigila esa métrica contra un umbral y avisa por SNS al equipo cuando pasa de 30 segundos.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.Monitoring.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/creating_alarms.html",
+        "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 0.15,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "aws-secrets-manager"
+      ],
+      "near_miss": "aws-parameter-store",
+      "hint_cue": "la cambia cada 30 días",
+      "explanation": "Secrets Manager guarda la contraseña fuera del código y la rota con un calendario, por ejemplo rate(30 days). Parameter Store puede apuntar a ese secreto, pero no ofrece rotación automática de los secretos que guarda.",
+      "refs": [
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_parameterstore.html",
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_schedule.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "s5",
+      "to": "n-app-mx",
+      "dir": "forward",
+      "step": 1,
+      "label": "contraseña",
+      "style": "dashed"
+    },
+    {
+      "id": "e2",
+      "from": "n-app-mx",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "pagos",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 4,
+      "label": "reportes",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "n-app-mx",
+      "to": "s3",
+      "dir": "forward",
+      "step": 5,
+      "label": "favoritos",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "n-app-us",
+      "to": "s3",
+      "dir": "forward",
+      "step": 6,
+      "label": "favoritos",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 7,
+      "label": "retraso",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s4",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 8,
+      "label": "aviso",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e9",
+      "from": "n-onprem",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "migración",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda los pagos en MySQL administrado sin sacarlos de México, con una copia en otra zona que toma el control sola si cae la primaria."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} da a los reportes una copia aparte de la primaria del slot 1 para no frenarla, aunque lleve segundos de retraso."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda los favoritos: cada país escribe en milisegundos en su región y ambas aceptan escrituras. La otra región los ve después, porque se prefiere disponibilidad a consistencia."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} avisa al equipo de reportes si la copia del slot 2 se atrasa más de 30 segundos respecto a la primaria."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} guarda la contraseña de la BD fuera del código: la app la pide al arrancar y una rotación programada en el mismo servicio la cambia cada 30 días."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El MySQL del restaurante piloto corre en su propio local; sus pagos se migran al slot 1 antes de abrir a los 2 mil restaurantes."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-rds-multi-az",
+      "why_not": {
+        "s2": "El standby de Multi-AZ recibe la copia síncrona, pero a diferencia de una réplica de lectura no puede atender lecturas."
+      }
+    },
+    {
+      "service": "aws-rds-read-replica",
+      "why_not": {
+        "s1": "La réplica de lectura recibe los cambios en forma asíncrona y eres tú quien la promueve; no reemplaza sola a la primaria."
+      }
+    },
+    {
+      "service": "aws-dynamodb"
+    },
+    {
+      "service": "aws-cloudwatch"
+    },
+    {
+      "service": "aws-secrets-manager"
+    },
+    {
+      "service": "aws-aurora-global",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Aurora Global Database copia los datos a regiones secundarias de solo lectura, y los pagos no deben salir de México.",
+        "s2": "Aurora Global Database copia un clúster de Aurora a otras regiones; no es una copia del MySQL del slot 1.",
+        "s3": "En Aurora Global Database solo el clúster primario realiza las escrituras y las regiones secundarias son de solo lectura: no hay dos regiones que acepten escrituras."
+      }
+    },
+    {
+      "service": "aws-cloudtrail",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "CloudTrail registra como eventos las acciones de usuarios, roles y servicios; el retraso es la métrica ReplicaLag, que RDS publica en CloudWatch, y ahí vive la alarma."
+      }
+    },
+    {
+      "service": "aws-parameter-store",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Parameter Store guarda contraseñas como parámetros, pero no ofrece rotación automática de los secretos que guarda."
+      }
+    },
+    {
+      "service": "aws-alb",
+      "role": "filler"
+    }
+  ],
+  "review_notes": "Tabla del Escenario 6 de ARCHITECTURES.md. Regiones apiladas: México arriba y EE. UU. abajo; el slot 3 queda entre las dos, a nivel de nube. La réplica de lectura (distractor del slot 1) y el standby de HA (distractor del slot 2) son respuestas de otro slot, así que su why_not va en la ficha de respuesta. Sin rotación nativa en Azure, GCP y OCI (E6-5): la explicación dice que la rotación necesita código propio. La ficha de relleno es un balanceador.",
+  "status": "published"
+}

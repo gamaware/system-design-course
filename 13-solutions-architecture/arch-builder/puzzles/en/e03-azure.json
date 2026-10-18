@@ -1,0 +1,78 @@
+{
+  "id": "e03-azure",
+  "title": "Video courses for 300,000 students",
+  "summary": "CursosMX sells recorded courses to 300,000 students in Mexico and Central America. Videos must arrive fast, raw recordings must cost little, and the login receives SQL injection attempts.",
+  "requirements": {
+    "1": "{{s1}} keeps copies of videos and images at points close to each student, so requests do not travel to the region every time.",
+    "2": "{{s2}} is the origin of millions of videos that students watch every day over HTTP, in a single region; you pay per stored GB and there are no servers to manage.",
+    "3": "{{s3}} keeps the raw recordings for 5 years, and they are almost never opened. What matters is the lowest cost per stored GB the region offers, even if reading them later costs more.",
+    "4": "{{s4}} holds the records for cursosmx.com and answers anyone on the internet who asks for that name, so they reach slot 1.",
+    "5": "{{s5}} checks every HTTP request to the login and blocks SQL injection before it reaches the app.",
+    "6": "The app load balancer spreads login and payments across the servers in the region."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Azure Front Door is a CDN on the Microsoft edge network, with points of presence close to users, and it caches content. Traffic Manager only answers through DNS and does not see the traffic.",
+      "hint_cue": "points close to each student"
+    },
+    "s2": {
+      "explanation": "Blob Storage stores massive amounts of unstructured data, is designed for streaming video and is read over HTTP or HTTPS from anywhere. The hot tier is for data accessed frequently.",
+      "hint_cue": "no servers to manage"
+    },
+    "s3": {
+      "explanation": "Mexico Central offers the hot, cool and cold tiers of Blob Storage, but not archive. Of those three, cold has the lowest cost per GB; it has a 90-day minimum and charges more per read, although it answers in milliseconds.",
+      "hint_cue": "the lowest cost per stored GB"
+    },
+    "s4": {
+      "explanation": "Azure Public DNS hosts domains such as cursosmx.com and their records so the internet can resolve them. Azure Private DNS only resolves names inside virtual networks.",
+      "hint_cue": "answers anyone on the internet"
+    },
+    "s5": {
+      "explanation": "The Application Gateway WAF protects against SQL injection; its policy is associated with the Application Gateway and blocks the request without forwarding it to the back end. DDoS Protection covers layers 3 and 4.",
+      "hint_cue": "blocks SQL injection"
+    }
+  },
+  "nodes": {
+    "n-users": "Students",
+    "n-internet": "Internet",
+    "n-team": "Production team",
+    "n-lb": "App load balancer",
+    "n-app": "Login and payment servers"
+  },
+  "edges": {
+    "e1": "cursosmx.com",
+    "e2": "cursosmx.com?",
+    "e3": "HTTPS",
+    "e4": "missing video",
+    "e5": "login and payments",
+    "e6": "associated policy",
+    "e7": "spreads",
+    "e8": "raw recordings"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription",
+    "g-edge": "Entry from the internet",
+    "g-region": "Region Mexico Central",
+    "g-net": "VNet 10.0.0.0/16"
+  },
+  "why_not": {
+    "azure-traffic-manager": {
+      "s1": "Traffic Manager works at the DNS level: the student connects directly to the chosen endpoint, and Traffic Manager is not a proxy and does not see the traffic, so it keeps no copies.",
+      "s4": "Traffic Manager only picks an endpoint; the records for cursosmx.com live in the service that hosts the domain, which points to it with a CNAME."
+    },
+    "azure-managed-disks": {
+      "s2": "A managed disk is a block storage volume used with Azure virtual machines; the video origin must serve over HTTP with no servers to manage.",
+      "s3": "A managed disk is a block storage volume for virtual machines, not one of the Blob Storage access tiers."
+    },
+    "azure-blob-cool": {
+      "s3": "The cool tier costs less per GB than hot, but more than cold; Microsoft places it for data read rarely and cold for data almost never read.",
+      "s2": "The cool tier is for data that is rarely read or changed and charges for every GB read; the videos are watched every day."
+    },
+    "azure-private-dns": {
+      "s4": "Azure Private DNS manages and resolves names inside the virtual network; students on the internet do not get its answers."
+    },
+    "azure-ddos-protection": {
+      "s5": "DDoS Protection works at layers 3 and 4; protecting a web application at layer 7 needs another piece."
+    }
+  }
+}

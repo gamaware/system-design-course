@@ -1,0 +1,605 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e01-azure",
+  "version": 1,
+  "scenario": "e01",
+  "cloud": "azure",
+  "title": "Red privada con salida controlada",
+  "summary": "40 preparatorias de Jalisco publican calificaciones en un portal. La Secretaría exige que ni los servidores ni la base de datos se puedan alcanzar desde internet.",
+  "topics": [
+    "redes privadas",
+    "salida a internet",
+    "filtrado de salida",
+    "reglas con estado",
+    "acceso administrativo",
+    "registros de tráfico"
+  ],
+  "source_refs": [
+    {
+      "title": "¿Qué es Azure NAT Gateway?",
+      "url": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"
+    },
+    {
+      "title": "Características de Azure Firewall",
+      "url": "https://learn.microsoft.com/en-us/azure/firewall/features"
+    },
+    {
+      "title": "Grupos de seguridad de red (NSG)",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+    },
+    {
+      "title": "¿Qué es Azure Bastion?",
+      "url": "https://learn.microsoft.com/en-us/azure/bastion/bastion-overview"
+    },
+    {
+      "title": "Azure Storage: private endpoints",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"
+    },
+    {
+      "title": "Flow logs de red virtual",
+      "url": "https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview"
+    },
+    {
+      "title": "Application security groups",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+    },
+    {
+      "title": "Conexiones VPN punto a sitio",
+      "url": "https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-about"
+    },
+    {
+      "title": "Peering de redes virtuales",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+    },
+    {
+      "title": "Registro de actividad de Azure Monitor",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/activity-log"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 6.2
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.0,
+        "h": 6.18
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "azure-region",
+      "label": "Región Mexico Central",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 5.88,
+        "h": 5.9
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 5.55,
+        "h": 4.53
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "azure-zone",
+      "label": "Zona de disp. 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.48,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "azure-zone",
+      "label": "Zona de disp. 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.65,
+        "r": 0.66,
+        "w": 1.62,
+        "h": 4.25
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "azure-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-app",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.14,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-db",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 3.6,
+        "w": 3.14,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-students",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-admin",
+      "icon": "gen-team",
+      "label": "Administrador",
+      "number": null,
+      "cell": {
+        "c": 0.46,
+        "r": 5.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-bank",
+      "icon": "gen-internet",
+      "label": "Banco",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-sat",
+      "icon": "gen-internet",
+      "label": "SAT",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 2.5
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "azure-app-gateway",
+      "label": "Balanceador",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 1.15
+      },
+      "group": "g-pub"
+    },
+    {
+      "id": "n-app",
+      "icon": "azure-vm",
+      "label": "Servidores de la app",
+      "number": null,
+      "cell": {
+        "c": 3.33,
+        "r": 2.5
+      },
+      "group": "g-app"
+    },
+    {
+      "id": "n-db",
+      "icon": "azure-mysql",
+      "label": "BD de calificaciones",
+      "number": 7,
+      "cell": {
+        "c": 3.33,
+        "r": 3.85
+      },
+      "group": "g-db"
+    },
+    {
+      "id": "n-storage",
+      "icon": "azure-storage-account",
+      "label": "Almacenamiento de objetos",
+      "number": null,
+      "cell": {
+        "c": 6.6,
+        "r": 5.15
+      },
+      "group": "g-region"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 6.6,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "azure-nat-gateway"
+      ],
+      "near_miss": "azure-public-ip",
+      "hint_cue": "nadie de afuera puede abrirles una conexión",
+      "explanation": "Azure NAT Gateway da salida a internet a las VM privadas y no permite conexiones de entrada no solicitadas: solo pasan los paquetes que responden a una conexión de salida.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 5.45,
+        "r": 2.5
+      },
+      "group": "g-net",
+      "accept": [
+        "azure-firewall"
+      ],
+      "near_miss": null,
+      "hint_cue": "solo deja llegar a los dominios",
+      "explanation": "Azure Firewall es un firewall con estado y reglas centrales que puede limitar el tráfico HTTP/S de salida a una lista de FQDN, como los dominios del SAT, del banco y de los parches.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/firewall/features",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.28,
+        "r": 3.85
+      },
+      "group": "g-db",
+      "accept": [
+        "azure-nsg"
+      ],
+      "near_miss": "azure-asg",
+      "hint_cue": "se asocia a la subred de la BD",
+      "explanation": "Un NSG se asocia a la subred y sus reglas permiten o niegan tráfico; con el application security group de los servidores como origen, solo ellos entran al 3306. Guarda el estado de cada flujo, así que la respuesta pasa sin otra regla.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.2,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-bastion"
+      ],
+      "near_miss": "azure-vpn-gateway",
+      "hint_cue": "sin abrir el puerto 22 a internet",
+      "explanation": "Azure Bastion da RDP y SSH por TLS desde el portal a VM sin IP pública, las protege de escaneos de puertos y, con el SKU Premium, graba las sesiones.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/bastion/bastion-overview",
+        "https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-about"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.6,
+        "r": 3.85
+      },
+      "group": "g-net",
+      "accept": [
+        "azure-private-endpoint"
+      ],
+      "near_miss": "azure-vnet-peering",
+      "hint_cue": "sin salir a internet ni pasar por el slot 1",
+      "explanation": "El private endpoint le da a la cuenta de almacenamiento una IP privada de la VNet; el tráfico va por Private Link en la red troncal de Microsoft, sin exponerse a internet.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 3.33,
+        "r": 5.15
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-vnet-flow-logs"
+      ],
+      "near_miss": "azure-activity-log",
+      "hint_cue": "el origen, el destino y el puerto",
+      "explanation": "Los flow logs de red virtual registran el tráfico IP de la VNet: IP y puerto de origen y destino, protocolo y si el flujo se permitió o se negó.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview",
+        "https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/activity-log"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-students",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "consulta",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "n-app",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "MySQL 3306",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "n-app",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "boletas PDF",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-storage",
+      "dir": "forward",
+      "step": 6,
+      "label": "red privada",
+      "style": "solid"
+    },
+    {
+      "id": "e7",
+      "from": "n-app",
+      "to": "s2",
+      "dir": "forward",
+      "step": 7,
+      "label": "parches, SAT y banco",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 8,
+      "label": "dominios permitidos",
+      "style": "solid"
+    },
+    {
+      "id": "e9",
+      "from": "s1",
+      "to": "n-sat",
+      "dir": "forward",
+      "step": 9,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "n-bank",
+      "dir": "forward",
+      "step": 10,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e11",
+      "from": "n-admin",
+      "to": "s4",
+      "dir": "forward",
+      "step": null,
+      "label": "terminal",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s4",
+      "to": "n-app",
+      "dir": "forward",
+      "step": null,
+      "label": "sesión",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e13",
+      "from": "s3",
+      "to": "n-db",
+      "dir": "forward",
+      "step": null,
+      "label": "solo la app",
+      "style": "dashed"
+    },
+    {
+      "id": "e14",
+      "from": "n-db",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "tráfico",
+      "style": "dotted"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} deja que los servidores privados descarguen parches de internet, pero nadie de afuera puede abrirles una conexión."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "Todo el tráfico web de salida pasa por {{s2}}, un intermediario que solo deja llegar a los dominios del SAT, del banco y del repositorio de parches."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} se asocia a la subred de la BD y sus reglas solo dejan entrar por el puerto 3306 a los servidores de la app; la respuesta regresa sola, sin otra regla."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} da a los administradores una terminal en servidores sin IP pública, sin abrir el puerto 22 a internet, y deja registro de cada sesión."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} lleva las boletas PDF de los servidores al almacenamiento de objetos sin salir a internet ni pasar por el slot 1."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} guarda el origen, el destino y el puerto del tráfico de red de los servidores para investigar un escaneo."
+    },
+    {
+      "n": 7,
+      "slot": null,
+      "text": "La base de datos de calificaciones escucha en el puerto 3306 y vive en una subred privada, sin IP pública."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-nat-gateway"
+    },
+    {
+      "service": "azure-firewall"
+    },
+    {
+      "service": "azure-nsg",
+      "why_not": {
+        "s2": "Las reglas de un NSG usan direcciones IP, rangos CIDR, etiquetas de servicio o application security groups; no pueden limitar la salida a nombres de dominio."
+      }
+    },
+    {
+      "service": "azure-bastion"
+    },
+    {
+      "service": "azure-private-endpoint"
+    },
+    {
+      "service": "azure-vnet-flow-logs"
+    },
+    {
+      "service": "azure-public-ip",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Una IP pública en la VM es otra forma de salida, pero le da a la VM una dirección en internet. Además, NAT Gateway tiene prioridad sobre las IP públicas de las instancias."
+      }
+    },
+    {
+      "service": "azure-asg",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Un application security group solo agrupa las interfaces de red de las VM; las reglas que permiten o niegan el tráfico viven en el NSG asociado a la subred, que usa el grupo como origen o destino."
+      }
+    },
+    {
+      "service": "azure-vpn-gateway",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una VPN punto a sitio crea una conexión segura de una computadora a la red virtual; no es la conexión RDP o SSH por TLS hacia cada VM que da Bastion, que con el SKU Premium graba cada sesión."
+      }
+    },
+    {
+      "service": "azure-vnet-peering",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "El peering conecta dos o más redes virtuales para que sus recursos se comuniquen; la IP privada de la VNet para la cuenta de almacenamiento la da el private endpoint."
+      }
+    },
+    {
+      "service": "azure-activity-log",
+      "role": "near-miss",
+      "why_not": {
+        "s6": "El registro de actividad guarda operaciones de administración sobre los recursos, como crear una VM o cambiar una política de acceso; el origen, el destino y el puerto de cada flujo los registran los flow logs de red virtual."
+      }
+    }
+  ],
+  "review_notes": "Escenario 1 de ARCHITECTURES.md. Azure no tiene internet gateway como recurso; el distractor del slot 1 es la IP pública en la VM. El slot 2 no tiene near-miss propio: la confusión es con el NSG, que es la respuesta del slot 3 y lleva why_not para s2. El requisito 3 pide asociarse a la subred de la BD y no menciona la subred de los servidores: así el application security group, que solo agrupa VM, no es segunda respuesta. Simplificación: Azure Bastion se despliega dentro de la VNet (AzureBastionSubnet); aquí se dibuja a nivel de región para compartir la topología.",
+  "status": "published"
+}

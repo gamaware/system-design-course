@@ -1,0 +1,77 @@
+{
+  "id": "e02-azure",
+  "title": "A store that survives Buen Fin",
+  "summary": "An artisan cooperative from Tlaquepaque gets ten times its usual traffic during Buen Fin. The store must grow on its own and keep selling if a zone fails.",
+  "requirements": {
+    "1": "{{s1}} is each individual server: it has its own operating system the team patches, its inventory agent installed, and runs all day.",
+    "2": "{{s2}} keeps 2 to 20 copies across both zones, adds or removes them with the load and replaces the ones that fail.",
+    "3": "{{s3}} receives and decrypts HTTPS, sends /api to one group and /tienda to another, and only forwards to healthy servers.",
+    "4": "{{s4}} obtains from a partner issuing authority, and automatically renews, what slot 3 presents to the browser to prove it is tienda.mx.",
+    "5": "{{s5}} records CPU every minute and alerts the on-call team if it stays above 80 % for 5 minutes.",
+    "6": "The managed database stores orders and inventory, and only the slot 1 servers query it."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Each Azure Virtual Machines VM is one server that the team configures, patches and installs software on; the slot 2 scale set is the group that creates and manages those VMs.",
+      "hint_cue": "operating system the team patches"
+    },
+    "s2": {
+      "explanation": "Virtual Machine Scale Sets creates identical VMs spread across zones, autoscale sets their number between a minimum and a maximum with the load, and failed VMs are replaced. An availability set only spreads VMs and does not scale.",
+      "hint_cue": "replaces the ones that fail"
+    },
+    "s3": {
+      "explanation": "Application Gateway v2 terminates TLS, sends /api and /tienda to different backend pools with path rules and stops sending to backends that fail their health probe. Azure Load Balancer works at layer 4 and does not read the URL.",
+      "hint_cue": "sends /api to one group and /tienda to another"
+    },
+    "s4": {
+      "explanation": "Key Vault stores the tienda.mx certificate, requests it from a partner CA (DigiCert or GlobalSign) and renews it automatically; Application Gateway v2 checks for a new version every four hours. Managed HSM does not support certificates.",
+      "hint_cue": "presents to the browser to prove it is tienda.mx"
+    },
+    "s5": {
+      "explanation": "An Azure Monitor metric alert checks CPU every minute and fires its action group when the average stays above 80 % for 5 minutes. Azure Advisor only gives periodic recommendations.",
+      "hint_cue": "alerts the on-call team"
+    }
+  },
+  "nodes": {
+    "n-users": "Shoppers",
+    "n-internet": "Internet",
+    "n-db": "Managed database",
+    "n-team": "On-call team"
+  },
+  "edges": {
+    "e1": "buys at tienda.mx",
+    "e2": "HTTPS",
+    "e3": "/api and /tienda",
+    "e4": "queries",
+    "e5": "TLS for tienda.mx",
+    "e6": "adds and replaces",
+    "e7": "CPU every minute",
+    "e8": "alert"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription",
+    "g-region": "Mexico Central region",
+    "g-net": "VNet 10.0.0.0/16",
+    "g-zone-a": "Availability zone 1",
+    "g-zone-b": "Availability zone 2",
+    "g-pub": "Public subnet",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "azure-functions": {
+      "s1": "Azure Functions is a serverless solution that runs code from event-driven triggers: instead of deploying and maintaining servers, the team writes only the code and Azure handles the rest."
+    },
+    "azure-availability-set": {
+      "s2": "An availability set spreads VMs across fault and update domains, but it does not add or remove VMs with the load."
+    },
+    "azure-load-balancer": {
+      "s3": "Azure Load Balancer works at layer 4: it spreads TCP and UDP flows but does not decrypt HTTPS or read the URL."
+    },
+    "azure-managed-hsm": {
+      "s4": "Managed HSM stores keys in a dedicated HSM, but it does not support certificates, which is what Application Gateway presents over HTTPS."
+    },
+    "azure-advisor": {
+      "s5": "Azure Advisor analyzes the configuration and gives periodic recommendations; it does not watch CPU minute by minute or alert the on-call team."
+    }
+  }
+}

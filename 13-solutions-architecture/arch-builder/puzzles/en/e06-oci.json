@@ -1,0 +1,85 @@
+{
+  "id": "e06-oci",
+  "title": "Reservations in two countries",
+  "summary": "MesaLista books tables at 2,000 restaurants in Mexico and Texas. Payments need transactions and favorites are written in both countries.",
+  "requirements": {
+    "1": "{{s1}} keeps payments in managed MySQL without leaving Mexico, with a copy in another fault domain that takes over on its own if the primary fails.",
+    "2": "{{s2}} gives reporting a separate copy of the slot 1 primary so it does not slow it down, even if the copy runs a few seconds behind.",
+    "3": "{{s3}} stores favorites: each country writes in milliseconds to its own region and both accept writes. The other region sees them later, because availability is preferred over consistency.",
+    "4": "{{s4}} alerts the reporting team if the slot 2 copy falls more than 30 seconds behind the primary.",
+    "5": "{{s5}} keeps the database password out of the code: the app requests it at startup and a rotation scheduled every 30 days, with your own function as the target, changes it.",
+    "6": "The pilot restaurant's MySQL runs on its own premises; its payments are migrated to slot 1 before opening to all 2,000 restaurants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "MySQL HeatWave with HA places the secondaries in other fault domains when the region has a single AD and, if the primary fails, promotes a secondary on its own with no data loss. Only the primary gives read and write access.",
+      "hint_cue": "takes over on its own"
+    },
+    "s2": {
+      "explanation": "HeatWave read replicas are read-only copies updated asynchronously that scale out reads; they can lag behind the primary, and that is measured by their lag metric.",
+      "hint_cue": "a separate copy"
+    },
+    "s3": {
+      "explanation": "With Global Active Tables every region serves reads and writes with single-digit millisecond latency; replication between regions is asynchronous and replicated data is read with eventual consistency.",
+      "hint_cue": "both accept writes"
+    },
+    "s4": {
+      "explanation": "The HeatWave read replica guide measures the lag with the read replica lag metric and lets you create alarms on it; the Monitoring alarm notifies the team when the metric goes over 30 seconds.",
+      "hint_cue": "falls more than 30 seconds behind"
+    },
+    "s5": {
+      "explanation": "OCI Vault stores the password as a secret and can rotate it on its own, for example every 30 days (P30D), when the target is Autonomous AI Database or a function. For MySQL, rotation needs that function of your own.",
+      "hint_cue": "with your own function as the target"
+    }
+  },
+  "nodes": {
+    "n-onprem": "Pilot restaurant MySQL",
+    "n-reports": "Reporting team",
+    "n-app-mx": "App servers",
+    "n-app-us": "App servers"
+  },
+  "edges": {
+    "e1": "password",
+    "e2": "payments",
+    "e3": "copy",
+    "e4": "reports",
+    "e5": "favorites",
+    "e6": "favorites",
+    "e7": "lag",
+    "e8": "alert",
+    "e9": "migration"
+  },
+  "groups": {
+    "g-rest": "Pilot restaurant",
+    "g-cloud": "Oracle Cloud · mesalista compartment",
+    "g-region-mx": "Region Querétaro (single AD)",
+    "g-vpc-mx": "VCN 10.0.0.0/16",
+    "g-zone-mx-a": "Fault domain 1",
+    "g-zone-mx-b": "Fault domain 2",
+    "g-priv-mx": "Private subnet",
+    "g-region-us": "Region San Jose (single AD)",
+    "g-vpc-us": "VCN 10.1.0.0/16",
+    "g-zone-us-a": "Fault domain 1",
+    "g-zone-us-b": "Fault domain 2",
+    "g-priv-us": "Private subnet"
+  },
+  "why_not": {
+    "oci-mysql-ha": {
+      "s2": "In HA only the primary gives read and write access; the secondaries do not serve the reports."
+    },
+    "oci-mysql-read-replica": {
+      "s1": "A read replica is a read-only copy updated asynchronously to scale out reads; the one that takes the primary's place is an HA secondary."
+    },
+    "oci-autonomous-db": {
+      "s1": "Autonomous AI Database is not a MySQL system: Data Guard creates a standby updated with the primary's changes, but the payments need managed MySQL.",
+      "s2": "Autonomous AI Database with Data Guard is a different database; it is not a copy of the slot 1 MySQL.",
+      "s3": "With Autonomous Data Guard the standby is continuously updated with the primary's changes: writes come through the primary, not through both regions."
+    },
+    "oci-audit": {
+      "s4": "Audit records calls to the OCI public APIs as log events; the replica lag is a metric, and alarms on metrics belong to Monitoring."
+    },
+    "oci-object-storage": {
+      "s5": "Object Storage stores objects inside buckets; the scheduled rotation with an interval and a target system described in the OCI Vault guide is an option of Vault secrets."
+    }
+  }
+}

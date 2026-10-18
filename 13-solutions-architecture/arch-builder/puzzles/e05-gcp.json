@@ -1,0 +1,502 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e05-gcp",
+  "version": 1,
+  "scenario": "e05",
+  "cloud": "gcp",
+  "title": "Pagos de becas",
+  "summary": "BecaPay deposita apoyos a 15 mil universitarios por una app. El auditor exige un login estándar, llaves propias y un rastro de cada cambio.",
+  "topics": [
+    "OAuth 2.0 y OIDC",
+    "tokens JWT",
+    "llaves de cifrado",
+    "detección de amenazas",
+    "auditoría"
+  ],
+  "source_refs": [
+    {
+      "title": "Identity Platform: conceptos",
+      "url": "https://docs.cloud.google.com/identity-platform/docs/concepts"
+    },
+    {
+      "title": "API Gateway: autenticación de usuarios con JWT",
+      "url": "https://docs.cloud.google.com/api-gateway/docs/authenticating-users-jwt"
+    },
+    {
+      "title": "Cloud KMS: rotación de llaves",
+      "url": "https://docs.cloud.google.com/kms/docs/key-rotation"
+    },
+    {
+      "title": "Security Command Center: Event Threat Detection",
+      "url": "https://docs.cloud.google.com/security-command-center/docs/concepts-event-threat-detection-overview"
+    },
+    {
+      "title": "Cloud Audit Logs: información general",
+      "url": "https://docs.cloud.google.com/logging/docs/audit"
+    },
+    {
+      "title": "Identity Platform: uso de la API REST",
+      "url": "https://docs.cloud.google.com/identity-platform/docs/use-rest-api"
+    },
+    {
+      "title": "Información general de IAM",
+      "url": "https://docs.cloud.google.com/iam/docs/overview"
+    },
+    {
+      "title": "Balanceador de red de paso externo",
+      "url": "https://docs.cloud.google.com/load-balancing/docs/passthrough-network-load-balancer"
+    },
+    {
+      "title": "Cloud KMS: registros de auditoría",
+      "url": "https://docs.cloud.google.com/kms/docs/audit-logging"
+    },
+    {
+      "title": "Secret Manager: información general",
+      "url": "https://docs.cloud.google.com/secret-manager/docs/overview"
+    },
+    {
+      "title": "Artifact Analysis: análisis de contenedores",
+      "url": "https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview"
+    },
+    {
+      "title": "Cloud Audit Logs: tipo AuditLog",
+      "url": "https://docs.cloud.google.com/logging/docs/reference/audit/auditlog/rest/Shared.Types/AuditLog"
+    },
+    {
+      "title": "Registros de flujo de VPC",
+      "url": "https://docs.cloud.google.com/vpc/docs/flow-logs"
+    },
+    {
+      "title": "Apigee: política VerifyJWT",
+      "url": "https://docs.cloud.google.com/apigee/docs/api-platform/reference/policies/verify-jwt-policy"
+    },
+    {
+      "title": "Ubicaciones de Apigee",
+      "url": "https://docs.cloud.google.com/apigee/docs/locations"
+    },
+    {
+      "title": "Modelo de despliegue de API Gateway",
+      "url": "https://docs.cloud.google.com/api-gateway/docs/deployment-model"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto becapay",
+      "parent": null,
+      "cell": {
+        "c": 1.0,
+        "r": 0,
+        "w": 6.94,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.06,
+        "r": 0.22,
+        "w": 6.82,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region",
+      "cell": {
+        "c": 3.55,
+        "r": 0.5,
+        "w": 3.05,
+        "h": 3.0
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.61,
+        "r": 0.72,
+        "w": 1.45,
+        "h": 2.72
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-net",
+      "cell": {
+        "c": 5.09,
+        "r": 0.72,
+        "w": 1.45,
+        "h": 2.72
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 3.61,
+        "r": 0.96,
+        "w": 2.93,
+        "h": 2.48
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-app",
+      "icon": "gen-users",
+      "label": "App de alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.5
+      },
+      "group": null
+    },
+    {
+      "id": "n-pay",
+      "icon": "gcp-compute-engine",
+      "label": "Servicio de pagos",
+      "number": 6,
+      "cell": {
+        "c": 3.85,
+        "r": 1.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-db",
+      "icon": "gcp-cloud-sql",
+      "label": "BD de becas",
+      "number": 7,
+      "cell": {
+        "c": 5.3,
+        "r": 1.5
+      },
+      "group": "g-priv"
+    },
+    {
+      "id": "n-sec",
+      "icon": "gen-team",
+      "label": "Equipo de seguridad",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 2.3
+      },
+      "group": null
+    },
+    {
+      "id": "n-aud",
+      "icon": "gen-team",
+      "label": "Auditor",
+      "number": null,
+      "cell": {
+        "c": 8,
+        "r": 3.6
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 1.25,
+        "r": 1.5
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-identity-platform"
+      ],
+      "near_miss": "gcp-iam",
+      "hint_cue": "con su cuenta de Google",
+      "explanation": "Identity Platform agrega el inicio de sesión con correo o con Google y emite un token de ID que caduca; con el token de actualización, la app pide un token de ID nuevo.",
+      "refs": [
+        "https://docs.cloud.google.com/identity-platform/docs/concepts",
+        "https://docs.cloud.google.com/identity-platform/docs/use-rest-api",
+        "https://docs.cloud.google.com/iam/docs/overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 2.5,
+        "r": 1.5
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-apigee"
+      ],
+      "near_miss": "gcp-passthrough-nlb",
+      "hint_cue": "token inválido, caducado o de otro emisor",
+      "explanation": "La política VerifyJWT de Apigee revisa la firma del JWT con la llave pública o un JWKS, la caducidad y, si se configura, el emisor y la audiencia; si algo falla, detiene el proceso y responde con error. Apigee corre en northamerica-south1.",
+      "refs": [
+        "https://docs.cloud.google.com/api-gateway/docs/authenticating-users-jwt",
+        "https://docs.cloud.google.com/load-balancing/docs/passthrough-network-load-balancer",
+        "https://docs.cloud.google.com/apigee/docs/api-platform/reference/policies/verify-jwt-policy",
+        "https://docs.cloud.google.com/apigee/docs/locations",
+        "https://docs.cloud.google.com/api-gateway/docs/deployment-model"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 6.75,
+        "r": 0.5
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-cloud-kms"
+      ],
+      "near_miss": "gcp-secret-manager",
+      "hint_cue": "llaves de la empresa que rotan cada año",
+      "explanation": "Cloud KMS rota las llaves de forma automática con un calendario que define el equipo, y cada Encrypt o Decrypt queda en los registros de auditoría de acceso a datos cuando estos se activan.",
+      "refs": [
+        "https://docs.cloud.google.com/kms/docs/key-rotation",
+        "https://docs.cloud.google.com/kms/docs/audit-logging",
+        "https://docs.cloud.google.com/logging/docs/audit",
+        "https://docs.cloud.google.com/secret-manager/docs/overview"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.75,
+        "r": 2.3
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-security-command-center"
+      ],
+      "near_miss": "gcp-artifact-analysis",
+      "hint_cue": "IP sospechosa",
+      "explanation": "Event Threat Detection, del nivel Premium de Security Command Center, revisa los registros y crea hallazgos, por ejemplo cuando alguien modifica servicios desde una IP asociada a la red Tor.",
+      "refs": [
+        "https://docs.cloud.google.com/security-command-center/docs/concepts-event-threat-detection-overview",
+        "https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.75,
+        "r": 3.6
+      },
+      "group": "g-region",
+      "accept": [
+        "gcp-cloud-audit-logs"
+      ],
+      "near_miss": "gcp-vpc-flow-logs",
+      "hint_cue": "quién cambió una regla de firewall",
+      "explanation": "Cloud Audit Logs responde quién hizo qué, dónde y cuándo: los registros de Admin Activity se escriben siempre que alguien cambia la configuración y guardan la IP de quien llama.",
+      "refs": [
+        "https://docs.cloud.google.com/logging/docs/audit",
+        "https://docs.cloud.google.com/logging/docs/reference/audit/auditlog/rest/Shared.Types/AuditLog",
+        "https://docs.cloud.google.com/vpc/docs/flow-logs"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-app",
+      "to": "s1",
+      "dir": "forward",
+      "step": 1,
+      "label": "login",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 2,
+      "label": "token",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s2",
+      "to": "n-pay",
+      "dir": "forward",
+      "step": 3,
+      "label": "/pagos",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "n-pay",
+      "to": "n-db",
+      "dir": "forward",
+      "step": 4,
+      "label": "consultas",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s3",
+      "to": "n-db",
+      "dir": "forward",
+      "step": null,
+      "label": "llaves de cifrado",
+      "style": "dashed",
+      "route": "v-first"
+    },
+    {
+      "id": "e6",
+      "from": "n-pay",
+      "to": "s4",
+      "dir": "forward",
+      "step": 5,
+      "label": "actividad",
+      "style": "dotted",
+      "route": "points",
+      "points": [
+        {
+          "c": 4.35,
+          "r": 2.64
+        }
+      ]
+    },
+    {
+      "id": "e7",
+      "from": "s4",
+      "to": "n-sec",
+      "dir": "forward",
+      "step": 6,
+      "label": "alerta",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "s5",
+      "to": "n-aud",
+      "dir": "forward",
+      "step": null,
+      "label": "rastro",
+      "style": "solid"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} deja que los alumnos entren con correo o con su cuenta de Google, y la app recibe tokens OAuth 2.0 / OIDC que caducan y se renuevan con un token de actualización."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} corre en la región de México y rechaza cualquier llamada a /pagos con un token inválido, caducado o de otro emisor antes de que llegue al servicio."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} cifra la BD y los respaldos con llaves de la empresa que rotan cada año, y cada uso de esas llaves se puede registrar."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} alerta si alguien opera los recursos de la nube desde una IP sospechosa."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} le muestra al auditor quién cambió una regla de firewall o borró un recurso, cuándo y desde dónde."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El servicio de pagos corre en la subred privada y solo recibe las llamadas que ya validó el slot 2."
+    },
+    {
+      "n": 7,
+      "slot": null,
+      "text": "La base de datos guarda las cuentas de los becarios y sus depósitos, cifrados con las llaves del slot 3."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-identity-platform"
+    },
+    {
+      "service": "gcp-apigee"
+    },
+    {
+      "service": "gcp-cloud-kms"
+    },
+    {
+      "service": "gcp-security-command-center"
+    },
+    {
+      "service": "gcp-cloud-audit-logs"
+    },
+    {
+      "service": "gcp-iam",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "IAM de Google Cloud controla quién puede hacer qué sobre cuáles recursos; no da registro ni inicio de sesión a los alumnos de la app."
+      }
+    },
+    {
+      "service": "gcp-passthrough-nlb",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "El balanceador de red de paso es de capa 4 y no es un proxy: pasa las conexiones tal cual, sin validar el token."
+      }
+    },
+    {
+      "service": "gcp-secret-manager",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Secret Manager guarda datos sensibles como llaves de API, contraseñas y certificados; no es el servicio que crea y rota las llaves de cifrado de la BD."
+      }
+    },
+    {
+      "service": "gcp-artifact-analysis",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Artifact Analysis busca vulnerabilidades y paquetes maliciosos en los artefactos de Artifact Registry; no alerta por cambios hechos desde una IP sospechosa."
+      }
+    },
+    {
+      "service": "gcp-vpc-flow-logs",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Los registros de flujo de VPC toman muestras de los paquetes que envían y reciben las VM; no dicen quién cambió una regla de firewall ni quién borró un recurso."
+      }
+    },
+    {
+      "service": "gcp-api-gateway",
+      "role": "distractor",
+      "why_not": {
+        "s2": "API Gateway valida JWT, pero sus gateways solo se despliegan en 10 regiones y ninguna es northamerica-south1, la región de México donde corre el servicio de pagos."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 5 de ARCHITECTURES.md, con los ajustes de la revisión a ciegas: el token sin duración fija (el de ID de Identity Platform no se configura), el registro de cada uso de la llave como opción (los registros de acceso a datos vienen apagados) y la amenaza del slot 4 como operación desde una IP sospechosa. Event Threat Detection requiere el nivel Premium de Security Command Center. Iconos de categoría salvo Security Command Center, que tiene icono propio. Revisión final: API Gateway de Google Cloud no se despliega en northamerica-south1 (su página de modelo de despliegue lista 10 regiones); el slot 2 pasa a Apigee, cuyo runtime está en northamerica-south1 y valida el JWT con la política VerifyJWT. API Gateway queda como distractor y el requisito 2 dice que la pieza corre en la región de México.",
+  "status": "published"
+}

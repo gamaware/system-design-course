@@ -1,0 +1,73 @@
+{
+  "id": "e04-aws",
+  "title": "An animation studio that renders at night",
+  "summary": "A Guadalajara studio renders a short film overnight on 200 VMs that read the same scenes. The artists work from their office and no scene can be lost.",
+  "requirements": {
+    "1": "{{s1}} holds the project folder that hundreds of Linux servers mount at the same time over NFS, available in both zones.",
+    "2": "{{s2}} keeps last night's version of the project folder, so a scene someone deletes by mistake can be recovered.",
+    "3": "{{s3}} stores the finished frames for years; they are read over HTTP and survive the loss of an entire zone.",
+    "4": "{{s4}} provides the render nodes: they can shut down with seconds or minutes of notice because the job resumes, and the lowest price with no commitment matters.",
+    "5": "{{s5}} joins the office to the cloud network today, encrypted, over the internet it already has.",
+    "6": "The artists work at the studio office in Guadalajara and upload their scenes from there."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Amazon EFS is Regional: it has a mount target in each zone and many NFS clients use it at the same time. EBS Multi-Attach only works with io1 and io2 and up to 16 instances in the same zone.",
+      "hint_cue": "mount at the same time over NFS"
+    },
+    "s2": {
+      "explanation": "AWS Backup backs up the file system every day with its default plan and allows an item-level restore, so only the deleted folder comes back. Replication only keeps the copy synchronized with the source.",
+      "hint_cue": "last night's version"
+    },
+    "s3": {
+      "explanation": "S3 Standard stores objects across at least three zones and is designed to keep them even if an entire zone is lost. S3 One Zone-IA stores them in a single zone.",
+      "hint_cue": "survive the loss of an entire zone"
+    },
+    "s4": {
+      "explanation": "A Spot Instance uses spare EC2 capacity for less than the On-Demand price and gets a notice two minutes before EC2 interrupts it. Savings Plans lowers the price only in exchange for committing to usage for one or three years.",
+      "hint_cue": "seconds or minutes of notice"
+    },
+    "s5": {
+      "explanation": "Site-to-Site VPN connects the office network to the VPC through two encrypted IPsec tunnels, and a site-to-site VPN can run over the internet. Direct Connect uses a dedicated fiber cable and bypasses internet service providers.",
+      "hint_cue": "over the internet it already has"
+    }
+  },
+  "nodes": {
+    "n-artists": "Artists"
+  },
+  "edges": {
+    "e1": "its internet",
+    "e2": "uploads scenes",
+    "e3": "reads scenes over NFS",
+    "e4": "finished frames",
+    "e5": "nightly copy"
+  },
+  "groups": {
+    "g-office": "Office in GDL",
+    "g-cloud": "AWS Cloud",
+    "g-region": "Region mx-central-1",
+    "g-net": "VPC 10.0.0.0/16",
+    "g-zone-a": "Availability Zone A",
+    "g-zone-b": "Availability Zone B",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "aws-ebs": {
+      "s1": "An EBS volume with Multi-Attach connects to at most 16 instances in the same zone, and common file systems cannot handle several servers at once.",
+      "s3": "An EBS volume attaches to instances in a single zone; it does not serve the frames over HTTP or survive the loss of that zone."
+    },
+    "aws-efs-replication": {
+      "s2": "Replication keeps the destination copy synchronized with the source, so it reflects the folder's current state, not last night's version.",
+      "s1": "Replication copies a file system that already exists; on its own it is not the folder the servers mount."
+    },
+    "aws-s3-one-zone-ia": {
+      "s3": "S3 One Zone-IA stores objects in a single Availability Zone, so it is not designed to survive the loss of that zone."
+    },
+    "aws-savings-plans": {
+      "s4": "Savings Plans lowers the price in exchange for committing to hourly usage for one or three years, and the requirement asks for no commitment."
+    },
+    "aws-direct-connect": {
+      "s5": "Direct Connect links the network to a Direct Connect location over an Ethernet fiber cable and bypasses internet service providers: it does not use the internet the office already has."
+    }
+  }
+}

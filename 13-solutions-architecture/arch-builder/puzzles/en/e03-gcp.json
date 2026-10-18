@@ -1,0 +1,79 @@
+{
+  "id": "e03-gcp",
+  "title": "Video courses for 300,000 students",
+  "summary": "CursosMX sells recorded courses to 300,000 students in Mexico and Central America. Videos must arrive fast, raw recordings must cost little, and the login receives SQL injection attempts.",
+  "requirements": {
+    "1": "{{s1}} keeps copies of videos and images at points close to each student, so requests do not travel to the region every time.",
+    "2": "{{s2}} is the origin of millions of videos that students watch every day over HTTP; the data stays in a single region in Mexico and there are no servers to manage.",
+    "3": "{{s3}} keeps the raw recordings for 5 years, and they are almost never opened. What matters is the lowest cost per stored GB, even if reading them later costs more or takes longer.",
+    "4": "{{s4}} holds the records for cursosmx.com and answers anyone on the internet who asks for that name, so they reach slot 1.",
+    "5": "{{s5}} checks every HTTP request to the login and blocks SQL injection before it reaches the app.",
+    "6": "The app load balancer spreads login and payments across the servers in the region."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Cloud CDN uses the Google global edge network to serve content closer to users; it works with the global external Application Load Balancer. A dual-region bucket only replicates across two regions.",
+      "hint_cue": "points close to each student"
+    },
+    "s2": {
+      "explanation": "Cloud Storage stores objects in buckets; a regional bucket in northamerica-south1 keeps the data in a single region in Mexico, and the Standard class is for frequently accessed data. A bucket can be the Cloud CDN origin.",
+      "hint_cue": "no servers to manage"
+    },
+    "s3": {
+      "explanation": "Archive is the lowest-cost Cloud Storage class, with a 365-day minimum and the highest access costs; data is readable in milliseconds, but every read is charged.",
+      "hint_cue": "the lowest cost per stored GB"
+    },
+    "s4": {
+      "explanation": "In Cloud DNS, a query from the internet is answered by the public zone. The private zone only answers VMs in authorized VPC networks.",
+      "hint_cue": "answers anyone on the internet"
+    },
+    "s5": {
+      "explanation": "Cloud Armor attaches to the load balancer backend service and blocks requests before they reach the backends; its preconfigured WAF rules include signatures that detect SQL injection.",
+      "hint_cue": "blocks SQL injection"
+    }
+  },
+  "nodes": {
+    "n-users": "Students",
+    "n-internet": "Internet",
+    "n-team": "Production team",
+    "n-lb": "App load balancer",
+    "n-app": "Login and payment servers"
+  },
+  "edges": {
+    "e1": "cursosmx.com",
+    "e2": "cursosmx.com?",
+    "e3": "HTTPS",
+    "e4": "missing video",
+    "e5": "login and payments",
+    "e6": "associated policy",
+    "e7": "spreads",
+    "e8": "raw recordings"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · cursos project",
+    "g-edge": "Entry from the internet",
+    "g-region": "Region northamerica-south1",
+    "g-net": "VPC network"
+  },
+  "why_not": {
+    "gcp-storage-dual-region": {
+      "s1": "A dual-region bucket replicates each object across a pair of regions, not at points close to each student.",
+      "s2": "A dual-region bucket stores each object in a pair of regions, and Querétaro is not part of any pair; the requirement asks for a single region in Mexico.",
+      "s3": "It uses the Standard class, meant for frequently accessed data; it is not the lowest-cost class per GB."
+    },
+    "gcp-persistent-disk": {
+      "s2": "Persistent Disk adds block storage to a Compute Engine VM; it is not a bucket that serves videos over HTTP.",
+      "s3": "Persistent Disk is a VM disk, not a Cloud Storage class for keeping recordings for years at the lowest cost."
+    },
+    "gcp-storage-nearline": {
+      "s3": "Nearline is low cost, but it is not the cheapest class; it has a 30-day minimum and is for infrequently accessed data.",
+      "s2": "Nearline charges to retrieve data and is for infrequent access; the videos are watched every day."
+    },
+    "gcp-cloud-dns-private": {
+      "s4": "A private zone only answers VMs in authorized VPC networks; queries from the internet get the public zone."
+    },
+    "gcp-vpc-firewall": {
+      "s5": "VPC firewall rules allow or deny connections by protocol, ports, source and destination; the SQL injection signatures live in the WAF rules of another service."
+    }
+  }
+}

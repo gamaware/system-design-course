@@ -1,0 +1,85 @@
+{
+  "id": "e06-gcp",
+  "title": "Reservations in two countries",
+  "summary": "MesaLista books tables at 2,000 restaurants in Mexico and Texas. Payments need transactions and favorites are written in both countries.",
+  "requirements": {
+    "1": "{{s1}} keeps payments in managed MySQL without leaving Mexico, with a copy in another zone that takes over on its own if the primary fails.",
+    "2": "{{s2}} gives reporting a separate copy of the slot 1 primary so it does not slow it down, even if the copy runs a few seconds behind.",
+    "3": "{{s3}} stores favorites: each country writes in milliseconds to its own region and both accept writes. The other region sees them later, because availability is preferred over consistency.",
+    "4": "{{s4}} alerts the reporting team if the slot 2 copy falls more than 30 seconds behind the primary.",
+    "5": "{{s5}} keeps the database password out of the code: the app requests it at startup and the service sends a notice every 30 days that it is time to change it, so your own code changes it.",
+    "6": "The pilot restaurant's MySQL runs on its own premises; its payments are migrated to slot 1 before opening to all 2,000 restaurants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Cloud SQL with HA has a primary and a secondary zone in the region; synchronous replication copies every write to the disks in both zones and, if the primary fails, Cloud SQL switches to the standby on its own.",
+      "hint_cue": "takes over on its own"
+    },
+    "s2": {
+      "explanation": "A Cloud SQL read replica is read-only, is updated in almost real time and serves queries and analytics, which lowers the load on the primary.",
+      "hint_cue": "a separate copy"
+    },
+    "s3": {
+      "explanation": "Bigtable is available in northamerica-south1 and us-south1, replicates across clusters in up to 8 regions and allows reads and writes in each one; with multi-cluster routing it goes to the nearest cluster, and by default replication is eventually consistent.",
+      "hint_cue": "both accept writes"
+    },
+    "s4": {
+      "explanation": "Cloud SQL measures the lag with the replica_lag metric, in seconds; a Cloud Monitoring alerting policy with a threshold condition on that metric notifies the team when it goes over 30 seconds.",
+      "hint_cue": "falls more than 30 seconds behind"
+    },
+    "s5": {
+      "explanation": "Secret Manager stores the password as a secret; with a rotation period it sends the SECRET_ROTATE message to Pub/Sub, and your subscriber is the one that changes it. Secret Manager does not rotate it by itself.",
+      "hint_cue": "sends a notice every 30 days"
+    }
+  },
+  "nodes": {
+    "n-onprem": "Pilot restaurant MySQL",
+    "n-reports": "Reporting team",
+    "n-app-mx": "App servers",
+    "n-app-us": "App servers"
+  },
+  "edges": {
+    "e1": "password",
+    "e2": "payments",
+    "e3": "copy",
+    "e4": "reports",
+    "e5": "favorites",
+    "e6": "favorites",
+    "e7": "lag",
+    "e8": "alert",
+    "e9": "migration"
+  },
+  "groups": {
+    "g-rest": "Pilot restaurant",
+    "g-cloud": "Google Cloud · mesalista project",
+    "g-region-mx": "Region northamerica-south1",
+    "g-vpc-mx": "VPC network",
+    "g-zone-mx-a": "northamerica-south1-a",
+    "g-zone-mx-b": "northamerica-south1-b",
+    "g-priv-mx": "Private subnet",
+    "g-region-us": "Region us-south1",
+    "g-vpc-us": "VPC network",
+    "g-zone-us-a": "us-south1-a",
+    "g-zone-us-b": "us-south1-b",
+    "g-priv-us": "Private subnet"
+  },
+  "why_not": {
+    "gcp-cloud-sql-ha": {
+      "s2": "The HA standby cannot be used for read queries; it only waits to take the primary's place."
+    },
+    "gcp-cloud-sql-replica": {
+      "s1": "A read replica does not provide failover: it is read-only and you have to promote it to make it a primary."
+    },
+    "gcp-spanner": {
+      "s1": "Spanner is not managed MySQL: it is a different database, with external consistency.",
+      "s2": "Spanner is a different database; it is not a copy of the slot 1 MySQL.",
+      "s3": "Spanner provides external consistency, stricter than strong consistency: it puts consistency first, and here the other region may see favorites later."
+    },
+    "gcp-audit-logs": {
+      "s4": "Cloud Audit Logs records administrative activities and resource access (who did what, where and when); a threshold alert on the replica_lag metric is a Cloud Monitoring alerting policy."
+    },
+    "gcp-parameter-manager": {
+      "s5": "Parameter Manager, an extension of Secret Manager, stores workload parameters and does not support rotation; the Pub/Sub rotation notices belong to Secret Manager."
+    }
+  }
+}

@@ -1,0 +1,532 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e06-gcp",
+  "version": 1,
+  "scenario": "e06",
+  "cloud": "gcp",
+  "title": "Reservaciones en dos países",
+  "summary": "MesaLista reserva mesas en 2 mil restaurantes de México y Texas. Los pagos piden transacciones y los favoritos se escriben en ambos países.",
+  "topics": [
+    "bases de datos relacionales",
+    "alta disponibilidad",
+    "replicación",
+    "bases multirregión y CAP",
+    "migración",
+    "secretos"
+  ],
+  "source_refs": [
+    {
+      "title": "Cloud SQL for MySQL: alta disponibilidad",
+      "url": "https://docs.cloud.google.com/sql/docs/mysql/high-availability"
+    },
+    {
+      "title": "Cloud SQL for MySQL: réplicas",
+      "url": "https://docs.cloud.google.com/sql/docs/mysql/replication"
+    },
+    {
+      "title": "Bigtable: replicación",
+      "url": "https://docs.cloud.google.com/bigtable/docs/replication-overview"
+    },
+    {
+      "title": "Spanner: TrueTime y consistencia externa",
+      "url": "https://docs.cloud.google.com/spanner/docs/true-time-external-consistency"
+    },
+    {
+      "title": "Cloud SQL for MySQL: retraso de replicación",
+      "url": "https://docs.cloud.google.com/sql/docs/mysql/replication/replication-lag"
+    },
+    {
+      "title": "Secret Manager: rotación de secretos",
+      "url": "https://docs.cloud.google.com/secret-manager/docs/secret-rotation"
+    },
+    {
+      "title": "Secret Manager: notas de la versión",
+      "url": "https://docs.cloud.google.com/secret-manager/docs/release-notes"
+    },
+    {
+      "title": "Bigtable: ubicaciones",
+      "url": "https://docs.cloud.google.com/bigtable/docs/locations"
+    },
+    {
+      "title": "Cloud Monitoring: alertas",
+      "url": "https://docs.cloud.google.com/monitoring/alerts"
+    },
+    {
+      "title": "Cloud Audit Logs: descripción general",
+      "url": "https://docs.cloud.google.com/logging/docs/audit"
+    },
+    {
+      "title": "Parameter Manager: descripción general",
+      "url": "https://docs.cloud.google.com/secret-manager/parameter-manager/docs/overview"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 8,
+    "rows": 7.1
+  },
+  "groups": [
+    {
+      "id": "g-rest",
+      "kind": "generic",
+      "label": "Restaurante piloto",
+      "parent": null,
+      "cell": {
+        "c": 2.1,
+        "r": 0,
+        "w": 2.2,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-cloud",
+      "kind": "gcp-project",
+      "label": "Google Cloud · proyecto mesalista",
+      "parent": null,
+      "cell": {
+        "c": 0.02,
+        "r": 1.33,
+        "w": 6.77,
+        "h": 5.67
+      }
+    },
+    {
+      "id": "g-region-mx",
+      "kind": "gcp-region",
+      "label": "Región northamerica-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 0.08,
+        "r": 1.55,
+        "w": 6.65,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-mx",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region-mx",
+      "cell": {
+        "c": 1.2,
+        "r": 1.77,
+        "w": 4.3,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-mx-a",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-a",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 1.99,
+        "w": 2.34,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-mx-b",
+      "kind": "gcp-zone",
+      "label": "northamerica-south1-b",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 3.66,
+        "r": 1.99,
+        "w": 1.78,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-mx",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-mx",
+      "cell": {
+        "c": 1.26,
+        "r": 2.23,
+        "w": 4.18,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-region-us",
+      "kind": "gcp-region",
+      "label": "Región us-south1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.5,
+        "r": 4.83,
+        "w": 4.23,
+        "h": 2.11
+      }
+    },
+    {
+      "id": "g-vpc-us",
+      "kind": "gcp-vpc",
+      "label": "Red de VPC",
+      "parent": "g-region-us",
+      "cell": {
+        "c": 2.56,
+        "r": 5.05,
+        "w": 4.11,
+        "h": 1.83
+      }
+    },
+    {
+      "id": "g-zone-us-a",
+      "kind": "gcp-zone",
+      "label": "us-south1-a",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.27,
+        "w": 2.05,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-zone-us-b",
+      "kind": "gcp-zone",
+      "label": "us-south1-b",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 4.73,
+        "r": 5.27,
+        "w": 1.88,
+        "h": 1.55
+      }
+    },
+    {
+      "id": "g-priv-us",
+      "kind": "gcp-subnet",
+      "label": "Subred privada",
+      "parent": "g-vpc-us",
+      "cell": {
+        "c": 2.62,
+        "r": 5.51,
+        "w": 3.99,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-onprem",
+      "icon": "gcp-generic-database",
+      "label": "MySQL del restaurante",
+      "number": 6,
+      "cell": {
+        "c": 2.65,
+        "r": 0.25
+      },
+      "group": "g-rest"
+    },
+    {
+      "id": "n-reports",
+      "icon": "gen-team",
+      "label": "Equipo de reportes",
+      "number": null,
+      "cell": {
+        "c": 6.95,
+        "r": 3.82
+      },
+      "group": null
+    },
+    {
+      "id": "n-app-mx",
+      "icon": "gcp-compute-engine",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 1.3,
+        "r": 2.48
+      },
+      "group": "g-priv-mx"
+    },
+    {
+      "id": "n-app-us",
+      "icon": "gcp-compute-engine",
+      "label": "Servidores de app",
+      "number": null,
+      "cell": {
+        "c": 4.9,
+        "r": 5.76
+      },
+      "group": "g-priv-us"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.65,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "gcp-cloud-sql-ha"
+      ],
+      "near_miss": "gcp-spanner",
+      "hint_cue": "toma el control sola",
+      "explanation": "Cloud SQL con HA tiene una zona primaria y otra secundaria en la región; la replicación síncrona copia cada escritura a los discos de ambas zonas y, si la primaria falla, Cloud SQL pasa solo al standby.",
+      "refs": [
+        "https://docs.cloud.google.com/sql/docs/mysql/high-availability",
+        "https://docs.cloud.google.com/sql/docs/mysql/replication",
+        "https://docs.cloud.google.com/spanner/docs/true-time-external-consistency"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.45,
+        "r": 2.48
+      },
+      "group": "g-priv-mx",
+      "accept": [
+        "gcp-cloud-sql-replica"
+      ],
+      "near_miss": null,
+      "hint_cue": "una copia aparte",
+      "explanation": "Una réplica de lectura de Cloud SQL es de solo lectura, se actualiza casi en tiempo real y atiende consultas y análisis, así baja la carga de la primaria.",
+      "refs": [
+        "https://docs.cloud.google.com/sql/docs/mysql/replication",
+        "https://docs.cloud.google.com/sql/docs/mysql/high-availability",
+        "https://docs.cloud.google.com/spanner/docs/true-time-external-consistency"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 1.3,
+        "r": 4.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "gcp-bigtable"
+      ],
+      "near_miss": "gcp-spanner",
+      "hint_cue": "ambas aceptan escrituras",
+      "explanation": "Bigtable está en northamerica-south1 y us-south1, replica entre clústeres de hasta 8 regiones y deja leer y escribir en cada uno; con enrutamiento multiclúster va al clúster más cercano, y por defecto la replicación es eventualmente consistente.",
+      "refs": [
+        "https://docs.cloud.google.com/bigtable/docs/replication-overview",
+        "https://docs.cloud.google.com/spanner/docs/true-time-external-consistency",
+        "https://docs.cloud.google.com/bigtable/docs/locations"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 5.7,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "gcp-cloud-monitoring"
+      ],
+      "near_miss": "gcp-audit-logs",
+      "hint_cue": "se atrasa más de 30 segundos",
+      "explanation": "Cloud SQL mide el retraso con la métrica replica_lag, en segundos; una política de alertas de Cloud Monitoring con condición de umbral sobre esa métrica avisa al equipo cuando pasa de 30 segundos.",
+      "refs": [
+        "https://docs.cloud.google.com/sql/docs/mysql/replication/replication-lag",
+        "https://docs.cloud.google.com/monitoring/alerts",
+        "https://docs.cloud.google.com/logging/docs/audit"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 0.15,
+        "r": 2.48
+      },
+      "group": "g-region-mx",
+      "accept": [
+        "gcp-secret-manager"
+      ],
+      "near_miss": "gcp-parameter-manager",
+      "hint_cue": "avisa cada 30 días",
+      "explanation": "Secret Manager guarda la contraseña como secreto; con un periodo de rotación manda el mensaje SECRET_ROTATE a Pub/Sub, y tu suscriptor es quien la cambia. Secret Manager no la rota por sí mismo.",
+      "refs": [
+        "https://docs.cloud.google.com/secret-manager/docs/secret-rotation",
+        "https://docs.cloud.google.com/secret-manager/docs/release-notes",
+        "https://docs.cloud.google.com/secret-manager/parameter-manager/docs/overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "s5",
+      "to": "n-app-mx",
+      "dir": "forward",
+      "step": 1,
+      "label": "contraseña",
+      "style": "dashed"
+    },
+    {
+      "id": "e2",
+      "from": "n-app-mx",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "pagos",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "copia",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 4,
+      "label": "reportes",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "n-app-mx",
+      "to": "s3",
+      "dir": "forward",
+      "step": 5,
+      "label": "favoritos",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "n-app-us",
+      "to": "s3",
+      "dir": "forward",
+      "step": 6,
+      "label": "favoritos",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 7,
+      "label": "retraso",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s4",
+      "to": "n-reports",
+      "dir": "forward",
+      "step": 8,
+      "label": "aviso",
+      "style": "solid",
+      "route": "h-first"
+    },
+    {
+      "id": "e9",
+      "from": "n-onprem",
+      "to": "s1",
+      "dir": "forward",
+      "step": null,
+      "label": "migración",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda los pagos en MySQL administrado sin sacarlos de México, con una copia en otra zona que toma el control sola si cae la primaria."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} da a los reportes una copia aparte de la primaria del slot 1 para no frenarla, aunque lleve segundos de retraso."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda los favoritos: cada país escribe en milisegundos en su región y ambas aceptan escrituras. La otra región los ve después, porque se prefiere disponibilidad a consistencia."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} avisa al equipo de reportes si la copia del slot 2 se atrasa más de 30 segundos respecto a la primaria."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} guarda la contraseña de la BD fuera del código: la app la pide al arrancar y el servicio avisa cada 30 días que toca cambiarla, para que tu código la cambie."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El MySQL del restaurante piloto corre en su propio local; sus pagos se migran al slot 1 antes de abrir a los 2 mil restaurantes."
+    }
+  ],
+  "palette": [
+    {
+      "service": "gcp-cloud-sql-ha",
+      "why_not": {
+        "s2": "El standby de HA no se puede usar para consultas de lectura; solo espera para tomar el lugar de la primaria."
+      }
+    },
+    {
+      "service": "gcp-cloud-sql-replica",
+      "why_not": {
+        "s1": "Una réplica de lectura no da conmutación por error: es de solo lectura y para volverla primaria hay que promoverla."
+      }
+    },
+    {
+      "service": "gcp-bigtable"
+    },
+    {
+      "service": "gcp-cloud-monitoring"
+    },
+    {
+      "service": "gcp-secret-manager"
+    },
+    {
+      "service": "gcp-spanner",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Spanner no es MySQL administrado: es otra base de datos, con consistencia externa.",
+        "s2": "Spanner es otra base de datos; no es una copia del MySQL del slot 1.",
+        "s3": "Spanner da consistencia externa, más estricta que la consistencia fuerte: prioriza consistencia, y aquí se acepta que la otra región vea los favoritos después."
+      }
+    },
+    {
+      "service": "gcp-audit-logs",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Cloud Audit Logs registra actividades administrativas y accesos a recursos (quién hizo qué, dónde y cuándo); el aviso por umbral sobre la métrica replica_lag es una política de alertas de Cloud Monitoring."
+      }
+    },
+    {
+      "service": "gcp-parameter-manager",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Parameter Manager, una extensión de Secret Manager, guarda parámetros de la carga de trabajo y no admite rotación; los avisos de rotación por Pub/Sub son de Secret Manager."
+      }
+    },
+    {
+      "service": "gcp-passthrough-nlb",
+      "role": "filler"
+    }
+  ],
+  "review_notes": "Tabla del Escenario 6 de ARCHITECTURES.md. Regiones apiladas: México arriba y EE. UU. abajo; el slot 3 queda entre las dos, a nivel de nube. La réplica de lectura (distractor del slot 1) y el standby de HA (distractor del slot 2) son respuestas de otro slot, así que su why_not va en la ficha de respuesta. Sin rotación nativa en Azure, GCP y OCI (E6-5): la explicación dice que la rotación necesita código propio y el requisito 5 solo pide el aviso. Bigtable confirmado en northamerica-south1 y us-south1 (página de ubicaciones). La ficha de relleno es un balanceador.",
+  "status": "published"
+}

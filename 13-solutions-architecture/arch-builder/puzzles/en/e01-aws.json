@@ -1,0 +1,97 @@
+{
+  "id": "e01-aws",
+  "title": "A private network with controlled egress",
+  "summary": "40 high schools in Jalisco publish grades on a portal. The state Education Ministry requires that neither the servers nor the database can be reached from the internet.",
+  "requirements": {
+    "1": "{{s1}} lets the private servers download patches from the internet, but nobody outside can open a connection to them.",
+    "2": "All outbound web traffic goes through {{s2}}, an intermediary that only lets it reach the domains of the SAT, the bank and the patch repository.",
+    "3": "{{s3}} makes only the app servers talk to the database on port 3306, whatever subnet they are in, and lets the reply come back on its own.",
+    "4": "{{s4}} gives administrators a terminal on servers with no public IP, without opening port 22 to the internet, and keeps a record of every session.",
+    "5": "{{s5}} takes the PDF report cards from the servers to object storage without going out to the internet or through slot 1.",
+    "6": "{{s6}} keeps the source, destination and port of the servers' network traffic to investigate a scan.",
+    "7": "The grades database listens on port 3306 and lives in a private subnet, with no public IP."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "With a NAT gateway, instances in a private subnet connect to services outside the VPC, but external services cannot start a connection with them.",
+      "hint_cue": "nobody outside can open a connection to them"
+    },
+    "s2": {
+      "explanation": "With a domain list rule group, Network Firewall lets only the allowed domains through: it reads the SNI in HTTPS and the Host header in HTTP, and denies the rest of that protocol's traffic.",
+      "hint_cue": "only lets it reach the domains"
+    },
+    "s3": {
+      "explanation": "A security group works per instance and is stateful, so the reply comes back on its own. Its rule can use the servers' security group as the source, whatever their subnet.",
+      "hint_cue": "whatever subnet they are in"
+    },
+    "s4": {
+      "explanation": "Session Manager opens sessions on nodes with no public IP without opening inbound ports, with no bastion hosts or SSH keys, and can store each session log in S3 or CloudWatch Logs.",
+      "hint_cue": "without opening port 22 to the internet"
+    },
+    "s5": {
+      "explanation": "A gateway endpoint takes VPC traffic to S3 with no internet gateway or NAT device, at no additional charge.",
+      "hint_cue": "without going out to the internet or through slot 1"
+    },
+    "s6": {
+      "explanation": "VPC Flow Logs captures information about the IP traffic going to and from the network interfaces in the VPC. It helps monitor the traffic reaching an instance and review security group rules.",
+      "hint_cue": "source, destination and port"
+    }
+  },
+  "nodes": {
+    "n-students": "Students",
+    "n-internet": "Internet",
+    "n-admin": "Administrator",
+    "n-bank": "Bank",
+    "n-sat": "SAT (tax office)",
+    "n-lb": "Load balancer",
+    "n-app": "App servers",
+    "n-db": "Grades database",
+    "n-storage": "Object storage"
+  },
+  "edges": {
+    "e1": "checks grades",
+    "e2": "HTTPS",
+    "e3": "requests",
+    "e4": "MySQL 3306",
+    "e5": "PDF report cards",
+    "e6": "private network",
+    "e7": "patches, SAT and bank",
+    "e8": "allowed domains",
+    "e9": "HTTPS",
+    "e10": "HTTPS",
+    "e11": "terminal",
+    "e12": "session",
+    "e13": "app only",
+    "e14": "traffic"
+  },
+  "groups": {
+    "g-cloud": "AWS Cloud",
+    "g-region": "Region mx-central-1",
+    "g-net": "VPC 10.0.0.0/16",
+    "g-zone-a": "Avail. Zone A",
+    "g-zone-b": "Avail. Zone B",
+    "g-pub": "Public subnet",
+    "g-app": "Private subnet",
+    "g-db": "Private subnet"
+  },
+  "why_not": {
+    "aws-internet-gateway": {
+      "s1": "An internet gateway lets resources with a public IP connect to the internet, but it also lets resources on the internet start a connection to them."
+    },
+    "aws-dns-firewall": {
+      "s2": "DNS Firewall only filters, by domain name, the DNS query that goes through the Resolver; it does not filter application protocols such as HTTPS, so web traffic does not go through it."
+    },
+    "aws-network-acl": {
+      "s3": "A network ACL applies to the whole subnet and is stateless: the reply must be allowed with an explicit rule."
+    },
+    "aws-client-vpn": {
+      "s4": "Client VPN gives access to AWS resources from the user's device, and its log records when a client connects, attempts to connect or disconnects from the endpoint. A terminal with no inbound ports or SSH keys is what Session Manager provides."
+    },
+    "aws-vpc-peering": {
+      "s5": "A VPC peering connection is a network connection between two VPCs to route traffic over private IPs, not access to S3. Also, resources on the other side of a peering connection cannot use a gateway endpoint to reach S3."
+    },
+    "aws-cloudtrail": {
+      "s6": "CloudTrail records API calls, such as Session Manager's; it does not keep the source, destination or port of network traffic."
+    }
+  }
+}

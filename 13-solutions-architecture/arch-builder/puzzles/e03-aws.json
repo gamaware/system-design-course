@@ -1,0 +1,428 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e03-aws",
+  "version": 1,
+  "scenario": "e03",
+  "cloud": "aws",
+  "title": "Cursos en video para 300 mil alumnos",
+  "summary": "CursosMX vende cursos grabados a 300 mil alumnos de México y Centroamérica. Los videos deben llegar rápido, las grabaciones crudas deben costar poco y el login recibe intentos de inyección SQL.",
+  "topics": [
+    "entrega de contenido",
+    "caché",
+    "clases de almacenamiento",
+    "nombres públicos",
+    "filtrado HTTP"
+  ],
+  "source_refs": [
+    {
+      "title": "¿Qué es Amazon CloudFront?",
+      "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html"
+    },
+    {
+      "title": "AWS Global Accelerator: preguntas frecuentes",
+      "url": "https://aws.amazon.com/global-accelerator/faqs/"
+    },
+    {
+      "title": "Amazon EBS: Multi-Attach",
+      "url": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-multi.html"
+    },
+    {
+      "title": "Almacenamiento de respaldos en AWS (whitepaper)",
+      "url": "https://docs.aws.amazon.com/whitepapers/latest/oracle-database-aws-best-practices/backup-storage.html"
+    },
+    {
+      "title": "Route 53: enrutar tráfico a tus recursos",
+      "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-to-resources.html"
+    },
+    {
+      "title": "¿Qué son AWS WAF y AWS Shield?",
+      "url": "https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html"
+    },
+    {
+      "title": "Amazon S3: clases de almacenamiento",
+      "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5.3
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "aws-cloud",
+      "label": "AWS Cloud",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 7.0,
+        "h": 5.24
+      }
+    },
+    {
+      "id": "g-edge",
+      "kind": "generic",
+      "label": "Entrada desde internet",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 1.3,
+        "w": 1.53,
+        "h": 2.7
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "region",
+      "label": "Región mx-central-1",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 3.6,
+        "r": 0.22,
+        "w": 5.29,
+        "h": 4.96
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 5.3,
+        "r": 2.55,
+        "w": 3.53,
+        "h": 1.5
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Alumnos",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.6
+      },
+      "group": null
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de producción",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 4.0
+      },
+      "group": null
+    },
+    {
+      "id": "n-lb",
+      "icon": "aws-alb",
+      "label": "Balanceador de la app",
+      "number": 6,
+      "cell": {
+        "c": 5.7,
+        "r": 2.95
+      },
+      "group": "g-net"
+    },
+    {
+      "id": "n-app",
+      "icon": "aws-ec2",
+      "label": "Servidores de login y pagos",
+      "number": null,
+      "cell": {
+        "c": 7.5,
+        "r": 2.95
+      },
+      "group": "g-net"
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 2.26,
+        "r": 1.6
+      },
+      "group": "g-edge",
+      "accept": [
+        "aws-cloudfront"
+      ],
+      "near_miss": "aws-global-accelerator",
+      "hint_cue": "puntos cercanos a cada alumno",
+      "explanation": "CloudFront guarda copias de los archivos en ubicaciones de borde de todo el mundo y atiende cada petición desde la de menor latencia; si no tiene el archivo, lo pide al origen. Global Accelerator reenvía paquetes TCP y UDP.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+        "https://aws.amazon.com/global-accelerator/faqs/"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.2,
+        "r": 1.6
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-s3"
+      ],
+      "near_miss": "aws-ebs",
+      "hint_cue": "no hay servidores que administrar",
+      "explanation": "Un bucket de S3 puede ser el origen de CloudFront: guarda la versión definitiva de cada objeto y lo sirve por HTTP sin servidores que administrar. Un volumen de EBS se conecta a instancias de una sola zona.",
+      "refs": [
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+        "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-multi.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 4.2,
+        "r": 4.0
+      },
+      "group": "g-region",
+      "accept": [
+        "aws-s3-glacier-deep-archive"
+      ],
+      "near_miss": "aws-s3-standard-ia",
+      "hint_cue": "el menor costo por GB guardado",
+      "explanation": "S3 Glacier Deep Archive está pensado para retención larga de datos que se leen una o dos veces al año; sus objetos se restauran en hasta 12 horas, por eso leerlos después es más lento.",
+      "refs": [
+        "https://docs.aws.amazon.com/whitepapers/latest/oracle-database-aws-best-practices/backup-storage.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.26,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "aws-route53"
+      ],
+      "near_miss": "aws-route53-private",
+      "hint_cue": "responde a cualquiera en internet",
+      "explanation": "Una zona alojada pública de Route 53 enruta el tráfico de internet hacia tus recursos con un registro por nombre, como cursosmx.com hacia la distribución. Una zona privada solo enruta dentro de una VPC.",
+      "refs": [
+        "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-to-resources.html"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 2.26,
+        "r": 2.95
+      },
+      "group": "g-edge",
+      "accept": [
+        "aws-waf"
+      ],
+      "near_miss": "aws-shield",
+      "hint_cue": "bloquea la inyección SQL",
+      "explanation": "AWS WAF revisa las peticiones HTTP y HTTPS que llegan al recurso protegido, como un Application Load Balancer, y puede bloquear las que traen código SQL malicioso (inyección SQL). Shield Standard ayuda contra ataques DDoS.",
+      "refs": [
+        "https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "cursosmx.com",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s4",
+      "dir": "forward",
+      "step": 2,
+      "label": "¿cursosmx.com?",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 3,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 4,
+      "label": "video que falta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s1",
+      "to": "n-lb",
+      "dir": "forward",
+      "step": 5,
+      "label": "login y pagos",
+      "style": "solid",
+      "route": "points",
+      "points": [
+        {
+          "c": 2.76,
+          "r": 2.85
+        },
+        {
+          "c": 6.2,
+          "r": 2.85
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "from": "s5",
+      "to": "n-lb",
+      "dir": "none",
+      "step": null,
+      "label": "política asociada",
+      "style": "dotted"
+    },
+    {
+      "id": "e7",
+      "from": "n-lb",
+      "to": "n-app",
+      "dir": "forward",
+      "step": 6,
+      "label": "reparte",
+      "style": "solid"
+    },
+    {
+      "id": "e8",
+      "from": "n-team",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "grabaciones crudas",
+      "style": "dashed"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} guarda copias de videos e imágenes en puntos cercanos a cada alumno, para no viajar hasta la región en cada petición."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} es el origen de millones de videos que los alumnos ven a diario por HTTP, en una sola región; se paga por GB guardado y no hay servidores que administrar."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda 5 años las grabaciones crudas, que casi nunca se abren. Importa el menor costo por GB guardado, aunque leerlas después sea más caro o más lento."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} guarda los registros de cursosmx.com y responde a cualquiera en internet que pregunte por ese nombre, para que llegue al slot 1."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} revisa cada petición HTTP del login y bloquea la inyección SQL antes de que llegue a la app."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El balanceador de la app reparte el login y los pagos entre los servidores de la región."
+    }
+  ],
+  "palette": [
+    {
+      "service": "aws-cloudfront"
+    },
+    {
+      "service": "aws-s3"
+    },
+    {
+      "service": "aws-s3-glacier-deep-archive"
+    },
+    {
+      "service": "aws-route53"
+    },
+    {
+      "service": "aws-waf"
+    },
+    {
+      "service": "aws-global-accelerator",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Global Accelerator mejora aplicaciones TCP y UDP reenviando paquetes desde el borde hacia la región; en la FAQ de AWS, el contenido que se guarda en caché, como imágenes y videos, lo acelera otro servicio."
+      }
+    },
+    {
+      "service": "aws-ebs",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "Un volumen de EBS se conecta a instancias EC2 de una sola zona (con Multi-Attach, hasta 16); no sirve videos por HTTP sin un servidor delante.",
+        "s3": "EBS es un disco de bloques para instancias EC2, no una clase de almacenamiento para guardar años grabaciones al menor costo."
+      }
+    },
+    {
+      "service": "aws-s3-standard-ia",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Standard-IA es para datos que se leen una vez al mes y deben abrirse en milisegundos; las grabaciones crudas se leen menos de una vez al año, y para eso AWS diseñó otra clase de archivo.",
+        "s2": "Standard-IA cobra cada GB que se recupera y está diseñada para datos que se leen una vez al mes; los videos se ven a diario."
+      }
+    },
+    {
+      "service": "aws-route53-private",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una zona alojada privada solo enruta tráfico dentro de una VPC; los alumnos en internet no reciben sus respuestas."
+      }
+    },
+    {
+      "service": "aws-shield",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Shield Standard viene incluido sin costo extra y ayuda contra ataques de denegación de servicio distribuidos; no busca código SQL en cada petición del login."
+      }
+    }
+  ],
+  "review_notes": "Tabla del Escenario 3 de ARCHITECTURES.md. Topología común: alumnos, internet, slot 4 fuera de la región, slots 1 y 5 en un cuadro de entrada, orígenes 2 (videos) y balanceador fijo, slot 3 para las grabaciones crudas que sube el equipo. Revisión a ciegas: el slot 5 ya no se dibuja como un salto de red; la flecha 5 va del slot 1 al balanceador y la política del slot 5 se une al balanceador con una línea punteada sin paso. En AWS la web ACL se asocia al Application Load Balancer. Revisión final: la línea punteada del slot 5 dice política asociada, etiqueta neutral igual a la de Azure y Google Cloud (web ACL es el término propio de AWS WAF).",
+  "status": "published"
+}

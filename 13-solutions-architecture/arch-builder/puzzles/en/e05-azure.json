@@ -1,0 +1,78 @@
+{
+  "id": "e05-azure",
+  "title": "Scholarship payments",
+  "summary": "BecaPay deposits grants to 15,000 university students through an app. The auditor requires a standard login, the company's own keys and a trail of every change.",
+  "requirements": {
+    "1": "{{s1}} lets students sign in with email or with their Google account, and the app receives OAuth 2.0 / OIDC tokens that expire and are renewed with a refresh token.",
+    "2": "{{s2}} rejects any call to /pagos with an invalid, expired or foreign-issuer token before it reaches the service.",
+    "3": "{{s3}} encrypts the database and backups with company keys that rotate every year, and every use of those keys can be logged.",
+    "4": "{{s4}} alerts if someone operates the cloud resources from a suspicious IP address.",
+    "5": "{{s5}} shows the auditor who changed a firewall rule or deleted a resource, when and from where.",
+    "6": "The payments service runs in the private subnet and only receives calls that slot 2 already validated.",
+    "7": "The database stores the scholarship holders' accounts and deposits, encrypted with the slot 3 keys."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Entra External ID lets students sign in with email or Google in a user flow; the app, registered with OpenID Connect, receives tokens that expire and a refresh token to get new ones.",
+      "hint_cue": "with their Google account"
+    },
+    "s2": {
+      "explanation": "The API Management validate-jwt policy requires a valid JWT: it checks the signature, issuer, audience and that it has an expiration; if validation fails, it returns 401.",
+      "hint_cue": "invalid, expired or foreign-issuer token"
+    },
+    "s3": {
+      "explanation": "Key Vault rotates each key by its rotation policy, services that encrypt with a customer managed key pick up the new version, and its logging, once enabled, records every KeyEncrypt or KeyDecrypt.",
+      "hint_cue": "company keys that rotate every year"
+    },
+    "s4": {
+      "explanation": "Defender for Resource Manager, a Defender for Cloud plan, alerts when a Resource Manager operation comes from an IP address that threat intelligence feeds mark as suspicious.",
+      "hint_cue": "suspicious IP address"
+    },
+    "s5": {
+      "explanation": "The Azure Monitor activity log keeps management operations, such as creating, changing or deleting resources, who started them and the caller IP, and retains them for 90 days.",
+      "hint_cue": "who changed a firewall rule"
+    }
+  },
+  "nodes": {
+    "n-app": "Students' app",
+    "n-pay": "Payments service",
+    "n-db": "Scholarship database",
+    "n-sec": "Security team",
+    "n-aud": "Auditor"
+  },
+  "edges": {
+    "e1": "signs in",
+    "e2": "token",
+    "e3": "/pagos",
+    "e4": "queries",
+    "e5": "encryption keys",
+    "e6": "activity",
+    "e7": "alert",
+    "e8": "trail"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription",
+    "g-region": "Region Mexico Central",
+    "g-net": "VNet 10.0.0.0/16",
+    "g-zone-a": "Zone 1",
+    "g-zone-b": "Zone 2",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "azure-rbac": {
+      "s1": "Azure RBAC manages who has access to Azure resources and what they can do with them; it does not give the app's students sign-up or sign-in."
+    },
+    "azure-load-balancer": {
+      "s2": "Azure Load Balancer works at layer 4 and distributes TCP and UDP traffic; it does not open the HTTP request that carries the token."
+    },
+    "azure-app-configuration": {
+      "s3": "App Configuration stores the app settings and feature flags; it does not create or rotate encryption keys."
+    },
+    "azure-policy": {
+      "s4": "Azure Policy compares resource properties with business rules to assess compliance; it does not detect threats in activity."
+    },
+    "azure-vnet-flow-logs": {
+      "s5": "Virtual network flow logs record information about IP traffic flowing through the virtual network; they do not say who changed a firewall rule or who deleted a resource."
+    }
+  }
+}

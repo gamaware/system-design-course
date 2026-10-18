@@ -1,0 +1,8 @@
+# Paquetes oficiales de iconos (origen y huella en ICONS.md). Columnas separadas por tabulador:
+# id	archivo	sha256	url
+aws	Icon-package_07312026.zip	d2d166c453526471749d520e0db022c459abef759d2946cf2dd1d1c992dc6526	https://d1.awsstatic.com/onedam/marketing-channels/website/public/shared/architecture-icon-release/Icon-package_07312026.5846e92413caa21490223536cc97f1269e44fa92.zip
+azure	Azure_Public_Service_Icons_V24.zip	921594ccd1bf3d9c0a1bd7b6d924e050551a59342f2b353bb74bdcf761c35141	https://arch-center.azureedge.net/icons/Azure_Public_Service_Icons_V24.zip
+gcp-core	core-products-icons.zip	6531a10f58bc599c24d9a455d81dd757c1a03c3c43da9cddf639b859c1c1eece	https://services.google.com/fh/files/misc/core-products-icons.zip
+gcp-category	category-icons.zip	e5bc3abd3527dc2500e9bff7f15870783e2c764129c49b7cd4c1b4e105345002	https://services.google.com/fh/files/misc/category-icons.zip
+oci	OCI-Style-Guide-for-Drawio.zip	8e20646de88b6197f7b2ce941219fdb61e88b2b6276e3e7b5e0ce046445174e8	https://docs.oracle.com/iaas/Content/Resources/Assets/OCI-Style-Guide-for-Drawio.zip
+gcp-logo	Google_Cloud_Logos.zip	0a73eb09d64be3de2a979153e83d24653e483009a1c5a6d57781472a6ce184c1	https://www.googlecloudpresscorner.com/download/Google_Cloud_Logos.zip

@@ -1,0 +1,631 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e09-oci",
+  "version": 1,
+  "scenario": "e09",
+  "cloud": "oci",
+  "title": "El DNS elige la región y el balanceador elige la VM",
+  "summary": "Una tienda vende a México y a España con un solo dominio, tienda.mx, desde Querétaro y Madrid. Si cae la región principal, los compradores deben llegar a la otra en minutos.",
+  "topics": [
+    "DNS",
+    "balanceo",
+    "autoescalado",
+    "alta disponibilidad multirregión"
+  ],
+  "source_refs": [
+    {
+      "title": "Traffic Management: steering policies",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/TrafficManagement/Concepts/overview.htm"
+    },
+    {
+      "title": "OCI Health Checks: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/HealthChecks/Concepts/healthchecks.htm"
+    },
+    {
+      "title": "Load Balancer: certificados SSL",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm"
+    },
+    {
+      "title": "Compute: administración de instancias",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instancemanagement.htm"
+    },
+    {
+      "title": "Compute: autoscaling de instance pools",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscalinginstancepools.htm"
+    },
+    {
+      "title": "OCI Monitoring: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm"
+    },
+    {
+      "title": "OCI Logging: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm"
+    },
+    {
+      "title": "API Gateway: información general",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayoverview.htm"
+    },
+    {
+      "title": "DNS privado",
+      "url": "https://docs.oracle.com/en-us/iaas/Content/DNS/Tasks/privatedns.htm"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 7
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "oci-tenancy",
+      "label": "Oracle Cloud · tenancy tienda",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 7.9,
+        "h": 5.82
+      }
+    },
+    {
+      "id": "g-reg-a",
+      "kind": "oci-region",
+      "label": "Región A (Querétaro)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.11,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-a",
+      "kind": "oci-vcn",
+      "label": "VCN 10.0.0.0/16",
+      "parent": "g-reg-a",
+      "cell": {
+        "c": 1.17,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-a1",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 1.23,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-a2",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 2.71,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-reg-b",
+      "kind": "oci-region",
+      "label": "Región B (Madrid)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 5.69,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-b",
+      "kind": "oci-vcn",
+      "label": "VCN 10.1.0.0/16",
+      "parent": "g-reg-b",
+      "cell": {
+        "c": 5.75,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-b1",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 1",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 5.81,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-b2",
+      "kind": "oci-fault-domain",
+      "label": "Dominio de falla 2",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 7.29,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.3
+      },
+      "group": null
+    },
+    {
+      "id": "n-vm-a1",
+      "icon": "oci-compute",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 1.47,
+        "r": 3.4
+      },
+      "group": "g-zone-a1"
+    },
+    {
+      "id": "n-vm-a2",
+      "icon": "oci-compute",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 2.95,
+        "r": 3.4
+      },
+      "group": "g-zone-a2"
+    },
+    {
+      "id": "n-vm-b1",
+      "icon": "oci-compute",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 6.05,
+        "r": 3.4
+      },
+      "group": "g-zone-b1"
+    },
+    {
+      "id": "n-vm-b2",
+      "icon": "oci-compute",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 7.53,
+        "r": 3.4
+      },
+      "group": "g-zone-b2"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 4.5,
+        "r": 5.9
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-steering-policies"
+      ],
+      "near_miss": "oci-dns-private-resolver",
+      "hint_cue": "responde con la dirección de la región A mientras esté sana",
+      "explanation": "Las steering policies de Traffic Management sirven respuestas DNS solo en DNS público; la de failover sirve primero la respuesta principal y usa monitores de Health Checks para saber si sus respuestas están sanas.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/TrafficManagement/Concepts/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/DNS/Tasks/privatedns.htm"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.5,
+        "r": 2.15
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-health-checks"
+      ],
+      "near_miss": "oci-lb-health-check",
+      "hint_cue": "prueba desde varios puntos de internet",
+      "explanation": "Health Checks monitorea desde puntos de observación en el mundo cualquier servicio público, como un balanceador externo, con intervalos de 10 s o más, y la política de failover usa esos monitores.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/HealthChecks/Concepts/healthchecks.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/TrafficManagement/Concepts/overview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.21,
+        "r": 2.15
+      },
+      "group": "g-net-a",
+      "accept": [
+        "oci-load-balancer"
+      ],
+      "near_miss": "oci-api-gateway",
+      "hint_cue": "termina TLS y reparte las peticiones",
+      "explanation": "OCI Load Balancer termina SSL en un listener, por ejemplo en el puerto 443, con su paquete de certificados, y reparte entre los servidores de un backend set, que lleva su propia política de health check.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayoverview.htm"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.21,
+        "r": 4.65
+      },
+      "group": "g-net-a",
+      "accept": [
+        "oci-instance-pool"
+      ],
+      "near_miss": "oci-instance-configuration",
+      "hint_cue": "crece o se reduce con la carga",
+      "explanation": "Un instance pool es un conjunto de instancias que se administra como grupo a partir de una instance configuration; con autoscaling crece o se reduce según una métrica o un horario.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instancemanagement.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscalinginstancepools.htm"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 4.5,
+        "r": 3.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "oci-notifications"
+      ],
+      "near_miss": "oci-logging",
+      "hint_cue": "le entrega a guardia el aviso",
+      "explanation": "Las alarmas de Monitoring publican su mensaje en un tema de Notifications cuando cambian de estado, por ejemplo de OK a FIRING, y el tema lo entrega a sus suscripciones, como PagerDuty.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 6.79,
+        "r": 2.15
+      },
+      "group": "g-net-b",
+      "accept": [
+        "oci-load-balancer"
+      ],
+      "near_miss": "oci-api-gateway",
+      "hint_cue": "termina TLS y reparte solo entre las VM web sanas",
+      "explanation": "En la región B otro OCI Load Balancer termina SSL en su listener y reparte entre los servidores de su backend set, según su política de health check.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Balance/Tasks/managingcertificates.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/APIGateway/Concepts/apigatewayoverview.htm"
+      ]
+    },
+    {
+      "id": "s7",
+      "number": 7,
+      "cell": {
+        "c": 6.79,
+        "r": 4.65
+      },
+      "group": "g-net-b",
+      "accept": [
+        "oci-instance-pool"
+      ],
+      "near_miss": "oci-instance-configuration",
+      "hint_cue": "las administra como grupo y crece o se reduce con la carga",
+      "explanation": "La región B lleva su propio instance pool: con autoscaling crece o se reduce y, al reducirse, reparte las bajas entre dominios de falla.",
+      "refs": [
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/instancemanagement.htm",
+        "https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/autoscalinginstancepools.htm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "s1",
+      "dir": "both",
+      "step": 1,
+      "label": "¿tienda.mx? IP y TTL 60 s",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-users",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": 3,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e4",
+      "from": "s3",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "s6",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e6",
+      "from": "s6",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e9",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 4,
+      "label": "A cae",
+      "style": "dashed"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "s6",
+      "dir": "forward",
+      "step": 5,
+      "label": "ahora responde con B",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e11",
+      "from": "s2",
+      "to": "s5",
+      "dir": "forward",
+      "step": 6,
+      "label": "alarma",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 7,
+      "label": "aviso",
+      "style": "solid"
+    },
+    {
+      "id": "e13",
+      "from": "s4",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e14",
+      "from": "s4",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e15",
+      "from": "s7",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e16",
+      "from": "s7",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} publica un solo nombre, tienda.mx, y responde con la dirección de la región A mientras esté sana y, si no, con la de la B, con un TTL de 60 s."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} prueba desde varios puntos de internet, cada cierto intervalo, que el balanceador de cada región responda; si una falla, el slot 1 deja de anunciarla."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe el HTTPS en la región A, termina TLS y reparte las peticiones solo entre las VM web que pasan su revisión de salud."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} administra como grupo las VM web de la región A, repartidas en dominios de falla, y crece o se reduce con la carga."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} le entrega a guardia el aviso de la alarma cuando el slot 2 marca caída una región; desde ese aviso corre el tiempo de reparación."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} hace en la región B lo mismo que el slot 3 en la A: termina TLS y reparte solo entre las VM web sanas."
+    },
+    {
+      "n": 7,
+      "slot": "s7",
+      "text": "{{s7}} hace lo mismo que el slot 4 con las VM web de la región B: las administra como grupo y crece o se reduce con la carga."
+    }
+  ],
+  "palette": [
+    {
+      "service": "oci-steering-policies"
+    },
+    {
+      "service": "oci-health-checks"
+    },
+    {
+      "service": "oci-load-balancer",
+      "uses": 2
+    },
+    {
+      "service": "oci-instance-pool",
+      "uses": 2
+    },
+    {
+      "service": "oci-notifications"
+    },
+    {
+      "service": "oci-dns-private-resolver",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "El resolver privado contesta consultas de nombres dentro de las VCN, y las políticas que eligen respuestas según su salud solo existen para DNS público, no para DNS privado."
+      }
+    },
+    {
+      "service": "oci-lb-health-check",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "La política de health check del backend set revisa los servidores detrás del balanceador; las políticas de DNS evalúan la salud de sus respuestas con monitores y sondeos de Health Checks, no con esta política."
+      }
+    },
+    {
+      "service": "oci-api-gateway",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "API Gateway sirve para publicar APIs con endpoints privados o públicos; aquí se pide terminar SSL en un listener y repartir entre los servidores de un backend set.",
+        "s6": "API Gateway sirve para publicar APIs con endpoints privados o públicos; aquí se pide terminar SSL en un listener y repartir entre los servidores de un backend set."
+      }
+    },
+    {
+      "service": "oci-instance-configuration",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Una instance configuration es la plantilla con la imagen, la forma y los metadatos para crear instancias; no administra un grupo ni crece con la carga.",
+        "s7": "Una instance configuration es la plantilla con la imagen, la forma y los metadatos para crear instancias; no administra un grupo ni crece con la carga."
+      }
+    },
+    {
+      "service": "oci-compute",
+      "role": "distractor",
+      "why_not": {
+        "s4": "Cada VM web del diagrama ya es una instancia de Compute; el slot pide el conjunto que las administra como grupo y crece o se reduce con la carga.",
+        "s7": "Cada VM web del diagrama ya es una instancia de Compute; el slot pide el conjunto que las administra como grupo y crece o se reduce con la carga."
+      }
+    },
+    {
+      "service": "oci-logging",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Logging da acceso a los registros de los recursos de la tenancy para buscarlos y filtrarlos; el aviso a guardia lo entrega el servicio al que la alarma publica su mensaje."
+      }
+    }
+  ],
+  "review_notes": "Escenario 9 (Lab 04). OCI documenta health checks solo para las políticas de failover y de balanceo, así que el requisito 1 pide failover (región A mientras esté sana; si no, B) en lugar de la más cercana. La fuente del escenario no dice que un instance pool recree instancias que fallan, así que los requisitos 4 y 7 piden administrar como grupo y escalar, sin prometer reparación. Columnas = dominios de falla (Querétaro tiene un solo AD). Slots 6 y 7 = balanceador e instance pool de la región B (uses 2). La fuente del autoscaling es la del escenario 2.",
+  "status": "published"
+}

@@ -1,0 +1,67 @@
+{
+  "id": "e08-azure",
+  "title": "A parcel service that never loses an order",
+  "summary": "EnvíaYa delivers 80,000 parcels a day in the Bajío region. Each new order reaches billing, the customer SMS and driver assignment, and a failure in one does not stop the others.",
+  "requirements": {
+    "1": "{{s1}} makes the same order-created event reach several independent consumers, without the API knowing how many there are.",
+    "2": "{{s2}} receives its copy of each order and keeps it until a worker confirms it was processed; if the worker dies halfway, the order shows up again.",
+    "3": "{{s3}} runs the code that assigns a driver only when there are messages, scales on its own and costs nothing in the early morning.",
+    "4": "{{s4}} sets aside, on its own, an order that fails 5 times so it can be reviewed later, without blocking the line.",
+    "5": "{{s5}} receives the drivers' GPS, keeps it for 7 days in order, and analytics reads it again from the beginning as many times as it wants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "With a Service Bus topic, each subscription receives a copy of the published message, in a one-to-many publish and subscribe pattern. In a queue, by contrast, only one consumer processes each message.",
+      "hint_cue": "reach several independent consumers"
+    },
+    "s2": {
+      "explanation": "Autoforwarding is enabled on the topic subscription (the source) and moves its copy into this queue on its own, because Service Bus does not allow receivers on a source with autoforwarding. In peek-lock, if the lock expires without completion, the message becomes available again.",
+      "hint_cue": "if the worker dies halfway, the order shows up again"
+    },
+    "s3": {
+      "explanation": "The Service Bus trigger runs the function when messages reach the queue. In Mexico Central, the Flex Consumption plan scales with the pending messages and down to zero; the Linux Consumption plan is closing down there. It completes the message if the function succeeds and abandons it if it fails.",
+      "hint_cue": "only when there are messages"
+    },
+    "s4": {
+      "explanation": "Each queue has its own dead-letter subqueue. When a message goes over the maximum delivery count (10 by default, configurable), Service Bus moves it there and it stays until someone reviews it. A Blob container does not count deliveries.",
+      "hint_cue": "fails 5 times"
+    },
+    "s5": {
+      "explanation": "Event Hubs keeps events in ordered partitions for up to 7 days on the Standard tier, and each consumer group picks its offset, even the beginning, to read them again. Stream Analytics processes in memory and does not store its input.",
+      "hint_cue": "reads it again from the beginning"
+    }
+  },
+  "nodes": {
+    "n-api": "Orders API",
+    "n-sms": "Customers (SMS)",
+    "n-analytics": "Analytics",
+    "n-gps": "Drivers (GPS)"
+  },
+  "edges": {
+    "e1": "order created",
+    "e2": "SMS via own code",
+    "e3": "forwarded by the subscription",
+    "e4": "orders to handle",
+    "e5": "after 5 failures",
+    "e6": "GPS positions",
+    "e7": "rereads from the start"
+  },
+  "groups": {
+    "g-cloud": "Azure subscription"
+  },
+  "why_not": {
+    "azure-managed-redis": {
+      "s2": "Azure Managed Redis is an in-memory cache: its lists do not guarantee delivery or bring the order back if the worker dies halfway."
+    },
+    "azure-vm": {
+      "s3": "A VM bills while it is running, even with no orders in the early morning, and it does not run on its own for each message in the queue."
+    },
+    "azure-blob-storage": {
+      "s4": "A Blob container stores files, but it does not count a message's deliveries or set it aside on its own.",
+      "s5": "Blob Storage stores files; it has no partitions with offsets for analytics to read the GPS again in order from the beginning."
+    },
+    "azure-stream-analytics": {
+      "s5": "Stream Analytics processes the stream in memory and does not store its input data, so analytics cannot read the GPS again."
+    }
+  }
+}

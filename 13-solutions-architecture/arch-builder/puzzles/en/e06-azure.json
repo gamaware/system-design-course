@@ -1,0 +1,85 @@
+{
+  "id": "e06-azure",
+  "title": "Reservations in two countries",
+  "summary": "MesaLista books tables at 2,000 restaurants in Mexico and Texas. Payments need transactions and favorites are written in both countries.",
+  "requirements": {
+    "1": "{{s1}} keeps payments in managed MySQL without leaving Mexico, with a copy in another zone that takes over on its own if the primary fails.",
+    "2": "{{s2}} gives reporting a separate copy of the slot 1 primary so it does not slow it down, even if the copy runs a few seconds behind.",
+    "3": "{{s3}} stores favorites: each country writes in milliseconds to its own region and both accept writes. The other region sees them later, because availability is preferred over consistency.",
+    "4": "{{s4}} alerts the reporting team if the slot 2 copy falls more than 30 seconds behind the primary.",
+    "5": "{{s5}} keeps the database password out of the code: the app requests it at startup and, before the password expires, the service sends a notice so your own function changes it.",
+    "6": "The pilot restaurant's MySQL runs on its own premises; its payments are migrated to slot 1 before opening to all 2,000 restaurants."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "With zone-redundant HA, Flexible Server keeps a standby in another zone of the same region; if the primary becomes unavailable, the standby becomes the primary. The standby serves no reads or writes.",
+      "hint_cue": "takes over on its own"
+    },
+    "s2": {
+      "explanation": "The Flexible Server read replica uses asynchronous replication, with a measurable delay, and serves as the source for reporting; that way the primary only handles the writes.",
+      "hint_cue": "a separate copy"
+    },
+    "s3": {
+      "explanation": "With multi-region writes, Cosmos DB commits each write in the local region and replicates it to the others asynchronously; that is why this setup does not support strong consistency.",
+      "hint_cue": "both accept writes"
+    },
+    "s4": {
+      "explanation": "Flexible Server publishes the Replication Lag In Seconds metric and the replica guide recommends an alert for when the lag crosses a threshold; an Azure Monitor metric alert sends that notice.",
+      "hint_cue": "falls more than 30 seconds behind"
+    },
+    "s5": {
+      "explanation": "Key Vault stores the password as a secret the app reads. Thirty days before it expires, Key Vault publishes the near expiry event to Event Grid and your own function changes it; the validity period goes in the ValidityPeriodDays tag.",
+      "hint_cue": "before the password expires"
+    }
+  },
+  "nodes": {
+    "n-onprem": "Pilot restaurant MySQL",
+    "n-reports": "Reporting team",
+    "n-app-mx": "App servers",
+    "n-app-us": "App servers"
+  },
+  "edges": {
+    "e1": "password",
+    "e2": "payments",
+    "e3": "copy",
+    "e4": "reports",
+    "e5": "favorites",
+    "e6": "favorites",
+    "e7": "lag",
+    "e8": "alert",
+    "e9": "migration"
+  },
+  "groups": {
+    "g-rest": "Pilot restaurant",
+    "g-cloud": "Azure subscription",
+    "g-region-mx": "Region Mexico Central",
+    "g-vpc-mx": "VNet 10.0.0.0/16",
+    "g-zone-mx-a": "Zone 1",
+    "g-zone-mx-b": "Zone 2",
+    "g-priv-mx": "Private subnet",
+    "g-region-us": "Region South Central US",
+    "g-vpc-us": "VNet 10.1.0.0/16",
+    "g-zone-us-a": "Zone 1",
+    "g-zone-us-b": "Zone 2",
+    "g-priv-us": "Private subnet"
+  },
+  "why_not": {
+    "azure-mysql-flex-ha": {
+      "s2": "The HA standby is not available for reads or writes: it is passive and only exists for a fast failover."
+    },
+    "azure-mysql-read-replica": {
+      "s1": "There is no automatic failover between the source and the read replica: to use it you stop replication manually."
+    },
+    "azure-sql-database": {
+      "s1": "Active geo-replication belongs to Azure SQL Database, not MySQL, and its geo-secondary only serves read-only queries.",
+      "s2": "Active geo-replication copies an Azure SQL Database; it is not a copy of the slot 1 MySQL.",
+      "s3": "In active geo-replication transactions are committed on the primary and the geo-secondary only serves reads: there are not two regions writing."
+    },
+    "azure-activity-log": {
+      "s4": "The activity log records management operations, such as creating or changing a resource; the replica lag is the Replication Lag In Seconds metric, and the alert on it is a metric alert."
+    },
+    "azure-app-configuration": {
+      "s5": "App Configuration stores app settings and complements Key Vault, which is where secrets are stored; the near expiry notice through Event Grid in the rotation tutorial is published by Key Vault."
+    }
+  }
+}

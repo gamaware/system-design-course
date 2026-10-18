@@ -1,0 +1,460 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e07-azure",
+  "version": 1,
+  "scenario": "e07",
+  "cloud": "azure",
+  "title": "Quiniela del Mundial 2026",
+  "summary": "Una app mexicana espera 2 millones de jugadores durante los partidos del Mundial 2026, y las apuestas se disparan en el minuto 90.",
+  "topics": [
+    "balanceo L7",
+    "contenedores sin servidores",
+    "caché",
+    "cola",
+    "NoSQL"
+  ],
+  "source_refs": [
+    {
+      "title": "¿Qué es Azure Application Gateway?",
+      "url": "https://learn.microsoft.com/en-us/azure/application-gateway/overview"
+    },
+    {
+      "title": "Container Apps detrás de Application Gateway",
+      "url": "https://learn.microsoft.com/en-us/azure/container-apps/waf-app-gateway"
+    },
+    {
+      "title": "Cómo funciona Application Gateway",
+      "url": "https://learn.microsoft.com/en-us/azure/application-gateway/how-application-gateway-works"
+    },
+    {
+      "title": "¿Qué es Azure Load Balancer?",
+      "url": "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-overview"
+    },
+    {
+      "title": "Azure Load Balancer: grupos de back-end",
+      "url": "https://learn.microsoft.com/en-us/azure/load-balancer/backend-pool-management"
+    },
+    {
+      "title": "Azure Container Apps: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/container-apps/overview"
+    },
+    {
+      "title": "¿Qué es Azure Kubernetes Service?",
+      "url": "https://learn.microsoft.com/en-us/azure/aks/what-is-aks"
+    },
+    {
+      "title": "¿Qué es Azure Managed Redis?",
+      "url": "https://learn.microsoft.com/en-us/azure/redis/overview"
+    },
+    {
+      "title": "Azure Database for MySQL: réplicas de lectura",
+      "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas"
+    },
+    {
+      "title": "Service Bus: colas, temas y suscripciones",
+      "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions"
+    },
+    {
+      "title": "Event Hubs: características",
+      "url": "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-features"
+    },
+    {
+      "title": "Azure Cosmos DB: particionamiento",
+      "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning"
+    },
+    {
+      "title": "Cosmos DB REST: crear un documento",
+      "url": "https://learn.microsoft.com/en-us/rest/api/cosmos-db/create-a-document"
+    },
+    {
+      "title": "Azure Cosmos DB: niveles de consistencia",
+      "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels"
+    },
+    {
+      "title": "Blob Storage: introducción",
+      "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 5
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.95,
+        "r": 0,
+        "w": 6.99,
+        "h": 4.9
+      }
+    },
+    {
+      "id": "g-region",
+      "kind": "azure-region",
+      "label": "Región Mexico Central",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 2.01,
+        "r": 0.22,
+        "w": 6.87,
+        "h": 4.62
+      }
+    },
+    {
+      "id": "g-net",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-region",
+      "cell": {
+        "c": 2.07,
+        "r": 0.44,
+        "w": 3.96,
+        "h": 3.18
+      }
+    },
+    {
+      "id": "g-zone-a",
+      "kind": "azure-zone",
+      "label": "Zona de disponibilidad 1",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-zone-b",
+      "kind": "azure-zone",
+      "label": "Zona de disponibilidad 2",
+      "parent": "g-net",
+      "cell": {
+        "c": 4.07,
+        "r": 0.66,
+        "w": 1.9,
+        "h": 2.9
+      }
+    },
+    {
+      "id": "g-pub",
+      "kind": "azure-subnet",
+      "label": "Subred pública",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 0.9,
+        "w": 3.84,
+        "h": 1.25
+      }
+    },
+    {
+      "id": "g-priv",
+      "kind": "azure-subnet",
+      "label": "Subred privada",
+      "parent": "g-net",
+      "cell": {
+        "c": 2.13,
+        "r": 2.25,
+        "w": 3.84,
+        "h": 1.25
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Jugadores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-internet",
+      "icon": "gen-internet",
+      "label": "Internet",
+      "number": null,
+      "cell": {
+        "c": 0.92,
+        "r": 1.15
+      },
+      "group": null
+    },
+    {
+      "id": "n-scores",
+      "icon": "gen-team",
+      "label": "Proveedor de marcadores",
+      "number": 6,
+      "cell": {
+        "c": 0.92,
+        "r": 3.85
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 3.55,
+        "r": 1.15
+      },
+      "group": "g-pub",
+      "accept": [
+        "azure-app-gateway"
+      ],
+      "near_miss": "azure-load-balancer",
+      "hint_cue": "en el encabezado X-Forwarded-For",
+      "explanation": "Application Gateway trabaja en la capa 7 y puede ir frente a Container Apps en un entorno interno integrado a la red virtual; agrega el encabezado x-forwarded-for con la IP y el puerto del jugador.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/application-gateway/overview",
+        "https://learn.microsoft.com/en-us/azure/container-apps/waf-app-gateway",
+        "https://learn.microsoft.com/en-us/azure/application-gateway/how-application-gateway-works",
+        "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-overview",
+        "https://learn.microsoft.com/en-us/azure/load-balancer/backend-pool-management"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 3.55,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "azure-container-apps"
+      ],
+      "near_miss": "azure-aks",
+      "hint_cue": "sin que el equipo de dos personas administre servidores",
+      "explanation": "Azure Container Apps es una plataforma sin servidores para contenedores: el equipo no configura servidores ni orquesta contenedores, y las apps escalan según el tráfico HTTP o los eventos.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/container-apps/overview",
+        "https://learn.microsoft.com/en-us/azure/aks/what-is-aks"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.2,
+        "r": 2.5
+      },
+      "group": "g-priv",
+      "accept": [
+        "azure-managed-redis"
+      ],
+      "near_miss": "azure-mysql-read-replica",
+      "hint_cue": "guarda en memoria",
+      "explanation": "Azure Managed Redis es un almacén de datos en memoria que arma tablas de posiciones con la estructura sorted set, y Redis suele ser mucho más rápido que una base de datos relacional.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/redis/overview",
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 6.35,
+        "r": 2.5
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-service-bus"
+      ],
+      "near_miss": "azure-event-hubs",
+      "hint_cue": "si no, se vuelve a entregar",
+      "explanation": "En una cola de Service Bus varios trabajadores leen y cada mensaje lo procesa uno solo. En modo peek lock el mensaje queda bloqueado; si no se completa antes de que venza el bloqueo, Service Bus lo vuelve a entregar.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions",
+        "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-features"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 6.35,
+        "r": 3.85
+      },
+      "group": "g-region",
+      "accept": [
+        "azure-cosmos-db-regional"
+      ],
+      "near_miss": "azure-blob-storage",
+      "hint_cue": "solo la escribe si esa clave no existe",
+      "explanation": "En Azure Cosmos DB cada elemento lleva un id único dentro de su partición lógica, y crear un documento con un id ya ocupado responde 409 Conflict. Las escrituras tardan menos de 10 ms en el percentil 99.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning",
+        "https://learn.microsoft.com/en-us/rest/api/cosmos-db/create-a-document",
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels",
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction",
+        "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "n-internet",
+      "dir": "forward",
+      "step": 1,
+      "label": "apuesta en el minuto 90",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-internet",
+      "to": "s1",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid"
+    },
+    {
+      "id": "e3",
+      "from": "s1",
+      "to": "s2",
+      "dir": "forward",
+      "step": 3,
+      "label": "peticiones",
+      "style": "solid"
+    },
+    {
+      "id": "e4",
+      "from": "s2",
+      "to": "s4",
+      "dir": "forward",
+      "step": 4,
+      "label": "encola la apuesta",
+      "style": "solid"
+    },
+    {
+      "id": "e5",
+      "from": "s4",
+      "to": "s5",
+      "dir": "forward",
+      "step": 5,
+      "label": "trabajadores la guardan",
+      "style": "solid"
+    },
+    {
+      "id": "e6",
+      "from": "s2",
+      "to": "s3",
+      "dir": "both",
+      "step": null,
+      "label": "posiciones",
+      "style": "dashed"
+    },
+    {
+      "id": "e7",
+      "from": "n-scores",
+      "to": "s2",
+      "dir": "forward",
+      "step": null,
+      "label": "cada gol",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} es el proxy HTTP que recibe las apuestas por HTTPS, las reparte entre los contenedores y le pasa a la API la IP del jugador en el encabezado X-Forwarded-For."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} corre la API en contenedores sin que el equipo de dos personas administre servidores, nodos ni un clúster de Kubernetes."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} guarda en memoria la tabla de posiciones de 2 millones de jugadores, ordenada por puntos, para no ir a la base de datos en cada consulta."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} absorbe el pico del minuto 90: los trabajadores sacan las apuestas a su ritmo y cada una se da por terminada solo cuando confirman que la procesaron; si no, se vuelve a entregar."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} es la base de datos NoSQL de las apuestas: guarda cada una con clave por jugador y partido y solo la escribe si esa clave no existe, para que nadie apueste dos veces."
+    },
+    {
+      "n": 6,
+      "slot": null,
+      "text": "El proveedor de marcadores manda cada gol a la API del slot 2, que actualiza la tabla de posiciones del slot 3."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-app-gateway"
+    },
+    {
+      "service": "azure-container-apps"
+    },
+    {
+      "service": "azure-managed-redis"
+    },
+    {
+      "service": "azure-service-bus"
+    },
+    {
+      "service": "azure-cosmos-db-regional"
+    },
+    {
+      "service": "azure-load-balancer",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "Azure Load Balancer reparte tráfico TCP o UDP de capa 4, y su grupo de back-end por IP solo admite máquinas virtuales o conjuntos de escalado, no otros servicios PaaS como Container Apps."
+      }
+    },
+    {
+      "service": "azure-aks",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "AKS es un clúster de Kubernetes, lo que el requisito excluye, y en AKS Standard el equipo crea y administra a mano los grupos de nodos."
+      }
+    },
+    {
+      "service": "azure-mysql-read-replica",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "Una réplica de lectura de MySQL es otra copia de la base relacional, y la guía de Azure Managed Redis explica que Redis suele ser mucho más rápido que una base relacional.",
+        "s5": "Las réplicas de lectura de MySQL son de solo lectura, así que no pueden recibir la escritura de cada apuesta."
+      }
+    },
+    {
+      "service": "azure-event-hubs",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "En Event Hubs el consumidor guarda sus propios puntos de control y los eventos no se pueden borrar de forma explícita; el requisito pide confirmar cada apuesta por separado."
+      }
+    },
+    {
+      "service": "azure-blob-storage",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Blob Storage está optimizado para guardar grandes cantidades de datos no estructurados; el requisito pide una base de datos NoSQL."
+      }
+    }
+  ],
+  "review_notes": "Escenario 7 de ARCHITECTURES.md, rediseñado a balanceo de capa 7 (ver design-notes.md): Azure Load Balancer no acepta Container Apps como back-end, así que el slot 1 es Application Gateway frente a un entorno interno de Container Apps en la red virtual. Zonas como columnas que cruzan las subredes. Cola y base NoSQL fuera de la red, en la región, porque son servicios regionales. Los trabajadores de la cola son contenedores del slot 2. La cuenta de Cosmos DB del slot 5 es de una sola región, como el diagrama. Cada explicación y why_not cita su fuente en refs.",
+  "status": "published"
+}

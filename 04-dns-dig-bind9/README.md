@@ -624,6 +624,7 @@ sudo mv /etc/named.conf.backup /etc/named.conf
 - [ICANN Accredited Registrars][icann-registrars]
 - [DNS RFC Standards](https://www.rfc-editor.org/standards)
 - [AWS Route 53 Documentation](https://docs.aws.amazon.com/route53/)
+- [Lab 13 -- Solutions Architecture](../13-solutions-architecture/) rebuilds the multi-Region pattern on four clouds
 
 ## Author
 

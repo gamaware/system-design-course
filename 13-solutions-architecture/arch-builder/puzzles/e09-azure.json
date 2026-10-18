@@ -1,0 +1,637 @@
+{
+  "$schema": "../schema/puzzle.schema.json",
+  "id": "e09-azure",
+  "version": 1,
+  "scenario": "e09",
+  "cloud": "azure",
+  "title": "El DNS elige la región y el balanceador elige la VM",
+  "summary": "Una tienda vende a México y a España con un solo dominio, tienda.mx, desde Mexico Central y Spain Central. Si cae una región, los compradores deben llegar a la otra en minutos.",
+  "topics": [
+    "DNS",
+    "balanceo",
+    "autoescalado",
+    "alta disponibilidad multirregión"
+  ],
+  "source_refs": [
+    {
+      "title": "Traffic Manager: métodos de enrutamiento",
+      "url": "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-routing-methods"
+    },
+    {
+      "title": "Cómo funciona Azure Traffic Manager",
+      "url": "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-how-it-works"
+    },
+    {
+      "title": "Azure DNS Private Resolver: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/dns/dns-private-resolver-overview"
+    },
+    {
+      "title": "¿Qué es Azure Application Gateway?",
+      "url": "https://learn.microsoft.com/en-us/azure/application-gateway/overview"
+    },
+    {
+      "title": "Virtual Machine Scale Sets: autoescalado",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview"
+    },
+    {
+      "title": "Availability sets: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+    },
+    {
+      "title": "Azure Monitor: grupos de acciones",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/action-groups"
+    },
+    {
+      "title": "Azure API Management: información general y conceptos clave",
+      "url": "https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts"
+    },
+    {
+      "title": "Application Gateway: supervisión de estado",
+      "url": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-probe-overview"
+    },
+    {
+      "title": "Log Analytics workspace: información general",
+      "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview"
+    }
+  ],
+  "difficulty_override": null,
+  "layout": {
+    "cols": 9,
+    "rows": 7
+  },
+  "groups": [
+    {
+      "id": "g-cloud",
+      "kind": "azure-subscription",
+      "label": "Suscripción de Azure",
+      "parent": null,
+      "cell": {
+        "c": 1.05,
+        "r": 0,
+        "w": 7.9,
+        "h": 5.82
+      }
+    },
+    {
+      "id": "g-reg-a",
+      "kind": "azure-region",
+      "label": "Región A (México)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 1.11,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-a",
+      "kind": "azure-vnet",
+      "label": "VNet 10.0.0.0/16",
+      "parent": "g-reg-a",
+      "cell": {
+        "c": 1.17,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-a1",
+      "kind": "azure-zone",
+      "label": "Zona 1",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 1.23,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-a2",
+      "kind": "azure-zone",
+      "label": "Zona 2",
+      "parent": "g-net-a",
+      "cell": {
+        "c": 2.71,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-reg-b",
+      "kind": "azure-region",
+      "label": "Región B (España)",
+      "parent": "g-cloud",
+      "cell": {
+        "c": 5.69,
+        "r": 1.35,
+        "w": 3.2,
+        "h": 4.41
+      }
+    },
+    {
+      "id": "g-net-b",
+      "kind": "azure-vnet",
+      "label": "VNet 10.1.0.0/16",
+      "parent": "g-reg-b",
+      "cell": {
+        "c": 5.75,
+        "r": 1.57,
+        "w": 3.08,
+        "h": 4.13
+      }
+    },
+    {
+      "id": "g-zone-b1",
+      "kind": "azure-zone",
+      "label": "Zona 1",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 5.81,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    },
+    {
+      "id": "g-zone-b2",
+      "kind": "azure-zone",
+      "label": "Zona 2",
+      "parent": "g-net-b",
+      "cell": {
+        "c": 7.29,
+        "r": 1.83,
+        "w": 1.48,
+        "h": 3.81
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-users",
+      "icon": "gen-users",
+      "label": "Compradores",
+      "number": null,
+      "cell": {
+        "c": 0,
+        "r": 0.3
+      },
+      "group": null
+    },
+    {
+      "id": "n-vm-a1",
+      "icon": "azure-vm",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 1.47,
+        "r": 3.4
+      },
+      "group": "g-zone-a1"
+    },
+    {
+      "id": "n-vm-a2",
+      "icon": "azure-vm",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 2.95,
+        "r": 3.4
+      },
+      "group": "g-zone-a2"
+    },
+    {
+      "id": "n-vm-b1",
+      "icon": "azure-vm",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 6.05,
+        "r": 3.4
+      },
+      "group": "g-zone-b1"
+    },
+    {
+      "id": "n-vm-b2",
+      "icon": "azure-vm",
+      "label": "VM web",
+      "number": null,
+      "cell": {
+        "c": 7.53,
+        "r": 3.4
+      },
+      "group": "g-zone-b2"
+    },
+    {
+      "id": "n-team",
+      "icon": "gen-team",
+      "label": "Equipo de guardia",
+      "number": null,
+      "cell": {
+        "c": 4.5,
+        "r": 5.9
+      },
+      "group": null
+    }
+  ],
+  "slots": [
+    {
+      "id": "s1",
+      "number": 1,
+      "cell": {
+        "c": 4.5,
+        "r": 0.3
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-traffic-manager"
+      ],
+      "near_miss": "azure-dns-private-resolver",
+      "hint_cue": "responde con la dirección de la región sana más cercana",
+      "explanation": "Traffic Manager responde en DNS según su método de enrutamiento: con Performance elige el endpoint de menor latencia y no incluye al que deja de estar disponible. El TTL de sus respuestas se configura, por ejemplo en 60 s.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-routing-methods",
+        "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-how-it-works",
+        "https://learn.microsoft.com/en-us/azure/dns/dns-private-resolver-overview"
+      ]
+    },
+    {
+      "id": "s2",
+      "number": 2,
+      "cell": {
+        "c": 4.5,
+        "r": 2.15
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-traffic-manager-monitoring"
+      ],
+      "near_miss": "azure-app-gateway-probe",
+      "hint_cue": "prueba desde varios puntos de internet",
+      "explanation": "Todo perfil de Traffic Manager incluye monitoreo de endpoints: sus servidores de nombres eligen según la salud que miden esos health checks y dejan de devolver el endpoint que falla. Aquí el monitoreo es una pieza del perfil, no un servicio aparte.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-how-it-works",
+        "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-routing-methods",
+        "https://learn.microsoft.com/en-us/azure/application-gateway/overview",
+        "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-probe-overview"
+      ]
+    },
+    {
+      "id": "s3",
+      "number": 3,
+      "cell": {
+        "c": 2.21,
+        "r": 2.15
+      },
+      "group": "g-net-a",
+      "accept": [
+        "azure-app-gateway"
+      ],
+      "near_miss": "azure-api-management",
+      "hint_cue": "termina TLS y reparte las peticiones",
+      "explanation": "Application Gateway v2 es un balanceador de tráfico web de capa 7 que vive en su propia subred de la red virtual: termina SSL/TLS y reparte las peticiones entre los servidores de su pool de backend.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/application-gateway/overview",
+        "https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts"
+      ]
+    },
+    {
+      "id": "s4",
+      "number": 4,
+      "cell": {
+        "c": 2.21,
+        "r": 4.65
+      },
+      "group": "g-net-a",
+      "accept": [
+        "azure-vmss"
+      ],
+      "near_miss": "azure-availability-set",
+      "hint_cue": "reemplaza la que falla y agrega más",
+      "explanation": "Un Virtual Machine Scale Set sube o baja el número de VM con reglas de métricas como el porcentaje de CPU y admite reparaciones automáticas de instancias. Un availability set reparte VM en dominios de falla; para escalar, la guía recomienda los scale sets.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+      ]
+    },
+    {
+      "id": "s5",
+      "number": 5,
+      "cell": {
+        "c": 4.5,
+        "r": 3.4
+      },
+      "group": "g-cloud",
+      "accept": [
+        "azure-action-groups"
+      ],
+      "near_miss": "azure-log-analytics",
+      "hint_cue": "le entrega a guardia el aviso",
+      "explanation": "Un grupo de acciones define a quién se avisa cuando se dispara una alerta de Azure Monitor y por qué medio: correo, SMS, llamada de voz o notificación push en la app de Azure.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/action-groups",
+        "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview"
+      ]
+    },
+    {
+      "id": "s6",
+      "number": 6,
+      "cell": {
+        "c": 6.79,
+        "r": 2.15
+      },
+      "group": "g-net-b",
+      "accept": [
+        "azure-app-gateway"
+      ],
+      "near_miss": "azure-api-management",
+      "hint_cue": "termina TLS y reparte solo entre las VM web sanas",
+      "explanation": "En la región B otro Application Gateway v2, en su propia subred de esa red virtual, termina SSL/TLS y reparte las peticiones entre los servidores de su pool de backend.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/application-gateway/overview",
+        "https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts"
+      ]
+    },
+    {
+      "id": "s7",
+      "number": 7,
+      "cell": {
+        "c": 6.79,
+        "r": 4.65
+      },
+      "group": "g-net-b",
+      "accept": [
+        "azure-vmss"
+      ],
+      "near_miss": "azure-availability-set",
+      "hint_cue": "reemplaza la que falla y agrega más con la carga",
+      "explanation": "La región B lleva su propio Virtual Machine Scale Set: sube o baja el número de VM con reglas de métricas y admite reparaciones automáticas de instancias.",
+      "refs": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "n-users",
+      "to": "s1",
+      "dir": "both",
+      "step": 1,
+      "label": "¿tienda.mx? IP y TTL 60 s",
+      "style": "solid"
+    },
+    {
+      "id": "e2",
+      "from": "n-users",
+      "to": "s3",
+      "dir": "forward",
+      "step": 2,
+      "label": "HTTPS",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e3",
+      "from": "s3",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": 3,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e4",
+      "from": "s3",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e5",
+      "from": "s6",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e6",
+      "from": "s6",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "solid",
+      "route": "v-first"
+    },
+    {
+      "id": "e7",
+      "from": "s2",
+      "to": "s3",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e8",
+      "from": "s2",
+      "to": "s6",
+      "dir": "forward",
+      "step": null,
+      "label": "prueba",
+      "style": "dotted"
+    },
+    {
+      "id": "e9",
+      "from": "s2",
+      "to": "s1",
+      "dir": "forward",
+      "step": 4,
+      "label": "A cae",
+      "style": "dashed"
+    },
+    {
+      "id": "e10",
+      "from": "s1",
+      "to": "s6",
+      "dir": "forward",
+      "step": 5,
+      "label": "ahora responde con B",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e11",
+      "from": "s2",
+      "to": "s5",
+      "dir": "forward",
+      "step": 6,
+      "label": "alarma",
+      "style": "solid"
+    },
+    {
+      "id": "e12",
+      "from": "s5",
+      "to": "n-team",
+      "dir": "forward",
+      "step": 7,
+      "label": "aviso",
+      "style": "solid"
+    },
+    {
+      "id": "e13",
+      "from": "s4",
+      "to": "n-vm-a1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e14",
+      "from": "s4",
+      "to": "n-vm-a2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e15",
+      "from": "s7",
+      "to": "n-vm-b1",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    },
+    {
+      "id": "e16",
+      "from": "s7",
+      "to": "n-vm-b2",
+      "dir": "forward",
+      "step": null,
+      "label": "",
+      "style": "dashed",
+      "route": "h-first"
+    }
+  ],
+  "requirements": [
+    {
+      "n": 1,
+      "slot": "s1",
+      "text": "{{s1}} publica un solo nombre, tienda.mx, y responde con la dirección de la región sana más cercana al comprador, con un TTL de 60 s."
+    },
+    {
+      "n": 2,
+      "slot": "s2",
+      "text": "{{s2}} prueba desde varios puntos de internet, cada cierto intervalo, que el balanceador de cada región responda; si una falla, el slot 1 deja de anunciarla."
+    },
+    {
+      "n": 3,
+      "slot": "s3",
+      "text": "{{s3}} recibe el HTTPS en la región A, termina TLS y reparte las peticiones solo entre las VM web que pasan su revisión de salud."
+    },
+    {
+      "n": 4,
+      "slot": "s4",
+      "text": "{{s4}} mantiene al menos 2 VM web de la región A en zonas distintas, reemplaza la que falla y agrega más cuando sube la carga."
+    },
+    {
+      "n": 5,
+      "slot": "s5",
+      "text": "{{s5}} le entrega a guardia el aviso de la alarma cuando el slot 2 marca caída una región; desde ese aviso corre el tiempo de reparación."
+    },
+    {
+      "n": 6,
+      "slot": "s6",
+      "text": "{{s6}} hace en la región B lo mismo que el slot 3 en la A: termina TLS y reparte solo entre las VM web sanas."
+    },
+    {
+      "n": 7,
+      "slot": "s7",
+      "text": "{{s7}} hace lo mismo que el slot 4 con las VM web de la región B: al menos 2 en zonas distintas, reemplaza la que falla y agrega más con la carga."
+    }
+  ],
+  "palette": [
+    {
+      "service": "azure-traffic-manager"
+    },
+    {
+      "service": "azure-traffic-manager-monitoring"
+    },
+    {
+      "service": "azure-app-gateway",
+      "uses": 2
+    },
+    {
+      "service": "azure-vmss",
+      "uses": 2
+    },
+    {
+      "service": "azure-action-groups"
+    },
+    {
+      "service": "azure-dns-private-resolver",
+      "role": "near-miss",
+      "why_not": {
+        "s1": "DNS Private Resolver resuelve consultas DNS entre las redes virtuales de Azure y las redes locales, para zonas privadas; no publica tienda.mx hacia internet ni elige la región sana."
+      }
+    },
+    {
+      "service": "azure-app-gateway-probe",
+      "role": "near-miss",
+      "why_not": {
+        "s2": "El sondeo de Application Gateway revisa los servidores de su pool de backend y deja de mandarle tráfico al que enferma; los servidores de nombres del slot 1 eligen la región según la salud que miden sus propios health checks."
+      }
+    },
+    {
+      "service": "azure-api-management",
+      "role": "near-miss",
+      "why_not": {
+        "s3": "API Management publica y administra APIs; aquí se pide un balanceador de tráfico web de capa 7 en la red virtual que termine TLS y reparta entre las VM de la región.",
+        "s6": "API Management publica y administra APIs; aquí se pide un balanceador de tráfico web de capa 7 en la red virtual que termine TLS y reparta entre las VM de la región."
+      }
+    },
+    {
+      "service": "azure-availability-set",
+      "role": "near-miss",
+      "why_not": {
+        "s4": "Un availability set reparte VM en dominios de falla para que no caigan juntas; para subir o bajar el número de VM con la demanda, la misma guía recomienda otro recurso.",
+        "s7": "Un availability set reparte VM en dominios de falla para que no caigan juntas; para subir o bajar el número de VM con la demanda, la misma guía recomienda otro recurso."
+      }
+    },
+    {
+      "service": "azure-vm",
+      "role": "distractor",
+      "why_not": {
+        "s4": "Cada VM web del diagrama ya es una máquina virtual; el slot pide lo que sube o baja el número de VM con reglas y repara las instancias que fallan.",
+        "s7": "Cada VM web del diagrama ya es una máquina virtual; el slot pide lo que sube o baja el número de VM con reglas y repara las instancias que fallan."
+      }
+    },
+    {
+      "service": "azure-log-analytics",
+      "role": "near-miss",
+      "why_not": {
+        "s5": "Un workspace de Log Analytics es un almacén donde se juntan datos de registro de recursos de Azure y de fuera de Azure; el slot pide lo que define a quién se avisa y por qué medio cuando se dispara la alerta."
+      }
+    }
+  ],
+  "review_notes": "Escenario 9 (Lab 04). Equivalencia dudosa E9-1/2: en Azure el monitoreo de endpoints viene dentro del perfil de Traffic Manager. Para conservar la topología común, el slot 2 sigue siendo una ficha propia: 'Azure Traffic Manager (monitoreo de endpoints)', que la documentación trata como característica con nombre (Traffic Manager Endpoint Monitoring) y que todo perfil incluye. Las dos fichas comparten icono y se distinguen por la modalidad (perfil DNS contra monitoreo de endpoints). El sondeo de Application Gateway es el near-miss del slot 2. Slots 6 y 7 = balanceador y scale set de la región B (uses 2), porque el validador no deja repetir números. Los distractores del slot 4 son los del escenario 2 (availability set) y su fuente es la del escenario 2.",
+  "status": "published"
+}

@@ -1,0 +1,81 @@
+{
+  "id": "e05-gcp",
+  "title": "Scholarship payments",
+  "summary": "BecaPay deposits grants to 15,000 university students through an app. The auditor requires a standard login, the company's own keys and a trail of every change.",
+  "requirements": {
+    "1": "{{s1}} lets students sign in with email or with their Google account, and the app receives OAuth 2.0 / OIDC tokens that expire and are renewed with a refresh token.",
+    "2": "{{s2}} runs in the Mexico region and rejects any call to /pagos with an invalid, expired or foreign-issuer token before it reaches the service.",
+    "3": "{{s3}} encrypts the database and backups with company keys that rotate every year, and every use of those keys can be logged.",
+    "4": "{{s4}} alerts if someone operates the cloud resources from a suspicious IP address.",
+    "5": "{{s5}} shows the auditor who changed a firewall rule or deleted a resource, when and from where.",
+    "6": "The payments service runs in the private subnet and only receives calls that slot 2 already validated.",
+    "7": "The database stores the scholarship holders' accounts and deposits, encrypted with the slot 3 keys."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "Identity Platform adds email or Google sign-in and issues an ID token that expires; with the refresh token, the app requests a new ID token.",
+      "hint_cue": "with their Google account"
+    },
+    "s2": {
+      "explanation": "The Apigee VerifyJWT policy checks the JWT signature with the public key or a JWKS, the expiry and, if configured, the issuer and audience; if anything fails, processing stops and it returns an error. Apigee runs in northamerica-south1.",
+      "hint_cue": "invalid, expired or foreign-issuer token"
+    },
+    "s3": {
+      "explanation": "Cloud KMS rotates keys automatically on a schedule the team defines, and every Encrypt or Decrypt goes to the Data Access audit logs once they are enabled.",
+      "hint_cue": "company keys that rotate every year"
+    },
+    "s4": {
+      "explanation": "Event Threat Detection, part of the Security Command Center Premium tier, reviews logs and creates findings, for example when someone modifies services from an IP address tied to the Tor network.",
+      "hint_cue": "suspicious IP address"
+    },
+    "s5": {
+      "explanation": "Cloud Audit Logs answers who did what, where and when: Admin Activity logs are always written when someone changes the configuration and keep the caller IP.",
+      "hint_cue": "who changed a firewall rule"
+    }
+  },
+  "nodes": {
+    "n-app": "Students' app",
+    "n-pay": "Payments service",
+    "n-db": "Scholarship database",
+    "n-sec": "Security team",
+    "n-aud": "Auditor"
+  },
+  "edges": {
+    "e1": "signs in",
+    "e2": "token",
+    "e3": "/pagos",
+    "e4": "queries",
+    "e5": "encryption keys",
+    "e6": "activity",
+    "e7": "alert",
+    "e8": "trail"
+  },
+  "groups": {
+    "g-cloud": "Google Cloud · becapay project",
+    "g-region": "Region northamerica-south1",
+    "g-net": "VPC network",
+    "g-zone-a": "northamerica-south1-a",
+    "g-zone-b": "northamerica-south1-b",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "gcp-iam": {
+      "s1": "Google Cloud IAM controls who can do what on which resources; it does not give the app's students sign-up or sign-in."
+    },
+    "gcp-passthrough-nlb": {
+      "s2": "The passthrough Network Load Balancer is layer 4 and is not a proxy: it passes connections through as they are, without validating the token."
+    },
+    "gcp-secret-manager": {
+      "s3": "Secret Manager stores sensitive data such as API keys, passwords and certificates; it is not the service that creates and rotates the database encryption keys."
+    },
+    "gcp-artifact-analysis": {
+      "s4": "Artifact Analysis scans artifacts in Artifact Registry for vulnerabilities and malicious packages; it does not alert on changes made from a suspicious IP address."
+    },
+    "gcp-vpc-flow-logs": {
+      "s5": "VPC Flow Logs sample the packets that VMs send and receive; they do not say who changed a firewall rule or who deleted a resource."
+    },
+    "gcp-api-gateway": {
+      "s2": "API Gateway validates JWTs, but its gateways deploy to only 10 regions and none is northamerica-south1, the Mexico region where the payments service runs."
+    }
+  }
+}

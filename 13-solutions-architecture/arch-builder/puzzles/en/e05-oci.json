@@ -1,0 +1,78 @@
+{
+  "id": "e05-oci",
+  "title": "Scholarship payments",
+  "summary": "BecaPay deposits grants to 15,000 university students through an app. The auditor requires a standard login, the company's own keys and a trail of every change.",
+  "requirements": {
+    "1": "{{s1}} lets students sign in with email or with their Google account, and the app receives OAuth 2.0 / OIDC tokens that expire and are renewed with a refresh token.",
+    "2": "{{s2}} rejects any call to /pagos with an invalid, expired or foreign-issuer token before it reaches the service.",
+    "3": "{{s3}} encrypts the database and backups with company keys that rotate every year, and every use of those keys can be logged.",
+    "4": "{{s4}} alerts if someone operates the cloud resources from a suspicious IP address.",
+    "5": "{{s5}} shows the auditor who changed a firewall rule or deleted a resource, when and from where.",
+    "6": "The payments service runs in the private subnet and only receives calls that slot 2 already validated.",
+    "7": "The database stores the scholarship holders' accounts and deposits, encrypted with the slot 3 keys."
+  },
+  "slots": {
+    "s1": {
+      "explanation": "An OCI IAM identity domain accepts Google as a social provider; the registered app gets an access token with a configurable expiration and a refresh token to get another without signing in again.",
+      "hint_cue": "with their Google account"
+    },
+    "s2": {
+      "explanation": "The gateway validates the JWT signature and the exp, aud and iss claims; if the token is missing or invalid it returns HTTP 401 by default, and only routes the request on after a successful validation.",
+      "hint_cue": "invalid, expired or foreign-issuer token"
+    },
+    "s3": {
+      "explanation": "OCI Vault holds the master keys of integrated services; in a private vault they rotate every 60 to 365 days, and its crypto operations log, if enabled, records who used which key.",
+      "hint_cue": "company keys that rotate every year"
+    },
+    "s4": {
+      "explanation": "The Suspicious Ip Activity rule of the Cloud Guard activity detector alerts when someone signs in or calls an API from a suspicious IP address, using data from the Threat Intelligence service.",
+      "hint_cue": "suspicious IP address"
+    },
+    "s5": {
+      "explanation": "OCI Audit records calls to OCI public APIs with the time, source, target and type of action; each event also stores the user (principalName) and the IP address of the request.",
+      "hint_cue": "who changed a firewall rule"
+    }
+  },
+  "nodes": {
+    "n-app": "Students' app",
+    "n-pay": "Payments service",
+    "n-db": "Scholarship database",
+    "n-sec": "Security team",
+    "n-aud": "Auditor"
+  },
+  "edges": {
+    "e1": "signs in",
+    "e2": "token",
+    "e3": "/pagos",
+    "e4": "queries",
+    "e5": "encryption keys",
+    "e6": "activity",
+    "e7": "alert",
+    "e8": "trail"
+  },
+  "groups": {
+    "g-cloud": "Oracle Cloud · becapay compartment",
+    "g-region": "Querétaro region (single AD)",
+    "g-net": "VCN 10.0.0.0/16",
+    "g-zone-a": "Fault domain 1",
+    "g-zone-b": "Fault domain 2",
+    "g-priv": "Private subnet"
+  },
+  "why_not": {
+    "oci-iam-policies": {
+      "s1": "An IAM policy states who can access which tenancy resources and how; it does not give the app's students sign-in."
+    },
+    "oci-network-load-balancer": {
+      "s2": "OCI Network Load Balancer distributes connections using layer 3 and 4 data and is pass-through, not a proxy: it does not validate the call's token."
+    },
+    "oci-secret-management": {
+      "s3": "Secret Management stores secrets, such as passwords, certificates and SSH keys, encrypted with a master key; it is not the service that creates and rotates those keys."
+    },
+    "oci-vulnerability-scanning": {
+      "s4": "Vulnerability Scanning checks hosts and container images for vulnerabilities; it does not alert on API calls from a suspicious IP address."
+    },
+    "oci-vcn-flow-logs": {
+      "s5": "VCN flow logs show details about traffic that passes through the VCN; they do not say who changed a firewall rule or who deleted a resource."
+    }
+  }
+}
