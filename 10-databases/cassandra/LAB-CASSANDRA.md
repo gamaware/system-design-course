@@ -19,8 +19,6 @@ decides how many of those copies have to answer.
 
 ![Three peer Cassandra nodes each holding a copy of every row, with the coordinator collecting replica answers, and a second view where one stopped node still satisfies QUORUM but not ALL](../diagrams/lab10-cassandra-consistency.svg)
 
-[Edit this diagram](../diagrams/lab10-cassandra-consistency.drawio)
-
 ## Learning Objectives
 
 - Deploy and verify a 3-node Cassandra cluster with RF=3

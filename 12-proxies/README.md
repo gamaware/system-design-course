@@ -49,8 +49,6 @@ only way out is Squid.
 
 ![nginx in front of two internal services; a workstation that goes out only via Squid](diagrams/lab12-architecture.svg)
 
-[Edit this diagram](diagrams/lab12-architecture.drawio)
-
 | Container | Image | Networks | Role |
 | --- | --- | --- | --- |
 | `lab12-proxy` | `nginx:1.30.6-alpine` | backend, internet | Reverse proxy, alias `shop.example.test` |
@@ -71,7 +69,7 @@ caching, edge policies, forwarding headers, and the client-side view through a f
 12-proxies/
 ├── README.md                     # This file (lab overview)
 ├── LAB.md                        # Step-by-step instructions (8 tasks)
-├── diagrams/                     # Architecture diagram (draw.io source + PNG)
+├── diagrams/                     # Architecture diagram (draw.io source, animated SVG, PNG)
 ├── docker-compose.yml            # Seven containers on three networks
 ├── setup.sh                      # Generate certificates, start and verify everything
 ├── cleanup.sh                    # Remove containers, networks, image, and certificates

@@ -65,8 +65,6 @@ student application implements caching patterns in their chosen language.
 
 ![Redis, the Python origin and the student app as containers on one Compose network](diagrams/lab11-architecture.svg)
 
-[Edit this diagram](diagrams/lab11-architecture.drawio)
-
 **Data flow (cache-aside pattern):**
 
 1. Application checks Redis for the requested key
@@ -199,16 +197,12 @@ backend and stores the result for future requests.
 
 ![A first read that misses and fills Redis, then a second read served from Redis alone](diagrams/lab11-cache-aside.svg)
 
-[Edit this diagram](diagrams/lab11-cache-aside.drawio)
-
 #### Read-Through with TTL
 
 Same as cache-aside but wrapped in a reusable helper with automatic
 expiration. The key expires after the TTL, forcing a fresh fetch.
 
 ![A miss cached with a 30 second expiry, then a read after the key expired](diagrams/lab11-read-through-ttl.svg)
-
-[Edit this diagram](diagrams/lab11-read-through-ttl.drawio)
 
 #### Write-Through
 
@@ -217,16 +211,12 @@ The cache is always up-to-date but writes are slower.
 
 ![The origin written first, then Redis, inside one call, and a read served from Redis](diagrams/lab11-write-through.svg)
 
-[Edit this diagram](diagrams/lab11-write-through.drawio)
-
 #### Write-Back (Write-Behind)
 
 Writes go to the cache only. A separate flush process pushes dirty
 entries to the backend later. Fastest writes but risks data loss.
 
 ![Writes that reach only Redis and a dirty set, and a later flush that writes the origin](diagrams/lab11-write-back.svg)
-
-[Edit this diagram](diagrams/lab11-write-back.drawio)
 
 ### Caching Pattern Decision Guide
 

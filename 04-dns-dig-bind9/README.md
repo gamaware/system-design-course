@@ -17,22 +17,16 @@ Reference diagrams from class, covering the concepts this lab exercises.
 
 ![Numbered walk of a query from the browser cache to the authoritative server](diagrams/lab04-dns-resolution-flow.svg)
 
-[Edit this diagram](diagrams/lab04-dns-resolution-flow.drawio)
-
 *Step-by-step DNS resolution: client cache, recursive resolver and its cache, root, TLD, and authoritative
 servers, and the HTTP request that only starts once the name has been resolved.*
 
 ![Two panels contrasting DNS round robin answering without health checks against a load balancer that checks every backend](diagrams/lab04-dns-vs-load-balancer.svg)
-
-[Edit this diagram](diagrams/lab04-dns-vs-load-balancer.drawio)
 
 *When to use each: DNS round robin answers without health checks and commits for a whole TTL, while the
 load balancer decides on every
 request and drops a failed backend in seconds.*
 
 ![Two Regions with load balancers chosen by Route 53 routing](diagrams/lab04-dns-plus-load-balancer-multi-region.svg)
-
-[Edit this diagram](diagrams/lab04-dns-plus-load-balancer-multi-region.drawio)
 
 *The real-world pattern: DNS (Route 53) picks the Region, the load balancer (ALB/HAProxy) picks the instance.*
 
@@ -66,7 +60,7 @@ request and drops a failed backend in seconds.*
 ```text
 04-dns-dig-bind9/
 ├── README.md              # This file (all exercises run on EC2)
-└── diagrams/              # Architecture diagrams (draw.io source + PNG)
+└── diagrams/              # Architecture diagrams (draw.io source, animated SVG, PNG)
 ```
 
 This lab runs entirely on an AWS EC2 instance. Execute each command and observe the

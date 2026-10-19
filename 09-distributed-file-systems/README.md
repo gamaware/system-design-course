@@ -53,8 +53,6 @@ provides S3-compatible object storage with 4-drive erasure coding.
 
 ![Docker Compose network with an NFS server exporting three directories to two clients, and MinIO spreading objects over four drives next to Amazon S3](diagrams/lab09-architecture.svg)
 
-[Edit this diagram](diagrams/lab09-architecture.drawio)
-
 **Two storage models compared:**
 
 - **NFS**: POSIX file system -- hierarchical directories, file locking,
@@ -68,7 +66,7 @@ provides S3-compatible object storage with 4-drive erasure coding.
 ```text
 09-distributed-file-systems/
 ├── README.md                       # This file (lab overview)
-├── diagrams/                       # Architecture diagrams (draw.io source + PNG)
+├── diagrams/                       # Architecture diagrams (draw.io source, animated SVG, PNG)
 ├── LAB.md                          # Step-by-step instructions (8 tasks)
 ├── docker-compose.yml              # NFS + MinIO + clients
 ├── setup.sh                        # Start environment (local Docker)
@@ -167,13 +165,9 @@ locally built Docker images.
 
 ![Numbered path of a write from one client to the server disk, the read that follows from the other client, and the flock that blocks a second writer](diagrams/lab09-nfs-flow.svg)
 
-[Edit this diagram](diagrams/lab09-nfs-flow.drawio)
-
 ### Object Storage Data Flow
 
 ![Numbered path of an upload split into two data and two parity shards over four drives, one drive lost, and the object rebuilt from the survivors](diagrams/lab09-erasure-coding.svg)
-
-[Edit this diagram](diagrams/lab09-erasure-coding.drawio)
 
 ### Storage Model Decision Guide
 

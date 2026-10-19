@@ -51,8 +51,6 @@ crosses Toxiproxy, where the lab injects latency and partitions.
 
 ![Client container sending requests through HAProxy and Toxiproxy to three nodes](diagrams/lab05-architecture.svg)
 
-[Edit this diagram](diagrams/lab05-architecture.drawio)
-
 ### Components
 
 - **Nodes (`node1`, `node2`, `node3`)**: a key-value store written with the Python standard library

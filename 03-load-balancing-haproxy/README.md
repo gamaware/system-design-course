@@ -17,8 +17,6 @@ Reference diagrams from class, covering the concepts this lab exercises.
 
 ![Numbered request flow from a client into HAProxy on port 8080, which spreads traffic over three active backends, keeps two backups idle, health checks every server and publishes a stats page](diagrams/lab03-haproxy-load-balancing.svg)
 
-[Edit this diagram](diagrams/lab03-haproxy-load-balancing.drawio)
-
 ## Learning Objectives
 
 - Configure HAProxy as a load balancer
@@ -50,7 +48,7 @@ Reference diagrams from class, covering the concepts this lab exercises.
 ```text
 03-load-balancing-haproxy/
 ├── README.md                    # This file
-├── diagrams/                    # Architecture diagrams (draw.io source + PNG)
+├── diagrams/                    # Architecture diagrams (draw.io source, animated SVG, PNG)
 ├── setup.sh                     # Initial setup script
 ├── cleanup.sh                   # Cleanup script
 ├── configs/                     # HAProxy configurations
@@ -223,8 +221,6 @@ but roughly even over many requests.
 ## Architecture Diagram
 
 ![One EC2 instance holding HAProxy on 8080, backends on 8001-8003, two backup backends on 8004-8005 and the stats page on 8404](diagrams/lab03-haproxy-load-balancing.svg)
-
-[Edit this diagram](diagrams/lab03-haproxy-load-balancing.drawio)
 
 ## Key Concepts
 

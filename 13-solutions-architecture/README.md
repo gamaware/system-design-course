@@ -51,8 +51,6 @@ official icon package of each provider, verifies its SHA-256 checksum, and write
 
 ![Lab 13 build flow: puzzles, icon registry and app become a static dist/ site](diagrams/lab13-architecture.svg)
 
-[Edit this diagram](diagrams/lab13-architecture.drawio)
-
 Every scenario uses the same topology on the four clouds: same gaps, nodes, and arrows. Only the
 services, the group types (VPC, VNet, VCN), the explanations, and the documentation links change.
 
@@ -63,7 +61,7 @@ services, the group types (VPC, VNet, VCN), the explanations, and the documentat
 ├── README.md                       # This file (lab overview)
 ├── LAB.md                          # Step-by-step instructions (5 tasks + deliverable)
 ├── ARCHITECTURES.md                # Scenario design, answers and sources per cloud (Spanish)
-├── diagrams/                       # Architecture diagrams (draw.io source + PNG)
+├── diagrams/                       # Architecture diagrams (draw.io source, animated SVG, PNG)
 ├── presentation/                   # Class slides
 ├── presentation-alt-ckm-slides/    # Alternative class slides
 └── arch-builder/

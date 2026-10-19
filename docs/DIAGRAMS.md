@@ -58,8 +58,6 @@ set for Docker, proxies, caches and databases.
 
 ```markdown
 ![Lab NN architecture](diagrams/labNN-architecture.svg)
-
-[Edit this diagram](diagrams/labNN-architecture.drawio)
 ```
 
 The `alt` text is required: markdownlint rule `MD045` fails an image without it.

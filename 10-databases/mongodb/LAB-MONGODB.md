@@ -19,8 +19,6 @@ and can serve reads.
 
 ![A mongosh client writing to the mongo1 primary, which streams its oplog to the mongo2 and mongo3 secondaries, while a read served by a secondary lags slightly and a write sent to a secondary is refused](../diagrams/lab10-mongodb-replica-set.svg)
 
-[Edit this diagram](../diagrams/lab10-mongodb-replica-set.drawio)
-
 ## Learning Objectives
 
 - Deploy and verify a MongoDB replica set with three nodes

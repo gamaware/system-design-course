@@ -41,7 +41,7 @@ in this course.
 
 ## Class Diagrams
 
-Reference diagrams from class, covering the concepts this lab exercises (editable draw.io source + PNG in [`diagrams/`](./diagrams/)):
+Reference diagrams from class, covering the concepts this lab exercises (draw.io sources and images in [`diagrams/`](./diagrams/)):
 
 | Diagram | What it shows |
 | --- | --- |
@@ -50,11 +50,7 @@ Reference diagrams from class, covering the concepts this lab exercises (editabl
 
 ![Three underused servers running one application each, next to one host whose hypervisor shares its processor, memory and network across three isolated virtual machines](diagrams/lab02-virtualization.svg)
 
-[Edit this diagram](diagrams/lab02-virtualization.drawio)
-
 ![A physical host sliced into virtual machines with their own vCPU, vRAM and vNIC, the three routes storage takes to reach a machine, and bare metal against hosted hypervisors](diagrams/lab02-hypervisors.svg)
-
-[Edit this diagram](diagrams/lab02-hypervisors.drawio)
 
 ## Lab Structure
 
@@ -155,8 +151,6 @@ Acts as a virtual firewall:
 Understanding the architecture helps visualize how components work together:
 
 ![Your computer reaching an EC2 instance through an internet gateway and a security group, with the EBS root volume attached inside the public subnet](diagrams/lab02-ec2-architecture.svg)
-
-[Edit this diagram](diagrams/lab02-ec2-architecture.drawio)
 
 **Key points:**
 
@@ -558,8 +552,6 @@ Think of connecting to your instance like going to your house:
 ### SSH Connection Flow
 
 ![The SSH handshake as an architecture: the security group checks the source address, then the instance matches your signature against the stored public key](diagrams/lab02-ssh-connection-flow.svg)
-
-[Edit this diagram](diagrams/lab02-ssh-connection-flow.drawio)
 
 ---
 

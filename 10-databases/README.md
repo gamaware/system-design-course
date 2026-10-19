@@ -58,8 +58,6 @@ CloudFormation.
 
 ![A browser calling a Python API bridge inside Docker Compose, which sends writes to the MySQL primary on port 3306 and reads to the replica on port 3307 while the primary feeds the replica over its binary log](diagrams/lab10-architecture.svg)
 
-[Edit this diagram](diagrams/lab10-architecture.drawio)
-
 **Data flow:**
 
 1. The browser sends HTTP requests to the Python API bridge

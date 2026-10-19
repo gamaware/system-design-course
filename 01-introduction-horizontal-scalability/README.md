@@ -24,8 +24,6 @@ balancing, implement CPU-based autoscaling, and observe scaling behavior under l
 
 ![VPC across three Availability Zones with an Application Load Balancer in the public subnets, three ECS Fargate services and Cloud Map in the private subnets, and a CloudWatch to alarms to Application Auto Scaling loop underneath](diagrams/lab01-architecture.svg)
 
-[Edit this diagram](diagrams/lab01-architecture.drawio)
-
 ## Class Diagrams
 
 Reference diagrams from class, covering the concepts this lab exercises.
@@ -41,19 +39,11 @@ Editable draw.io sources live in [`diagrams/`](./diagrams/).
 
 ![Two parallel paths changing the same task count: the CLI path ending in drift, and the CDK path ending in a commit](diagrams/lab01-manual-scaling-cli-vs-cdk.svg)
 
-[Edit this diagram](diagrams/lab01-manual-scaling-cli-vs-cdk.drawio)
-
 ![Seven numbered stages from cdk init to cdk destroy, with the edit, synth, diff, deploy loop drawn above them](diagrams/lab01-cdk-lifecycle.svg)
-
-[Edit this diagram](diagrams/lab01-cdk-lifecycle.drawio)
 
 ![Five-step control loop from traffic to desiredCount, the scaling formula, and a task-count timeline measured during the lab](diagrams/lab01-autoscaling-decision.svg)
 
-[Edit this diagram](diagrams/lab01-autoscaling-decision.drawio)
-
 ![Scale-out in four steps taking minutes against scale-in in three steps taking seconds, plus how the autoscaler reverts a manual change](diagrams/lab01-scaling-flow.svg)
-
-[Edit this diagram](diagrams/lab01-scaling-flow.drawio)
 
 ## Prerequisites
 

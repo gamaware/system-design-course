@@ -58,8 +58,6 @@ payment consumer and the monitor.
 
 ![RabbitMQ broker with work, dead letter, fanout, topic and payments queues](diagrams/lab14-architecture.svg)
 
-[Edit this diagram](diagrams/lab14-architecture.drawio)
-
 **Message flow (work queue):**
 
 1. The producer publishes an order to the `orders` queue and returns
