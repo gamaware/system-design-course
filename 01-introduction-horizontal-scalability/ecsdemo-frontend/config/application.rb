@@ -1,6 +1,9 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 
-require 'rails/all'
+# Load only the frameworks this app uses (no database, mailers or jobs).
+require 'rails'
+require 'action_controller/railtie'
+require 'action_view/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -20,8 +23,9 @@ module ExampleApp
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
+    # The app keeps no user data in cookies, so a per-boot random key is enough
+    # when SECRET_KEY_BASE is not provided.
+    config.secret_key_base = ENV.fetch('SECRET_KEY_BASE') { SecureRandom.hex(64) }
 
     # Since we run in a Docker container, always log to stdout
     config.logger = Logger.new(STDOUT)

@@ -82,6 +82,5 @@ export CODE_HASH
 export IP
 export AZ="${IP} in AZ-${zone}"
 
-# exec bundle exec thin start
-RAILS_ENV=production rake assets:precompile
-exec rails s -e production -b 0.0.0.0
+RAILS_ENV=production bundle exec rake assets:precompile
+exec bundle exec rails server -e production -b 0.0.0.0
