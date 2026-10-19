@@ -41,7 +41,8 @@ in this course.
 
 ## Class Diagrams
 
-Reference diagrams from class, covering the concepts this lab exercises (draw.io sources and images in [`diagrams/`](./diagrams/)):
+Reference diagrams from class, covering the concepts this lab exercises
+(draw.io sources and images in [`diagrams/`](./diagrams/)):
 
 | Diagram | What it shows |
 | --- | --- |
