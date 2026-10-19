@@ -85,6 +85,10 @@ In the AWS Console:
    upload `cloudformation.yaml`
 1. Click **Next**
 1. Enter the stack name: `lab10-visualizer`
+1. In **AllowedCidr**, enter your public IP address followed by `/32`
+   (for example `203.0.113.25/32`). Open
+   [checkip.amazonaws.com](https://checkip.amazonaws.com) to find it.
+   Only that address can reach SSH and the visualizer
 1. Click **Next** twice (skip Configure stack options)
 1. On the Review page, scroll down and click **Submit**
 
@@ -109,7 +113,9 @@ http://YOUR_PUBLIC_IP:8081
 
 The visualizer should load with the three tabs and sidebar showing
 database state. If the page does not load, wait another minute for
-the setup to finish.
+the setup to finish. If it still does not load, check that your IP has
+not changed since you created the stack: update the stack with your new
+address in **AllowedCidr**.
 
 Then continue with **Task 1** below. The visualizer works identically
 whether running locally or on EC2.
