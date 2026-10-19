@@ -59,10 +59,10 @@
         </mxCell>
 
         <!-- Edge -->
-        <mxCell id="edge-internet-igw" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;elbow=vertical;startArrow=block;startFill=1;endFill=1;strokeColor=#545B64;rounded=0;jettySize=auto;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="icon-internet" target="icon-igw">
+        <mxCell id="edge-internet-igw" style="html=1;endArrow=block;startArrow=block;startFill=1;endFill=1;strokeColor=#545B64;jettySize=auto;fontFamily=Helvetica;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="icon-internet" target="icon-igw">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-internet-igw-label" value="gateway attached to the VPC" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-internet-igw">
+        <mxCell id="edge-internet-igw-label" value="gateway attached to the VPC" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontFamily=Helvetica;labelBackgroundColor=default;" connectable="0" vertex="1" parent="edge-internet-igw">
           <mxGeometry relative="1" x="0" y="0" as="geometry">
             <mxPoint y="-12" as="offset" />
           </mxGeometry>

@@ -50,26 +50,26 @@
           <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
         </mxCell>
 
-        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a1" target="a2">
+        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a1" target="a2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ea1l" value="you decide to add capacity" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea1">
+        <mxCell id="ea1l" value="you decide to add capacity" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea1">
           <mxGeometry relative="1" x="0" y="0" as="geometry">
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a2" target="a3">
+        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a2" target="a3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ea2l" value="image pull and start: minutes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea2">
+        <mxCell id="ea2l" value="image pull and start: minutes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea2">
           <mxGeometry relative="1" x="0" y="0" as="geometry">
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ea3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="a3" target="a4">
+        <mxCell id="ea3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a3" target="a4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ea3l" value="health check every 30 s" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea3">
+        <mxCell id="ea3l" value="health check every 30 s" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea3">
           <mxGeometry relative="1" x="0" y="0" as="geometry">
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
@@ -104,18 +104,18 @@
           <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
         </mxCell>
 
-        <mxCell id="eb1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="b1" target="b2">
+        <mxCell id="eb1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b1" target="b2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eb1l" value="effective at once" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb1">
+        <mxCell id="eb1l" value="effective at once" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb1">
           <mxGeometry relative="1" x="0" y="0" as="geometry">
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eb2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;" edge="1" parent="1" source="b2" target="b3">
+        <mxCell id="eb2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b2" target="b3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eb2l" value="deregistration delay, then stop" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb2">
+        <mxCell id="eb2l" value="deregistration delay, then stop" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb2">
           <mxGeometry relative="1" x="0" y="0" as="geometry">
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>

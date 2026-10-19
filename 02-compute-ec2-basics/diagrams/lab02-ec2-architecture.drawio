@@ -17,13 +17,13 @@
           <mxGeometry x="5" y="70" width="1090" height="10" as="geometry" />
         </mxCell>
         <mxCell id="users-container" value="Your computer&lt;div&gt;&lt;i&gt;SSH client + private key&lt;/i&gt;&lt;/div&gt;" style="fillColor=#f5f5f5;strokeColor=light-dark(#666666,#D4D4D4);rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#333333;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1;perimeterSpacing=0;" vertex="1" parent="1">
-          <mxGeometry x="60" y="394" width="140" height="120" as="geometry" />
+          <mxGeometry x="20" y="394" width="140" height="120" as="geometry" />
         </mxCell>
         <mxCell id="users-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#232F3D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.users;fontFamily=Helvetica;" vertex="1" parent="users-container">
           <mxGeometry x="46" y="52" width="48" height="48" as="geometry" />
         </mxCell>
         <mxCell id="users-note" value="&lt;i&gt;ssh -i key.pem ec2-user@your-public-dns&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontFamily=Helvetica;labelBackgroundColor=none;fontColor=light-dark(#333333,#FAFAFA);" vertex="1" parent="1">
-          <mxGeometry x="40" y="524" width="180" height="40" as="geometry" />
+          <mxGeometry x="0" y="524" width="180" height="40" as="geometry" />
         </mxCell>
         <mxCell id="aws-cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud;strokeColor=#232F3E;fillColor=light-dark(#232F3E0D,#232F3E0D);fillStyle=auto;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="260" y="150" width="880" height="520" as="geometry" />
@@ -44,7 +44,7 @@
           <mxGeometry x="30" y="70" width="300" height="240" as="geometry" />
         </mxCell>
         <mxCell id="ec2-box" value="Compute" style="fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;" vertex="1" parent="sg">
-          <mxGeometry x="90" y="70" width="120" height="120" as="geometry" />
+          <mxGeometry x="50" y="70" width="120" height="120" as="geometry" />
         </mxCell>
         <mxCell id="ec2" value="EC2 instance&lt;div&gt;&lt;i&gt;t3.micro, Amazon Linux 2023&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;shadow=1;fontFamily=Helvetica;" vertex="1" parent="ec2-box">
           <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
@@ -55,22 +55,22 @@
         <mxCell id="ebs" value="EBS root volume&lt;div&gt;&lt;i&gt;8 GB gp3, holds the AMI&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_block_store;shadow=1;fontFamily=Helvetica;" vertex="1" parent="ebs-box">
           <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="edge-user-igw" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="users-container" target="igw">
+        <mxCell id="edge-user-igw" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="users-container" target="igw">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-user-igw-label" value="SSH, port 22" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-user-igw">
-          <mxGeometry relative="1" x="-0.4" y="0" as="geometry">
+        <mxCell id="edge-user-igw-label" value="SSH, port 22" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-user-igw">
+          <mxGeometry relative="1" x="-0.43" y="0" as="geometry">
             <mxPoint y="-14" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-igw-ec2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;" edge="1" parent="1" source="igw" target="ec2">
+        <mxCell id="edge-igw-ec2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="igw" target="ec2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-ec2-ebs" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;startArrow=block;startFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ec2" target="ebs">
+        <mxCell id="edge-ec2-ebs" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;startArrow=block;startFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="ec2" target="ebs">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-ec2-ebs-label" value="attached as /dev/xvda" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-ec2-ebs">
-          <mxGeometry relative="1" x="0.5" y="0" as="geometry">
+        <mxCell id="edge-ec2-ebs-label" value="attached as /dev/xvda" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-ec2-ebs">
+          <mxGeometry relative="1" x="-0.28" y="0" as="geometry">
             <mxPoint y="-14" as="offset" />
           </mxGeometry>
         </mxCell>
@@ -84,7 +84,7 @@
           <mxGeometry x="540" y="290" width="28" height="28" as="geometry" />
         </mxCell>
         <mxCell id="badge-4" value="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
-          <mxGeometry x="536.0" y="486.0" width="28" height="28" as="geometry" />
+          <mxGeometry x="626" y="364" width="28" height="28" as="geometry" />
         </mxCell>
         <mxCell id="badge-5" value="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#007CBD;strokeColor=default;fontColor=#FFFFFF;fontStyle=1;fontSize=16;fontFamily=Helvetica;shadow=1;glass=0;strokeWidth=2;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
           <mxGeometry x="1000.0" y="312.0" width="28" height="28" as="geometry" />
