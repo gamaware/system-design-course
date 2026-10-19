@@ -47,7 +47,7 @@ The reverse proxy is the only container that publishes ports for the services. T
 network that nobody else can reach. On the other side, the workstation sits on an internal corporate network whose
 only way out is Squid.
 
-![nginx in front of two internal services; a workstation that goes out only via Squid](diagrams/lab12-architecture.png)
+![nginx in front of two internal services; a workstation that goes out only via Squid](diagrams/lab12-architecture.svg)
 
 [Edit this diagram](diagrams/lab12-architecture.drawio)
 

@@ -55,7 +55,7 @@ lab. CloudFormation creates the network foundation (step 1), the AWS CLI
 creates security resources (step 2), and Terraform creates the compute
 instances (step 3).
 
-![Numbered walkthrough of the lab: CloudFormation, the AWS CLI and Terraform run from the student computer and build a VPC with an Internet Gateway, a public route table, a security group and one EC2 web server in each of two Availability Zones](diagrams/lab08-vpc-architecture.png)
+![Numbered walkthrough of the lab: CloudFormation, the AWS CLI and Terraform run from the student computer and build a VPC with an Internet Gateway, a public route table, a security group and one EC2 web server in each of two Availability Zones](diagrams/lab08-vpc-architecture.svg)
 
 [Edit this diagram](diagrams/lab08-vpc-architecture.drawio)
 
@@ -69,13 +69,13 @@ instances (step 3).
 
 After the VPC is created (Task 2), the network foundation looks like this:
 
-![Empty VPC 10.0.0.0/16 with an Internet Gateway attached to it and two Availability Zones that still hold no subnets](diagrams/lab08-vpc-foundation.png)
+![Empty VPC 10.0.0.0/16 with an Internet Gateway attached to it and two Availability Zones that still hold no subnets](diagrams/lab08-vpc-foundation.svg)
 
 [Edit this diagram](diagrams/lab08-vpc-foundation.drawio)
 
 After both subnets are provisioned and route tables are associated:
 
-![VPC with one public subnet per Availability Zone, both associated with a single route table whose default route points at the Internet Gateway](diagrams/lab08-vpc-subnets.png)
+![VPC with one public subnet per Availability Zone, both associated with a single route table whose default route points at the Internet Gateway](diagrams/lab08-vpc-subnets.svg)
 
 [Edit this diagram](diagrams/lab08-vpc-subnets.drawio)
 

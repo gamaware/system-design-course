@@ -28,7 +28,7 @@ environment.
 
 ## Architecture
 
-![Bob's laptop and the devapp01 server on two Docker bridge networks, with the server's frontend interface down and its default route missing](diagrams/lab07-architecture.png)
+![Bob's laptop and the devapp01 server on two Docker bridge networks, with the server's frontend interface down and its default route missing](diagrams/lab07-architecture.svg)
 
 [Edit this diagram](diagrams/lab07-architecture.drawio)
 
@@ -306,7 +306,7 @@ the same fundamentals (interfaces, IPs, routing) in a cloud environment.
 
 **Requirements:** AWS Academy Learner Lab or AWS account with EC2 access.
 
-![EC2 instance in a public subnet reaching the internet through the VPC router, the public route table and an internet gateway, next to a private subnet with no outbound path](diagrams/lab07-aws-vpc.png)
+![EC2 instance in a public subnet reaching the internet through the VPC router, the public route table and an internet gateway, next to a private subnet with no outbound path](diagrams/lab07-aws-vpc.svg)
 
 [Edit this diagram](diagrams/lab07-aws-vpc.drawio)
 

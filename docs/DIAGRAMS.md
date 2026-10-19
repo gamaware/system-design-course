@@ -9,17 +9,25 @@ Diagrams are authored as draw.io XML with the official AWS4 shape libraries and 
 
 ```bash
 drawio --no-sandbox -x -f png -s 1.5 -o diagrams/labNN-architecture.png diagrams/labNN-architecture.drawio
+shared/diagram-motion/render.sh NN-topic/diagrams/labNN-architecture.drawio
 ```
+
+The second command writes the animated SVG that the README shows: the arrows of the flow draw in
+step order with a glowing dot, the step badge pulses and its legend row lights up. The step order of
+each diagram lives in `shared/diagram-motion/flows.json`. See
+[shared/diagram-motion/README.md](../shared/diagram-motion/README.md).
 
 ## Files per lab
 
 | File                                    | Purpose                                   |
 |-----------------------------------------|-------------------------------------------|
 | `NN-topic/diagrams/labNN-<name>.drawio` | Editable source, committed                |
-| `NN-topic/diagrams/labNN-<name>.png`    | Rendered image referenced from the README |
+| `NN-topic/diagrams/labNN-<name>.svg`    | Animated image referenced from the README |
+| `NN-topic/diagrams/labNN-<name>.png`    | Static render, for slides and printing    |
 
-SVG is not committed. draw.io embeds every icon as base64, so a diagram carrying a dozen service icons
-lands past the 1024 KB pre-commit limit, as measured on the diagrams in this repository.
+The plain draw.io SVG export is not committed: every text label carries a PNG copy, which puts a
+diagram past the 1024 KB pre-commit limit. `render.sh` drops those copies, so the animated SVG
+weighs 25 to 220 KB.
 
 ## Size budget
 
@@ -49,7 +57,7 @@ set for Docker, proxies, caches and databases.
 ## Referencing a diagram
 
 ```markdown
-![Lab NN architecture](diagrams/labNN-architecture.png)
+![Lab NN architecture](diagrams/labNN-architecture.svg)
 
 [Edit this diagram](diagrams/labNN-architecture.drawio)
 ```

@@ -49,7 +49,7 @@ through HAProxy, which offers the same three nodes on two frontends: port 18080 
 port 18081 without them. Every link between HAProxy and a node, and every link between two nodes,
 crosses Toxiproxy, where the lab injects latency and partitions.
 
-![Client container sending requests through HAProxy and Toxiproxy to three nodes](diagrams/lab05-architecture.png)
+![Client container sending requests through HAProxy and Toxiproxy to three nodes](diagrams/lab05-architecture.svg)
 
 [Edit this diagram](diagrams/lab05-architecture.drawio)
 

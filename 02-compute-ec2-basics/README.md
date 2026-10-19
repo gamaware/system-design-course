@@ -48,11 +48,11 @@ Reference diagrams from class, covering the concepts this lab exercises (editabl
 | [What is virtualization?](./diagrams/lab02-virtualization.png) | Definition, On‑Prem (1 server = 1 OS = 1 app) vs. one physical host running independent VMs on a hypervisor, VM portability, and the three benefits (cost, agility, downtime). |
 | [What is a hypervisor?](./diagrams/lab02-hypervisors.png) | Compute host (CPU/RAM/Network + storage) sliced into vCPU/vRAM/vNIC per VM, isolation between VMs, the three storage paths (EBS / Instance Store / EFS‑FSx), Type 1 vs. Type 2 with products, multitenancy and how it maps to EC2 in the labs. |
 
-![Three underused servers running one application each, next to one host whose hypervisor shares its processor, memory and network across three isolated virtual machines](diagrams/lab02-virtualization.png)
+![Three underused servers running one application each, next to one host whose hypervisor shares its processor, memory and network across three isolated virtual machines](diagrams/lab02-virtualization.svg)
 
 [Edit this diagram](diagrams/lab02-virtualization.drawio)
 
-![A physical host sliced into virtual machines with their own vCPU, vRAM and vNIC, the three routes storage takes to reach a machine, and bare metal against hosted hypervisors](diagrams/lab02-hypervisors.png)
+![A physical host sliced into virtual machines with their own vCPU, vRAM and vNIC, the three routes storage takes to reach a machine, and bare metal against hosted hypervisors](diagrams/lab02-hypervisors.svg)
 
 [Edit this diagram](diagrams/lab02-hypervisors.drawio)
 
@@ -154,7 +154,7 @@ Acts as a virtual firewall:
 
 Understanding the architecture helps visualize how components work together:
 
-![Your computer reaching an EC2 instance through an internet gateway and a security group, with the EBS root volume attached inside the public subnet](diagrams/lab02-ec2-architecture.png)
+![Your computer reaching an EC2 instance through an internet gateway and a security group, with the EBS root volume attached inside the public subnet](diagrams/lab02-ec2-architecture.svg)
 
 [Edit this diagram](diagrams/lab02-ec2-architecture.drawio)
 
@@ -557,7 +557,7 @@ Think of connecting to your instance like going to your house:
 
 ### SSH Connection Flow
 
-![The SSH handshake as an architecture: the security group checks the source address, then the instance matches your signature against the stored public key](diagrams/lab02-ssh-connection-flow.png)
+![The SSH handshake as an architecture: the security group checks the source address, then the instance matches your signature against the stored public key](diagrams/lab02-ssh-connection-flow.svg)
 
 [Edit this diagram](diagrams/lab02-ssh-connection-flow.drawio)
 

@@ -17,7 +17,7 @@ OAuth clients and realms, and build a Flask API that validates JWT tokens for se
 
 Reference diagrams from class, covering the concepts this lab exercises.
 
-![Student laptop reaching an EC2 instance through the security group on ports 22, 8443 and 5000, where Keycloak runs in Docker behind HTTPS and the Flask API answers over plain HTTP](diagrams/lab06-oauth2-keycloak-https.png)
+![Student laptop reaching an EC2 instance through the security group on ports 22, 8443 and 5000, where Keycloak runs in Docker behind HTTPS and the Flask API answers over plain HTTP](diagrams/lab06-oauth2-keycloak-https.svg)
 
 [Edit this diagram](diagrams/lab06-oauth2-keycloak-https.drawio)
 
@@ -152,7 +152,7 @@ A **Realm** is a workspace that manages its own set of users, credentials, roles
 
 ## Lab Architecture
 
-![Numbered OAuth 2.0 password grant flow between the student laptop, Keycloak on port 8443 and the Flask API on port 5000, from the curl token request to the introspected token and the protected response](diagrams/lab06-oauth2-keycloak-https.png)
+![Numbered OAuth 2.0 password grant flow between the student laptop, Keycloak on port 8443 and the Flask API on port 5000, from the curl token request to the introspected token and the protected response](diagrams/lab06-oauth2-keycloak-https.svg)
 
 [Edit this diagram](diagrams/lab06-oauth2-keycloak-https.drawio)
 

@@ -15,14 +15,14 @@ and understand DNS-based load balancing.
 
 Reference diagrams from class, covering the concepts this lab exercises.
 
-![Numbered walk of a query from the browser cache to the authoritative server](diagrams/lab04-dns-resolution-flow.png)
+![Numbered walk of a query from the browser cache to the authoritative server](diagrams/lab04-dns-resolution-flow.svg)
 
 [Edit this diagram](diagrams/lab04-dns-resolution-flow.drawio)
 
 *Step-by-step DNS resolution: client cache, recursive resolver and its cache, root, TLD, and authoritative
 servers, and the HTTP request that only starts once the name has been resolved.*
 
-![Two panels contrasting DNS round robin answering without health checks against a load balancer that checks every backend](diagrams/lab04-dns-vs-load-balancer.png)
+![Two panels contrasting DNS round robin answering without health checks against a load balancer that checks every backend](diagrams/lab04-dns-vs-load-balancer.svg)
 
 [Edit this diagram](diagrams/lab04-dns-vs-load-balancer.drawio)
 
@@ -30,7 +30,7 @@ servers, and the HTTP request that only starts once the name has been resolved.*
 load balancer decides on every
 request and drops a failed backend in seconds.*
 
-![Two Regions with load balancers chosen by Route 53 routing](diagrams/lab04-dns-plus-load-balancer-multi-region.png)
+![Two Regions with load balancers chosen by Route 53 routing](diagrams/lab04-dns-plus-load-balancer-multi-region.svg)
 
 [Edit this diagram](diagrams/lab04-dns-plus-load-balancer-multi-region.drawio)
 

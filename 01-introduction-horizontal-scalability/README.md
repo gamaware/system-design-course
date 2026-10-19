@@ -22,7 +22,7 @@ balancing, implement CPU-based autoscaling, and observe scaling behavior under l
 
 ## Architecture
 
-![VPC across three Availability Zones with an Application Load Balancer in the public subnets, three ECS Fargate services and Cloud Map in the private subnets, and a CloudWatch to alarms to Application Auto Scaling loop underneath](diagrams/lab01-architecture.png)
+![VPC across three Availability Zones with an Application Load Balancer in the public subnets, three ECS Fargate services and Cloud Map in the private subnets, and a CloudWatch to alarms to Application Auto Scaling loop underneath](diagrams/lab01-architecture.svg)
 
 [Edit this diagram](diagrams/lab01-architecture.drawio)
 
@@ -39,19 +39,19 @@ Editable draw.io sources live in [`diagrams/`](./diagrams/).
 | [How autoscaling decides](./diagrams/lab01-autoscaling-decision.png) | The target-tracking "thermostat": CPU metric → AlarmHigh/AlarmLow → `new = ceil(tasks × CPU / target)` → desiredCount within min/max; measured timeline and the four knobs in `app.py`. |
 | [Scaling out and in, measured](./diagrams/lab01-scaling-flow.png) | Manual scale-out and scale-in with measured timings, what happens when the autoscaler is left switched on, and the lessons from the load test. |
 
-![Two parallel paths changing the same task count: the CLI path ending in drift, and the CDK path ending in a commit](diagrams/lab01-manual-scaling-cli-vs-cdk.png)
+![Two parallel paths changing the same task count: the CLI path ending in drift, and the CDK path ending in a commit](diagrams/lab01-manual-scaling-cli-vs-cdk.svg)
 
 [Edit this diagram](diagrams/lab01-manual-scaling-cli-vs-cdk.drawio)
 
-![Seven numbered stages from cdk init to cdk destroy, with the edit, synth, diff, deploy loop drawn above them](diagrams/lab01-cdk-lifecycle.png)
+![Seven numbered stages from cdk init to cdk destroy, with the edit, synth, diff, deploy loop drawn above them](diagrams/lab01-cdk-lifecycle.svg)
 
 [Edit this diagram](diagrams/lab01-cdk-lifecycle.drawio)
 
-![Five-step control loop from traffic to desiredCount, the scaling formula, and a task-count timeline measured during the lab](diagrams/lab01-autoscaling-decision.png)
+![Five-step control loop from traffic to desiredCount, the scaling formula, and a task-count timeline measured during the lab](diagrams/lab01-autoscaling-decision.svg)
 
 [Edit this diagram](diagrams/lab01-autoscaling-decision.drawio)
 
-![Scale-out in four steps taking minutes against scale-in in three steps taking seconds, plus how the autoscaler reverts a manual change](diagrams/lab01-scaling-flow.png)
+![Scale-out in four steps taking minutes against scale-in in three steps taking seconds, plus how the autoscaler reverts a manual change](diagrams/lab01-scaling-flow.svg)
 
 [Edit this diagram](diagrams/lab01-scaling-flow.drawio)
 

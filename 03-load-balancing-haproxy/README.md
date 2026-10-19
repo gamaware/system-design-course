@@ -15,7 +15,7 @@ failover behavior.
 
 Reference diagrams from class, covering the concepts this lab exercises.
 
-![Numbered request flow from a client into HAProxy on port 8080, which spreads traffic over three active backends, keeps two backups idle, health checks every server and publishes a stats page](diagrams/lab03-haproxy-load-balancing.png)
+![Numbered request flow from a client into HAProxy on port 8080, which spreads traffic over three active backends, keeps two backups idle, health checks every server and publishes a stats page](diagrams/lab03-haproxy-load-balancing.svg)
 
 [Edit this diagram](diagrams/lab03-haproxy-load-balancing.drawio)
 
@@ -222,7 +222,7 @@ but roughly even over many requests.
 
 ## Architecture Diagram
 
-![One EC2 instance holding HAProxy on 8080, backends on 8001-8003, two backup backends on 8004-8005 and the stats page on 8404](diagrams/lab03-haproxy-load-balancing.png)
+![One EC2 instance holding HAProxy on 8080, backends on 8001-8003, two backup backends on 8004-8005 and the stats page on 8404](diagrams/lab03-haproxy-load-balancing.svg)
 
 [Edit this diagram](diagrams/lab03-haproxy-load-balancing.drawio)
 

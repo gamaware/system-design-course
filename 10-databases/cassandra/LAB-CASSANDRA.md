@@ -17,7 +17,7 @@ The three nodes form one ring with no primary. Replication factor 3 puts a
 copy of every row on every node, and the consistency level of each statement
 decides how many of those copies have to answer.
 
-![Three peer Cassandra nodes each holding a copy of every row, with the coordinator collecting replica answers, and a second view where one stopped node still satisfies QUORUM but not ALL](../diagrams/lab10-cassandra-consistency.png)
+![Three peer Cassandra nodes each holding a copy of every row, with the coordinator collecting replica answers, and a second view where one stopped node still satisfies QUORUM but not ALL](../diagrams/lab10-cassandra-consistency.svg)
 
 [Edit this diagram](../diagrams/lab10-cassandra-consistency.drawio)
 

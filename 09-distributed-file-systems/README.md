@@ -51,7 +51,7 @@ The lab environment runs entirely in Docker Compose. An NFS server
 exports three directories to two client containers, while a MinIO server
 provides S3-compatible object storage with 4-drive erasure coding.
 
-![Docker Compose network with an NFS server exporting three directories to two clients, and MinIO spreading objects over four drives next to Amazon S3](diagrams/lab09-architecture.png)
+![Docker Compose network with an NFS server exporting three directories to two clients, and MinIO spreading objects over four drives next to Amazon S3](diagrams/lab09-architecture.svg)
 
 [Edit this diagram](diagrams/lab09-architecture.drawio)
 
@@ -165,13 +165,13 @@ locally built Docker images.
 
 ### NFS Data Flow
 
-![Numbered path of a write from one client to the server disk, the read that follows from the other client, and the flock that blocks a second writer](diagrams/lab09-nfs-flow.png)
+![Numbered path of a write from one client to the server disk, the read that follows from the other client, and the flock that blocks a second writer](diagrams/lab09-nfs-flow.svg)
 
 [Edit this diagram](diagrams/lab09-nfs-flow.drawio)
 
 ### Object Storage Data Flow
 
-![Numbered path of an upload split into two data and two parity shards over four drives, one drive lost, and the object rebuilt from the survivors](diagrams/lab09-erasure-coding.png)
+![Numbered path of an upload split into two data and two parity shards over four drives, one drive lost, and the object rebuilt from the survivors](diagrams/lab09-erasure-coding.svg)
 
 [Edit this diagram](diagrams/lab09-erasure-coding.drawio)
 

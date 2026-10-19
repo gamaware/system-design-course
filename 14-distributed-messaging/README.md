@@ -56,7 +56,7 @@ holds the exchanges and queues, two worker containers consume the work
 queue, and a tools container runs the producer, the subscribers, the
 payment consumer and the monitor.
 
-![RabbitMQ broker with work, dead letter, fanout, topic and payments queues](diagrams/lab14-architecture.png)
+![RabbitMQ broker with work, dead letter, fanout, topic and payments queues](diagrams/lab14-architecture.svg)
 
 [Edit this diagram](diagrams/lab14-architecture.drawio)
 

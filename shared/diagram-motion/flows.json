@@ -1,0 +1,1491 @@
+{
+  "01-introduction-horizontal-scalability/diagrams/lab01-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e2",
+          "e3"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e4"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e5",
+          "e6"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e7",
+          "e8"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e9"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "e11"
+        ]
+      },
+      {
+        "badge": "badge-8",
+        "edges": [
+          "e12"
+        ]
+      },
+      {
+        "badge": "badge-9",
+        "edges": [
+          "e13",
+          "e14"
+        ]
+      }
+    ]
+  },
+  "01-introduction-horizontal-scalability/diagrams/lab01-autoscaling-decision.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "c1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "f1"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "f2"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "f3"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "f4"
+        ]
+      },
+      {
+        "edges": [
+          "f5"
+        ]
+      },
+      {
+        "edges": [
+          "curve-out"
+        ]
+      },
+      {
+        "edges": [
+          "curve-in"
+        ]
+      }
+    ]
+  },
+  "01-introduction-horizontal-scalability/diagrams/lab01-cdk-lifecycle.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "c1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "f1"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "f2"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "f3"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "f4"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "f5"
+        ]
+      },
+      {
+        "edges": [
+          "f-loop"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "f6"
+        ]
+      }
+    ]
+  },
+  "01-introduction-horizontal-scalability/diagrams/lab01-manual-scaling-cli-vs-cdk.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "a1-c"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "ea1"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "ea2"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "ea3"
+        ]
+      },
+      {
+        "edges": [
+          "ea4"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "glow": [
+          "b1-c"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "eb1"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "eb2"
+        ]
+      },
+      {
+        "badge": "badge-8",
+        "edges": [
+          "eb3"
+        ]
+      },
+      {
+        "badge": "badge-9",
+        "edges": [
+          "eb4"
+        ]
+      }
+    ]
+  },
+  "01-introduction-horizontal-scalability/diagrams/lab01-scaling-flow.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "a1-c"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "ea1"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "ea2"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "ea3"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "glow": [
+          "b1-c"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "eb1"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "eb2"
+        ]
+      }
+    ]
+  },
+  "02-compute-ec2-basics/diagrams/lab02-ec2-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "edge-user-igw"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "glow": [
+          "igw-box",
+          "igw",
+          "vpc"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "edge-igw-ec2"
+        ],
+        "glow": [
+          "sg"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "glow": [
+          "ec2-box",
+          "ec2"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "edge-ec2-ebs"
+        ]
+      }
+    ]
+  },
+  "02-compute-ec2-basics/diagrams/lab02-hypervisors.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "host-panel",
+          "host-cpu",
+          "host-ram",
+          "host-net",
+          "host-sto"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "glow": [
+          "hyp-bar",
+          "map1",
+          "map2",
+          "map3"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "glow": [
+          "vm1",
+          "vm2",
+          "vm3",
+          "vm-more"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e-ebs-net",
+          "e-net-hyp1",
+          "e-hyp1-vm"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-disk-hyp2",
+          "e-hyp2-vm"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e-efs-net3",
+          "e-net3-vm"
+        ]
+      }
+    ]
+  },
+  "02-compute-ec2-basics/diagrams/lab02-ssh-connection-flow.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "edge-user-rule"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "edge-rule-ec2",
+          "edge-rule-drop"
+        ],
+        "glow": [
+          "rule-check"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "glow": [
+          "ec2-box",
+          "ec2"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "edge-key-user"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "edge-ec2-authkeys"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "edge-ec2-user"
+        ]
+      }
+    ]
+  },
+  "02-compute-ec2-basics/diagrams/lab02-virtualization.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "srv1",
+          "srv2",
+          "srv3"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "edge-virtualize"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "glow": [
+          "hyp-a"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "glow": [
+          "vm1",
+          "vm2",
+          "vm3"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "edge-migrate"
+        ]
+      }
+    ]
+  },
+  "03-load-balancing-haproxy/diagrams/lab03-haproxy-load-balancing.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "edge-client-haproxy"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "edge-haproxy-web1",
+          "edge-haproxy-web2",
+          "edge-haproxy-web3"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "edge-health"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "edge-failover"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "edge-haproxy-stats"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "glow": [
+          "grp-haproxy"
+        ]
+      }
+    ]
+  },
+  "04-dns-dig-bind9/diagrams/lab04-dns-plus-load-balancer-multi-region.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e2"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e4a",
+          "e4b",
+          "e4c"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e5"
+        ]
+      },
+      {
+        "edges": [
+          "e6a",
+          "e6b",
+          "e6c"
+        ]
+      }
+    ]
+  },
+  "04-dns-dig-bind9/diagrams/lab04-dns-resolution-flow.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e2a"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e4"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e5"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e6"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "e2b"
+        ]
+      },
+      {
+        "badge": "badge-8",
+        "edges": [
+          "e7"
+        ]
+      }
+    ]
+  },
+  "04-dns-dig-bind9/diagrams/lab04-dns-vs-load-balancer.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "ea1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "ea2"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "ea3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "eb1"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "eb4"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "eb2",
+          "eb3"
+        ]
+      }
+    ]
+  },
+  "05-distributed-systems-high-availability/diagrams/lab05-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e2"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e4a",
+          "e4b",
+          "e4c"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e5a",
+          "e5b",
+          "e5c"
+        ]
+      }
+    ]
+  },
+  "06-security-https-oauth2-keycloak/diagrams/lab06-oauth2-keycloak-https.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "edge-1"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "edge-2"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "edge-3"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "edge-4"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "edge-5"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "edge-6"
+        ]
+      }
+    ]
+  },
+  "07-networking/diagrams/lab07-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "edge-bob-to-eth0",
+          "edge-bob-to-eth1"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "edge-frontend-broken"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "edge-backend-ok"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "edge-srv-to-eth1"
+        ],
+        "glow": [
+          "svc-group-srv"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "edge-srv-to-eth0"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "edge-route-missing"
+        ]
+      }
+    ]
+  },
+  "07-networking/diagrams/lab07-aws-vpc.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "glow": [
+          "vpc-1"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "glow": [
+          "svc-group-igw"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "edge-igw-to-eni",
+          "edge-eni-to-ec2"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "edge-user-to-igw"
+        ],
+        "glow": [
+          "sg-ec2"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "edge-rt-to-router",
+          "edge-router-to-igw"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "edge-router-to-eni"
+        ]
+      },
+      {
+        "badge": "step-7",
+        "glow": [
+          "svc-group-rt-private"
+        ]
+      }
+    ]
+  },
+  "08-cloud-networking-vpc/diagrams/lab08-vpc-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "edge-cfn"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "edge-cli"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "edge-tf"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "edge-rt-igw"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "edge-student",
+          "edge-igw-ec2-1",
+          "edge-igw-ec2-2"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "edge-cross-az"
+        ]
+      }
+    ]
+  },
+  "08-cloud-networking-vpc/diagrams/lab08-vpc-foundation.drawio": {
+    "steps": [
+      {
+        "glow": [
+          "vpc"
+        ]
+      },
+      {
+        "glow": [
+          "az-a",
+          "az-c"
+        ]
+      },
+      {
+        "edges": [
+          "edge-internet-igw"
+        ]
+      }
+    ]
+  },
+  "08-cloud-networking-vpc/diagrams/lab08-vpc-subnets.drawio": {
+    "steps": [
+      {
+        "edges": [
+          "edge-internet-igw"
+        ]
+      },
+      {
+        "glow": [
+          "subnet-a",
+          "subnet-c"
+        ]
+      },
+      {
+        "edges": [
+          "edge-rt-subnet-a",
+          "edge-rt-subnet-c"
+        ]
+      },
+      {
+        "edges": [
+          "edge-rt-igw"
+        ]
+      }
+    ]
+  },
+  "09-distributed-file-systems/diagrams/lab09-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "e1",
+          "e2",
+          "e3"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "e4",
+          "e5"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "e6",
+          "e7",
+          "e8"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "e9",
+          "e10"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "e11",
+          "e12",
+          "e13",
+          "e14"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "e15"
+        ]
+      }
+    ]
+  },
+  "09-distributed-file-systems/diagrams/lab09-erasure-coding.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "g1"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "glow": [
+          "grp-drive3"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "g6",
+          "g7",
+          "g8"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "g9"
+        ]
+      }
+    ]
+  },
+  "09-distributed-file-systems/diagrams/lab09-nfs-flow.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "f1"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "f2"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "f3",
+          "f4"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "f5"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "f6"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "f7",
+          "f8"
+        ]
+      }
+    ]
+  },
+  "10-databases/diagrams/lab10-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e2"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e4"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e5"
+        ]
+      }
+    ]
+  },
+  "10-databases/diagrams/lab10-cassandra-consistency.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "cass1-a-box",
+          "cass2-a-box",
+          "cass3-a-box",
+          "rf-box"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "ea-client"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "ea-c2",
+          "ea-c3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "glow": [
+          "cl-box"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "ea-gossip"
+        ],
+        "glow": [
+          "cass3-b-box"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "eb-client",
+          "eb-c2",
+          "eb-c3"
+        ],
+        "glow": [
+          "result-box"
+        ]
+      }
+    ]
+  },
+  "10-databases/diagrams/lab10-mongodb-replica-set.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "glow": [
+          "mongo1-box",
+          "quorum-box"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e-write"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e-oplog2",
+          "e-oplog3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "glow": [
+          "mongo1-box",
+          "client-box"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-secread"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e-reject"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "e-heartbeat"
+        ]
+      }
+    ]
+  },
+  "11-caching/diagrams/lab11-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e1"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e2"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e3"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e4"
+        ]
+      }
+    ]
+  },
+  "11-caching/diagrams/lab11-cache-aside.drawio": {
+    "steps": [
+      {
+        "badge": "a-b1",
+        "edges": [
+          "a-e1"
+        ]
+      },
+      {
+        "badge": "a-b2",
+        "edges": [
+          "a-e2"
+        ]
+      },
+      {
+        "badge": "a-b3",
+        "edges": [
+          "a-e3"
+        ]
+      },
+      {
+        "badge": "a-b4",
+        "edges": [
+          "a-e4"
+        ]
+      },
+      {
+        "badge": "b-b5",
+        "edges": [
+          "b-e5"
+        ]
+      }
+    ]
+  },
+  "11-caching/diagrams/lab11-read-through-ttl.drawio": {
+    "steps": [
+      {
+        "badge": "a-b1",
+        "edges": [
+          "a-e1"
+        ]
+      },
+      {
+        "badge": "a-b2",
+        "edges": [
+          "a-e2"
+        ]
+      },
+      {
+        "badge": "a-b3",
+        "edges": [
+          "a-e3"
+        ]
+      },
+      {
+        "badge": "a-b4",
+        "edges": [
+          "a-e4"
+        ]
+      },
+      {
+        "badge": "b-b5",
+        "edges": [
+          "b-e5"
+        ]
+      },
+      {
+        "badge": "b-b6",
+        "edges": [
+          "b-e6"
+        ]
+      },
+      {
+        "badge": "b-b7",
+        "edges": [
+          "b-e7"
+        ]
+      }
+    ]
+  },
+  "11-caching/diagrams/lab11-write-back.drawio": {
+    "steps": [
+      {
+        "badge": "a-b1",
+        "edges": [
+          "a-e1"
+        ]
+      },
+      {
+        "badge": "a-b2",
+        "edges": [
+          "a-e2"
+        ]
+      },
+      {
+        "badge": "b-b3",
+        "edges": [
+          "b-e4"
+        ]
+      },
+      {
+        "badge": "b-b4",
+        "edges": [
+          "b-e5"
+        ]
+      },
+      {
+        "badge": "b-b5",
+        "edges": [
+          "b-e6"
+        ]
+      },
+      {
+        "badge": "b-b6",
+        "edges": [
+          "b-e7"
+        ]
+      }
+    ]
+  },
+  "11-caching/diagrams/lab11-write-through.drawio": {
+    "steps": [
+      {
+        "badge": "a-b1",
+        "edges": [
+          "a-e1"
+        ]
+      },
+      {
+        "badge": "a-b2",
+        "edges": [
+          "a-e2"
+        ]
+      },
+      {
+        "badge": "b-b3",
+        "edges": [
+          "b-e3"
+        ]
+      }
+    ]
+  },
+  "12-proxies/diagrams/lab12-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "step-1",
+        "edges": [
+          "e-student-proxy"
+        ],
+        "labels": [
+          "lbl-1"
+        ]
+      },
+      {
+        "badge": "step-2",
+        "edges": [
+          "e-proxy-users"
+        ],
+        "labels": [
+          "lbl-2"
+        ]
+      },
+      {
+        "badge": "step-3",
+        "edges": [
+          "e-proxy-orders"
+        ],
+        "labels": [
+          "lbl-3"
+        ]
+      },
+      {
+        "badge": "step-4",
+        "edges": [
+          "e-proxy-sniffer"
+        ],
+        "labels": [
+          "lbl-4"
+        ]
+      },
+      {
+        "badge": "step-5",
+        "edges": [
+          "e-ws-squid"
+        ],
+        "labels": [
+          "lbl-5"
+        ]
+      },
+      {
+        "badge": "step-6",
+        "edges": [
+          "e-squid-site"
+        ],
+        "labels": [
+          "lbl-6"
+        ]
+      },
+      {
+        "badge": "step-7",
+        "edges": [
+          "e-squid-proxy"
+        ],
+        "labels": [
+          "lbl-7"
+        ]
+      }
+    ]
+  },
+  "13-solutions-architecture/diagrams/lab13-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e-puzzles",
+          "e-registry",
+          "e-app"
+        ],
+        "glow": [
+          "repo"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e-vendors"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e-dist"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e-publish"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-visit",
+          "e-disk"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e-storage"
+        ]
+      }
+    ]
+  },
+  "14-distributed-messaging/diagrams/lab14-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e-student-producer"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e-producer-orders",
+          "e-orders-w1",
+          "e-orders-w2"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e-orders-dlq"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e-producer-fanout",
+          "e-fanout-q",
+          "e-fanout-sub"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-producer-topic",
+          "e-topic-q",
+          "e-topic-sub"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e-producer-payments",
+          "e-payments-payment",
+          "e-payment-ledger"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "e-student-console"
+        ]
+      }
+    ]
+  }
+}
