@@ -17,7 +17,7 @@
           <mxGeometry x="5" y="70" width="1090" height="10" as="geometry" />
         </mxCell>
         <mxCell id="users-container" value="Your computer&lt;div&gt;&lt;i&gt;SSH client + private key&lt;/i&gt;&lt;/div&gt;" style="fillColor=#f5f5f5;strokeColor=light-dark(#666666,#D4D4D4);rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#333333;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1;perimeterSpacing=0;" vertex="1" parent="1">
-          <mxGeometry x="20" y="394" width="140" height="120" as="geometry" />
+          <mxGeometry x="20" y="400" width="140" height="120" as="geometry" />
         </mxCell>
         <mxCell id="users-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#232F3D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.users;fontFamily=Helvetica;" vertex="1" parent="users-container">
           <mxGeometry x="46" y="52" width="48" height="48" as="geometry" />
@@ -55,7 +55,7 @@
         <mxCell id="ebs" value="EBS root volume&lt;div&gt;&lt;i&gt;8 GB gp3, holds the AMI&lt;/i&gt;&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#3F8624;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_block_store;shadow=1;fontFamily=Helvetica;" vertex="1" parent="ebs-box">
           <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="edge-user-igw" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="users-container" target="igw">
+        <mxCell id="edge-user-igw" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="users-container" target="igw-box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge-user-igw-label" value="SSH, port 22" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-user-igw">
@@ -63,14 +63,14 @@
             <mxPoint y="-14" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-igw-ec2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="igw" target="ec2">
+        <mxCell id="edge-igw-ec2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="igw-box" target="ec2-box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge-ec2-ebs" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;startArrow=block;startFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="ec2" target="ebs">
+        <mxCell id="edge-ec2-ebs" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;jettySize=auto;elbow=vertical;endArrow=block;endFill=1;startArrow=block;startFill=1;strokeColor=#545B64;strokeWidth=1.5;fontFamily=Helvetica;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;orthogonalLoop=1;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;fontSize=11;" edge="1" parent="1" source="ec2-box" target="ebs-box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge-ec2-ebs-label" value="attached as /dev/xvda" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=11;fontFamily=Helvetica;" connectable="0" vertex="1" parent="edge-ec2-ebs">
-          <mxGeometry relative="1" x="-0.28" y="0" as="geometry">
+          <mxGeometry relative="1" x="-0.36" y="0" as="geometry">
             <mxPoint y="-14" as="offset" />
           </mxGeometry>
         </mxCell>

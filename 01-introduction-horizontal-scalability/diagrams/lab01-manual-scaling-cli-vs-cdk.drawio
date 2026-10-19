@@ -51,10 +51,10 @@
         </mxCell>
 
         <mxCell id="drift-box" value="&lt;div&gt;&lt;b&gt;This is drift&lt;/b&gt;&lt;/div&gt;&lt;div&gt;The service is at five, the repository still says three. The next &lt;code&gt;cdk deploy&lt;/code&gt; will quietly put it back to three. Fine for a demo or an incident, wrong for a permanent change.&lt;/div&gt;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#FFF2E8;strokeColor=#ED7100;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=6;fontSize=13;fontColor=light-dark(#000000,#000000);fontFamily=Helvetica;container=0;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="219" width="340" height="130" as="geometry" />
+          <mxGeometry x="1140" y="225" width="340" height="130" as="geometry" />
         </mxCell>
 
-        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a1" target="a2">
+        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a1-c" target="a2-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ea1l" value="one API call" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea1">
@@ -62,7 +62,7 @@
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a2" target="a3">
+        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a2-c" target="a3-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ea2l" value="effective at once" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea2">
@@ -70,7 +70,7 @@
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ea3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a3" target="a4">
+        <mxCell id="ea3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a3-c" target="a4-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ea3l" value="about 4 to 5 min" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="ea3">
@@ -78,7 +78,7 @@
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ea4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#ED7100;strokeWidth=2;dashed=1;dashPattern=8 6;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a4" target="drift-box">
+        <mxCell id="ea4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#ED7100;strokeWidth=2;dashed=1;dashPattern=8 6;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="a4-c" target="drift-box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
@@ -121,7 +121,7 @@
           <mxGeometry x="36" y="30" width="48" height="48" as="geometry" />
         </mxCell>
 
-        <mxCell id="eb1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b1" target="b2">
+        <mxCell id="eb1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b1-c" target="b2-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eb1l" value="one line changes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb1">
@@ -129,7 +129,7 @@
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eb2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b2" target="b3">
+        <mxCell id="eb2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b2-c" target="b3-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eb2l" value="read the diff first" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb2">
@@ -137,7 +137,7 @@
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eb3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b3" target="b4">
+        <mxCell id="eb3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#147EBA;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b3-c" target="b4-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eb3l" value="about 2 to 3 min" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb3">
@@ -145,7 +145,7 @@
             <mxPoint x="0" y="-13" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eb4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b4" target="b5">
+        <mxCell id="eb4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#3F8624;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;orthogonalLoop=1;jettySize=auto;fontSize=11;jumpStyle=arc;jumpSize=10;labelBackgroundColor=default;" edge="1" parent="1" source="b4-c" target="b5-c">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eb4l" value="no drift" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontSize=12;fontFamily=Helvetica;fontColor=light-dark(#333333,#FAFAFA);" connectable="0" vertex="1" parent="eb4">
