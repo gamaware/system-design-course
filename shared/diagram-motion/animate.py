@@ -68,17 +68,19 @@ def blocks(svg: str) -> dict[str, tuple[int, int]]:
 
 
 def polyline(d: str) -> list[tuple[float, float]]:
-    """Points of an arrow path. draw.io arrows use M and L, plus Q for the small arcs at line jumps."""
+    """Points of an arrow path. draw.io arrows use M and L, Q for line-jump arcs, and C for curved edges."""
     nums = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", d)]
-    cmds = re.findall(r"[MLQ]", d)
     pts, i = [], 0
-    for c in cmds:
+    for c in re.findall(r"[MLQC]", d):
         if c in "ML":
             pts.append((nums[i], nums[i + 1]))
             i += 2
-        else:  # Q: control point, then end point; the arc is short, so a straight segment is close enough
+        elif c == "Q":  # control point, then end point; the arc is short, so a straight segment is close enough
             pts.append((nums[i + 2], nums[i + 3]))
             i += 4
+        else:  # C: two control points, then end point
+            pts.append((nums[i + 4], nums[i + 5]))
+            i += 6
     return pts
 
 
@@ -324,6 +326,9 @@ def animate(drawio: Path, flows: dict) -> Path:
             )
             # 3. A glowing dot rides the front of the line.
             way = waypoints(polyline(d))
+            if len(way) < 2:
+                print(f"  ! {rel}: edge {eid} has no usable path for the dot", file=sys.stderr)
+                continue
             start = f"translate({way[0][0]:.1f}px,{way[0][1]:.1f}px)"
             moves = [(0, start), (t0, start)]
             for i, (x, y) in enumerate(way):
@@ -373,7 +378,8 @@ def animate(drawio: Path, flows: dict) -> Path:
                     (total, "none"),
                 ],
             )
-        num = re.search(r"\d+", badge).group(0) if badge else None
+        digits = re.search(r"\d+", badge) if badge else None
+        num = digits.group(0) if digits else None
         rows = step.get("legend") or (
             [
                 c

@@ -26,7 +26,13 @@ else
   while IFS= read -r line; do files+=("$line"); done < <(python3 -I "$here/animate.py" --list)
 fi
 
+# Electron refuses to run as root unless the Chromium sandbox is turned off (a root CI container).
+sandbox=()
+if [[ $EUID -eq 0 ]]; then
+  sandbox=(--no-sandbox)
+fi
+
 for f in "${files[@]}"; do
-  "$drawio" --no-sandbox -x -f svg -o "${f%.drawio}.svg" "$f" > /dev/null
+  "$drawio" "${sandbox[@]}" -x -f svg -o "${f%.drawio}.svg" "$f" > /dev/null
 done
 python3 -I "$here/animate.py" "${files[@]}"
