@@ -16,7 +16,7 @@
         <mxCell id="title-separator" value="" style="line;strokeWidth=2;html=1;fontSize=14;strokeColor=#FF9900;fontFamily=Helvetica;" vertex="1" parent="title-group">
           <mxGeometry x="5" y="70" width="1060" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="docker-band" value="Docker Compose network - replica set rs0 (mongo:7)" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="docker-band" value="Docker Compose network - replica set rs0 (mongo:7.0.45)" style="rounded=0;html=1;whiteSpace=wrap;fillColor=none;strokeColor=#879196;dashed=1;dashPattern=8 6;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=14;spacingTop=4;fontSize=14;fontStyle=1;fontColor=light-dark(#333333,#FAFAFA);container=0;pointerEvents=0;collapsible=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="280" y="150" width="840" height="680" as="geometry" />
         </mxCell>
         <mxCell id="quorum-box" value="" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
@@ -192,7 +192,7 @@
         <mxCell id="legend-footer-box" value="" style="rounded=0;html=1;whiteSpace=wrap;fillColor=light-dark(#F5F5F5,#29393B);strokeColor=#666666;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="1192" y="722" width="606" height="88" as="geometry" />
         </mxCell>
-        <mxCell id="legend-footer-text" value="&lt;div&gt;&lt;b&gt;What the Compose file starts&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Three &lt;b&gt;mongo:7&lt;/b&gt; containers started with &lt;b&gt;--replSet rs0&lt;/b&gt;, published on ports 27017, 27018 and 27019, each with its own volume.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=2;spacingLeft=6;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="legend-footer-text" value="&lt;div&gt;&lt;b&gt;What the Compose file starts&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: light-dark(rgb(0,0,0), rgb(255,255,255));&quot;&gt;&lt;b&gt;-&lt;/b&gt; Three &lt;b&gt;mongo:7.0.45&lt;/b&gt; containers started with &lt;b&gt;--replSet rs0&lt;/b&gt;, published on ports 27017, 27018 and 27019, each with its own volume.&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;spacingTop=2;spacingLeft=6;fontSize=13;labelBackgroundColor=none;whiteSpace=wrap;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="1202" y="730" width="586" height="72" as="geometry" />
         </mxCell>
       </root>

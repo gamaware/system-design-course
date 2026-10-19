@@ -76,9 +76,12 @@ failed during `docker compose up`. Both services now use the `bitnamilegacy` ima
 
 ## Pinning risk
 
-Four images still float on a major or minor tag: `mysql:8`, `mongo:7`, `cassandra:4.1` and
-`alpine:latest`. A floating tag moves under the lab without warning, which is exactly how the Redis
-breakage reached the student. Pinning them to an exact version would remove that risk.
+A floating tag moves under the lab without warning, which is exactly how the Redis breakage reached
+the student. The lab images that floated on a major or minor tag are now pinned to an exact version:
+`mysql:8.4.11`, `mongo:7.0.45`, `cassandra:4.1.12`, `python:3.13.16-slim-trixie`,
+`maven:3.9.16-eclipse-temurin-21`, `eclipse-temurin:21.0.12.1_1-jre-noble`, `gcc:14.3.0-bookworm`,
+the .NET `8.0.426` SDK and `8.0.32` runtime, and Keycloak `26.8.1`. The `alpine:latest` base image
+lives only in the third-party `ecsdemo-crystal` application, which this audit does not modify.
 
 `redis:7.2-alpine` still tracks patch releases inside 7.2. That is a deliberate trade: patch releases
 carry security fixes and keep the memory footprint that Task 6 depends on, while the jump that broke

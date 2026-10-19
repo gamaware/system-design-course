@@ -1,9 +1,9 @@
 services:
   cass1:
-    image: cassandra:4.1
+    image: cassandra:4.1.12
     container_name: cass1
     ports:
-      - "9042:9042"
+      - "127.0.0.1:9042:9042"
     environment:
       CASSANDRA_CLUSTER_NAME: university-cluster
       CASSANDRA_DC: dc1
@@ -20,7 +20,7 @@ services:
       start_period: 60s
 
   cass2:
-    image: cassandra:4.1
+    image: cassandra:4.1.12
     container_name: cass2
     environment:
       CASSANDRA_CLUSTER_NAME: university-cluster
@@ -41,7 +41,7 @@ services:
       start_period: 60s
 
   cass3:
-    image: cassandra:4.1
+    image: cassandra:4.1.12
     container_name: cass3
     environment:
       CASSANDRA_CLUSTER_NAME: university-cluster

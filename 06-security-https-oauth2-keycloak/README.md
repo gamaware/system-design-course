@@ -430,7 +430,7 @@ sudo docker run -d --name keycloak -p 8443:8443 \
   -v ~/keycloak_certs/tls.key:/etc/x509/https/tls.key \
   -e KEYCLOAK_ADMIN=admin \
   -e KEYCLOAK_ADMIN_PASSWORD=admin \
-  quay.io/keycloak/keycloak start-dev \
+  quay.io/keycloak/keycloak:26.8.1 start-dev \
   --https-certificate-file=/etc/x509/https/tls.crt \
   --https-certificate-key-file=/etc/x509/https/tls.key \
   --https-port=8443 \
@@ -1019,7 +1019,7 @@ fi
 echo -e "\n=== Cleanup commands (optional) ==="
 echo "Stop Keycloak: sudo docker stop keycloak"
 echo "Remove container: sudo docker rm keycloak"
-echo "Remove image: sudo docker rmi quay.io/keycloak/keycloak"
+echo "Remove image: sudo docker rmi quay.io/keycloak/keycloak:26.8.1"
 echo "Remove certificates: rm -rf ~/keycloak_certs"
 ```
 

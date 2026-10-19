@@ -1,4 +1,4 @@
-FROM gcc:14-bookworm
+FROM gcc:14.3.0-bookworm
 
 WORKDIR /app
 

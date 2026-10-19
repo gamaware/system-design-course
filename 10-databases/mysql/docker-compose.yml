@@ -1,12 +1,12 @@
 services:
   mysql-primary:
-    image: mysql:8
+    image: mysql:8.4.11
     container_name: mysql-primary
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: university
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - ./init/primary-init.sql:/docker-entrypoint-initdb.d/01-init.sql
       - primary-data:/var/lib/mysql
@@ -23,12 +23,12 @@ services:
       retries: 10
 
   mysql-replica:
-    image: mysql:8
+    image: mysql:8.4.11
     container_name: mysql-replica
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
     ports:
-      - "3307:3306"
+      - "127.0.0.1:3307:3306"
     volumes:
       - replica-data:/var/lib/mysql
     command:

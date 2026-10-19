@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # --- Build stage ---
-FROM maven:3.9-eclipse-temurin-21 AS build
+FROM maven:3.9.16-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY src/ src/
 RUN mvn package -DskipTests
 
 # --- Runtime stage ---
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21.0.12.1_1-jre-noble
 
 WORKDIR /app
 
