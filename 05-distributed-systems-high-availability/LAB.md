@@ -99,12 +99,12 @@ Expected output:
 
 ```text
 NAME              IMAGE                              STATUS
-lab05-client      python:3.13.7-alpine3.22           Up 9 seconds
-lab05-haproxy     haproxy:3.2.4-alpine               Up 3 seconds
-lab05-node1       python:3.13.7-alpine3.22           Up 9 seconds (health: starting)
-lab05-node2       python:3.13.7-alpine3.22           Up 9 seconds (health: starting)
-lab05-node3       python:3.13.7-alpine3.22           Up 9 seconds (health: starting)
-lab05-toxiproxy   ghcr.io/shopify/toxiproxy:2.12.0   Up 9 seconds (healthy)
+lab05-client      python:3.13.16-alpine3.24          Up 9 seconds
+lab05-haproxy     haproxy:3.2.26-alpine              Up 3 seconds
+lab05-node1       python:3.13.16-alpine3.24          Up 9 seconds (health: starting)
+lab05-node2       python:3.13.16-alpine3.24          Up 9 seconds (health: starting)
+lab05-node3       python:3.13.16-alpine3.24          Up 9 seconds (health: starting)
+lab05-toxiproxy   ghcr.io/shopify/toxiproxy:2.13.0   Up 9 seconds (healthy)
 ```
 
 Each node is a small Python program (`app/kv_node.py`) that keeps the data in memory, has its own

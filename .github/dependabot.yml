@@ -1,10 +1,14 @@
 version: 2
+# cooldown: wait 7 days before proposing a new release, so a compromised or broken
+# release is usually caught and yanked before it lands here (security updates are not delayed).
 updates:
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
 
   # Terraform providers
@@ -12,6 +16,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
 
   # Python (CDK apps) — lab 01
   - package-ecosystem: "pip"
@@ -23,6 +29,8 @@ updates:
       - "/01-introduction-horizontal-scalability/ecsdemo-crystal/cdk"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
       aws-cdk:
         patterns: ["aws-cdk-lib", "constructs"]
@@ -32,11 +40,15 @@ updates:
     directory: "/01-introduction-horizontal-scalability/ecsdemo-nodejs"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
 
-  # Ruby demo app — lab 01 (legacy Rails 4.2; PRs need manual review)
+  # Ruby demo app — lab 01 (Rails 8.1; PRs need manual review)
   - package-ecosystem: "bundler"
     directory: "/01-introduction-horizontal-scalability/ecsdemo-frontend"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 3

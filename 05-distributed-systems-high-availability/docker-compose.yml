@@ -5,7 +5,7 @@
 
 x-node: &node
   # Pinned to an exact tag: the node only needs the Python standard library.
-  image: python:3.13.7-alpine3.22
+  image: python:3.13.16-alpine3.24
   command: ["python", "-u", "/app/kv_node.py"]
   # A crashed node (exit status 1) is restarted by Docker: the supervisor of this lab.
   restart: on-failure
@@ -57,7 +57,7 @@ services:
   toxiproxy:
     # Every link (load balancer -> node, node -> node) crosses Toxiproxy, so any of them can be
     # slowed down or cut. Proxies are declared in toxiproxy/toxiproxy.json.
-    image: ghcr.io/shopify/toxiproxy:2.12.0
+    image: ghcr.io/shopify/toxiproxy:2.13.0
     container_name: lab05-toxiproxy
     command: ["-host=0.0.0.0", "-config=/config/toxiproxy.json"]
     ports:
@@ -71,7 +71,7 @@ services:
       retries: 5
 
   haproxy:
-    image: haproxy:3.2.4-alpine
+    image: haproxy:3.2.26-alpine
     container_name: lab05-haproxy
     depends_on:
       toxiproxy:
@@ -88,7 +88,7 @@ services:
   client:
     # Runs the measurement scripts from inside the lab network, so results do not depend on the
     # tools installed on the student's machine.
-    image: python:3.13.7-alpine3.22
+    image: python:3.13.16-alpine3.24
     container_name: lab05-client
     command: ["sleep", "infinity"]
     init: true

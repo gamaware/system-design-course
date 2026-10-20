@@ -1,19 +1,19 @@
-require "logger"
+require "log"
 require "http/server"
 
-log = Logger.new(STDOUT)
-log.level = Logger::DEBUG
+Log.setup(:debug)
+log = Log.for("ecsdemo-crystal")
 
-log.debug("Created logger")
-log.info("Program started")
-log.warn("Nothing to do!")
+log.debug { "Created logger" }
+log.info { "Program started" }
+log.warn { "Nothing to do!" }
 
 code_hash = File.read("code_hash.txt")
 ip = ENV["IP"]
 az = ENV["AZ"]
-log.debug("code_hash is: #{code_hash}")
-log.debug("ip is: #{ip}")
-log.debug("az is: #{az}")
+log.debug { "code_hash is: #{code_hash}" }
+log.debug { "ip is: #{ip}" }
+log.debug { "az is: #{az}" }
 
 az_message = ENV["AZ"]
 
@@ -23,13 +23,15 @@ server = HTTP::Server.new(
     HTTP::LogHandler.new,
     HTTP::CompressHandler.new,
     ]) do |context|
-      if context.request.path == "/crystal" || context.request.path == "/crystal/"
+      # the frontend sends the full URL ("GET http://host:3000/crystal"), so match on its path only
+      path = URI.parse(context.request.resource).path
+      if path == "/crystal" || path == "/crystal/"
         context.response.content_type = "text/plain"
         context.response.print "Crystal backend: Hello! from #{az_message} commit #{code_hash}"
-      elsif context.request.path == "/crystal/api" || context.request.path == "/crystal/api/"
+      elsif path == "/crystal/api" || path == "/crystal/api/"
         context.response.content_type = "application/json"
         context.response.print %Q({"from":"Crystal backend", "message": "#{az_message}", "commit": "#{code_hash.chomp}"})
-      elsif context.request.path == "/health"
+      elsif path == "/health"
         context.response.content_type = "text/plain"
         context.response.print "Healthy!"
       else

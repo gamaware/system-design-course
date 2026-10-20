@@ -105,7 +105,7 @@ Expected output:
 
 ```text
 NAME             IMAGE                              STATUS
-lab14-rabbitmq   rabbitmq:4.3.5-management-alpine   Up 7 seconds (healthy)
+lab14-rabbitmq   rabbitmq:4.3.6-management-alpine   Up 7 seconds (healthy)
 lab14-tools      lab14-app:local                    Up 1 second
 lab14-worker-1   lab14-app:local                    Up 2 seconds
 ```

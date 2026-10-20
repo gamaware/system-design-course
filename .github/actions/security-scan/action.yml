@@ -9,12 +9,12 @@ runs:
   using: 'composite'
   steps:
     - name: Run Semgrep SAST
-      uses: semgrep/semgrep-action@v1
+      uses: semgrep/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d # v1
       with:
         config: auto
 
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
       with:
         scan-type: 'fs'
         scan-ref: ${{ inputs.scan-path }}
@@ -22,7 +22,7 @@ runs:
         output: 'trivy-results.sarif'
 
     - name: Upload Trivy results to GitHub Security
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@ce5e7eeac396d720fe2d802714996c8ce561e311 # v3.39.0
       if: always()
       with:
         sarif_file: 'trivy-results.sarif'

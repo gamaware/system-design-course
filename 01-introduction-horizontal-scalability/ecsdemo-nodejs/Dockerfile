@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:24-trixie-slim
+FROM public.ecr.aws/docker/library/node:24-alpine3.24
 
 # set the default NODE_ENV to production
 # for dev/test build with: docker build --build-arg NODE=development .
@@ -7,15 +7,17 @@ ARG NODE=production
 ENV NODE_ENV=${NODE}
 
 # iproute2, curl and jq are used by startup.sh to discover the IP and AZ
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl iproute2 jq && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache bash ca-certificates curl iproute2 jq
 
 # copy package info early to install npms
 WORKDIR /usr/src/app
 COPY package*.json ./
+# npm is only needed to install the dependencies: remove it (and the
+# vulnerable packages it bundles) from the final image
 RUN npm ci && \
-    npm cache clean --force
+    npm cache clean --force && \
+    rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+      /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 
 # copy the code
 COPY . .

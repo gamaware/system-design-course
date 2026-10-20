@@ -3,7 +3,7 @@ name: lab14
 services:
   rabbitmq:
     # Pinned to an exact release: a moving tag can change behavior between two runs of the lab.
-    image: rabbitmq:4.3.5-management-alpine
+    image: rabbitmq:4.3.6-management-alpine
     container_name: lab14-rabbitmq
     # RabbitMQ names its node after the hostname and stores data under that name, so it must be stable.
     hostname: lab14-rabbitmq
