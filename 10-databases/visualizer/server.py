@@ -1,5 +1,6 @@
 """Database scalability visualizer API bridge — MySQL primary-replica."""
 
+import ipaddress
 import json
 import os
 import random
@@ -8,6 +9,7 @@ import time
 import uuid
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from socketserver import ThreadingMixIn
+from urllib.parse import urlsplit
 
 import pymysql
 
@@ -1205,20 +1207,36 @@ MIME_TYPES = {
 }
 
 
+def _is_direct_host(host):
+    """True for localhost or an IP address, never a DNS name (blocks DNS rebinding)."""
+    name = urlsplit(f"//{host}").hostname or ""
+    if name == "localhost":
+        return True
+    try:
+        ipaddress.ip_address(name)
+    except ValueError:
+        return False
+    return True
+
+
 class Handler(SimpleHTTPRequestHandler):
-    """HTTP request handler for the database visualizer."""
+    """HTTP request handler for the database visualizer.
 
-    def end_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        super().end_headers()
+    The UI and the API share one origin, so there are no CORS headers: other
+    web pages the student opens must not be able to drive the root SQL console.
+    """
 
-    def do_OPTIONS(self):  # noqa: N802
-        self.send_response(200)
-        self.end_headers()
+    def _trusted_request(self):
+        host = self.headers.get("Host", "")
+        if not _is_direct_host(host):
+            return False
+        origin = self.headers.get("Origin")
+        return origin is None or urlsplit(origin).netloc == host
 
     def do_GET(self):  # noqa: N802
+        if not self._trusted_request():
+            self._send_json({"error": "Forbidden"}, 403)
+            return
         path = self.path.split("?")[0]
         handler = ROUTES.get(("GET", path))
         if handler:
@@ -1229,6 +1247,10 @@ class Handler(SimpleHTTPRequestHandler):
         self._serve_static(path)
 
     def do_POST(self):  # noqa: N802
+        content_type = self.headers.get("Content-Type", "").split(";")[0].strip()
+        if not self._trusted_request() or content_type != "application/json":
+            self._send_json({"error": "Forbidden"}, 403)
+            return
         path = self.path.split("?")[0]
         handler = ROUTES.get(("POST", path))
         if not handler:
