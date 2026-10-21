@@ -180,9 +180,12 @@ function el(tag, className, text) {
 }
 
 // Map a step result string to a visual tone: ok, warn or err.
+const ERR_WORDS =
+  /error|fail|violation|rolled|not found|not enrolled|not running|incomplete|denied|refused/;
+
 function toneOf(text) {
   const t = String(text ?? '').toLowerCase();
-  if (/error|fail|violation|rolled|not found|not enrolled|not running|incomplete|denied|refused/.test(t)) return 'err';
+  if (ERR_WORDS.test(t)) return 'err';
   if (/not yet|not in sync|stale|stopped|lag|diverged|partition/.test(t)) return 'warn';
   return 'ok';
 }
