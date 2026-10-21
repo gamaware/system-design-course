@@ -62,6 +62,7 @@ Resources:
       KeyName: !If [HasKeyName, !Ref KeyName, !Ref AWS::NoValue]
       SecurityGroupIds:
         - !GetAtt LabSecurityGroup.GroupId
+      PropagateTagsToVolumeOnCreation: true
       Tags:
         - Key: Name
           Value: lab10-db-visualizer
