@@ -1,10 +1,11 @@
 """Database scalability visualizer API bridge — MySQL primary-replica."""
 
-import contextlib
 import json
 import os
 import random
+import threading
 import time
+import uuid
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from socketserver import ThreadingMixIn
 
@@ -23,8 +24,35 @@ _rng = random.SystemRandom()
 # innodb_buffer_pool_size bounds accepted by the vertical scaling tab (bytes).
 BUFFER_POOL_MIN = 16 * 1024 * 1024
 BUFFER_POOL_MAX = 1024 * 1024 * 1024
+BUFFER_POOL_DEFAULT = 128 * 1024 * 1024
+BUFFER_RESIZE_TIMEOUT_S = 30
 
-BENCH_SQL = "SELECT * FROM access_log WHERE student_id = %s AND resource = %s"
+# Replica reads are retried every 5 ms until the row shows up or time runs out.
+REPLICA_POLL_S = 0.005
+REPLICA_WAIT_S = 1.5
+CAP_REPLICA_WAIT_S = 1.0
+
+# Benchmark table (~72 MB): larger than the small buffer pools, smaller than 128 MB.
+BENCH_ROWS = 300000
+BENCH_RANGE = 500
+BENCH_SQL = "SELECT COUNT(*), MAX(payload) FROM bench_data WHERE id BETWEEN %s AND %s + 500"
+BENCH_WARMUP_SQL = "SELECT SUM(LENGTH(payload)) FROM bench_data"
+
+# The JOIN query and the materialized view share one definition, so the view
+# holds exactly what the JOIN computes on every read.
+VIEW_SELECT_SQL = (
+    "SELECT s.name, s.major, c.code, c.title, e.enrolled_at, "
+    "COALESCE(a.accesses, 0) AS accesses "
+    "FROM enrollments e "
+    "JOIN students s ON e.student_id = s.student_id "
+    "JOIN courses c ON e.course_id = c.course_id "
+    "LEFT JOIN (SELECT student_id, COUNT(*) AS accesses "
+    "FROM access_log GROUP BY student_id) a ON a.student_id = e.student_id"
+)
+VIEW_TABLE_ALIASES = {"e": "enrollments", "s": "students", "c": "courses"}
+JOIN_QUERY_SQL = VIEW_SELECT_SQL + " ORDER BY s.name, c.code"
+VIEW_QUERY_SQL = ("SELECT name, major, code, title, enrolled_at, accesses "
+                  "FROM enrollment_summary ORDER BY name, code")
 
 
 def get_conn(host):
@@ -59,6 +87,32 @@ def step_entry(seq, action, target, result, latency_ms, data=None, sql=None):
     return entry
 
 
+def poll_for_row(cur, query, args, timeout_s):
+    """Run a SELECT until it returns a row or timeout_s passes.
+
+    Returns (row, reads, first_read_ms, waited_ms).
+    """
+    start = time.perf_counter()
+    reads = 0
+    first_ms = None
+    while True:
+        cur.execute(query, args)
+        row = cur.fetchone()
+        reads += 1
+        waited = time.perf_counter() - start
+        if first_ms is None:
+            first_ms = waited * 1000
+        if row is not None or waited >= timeout_s:
+            return row, reads, first_ms, waited * 1000
+        time.sleep(REPLICA_POLL_S)
+
+
+def replica_running(status):
+    """True when SHOW REPLICA STATUS says the replica is applying changes."""
+    return bool(status) and status.get("Replica_SQL_Running") == "Yes" \
+        and status.get("Replica_IO_Running") != "No"
+
+
 # ---- Replication Tab ----
 
 def replication_write(body):
@@ -79,6 +133,7 @@ def replication_write(body):
             cur.execute(insert_query, insert_args)
             new_id = cur.lastrowid
             t1 = time.perf_counter()
+            committed_at = t1
             insert_sql = render_sql(cur, insert_query, insert_args)
         steps.append(step_entry(seq, "INSERT", "primary", "OK",
                                 (t1 - t0) * 1000, {"student_id": new_id},
@@ -90,18 +145,28 @@ def replication_write(body):
     select_query = "SELECT * FROM students WHERE student_id = %s"
     conn = get_conn(REPLICA_HOST)
     try:
-        t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute(select_query, (new_id,))
-            row = cur.fetchone()
-            t1 = time.perf_counter()
             select_sql = render_sql(cur, select_query, (new_id,))
+            row, reads, first_ms, waited_ms = poll_for_row(
+                cur, select_query, (new_id,), REPLICA_WAIT_S)
+        # Time from the primary commit until the replica returned the row. It
+        # includes the replica connection setup, so it is an upper bound.
         found = row is not None
-        steps.append(step_entry(
-            seq, "SELECT", "replica",
-            "FOUND" if found else "NOT YET REPLICATED",
-            (t1 - t0) * 1000, row, sql=select_sql,
-        ))
+        lag_ms = round((time.perf_counter() - committed_at) * 1000, 1)
+        if reads == 1:
+            steps.append(step_entry(seq, "SELECT", "replica",
+                                    "FOUND" if found else "NOT YET REPLICATED",
+                                    first_ms, row, sql=select_sql))
+        else:
+            # First read missed: show it, then the read that ended the wait.
+            steps.append(step_entry(seq, "SELECT", "replica", "NOT YET REPLICATED",
+                                    first_ms, sql=select_sql))
+            seq += 1
+            steps.append(step_entry(
+                seq, f"SELECT (read {reads})", "replica",
+                "FOUND" if found else "NOT YET REPLICATED", waited_ms,
+                {"reads": reads, "visible_after_commit_ms": lag_ms, "row": row}, sql=select_sql,
+            ))
         seq += 1
 
         t0 = time.perf_counter()
@@ -117,19 +182,28 @@ def replication_write(body):
         conn.close()
 
     total_ms = (time.perf_counter() - total_start) * 1000
-    if found:
-        interp = (f"The row appeared on the replica within {round(total_ms, 1)}ms. "
-                  f"Replication lag is {lag} seconds. In a read-heavy system, "
-                  "distributing SELECTs to replicas reduces primary load -- this is "
-                  "horizontal read scaling. The trade-off: replicas may serve "
-                  "slightly stale data during lag spikes.")
+    if found and reads == 1:
+        interp = (f"The row was already on the replica at the first read, at most "
+                  f"{lag_ms}ms after the commit on the primary. "
+                  f"Seconds_Behind_Source is {lag}; it counts whole "
+                  "seconds, so sub-second lag shows as 0. Sending SELECTs to replicas "
+                  "takes load off the primary -- this is horizontal read scaling. The "
+                  "trade-off: during lag spikes a replica serves slightly stale data.")
+    elif found:
+        interp = (f"The first read missed: the row appeared on the replica at most "
+                  f"{lag_ms}ms after the commit on the primary ({reads} reads, one every "
+                  f"{round(REPLICA_POLL_S * 1000)}ms). "
+                  "That window is the replication lag. Any application reading from "
+                  "replicas must tolerate this short window of stale data.")
     else:
-        interp = ("The row was NOT found on the replica -- replication has not "
-                  "caught up yet. This is replication lag in action. Any application "
-                  "reading from replicas must tolerate eventual consistency: the data "
-                  "will arrive, but not instantly.")
+        interp = (f"The row was still NOT on the replica after {REPLICA_WAIT_S}s "
+                  f"({reads} reads). "
+                  "Replication is stopped or far behind (check the IO and SQL threads "
+                  "in the sidebar). Applications reading from replicas must tolerate "
+                  "eventual consistency: the data arrives only once replication catches up.")
     return {"pattern": "replication", "steps": steps, "total_ms": round(total_ms, 2),
-            "interpretation": interp}
+            "replicated": found, "replication_lag_ms": lag_ms if found else None,
+            "replica_reads": reads, "interpretation": interp}
 
 
 def replication_status(_body):
@@ -195,10 +269,28 @@ def consistency_transfer(body):
             affected = cur.rowcount
             t1 = time.perf_counter()
             steps.append(step_entry(seq, f"DELETE enrollment ({from_course})", "primary",
-                                    "OK" if affected > 0 else "NO ROWS",
+                                    "OK" if affected > 0 else "NOT ENROLLED",
                                     (t1 - t0) * 1000, {"rows_affected": affected},
                                     sql=delete_sql))
             seq += 1
+
+            if affected == 0:
+                t0 = time.perf_counter()
+                conn.rollback()
+                t1 = time.perf_counter()
+                steps.append(step_entry(seq, "ROLLBACK", "primary", "OK",
+                                        (t1 - t0) * 1000, sql="ROLLBACK"))
+                total_ms = (time.perf_counter() - total_start) * 1000
+                return {"pattern": "consistency", "steps": steps,
+                        "total_ms": round(total_ms, 2), "outcome": "ROLLED BACK",
+                        "interpretation": (
+                            f"Student {student_id} is not enrolled in {from_course}, "
+                            f"so the DELETE matched 0 rows. The transfer stopped there "
+                            f"and the transaction was ROLLED BACK: no enrollment or "
+                            f"count changed. Without this check the UPDATE would "
+                            f"decrement {from_course} for a student who was never in "
+                            f"it, and the counts would drift from the real "
+                            f"enrollments.")}
 
             # Update from-course count
             update_from_query = ("UPDATE courses SET enrolled = enrolled - 1 "
@@ -223,21 +315,24 @@ def consistency_transfer(body):
                                         (t1 - t0) * 1000, sql=insert_sql))
             except pymysql.IntegrityError as exc:
                 t1 = time.perf_counter()
-                conn.rollback()
                 steps.append(step_entry(seq, f"INSERT enrollment ({to_course})", "primary",
                                         "CONSTRAINT VIOLATION", (t1 - t0) * 1000,
                                         {"error": str(exc)}, sql=insert_sql))
-                steps.append(step_entry(seq + 1, "ROLLBACK", "primary", "OK", 0,
-                                        sql="ROLLBACK"))
+                t0 = time.perf_counter()
+                conn.rollback()
+                t1 = time.perf_counter()
+                steps.append(step_entry(seq + 1, "ROLLBACK", "primary", "OK",
+                                        (t1 - t0) * 1000, sql="ROLLBACK"))
                 total_ms = (time.perf_counter() - total_start) * 1000
                 return {"pattern": "consistency", "steps": steps,
                         "total_ms": round(total_ms, 2), "outcome": "ROLLED BACK",
                         "interpretation": (
-                            "The transaction was ROLLED BACK due to a constraint "
-                            "violation. This demonstrates atomicity: none of the "
-                            "changes (DELETE, UPDATE, INSERT) were applied. The "
-                            "database remains in a consistent state as if the "
-                            "transfer was never attempted.")}
+                            f"The INSERT failed: student {student_id} is already "
+                            f"enrolled in {to_course} (unique constraint). The "
+                            f"transaction was ROLLED BACK, so the DELETE and the "
+                            f"{from_course} count decrement that had already run were "
+                            f"undone too. This is atomicity: the database is left "
+                            f"exactly as if the transfer was never attempted.")}
             seq += 1
 
             # Update to-course count
@@ -320,8 +415,8 @@ def schema_explain(body):
                       f"engine jumps directly to matching entries instead of reading "
                       f"every row in the table.")
         else:
-            interp = (f"The query performs a {scan_type} scanning ~{rows_scanned} rows "
-                      f"with no index. Every row in the table must be examined, which "
+            interp = (f"No index is used: MySQL scans the whole table (type {scan_type}), "
+                      f"examining ~{rows_scanned} rows. Every row must be read, which "
                       f"gets slower as the table grows. Adding a composite index on "
                       f"(student_id, resource) would reduce this to a few rows.")
 
@@ -332,44 +427,52 @@ def schema_explain(body):
         conn.close()
 
 
-def schema_add_index(_body):
-    """Add composite index on access_log."""
+INDEX_NAME = "idx_student_resource"
+CREATE_INDEX_SQL = f"CREATE INDEX {INDEX_NAME} ON access_log (student_id, resource)"
+DROP_INDEX_SQL = f"DROP INDEX {INDEX_NAME} ON access_log"
+ANALYZE_SQL = "ANALYZE TABLE access_log"
+
+
+def analyze_access_log(cur, seq):
+    """Refresh access_log statistics so EXPLAIN row estimates stay accurate."""
+    t0 = time.perf_counter()
+    cur.execute(ANALYZE_SQL)
+    cur.fetchall()
+    t1 = time.perf_counter()
+    return step_entry(seq, "ANALYZE TABLE", "primary", "OK", (t1 - t0) * 1000,
+                      sql=ANALYZE_SQL)
+
+
+def schema_index_change(statement, action, done, skipped):
+    """Create or drop the composite index, then refresh table statistics."""
     conn = get_conn(PRIMARY_HOST)
     try:
         with conn.cursor() as cur:
             t0 = time.perf_counter()
             try:
-                cur.execute(
-                    "CREATE INDEX idx_student_resource ON access_log (student_id, resource)"
-                )
-                result = "CREATED"
+                cur.execute(statement)
+                result = done
             except pymysql.err.OperationalError:
-                result = "ALREADY EXISTS"
+                result = skipped
             t1 = time.perf_counter()
-        return {"action": "CREATE INDEX", "result": result,
-                "latency_ms": round((t1 - t0) * 1000, 2),
-                "sql": "CREATE INDEX idx_student_resource ON access_log (student_id, resource)"}
+            steps = [step_entry(1, action, "primary", result, (t1 - t0) * 1000,
+                                sql=statement),
+                     analyze_access_log(cur, 2)]
+        return {"action": action, "result": result, "index": INDEX_NAME,
+                "latency_ms": round(sum(st["latency_ms"] for st in steps), 2),
+                "sql": statement, "steps": steps}
     finally:
         conn.close()
+
+
+def schema_add_index(_body):
+    """Add composite index on access_log."""
+    return schema_index_change(CREATE_INDEX_SQL, "CREATE INDEX", "CREATED", "ALREADY EXISTS")
 
 
 def schema_drop_index(_body):
     """Drop the composite index."""
-    conn = get_conn(PRIMARY_HOST)
-    try:
-        with conn.cursor() as cur:
-            t0 = time.perf_counter()
-            try:
-                cur.execute("DROP INDEX idx_student_resource ON access_log")
-                result = "DROPPED"
-            except pymysql.err.OperationalError:
-                result = "NOT FOUND"
-            t1 = time.perf_counter()
-        return {"action": "DROP INDEX", "result": result,
-                "latency_ms": round((t1 - t0) * 1000, 2),
-                "sql": "DROP INDEX idx_student_resource ON access_log"}
-    finally:
-        conn.close()
+    return schema_index_change(DROP_INDEX_SQL, "DROP INDEX", "DROPPED", "NOT FOUND")
 
 
 # ---- Database State ----
@@ -411,25 +514,104 @@ def db_state(_body):
     return state
 
 
+RESET_STATEMENTS = (
+    ("DELETE enrollments", "DELETE FROM enrollments"),
+    ("DELETE added students", "DELETE FROM students WHERE student_id > 10"),
+    ("DELETE added courses",
+     "DELETE FROM courses WHERE code NOT IN ('CS101','CS201','MATH101','PHYS101')"),
+    ("RESET course counts",
+     "UPDATE courses SET enrolled = CASE code WHEN 'CS101' THEN 4 WHEN 'CS201' THEN 2 "
+     "WHEN 'MATH101' THEN 2 WHEN 'PHYS101' THEN 2 END"),
+    ("INSERT original enrollments",
+     "INSERT INTO enrollments (student_id, course_id) VALUES "
+     "(1,1),(3,1),(5,1),(8,1),(1,2),(3,2),(2,3),(6,3),(4,4),(9,4)"),
+    ("DELETE added access_log rows", "DELETE FROM access_log WHERE log_id > 10000"),
+    ("DROP materialized view", "DROP TABLE IF EXISTS enrollment_summary"),
+)
+REPLICA_SYNC_TIMEOUT_S = 30
+
+
 def db_reset(_body):
     """Reset database to initial state."""
+    steps = []
+    problems = []
     conn = get_conn(PRIMARY_HOST)
     try:
         with conn.cursor() as cur:
-            cur.execute("DELETE FROM enrollments")
-            cur.execute("DELETE FROM students WHERE student_id > 10")
-            cur.execute("DELETE FROM courses WHERE code NOT IN ('CS101','CS201','MATH101','PHYS101')")
-            cur.execute("""UPDATE courses SET enrolled = CASE code
-                WHEN 'CS101' THEN 4 WHEN 'CS201' THEN 2
-                WHEN 'MATH101' THEN 2 WHEN 'PHYS101' THEN 2 END""")
-            # Re-insert original enrollments
-            cur.execute("""INSERT INTO enrollments (student_id, course_id) VALUES
-                (1,1),(3,1),(5,1),(8,1),(1,2),(3,2),(2,3),(6,3),(4,4),(9,4)""")
-            with contextlib.suppress(pymysql.err.OperationalError):
-                cur.execute("DROP INDEX idx_student_resource ON access_log")
-        return {"result": "OK", "message": "Database reset to initial state"}
+            for label, statement in RESET_STATEMENTS:
+                t0 = time.perf_counter()
+                cur.execute(statement)
+                t1 = time.perf_counter()
+                steps.append(step_entry(len(steps) + 1, label, "primary", "OK",
+                                        (t1 - t0) * 1000, sql=statement))
+            t0 = time.perf_counter()
+            try:
+                cur.execute(DROP_INDEX_SQL)
+                index_result = "DROPPED"
+            except pymysql.err.OperationalError:
+                index_result = "NO INDEX"
+            t1 = time.perf_counter()
+            steps.append(step_entry(len(steps) + 1, "DROP INDEX", "primary", index_result,
+                                    (t1 - t0) * 1000, sql=DROP_INDEX_SQL))
+            steps.append(analyze_access_log(cur, len(steps) + 1))
+            cur.execute("SELECT @@GLOBAL.gtid_executed AS gtids")
+            primary_gtids = cur.fetchone()["gtids"]
+
+        pool = set_buffer_pool(conn, BUFFER_POOL_DEFAULT)
+        steps.append(step_entry(len(steps) + 1, "SET BUFFER POOL 128 MB", "primary",
+                                "OK" if pool["actual"] == BUFFER_POOL_DEFAULT else "ERROR",
+                                pool["latency_ms"], sql=pool["sql"]))
+        if pool["actual"] != BUFFER_POOL_DEFAULT:
+            problems.append(f"buffer pool is {pool['actual'] // (1024 * 1024)} MB, not 128 MB")
     finally:
         conn.close()
+
+    conn = get_conn(REPLICA_HOST)
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SHOW REPLICA STATUS")
+            status = cur.fetchone()
+            if status and not replica_running(status):
+                t0 = time.perf_counter()
+                cur.execute("START REPLICA")
+                deadline = time.monotonic() + REPLICA_SYNC_TIMEOUT_S
+                while time.monotonic() < deadline:
+                    cur.execute("SHOW REPLICA STATUS")
+                    status = cur.fetchone()
+                    if status.get("Replica_IO_Running") == "Yes" and \
+                            status.get("Replica_SQL_Running") == "Yes":
+                        break
+                    time.sleep(0.2)
+                t1 = time.perf_counter()
+                running = status.get("Replica_IO_Running") == "Yes" and \
+                    status.get("Replica_SQL_Running") == "Yes"
+                steps.append(step_entry(len(steps) + 1, "START REPLICA", "replica",
+                                        "OK" if running else "NOT RUNNING",
+                                        (t1 - t0) * 1000, sql="START REPLICA"))
+                if not running:
+                    problems.append("replication did not restart")
+            if replica_running(status):
+                # Wait until the replica has applied every reset statement.
+                wait_query = "SELECT WAIT_FOR_EXECUTED_GTID_SET(%s, %s) AS timed_out"
+                wait_args = (primary_gtids, REPLICA_SYNC_TIMEOUT_S)
+                t0 = time.perf_counter()
+                cur.execute(wait_query, wait_args)
+                timed_out = cur.fetchone()["timed_out"]
+                t1 = time.perf_counter()
+                steps.append(step_entry(len(steps) + 1, "WAIT FOR REPLICA", "replica",
+                                        "IN SYNC" if timed_out == 0 else "NOT IN SYNC",
+                                        (t1 - t0) * 1000,
+                                        sql=render_sql(cur, wait_query, wait_args)))
+                if timed_out != 0:
+                    problems.append("the replica has not caught up yet")
+    finally:
+        conn.close()
+
+    if problems:
+        return {"result": "INCOMPLETE", "steps": steps,
+                "message": "Database reset, but " + "; ".join(problems) + "."}
+    return {"result": "OK", "steps": steps,
+            "message": "Database reset to initial state"}
 
 
 ALLOWED_SQL = frozenset({
@@ -446,9 +628,11 @@ def sql_exec(body):
     if not query:
         return {"error": "Empty query"}
 
-    # Strip mysql CLI formatting suffix (\G) -- not valid SQL
+    # The mysql client's \G suffix is not SQL: strip it and ask the UI to
+    # print the rows vertically, the way the client does.
     query = query.rstrip(";").rstrip()
-    if query.endswith("\\G"):
+    vertical = query.endswith("\\G")
+    if vertical:
         query = query[:-2].rstrip()
 
     # Reject multi-statement queries
@@ -475,7 +659,7 @@ def sql_exec(body):
                     "columns": columns, "rows": rows,
                     "row_count": len(rows),
                     "latency_ms": round((t1 - t0) * 1000, 2),
-                    "target": target, "query": query,
+                    "target": target, "query": query, "vertical": vertical,
                 }
             t1 = time.perf_counter()
             return {
@@ -533,7 +717,7 @@ def cap_start_replication(_body):
 def cap_test_divergence(body):
     """Write to primary, read from both, show divergence."""
     name = body.get("name", "CAP Test")
-    email = f"cap{int(time.time())}@university.edu"
+    email = f"cap-{uuid.uuid4().hex[:8]}@university.edu"
     steps = []
     total_start = time.perf_counter()
     seq = 1
@@ -565,43 +749,60 @@ def cap_test_divergence(body):
             row = cur.fetchone()
             t1 = time.perf_counter()
             select_sql = render_sql(cur, select_query, (new_id,))
+        primary_found = row is not None
         steps.append(step_entry(seq, "SELECT (primary)", "primary",
-                                "FOUND" if row else "NOT FOUND",
+                                "FOUND" if primary_found else "NOT FOUND",
                                 (t1 - t0) * 1000, row, sql=select_sql))
         seq += 1
     finally:
         conn.close()
 
-    # Read from replica (may not have it if replication stopped)
+    # Read from replica: wait briefly for replication when it is running,
+    # read once when it is stopped (the partition).
     conn = get_conn(REPLICA_HOST)
     try:
-        t0 = time.perf_counter()
         with conn.cursor() as cur:
-            cur.execute(select_query, (new_id,))
-            row = cur.fetchone()
-        t1 = time.perf_counter()
-        found = row is not None
+            t0 = time.perf_counter()
+            cur.execute("SHOW REPLICA STATUS")
+            running = replica_running(cur.fetchone())
+            t1 = time.perf_counter()
+            steps.append(step_entry(seq, "SHOW REPLICA STATUS", "replica",
+                                    "REPLICATION RUNNING" if running else "REPLICATION STOPPED",
+                                    (t1 - t0) * 1000, sql="SHOW REPLICA STATUS"))
+            seq += 1
+            row, reads, _, waited_ms = poll_for_row(
+                cur, select_query, (new_id,), CAP_REPLICA_WAIT_S if running else 0)
+        replica_found = row is not None
         steps.append(step_entry(seq, "SELECT (replica)", "replica",
-                                "FOUND (consistent)" if found else "NOT FOUND (stale)",
-                                (t1 - t0) * 1000, row, sql=select_sql))
+                                "FOUND (consistent)" if replica_found else "NOT FOUND (stale)",
+                                waited_ms, {"reads": reads, "row": row}, sql=select_sql))
     finally:
         conn.close()
 
     total_ms = (time.perf_counter() - total_start) * 1000
-    diverged = steps[1]["result"] != steps[2]["result"].split(" ")[0]
-    if diverged:
+    diverged = primary_found != replica_found
+    if diverged and not running:
+        outcome = "DIVERGED (partition active)"
         interp = ("The primary and replica returned different results -- the nodes "
-                  "have DIVERGED. During a partition, the primary accepted the write "
-                  "(availability) but the replica cannot see it (no consistency). "
-                  "This is the CA trade-off in action.")
+                  "have DIVERGED. Replication is stopped, so the write stayed on the "
+                  "primary. During a partition, reading the replica keeps the system "
+                  "available but returns stale data (AP); reading only the primary "
+                  "keeps it consistent (CP).")
+    elif diverged:
+        outcome = "DIVERGED (replica lagging)"
+        interp = (f"Replication is running, but the replica still did not have the row "
+                  f"after {CAP_REPLICA_WAIT_S}s ({reads} reads). It is lagging behind the "
+                  "primary: until it catches up, replica reads return stale data.")
     else:
-        interp = ("Both nodes returned the same result -- the system is CONSISTENT. "
-                  "With replication active, writes propagate quickly enough that "
-                  "both nodes agree. No partition means no CA trade-off.")
+        outcome = "CONSISTENT"
+        interp = (f"Both nodes returned the row -- the system is CONSISTENT. With "
+                  f"replication running, the replica had it after "
+                  f"{round(waited_ms, 1)}ms ({reads} read{'s' if reads > 1 else ''}). "
+                  "No partition, so no trade-off between consistency and availability "
+                  "is needed.")
     return {
         "pattern": "cap", "steps": steps, "total_ms": round(total_ms, 2),
-        "outcome": "DIVERGED (partition active)" if diverged else "CONSISTENT",
-        "interpretation": interp,
+        "outcome": outcome, "interpretation": interp,
     }
 
 
@@ -609,38 +810,27 @@ def cap_test_divergence(body):
 
 def views_create(_body):
     """Create a materialized view (table from SELECT) for enrollment summary."""
+    create_sql = "CREATE TABLE enrollment_summary AS " + VIEW_SELECT_SQL
     conn = get_conn(PRIMARY_HOST)
     try:
         with conn.cursor() as cur:
             t0 = time.perf_counter()
             cur.execute("DROP TABLE IF EXISTS enrollment_summary")
-            cur.execute("""
-                CREATE TABLE enrollment_summary AS
-                SELECT s.student_id, s.name, s.major,
-                       c.code AS course_code, c.title AS course_title,
-                       e.enrolled_at
-                FROM enrollments e
-                JOIN students s ON e.student_id = s.student_id
-                JOIN courses c ON e.course_id = c.course_id
-            """)
+            cur.execute(create_sql)
             cur.execute("SELECT COUNT(*) AS cnt FROM enrollment_summary")
             cnt = cur.fetchone()["cnt"]
             t1 = time.perf_counter()
-        create_sql = ("CREATE TABLE enrollment_summary AS "
-                      "SELECT s.student_id, s.name, s.major, "
-                      "c.code AS course_code, c.title AS course_title, "
-                      "e.enrolled_at "
-                      "FROM enrollments e "
-                      "JOIN students s ON e.student_id = s.student_id "
-                      "JOIN courses c ON e.course_id = c.course_id")
         return {"action": "CREATE VIEW", "result": "CREATED",
                 "rows": cnt, "latency_ms": round((t1 - t0) * 1000, 2),
                 "sql": create_sql,
+                "steps": [step_entry(1, "CREATE TABLE enrollment_summary", "primary",
+                                     "CREATED", (t1 - t0) * 1000, sql=create_sql)],
                 "interpretation": (
-                    f"Pre-computed {cnt} rows into a flat table by joining "
-                    f"students, courses, and enrollments once. Future reads "
-                    f"hit this single table instead of computing the 3-table "
-                    f"JOIN every time -- a classic space-for-time trade-off.")}
+                    f"Pre-computed {cnt} rows into a flat table: the JOIN of "
+                    f"enrollments, students and courses plus the per-student "
+                    f"access count from access_log ran once, now. Future reads hit "
+                    f"this single table instead of recomputing it every time -- a "
+                    f"classic space-for-time trade-off.")}
     finally:
         conn.close()
 
@@ -660,62 +850,45 @@ def views_drop(_body):
 
 
 def views_query_join(_body):
-    """Run the 3-table JOIN query with timing."""
+    """Run the view's defining query (JOINs + access count) with timing."""
     conn = get_conn(PRIMARY_HOST)
     try:
         steps = []
-        seq = 1
         total_start = time.perf_counter()
 
         with conn.cursor() as cur:
             t0 = time.perf_counter()
-            cur.execute("""
-                SELECT s.name, s.major, c.code, c.title, e.enrolled_at
-                FROM enrollments e
-                JOIN students s ON e.student_id = s.student_id
-                JOIN courses c ON e.course_id = c.course_id
-                ORDER BY s.name
-            """)
+            cur.execute(JOIN_QUERY_SQL)
             rows = cur.fetchall()
             t1 = time.perf_counter()
-            join_sql = ("SELECT s.name, s.major, c.code, c.title, e.enrolled_at "
-                        "FROM enrollments e "
-                        "JOIN students s ON e.student_id = s.student_id "
-                        "JOIN courses c ON e.course_id = c.course_id "
-                        "ORDER BY s.name")
-            steps.append(step_entry(seq, "SELECT with 3-table JOIN", "primary",
-                                    "OK", (t1 - t0) * 1000,
-                                    {"row_count": len(rows)}, sql=join_sql))
-            seq += 1
+            query_ms = (t1 - t0) * 1000
+            steps.append(step_entry(1, "SELECT with JOINs + COUNT", "primary",
+                                    "OK", query_ms,
+                                    {"row_count": len(rows)}, sql=JOIN_QUERY_SQL))
 
-            # Get EXPLAIN
+            explain_sql = "EXPLAIN " + VIEW_SELECT_SQL
             t0 = time.perf_counter()
-            cur.execute("""
-                EXPLAIN SELECT s.name, s.major, c.code, c.title, e.enrolled_at
-                FROM enrollments e
-                JOIN students s ON e.student_id = s.student_id
-                JOIN courses c ON e.course_id = c.course_id
-            """)
+            cur.execute(explain_sql)
             plan = cur.fetchall()
             t1 = time.perf_counter()
-            tables_scanned = len(plan)
-            explain_join_sql = ("EXPLAIN SELECT s.name, s.major, c.code, c.title, "
-                                "e.enrolled_at FROM enrollments e "
-                                "JOIN students s ON e.student_id = s.student_id "
-                                "JOIN courses c ON e.course_id = c.course_id")
-            steps.append(step_entry(seq, "EXPLAIN (tables scanned)", "primary",
-                                    f"{tables_scanned} tables", (t1 - t0) * 1000,
-                                    sql=explain_join_sql))
+            # EXPLAIN lists aliases, and the GROUP BY subquery as <derived2>:
+            # count only base tables, by their real names.
+            tables = sorted({VIEW_TABLE_ALIASES.get(p["table"], p["table"]) for p in plan
+                             if p.get("table") and not p["table"].startswith("<")})
+            steps.append(step_entry(2, "EXPLAIN (tables scanned)", "primary",
+                                    f"{len(tables)} tables", (t1 - t0) * 1000,
+                                    {"tables": tables}, sql=explain_sql))
 
         total_ms = (time.perf_counter() - total_start) * 1000
         return {"pattern": "views-join", "steps": steps,
-                "total_ms": round(total_ms, 2), "row_count": len(rows),
+                "total_ms": round(total_ms, 2), "query_ms": round(query_ms, 2),
+                "row_count": len(rows), "rows": rows,
                 "interpretation": (
-                    f"The 3-table JOIN scanned {tables_scanned} tables to produce "
-                    f"{len(rows)} rows in {round(total_ms, 1)}ms. Each query "
-                    f"recomputes the join at read time. With more data or complex "
-                    f"joins, this cost grows -- materialized views trade storage "
-                    f"for faster reads.")}
+                    f"The query read {len(tables)} tables ({', '.join(tables)}) and "
+                    f"counted every access_log row per student to produce "
+                    f"{len(rows)} rows in {round(query_ms, 2)}ms. It recomputes all "
+                    f"of that on every read, so the result is always current. "
+                    f"Compare with Query from View.")}
     finally:
         conn.close()
 
@@ -734,24 +907,24 @@ def views_query_view(_body):
                 return {"error": "View not created yet. Click 'Create View' first."}
 
             t0 = time.perf_counter()
-            cur.execute("SELECT * FROM enrollment_summary ORDER BY name")
+            cur.execute(VIEW_QUERY_SQL)
             rows = cur.fetchall()
             t1 = time.perf_counter()
-            view_sql = "SELECT * FROM enrollment_summary ORDER BY name"
             query_ms = (t1 - t0) * 1000
             steps.append(step_entry(1, "SELECT from materialized view", "primary",
                                     "OK", query_ms,
-                                    {"row_count": len(rows)}, sql=view_sql))
+                                    {"row_count": len(rows)}, sql=VIEW_QUERY_SQL))
 
         total_ms = (time.perf_counter() - total_start) * 1000
         return {"pattern": "views-view", "steps": steps,
-                "total_ms": round(total_ms, 2), "row_count": len(rows),
+                "total_ms": round(total_ms, 2), "query_ms": round(query_ms, 2),
+                "row_count": len(rows), "rows": rows,
                 "interpretation": (
                     f"Reading {len(rows)} rows from the pre-computed table took "
-                    f"{round(query_ms, 2)}ms -- no joins needed. Compare this "
-                    f"with the JOIN query to see the speed difference. The "
-                    f"trade-off: this data is a snapshot and may become stale "
-                    f"when the source tables change.")}
+                    f"{round(query_ms, 2)}ms -- no joins and no counting. Compare "
+                    f"this with Query with JOINs. The trade-off: the table is a "
+                    f"snapshot from the last Create or Refresh, so changes made "
+                    f"since then do not appear until you refresh it.")}
     finally:
         conn.close()
 
@@ -770,6 +943,93 @@ def views_refresh(_body):
 
 # ---- Vertical Scalability Tab ----
 
+def buffer_pool_state(cur):
+    """Return (resize_status_code, real pool size in bytes)."""
+    cur.execute("SHOW GLOBAL STATUS WHERE Variable_name IN "
+                "('Innodb_buffer_pool_resize_status_code', 'Innodb_buffer_pool_pages_total')")
+    status = {r["Variable_name"]: int(r["Value"]) for r in cur.fetchall()}
+    cur.execute("SELECT @@innodb_page_size AS page")
+    page = int(cur.fetchone()["page"])
+    return (status["Innodb_buffer_pool_resize_status_code"],
+            status["Innodb_buffer_pool_pages_total"] * page)
+
+
+def set_buffer_pool(conn, size):
+    """Resize the buffer pool and wait for InnoDB to finish.
+
+    @@innodb_buffer_pool_size changes as soon as SET GLOBAL returns, while the
+    resize runs in the background; the page count shows the real size.
+    """
+    # MySQL does not accept server-side bind parameters in SET GLOBAL. pymysql
+    # interpolates %s on the client, so callers must pass a validated int.
+    set_query = "SET GLOBAL innodb_buffer_pool_size = %s"
+    with conn.cursor() as cur:
+        _, before = buffer_pool_state(cur)
+        t0 = time.perf_counter()
+        cur.execute(set_query, (size,))
+        set_sql = render_sql(cur, set_query, (size,))
+        deadline = time.monotonic() + BUFFER_RESIZE_TIMEOUT_S
+        settle = time.monotonic() + 2
+        while True:
+            code, actual = buffer_pool_state(cur)
+            now = time.monotonic()
+            if code == 0 and (actual == size or now > settle):
+                break
+            if now > deadline:
+                break
+            time.sleep(0.1)
+        t1 = time.perf_counter()
+    return {"before": before, "actual": actual, "in_progress": code != 0,
+            "latency_ms": round((t1 - t0) * 1000, 2), "sql": set_sql}
+
+
+# Two browsers can click Set Buffer or Run Benchmark at once; only one may build.
+_BENCH_LOCK = threading.Lock()
+
+
+def ensure_bench_data(conn):
+    """Create the benchmark table on the primary if it does not exist yet.
+
+    Returns a step entry when the table was created, else None.
+    """
+    with _BENCH_LOCK:
+        return _build_bench_data(conn)
+
+
+def _build_bench_data(conn):
+    with conn.cursor() as cur:
+        cur.execute("SHOW TABLES LIKE 'bench_data'")
+        if cur.fetchone():
+            return None
+    build_query = ("INSERT INTO bench_data_build (id, student_id, payload) "
+                   "WITH RECURSIVE seq (n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM seq "
+                   "WHERE n < %s) "
+                   "SELECT n, 1 + n %% 10, REPEAT('x', 200) FROM seq")
+    build = get_conn(PRIMARY_HOST)
+    try:
+        with build.cursor() as cur:
+            t0 = time.perf_counter()
+            # Local benchmark data: keep it out of the binlog (not replicated).
+            cur.execute("SET SESSION sql_log_bin = 0")
+            cur.execute("SET SESSION cte_max_recursion_depth = %s", (BENCH_ROWS + 1,))
+            cur.execute("DROP TABLE IF EXISTS bench_data_build")
+            cur.execute("CREATE TABLE bench_data_build (id INT PRIMARY KEY, "
+                        "student_id INT NOT NULL, payload CHAR(200) NOT NULL)")
+            cur.execute(build_query, (BENCH_ROWS,))
+            build_sql = render_sql(cur, build_query, (BENCH_ROWS,))
+            # Rename last, so bench_data only ever exists complete.
+            cur.execute("RENAME TABLE bench_data_build TO bench_data")
+            # Fresh statistics still say "26 rows", which makes the optimizer
+            # pick a full scan over the primary-key range.
+            cur.execute("ANALYZE TABLE bench_data")
+            cur.fetchall()
+            t1 = time.perf_counter()
+    finally:
+        build.close()
+    return step_entry(1, f"CREATE bench_data ({BENCH_ROWS:,} rows)", "primary", "CREATED",
+                      (t1 - t0) * 1000, sql=build_sql.replace("bench_data_build", "bench_data"))
+
+
 def vertical_set_buffer(body):
     """Set InnoDB buffer pool size (bytes, within the lab's safe range)."""
     try:
@@ -779,69 +1039,110 @@ def vertical_set_buffer(body):
     if not BUFFER_POOL_MIN <= size <= BUFFER_POOL_MAX:
         return {"error": f"size must be between {BUFFER_POOL_MIN} and {BUFFER_POOL_MAX} bytes"}
 
-    # MySQL does not accept server-side bind parameters in SET GLOBAL. pymysql
-    # interpolates %s on the client, so the int() conversion and range check
-    # above are what make this statement safe, not the placeholder itself.
-    set_query = "SET GLOBAL innodb_buffer_pool_size = %s"
+    mb = 1024 * 1024
     conn = get_conn(PRIMARY_HOST)
     try:
-        t0 = time.perf_counter()
-        with conn.cursor() as cur:
-            cur.execute(set_query, (size,))
-            t1 = time.perf_counter()
-            set_sql = render_sql(cur, set_query, (size,))
-        return {"action": "SET BUFFER POOL", "size": size,
-                "latency_ms": round((t1 - t0) * 1000, 2),
-                "sql": set_sql,
-                "interpretation": (
-                    f"Buffer pool resized to {size // (1024 * 1024)} MB. A larger pool keeps more "
-                    f"data pages in memory, reducing disk reads and improving "
-                    f"query latency -- this is vertical scaling in action.")}
+        steps = []
+        created = ensure_bench_data(conn)
+        if created:
+            steps.append(created)
+        pool = set_buffer_pool(conn, size)
+        ok = pool["actual"] == size
+        steps.append(step_entry(len(steps) + 1, "SET GLOBAL innodb_buffer_pool_size",
+                                "primary", "OK" if ok else "ERROR", pool["latency_ms"],
+                                sql=pool["sql"]))
+        result = {"action": "SET BUFFER POOL", "size": size, "actual_size": pool["actual"],
+                  "previous_size": pool["before"], "latency_ms": pool["latency_ms"],
+                  "sql": pool["sql"], "steps": steps}
+        before_mb, actual_mb = pool["before"] // mb, pool["actual"] // mb
+        if not ok:
+            state = "is still resizing" if pool["in_progress"] else "did not resize"
+            result["error"] = (f"Requested {size // mb} MB, but the buffer pool {state}: "
+                               f"it is {actual_mb} MB now. Wait a few seconds and try again.")
+            return result
+        if actual_mb > before_mb:
+            result["interpretation"] = (
+                f"Buffer pool grew from {before_mb} MB to {actual_mb} MB. More data pages "
+                f"now fit in memory, so fewer reads have to go to disk -- this is "
+                f"vertical scaling. Run the benchmark to measure the effect.")
+        elif actual_mb < before_mb:
+            result["interpretation"] = (
+                f"Buffer pool shrank from {before_mb} MB to {actual_mb} MB. Fewer data "
+                f"pages fit in memory, so more reads will have to go to disk. Run the "
+                f"benchmark to measure the effect.")
+        else:
+            result["interpretation"] = (
+                f"The buffer pool was already {actual_mb} MB, so nothing changed. "
+                f"Pick another size to compare.")
+        return result
     except pymysql.MySQLError as exc:
         return {"error": str(exc)}
     finally:
         conn.close()
 
 
+def read_buffer_counters(cur):
+    """Return (logical read requests, reads that went to disk) since startup."""
+    cur.execute("SHOW GLOBAL STATUS WHERE Variable_name IN "
+                "('Innodb_buffer_pool_read_requests', 'Innodb_buffer_pool_reads')")
+    status = {r["Variable_name"]: int(r["Value"]) for r in cur.fetchall()}
+    return status["Innodb_buffer_pool_read_requests"], status["Innodb_buffer_pool_reads"]
+
+
 def vertical_benchmark(body):
-    """Run random queries and measure performance."""
+    """Run random range queries on bench_data and measure the buffer hit ratio."""
     count = int(body.get("count", 200))
+    if not 1 <= count <= 2000:
+        return {"error": "count must be between 1 and 2000"}
     conn = get_conn(PRIMARY_HOST)
     try:
         total_start = time.perf_counter()
+        steps = []
+        created = ensure_bench_data(conn)
+        if created:
+            steps.append(created)
+
         latencies = []
-
-        # Reset buffer pool stats
         with conn.cursor() as cur:
-            cur.execute("FLUSH STATUS")
+            # One full scan first, so every run starts from the same warm cache.
+            t0 = time.perf_counter()
+            cur.execute(BENCH_WARMUP_SQL)
+            cur.fetchall()
+            t1 = time.perf_counter()
+            steps.append(step_entry(len(steps) + 1, "Warm-up scan", "primary", "OK",
+                                    (t1 - t0) * 1000, sql=BENCH_WARMUP_SQL))
 
-        with conn.cursor() as cur:
-            for _ in range(count):
-                sid = _rng.randint(1, 10)
-                rid = f"resource-{_rng.randint(1, 50)}"
+            # Global counters cannot be reset (FLUSH STATUS leaves them alone),
+            # so measure the difference across the run.
+            requests_before, disk_before = read_buffer_counters(cur)
+            starts = [_rng.randint(1, BENCH_ROWS - BENCH_RANGE) for _ in range(count)]
+            bench_start = time.perf_counter()
+            for start in starts:
                 t0 = time.perf_counter()
-                cur.execute(BENCH_SQL, (sid, rid))
+                cur.execute(BENCH_SQL, (start, start))
                 cur.fetchall()
                 t1 = time.perf_counter()
                 latencies.append((t1 - t0) * 1000)
+            bench_s = time.perf_counter() - bench_start
+            requests_after, disk_after = read_buffer_counters(cur)
+            sample_sql = render_sql(cur, BENCH_SQL, (starts[0], starts[0]))
+            steps.append(step_entry(len(steps) + 1, f"{count} x range SELECT", "primary",
+                                    "OK", bench_s * 1000, sql=sample_sql))
 
-        # Get buffer pool stats
-        with conn.cursor() as cur:
-            cur.execute("SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_read_requests'")
-            read_requests = int(cur.fetchone().get("Value", 0))
-            cur.execute("SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_reads'")
-            disk_reads = int(cur.fetchone().get("Value", 0))
-            cur.execute("SHOW GLOBAL VARIABLES LIKE 'innodb_buffer_pool_size'")
-            pool_size = cur.fetchone().get("Value", "0")
+            cur.execute("SELECT @@innodb_buffer_pool_size AS size")
+            pool_size = cur.fetchone()["size"]
 
+        read_requests = requests_after - requests_before
+        disk_reads = disk_after - disk_before
+        memory_reads = read_requests - disk_reads
         hit_ratio = round((1 - disk_reads / max(read_requests, 1)) * 100, 1)
         avg_latency = round(sum(latencies) / len(latencies), 2)
         p95 = round(sorted(latencies)[int(len(latencies) * 0.95)], 2)
-        qps = round(count / (time.perf_counter() - total_start), 1)
+        qps = round(count / bench_s, 1)
 
         if hit_ratio >= 99:
             interp = (f"Buffer hit ratio is {hit_ratio}% -- nearly all reads served "
-                      f"from memory ({read_requests} memory reads vs {disk_reads} "
+                      f"from memory ({memory_reads} memory reads vs {disk_reads} "
                       f"disk reads). The buffer pool is large enough to cache the "
                       f"working set, so adding more memory would yield diminishing "
                       f"returns.")
@@ -859,7 +1160,7 @@ def vertical_benchmark(body):
         total_ms = (time.perf_counter() - total_start) * 1000
         return {
             "pattern": "vertical", "total_ms": round(total_ms, 2),
-            "sql": BENCH_SQL,
+            "sql": sample_sql, "steps": steps,
             "interpretation": interp,
             "stats": {
                 "queries": count,
@@ -869,7 +1170,7 @@ def vertical_benchmark(body):
                 "buffer_pool_size": pool_size,
                 "buffer_hit_ratio": hit_ratio,
                 "disk_reads": disk_reads,
-                "memory_reads": read_requests,
+                "memory_reads": memory_reads,
             },
         }
     finally:

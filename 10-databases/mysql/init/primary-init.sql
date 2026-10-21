@@ -82,3 +82,7 @@ DELIMITER ;
 
 CALL seed_access_log();
 DROP PROCEDURE seed_access_log;
+
+-- Refresh optimizer statistics now. Rows loaded during container init are not
+-- picked up by the background stats thread, so EXPLAIN would report rows=1.
+ANALYZE TABLE access_log;

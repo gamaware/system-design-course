@@ -3,13 +3,13 @@
 ## Main Lab (Interactive Visualizer)
 
 The primary lab for this module is an interactive web visualizer
-connected to a live MySQL primary-replica cluster. It covers three
+connected to a live MySQL primary-replica cluster. It covers six
 scalability mechanisms through animated diagrams, real SQL execution,
 and a built-in SQL console.
 
 | Lab | What It Covers | Time |
 | --- | --- | --- |
-| [Interactive Visualizer](visualizer/LAB-VISUALIZER.md) | Replication, ACID transactions, indexing -- all via browser | ~45 min |
+| [Interactive Visualizer](visualizer/LAB-VISUALIZER.md) | Replication, ACID transactions, indexing, CAP theorem, materialized views, vertical scaling -- all via browser | ~75 min |
 
 ```bash
 cd 10-databases/visualizer

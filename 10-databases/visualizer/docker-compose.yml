@@ -2,6 +2,9 @@ services:
   mysql-primary:
     image: mysql:8.4.11
     container_name: mysql-primary
+    # Come back after a Docker Desktop or EC2 restart (Learner Lab stops the
+    # instance when the session ends).
+    restart: unless-stopped
     ports:
       - "127.0.0.1:3306:3306"
     environment:
@@ -16,15 +19,22 @@ services:
       - --gtid-mode=ON
       - --enforce-gtid-consistency=ON
       - --binlog-format=ROW
+      # 8 MB chunks, so the Vertical Scaling tab can really set 16 MB and 64 MB
+      # (the default 128 MB chunk rounds every smaller size up to 128 MB).
+      - --innodb-buffer-pool-chunk-size=8388608
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      # 127.0.0.1 (TCP), not localhost (socket): the image's temporary init
+      # server answers on the socket before the real server is reachable.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-prootpass"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
+      start_period: 60s
 
   mysql-replica:
     image: mysql:8.4.11
     container_name: mysql-replica
+    restart: unless-stopped
     ports:
       - "127.0.0.1:3307:3306"
     environment:
@@ -37,22 +47,33 @@ services:
       - --gtid-mode=ON
       - --enforce-gtid-consistency=ON
       - --binlog-format=ROW
+      # bench_data (Vertical Scaling tab) exists only on the primary; ignore any
+      # console write to it so it can never stop replication.
+      - --replicate-wild-ignore-table=university.bench_data
+      # Fixed relay log name: the default embeds the container hostname, which
+      # changes whenever Compose recreates the container.
+      - --relay-log=mysql-replica-relay-bin
     depends_on:
       mysql-primary:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      # 127.0.0.1 (TCP), not localhost (socket): the image's temporary init
+      # server answers on the socket before the real server is reachable.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-prootpass"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
+      start_period: 60s
 
   visualizer:
     build: .
     container_name: db-visualizer
-    # The web UI stays on every interface: the EC2 option opens it from the
-    # student's browser at http://<public-ip>:8081.
+    restart: unless-stopped
+    # Local runs listen on 127.0.0.1 only: the UI includes a root SQL console.
+    # The EC2 option writes VISUALIZER_BIND=0.0.0.0 to .env so the browser can
+    # reach http://<public-ip>:8081 (the security group limits who can).
     ports:
-      - "8081:8080"
+      - "${VISUALIZER_BIND:-127.0.0.1}:8081:8080"
     environment:
       - MYSQL_PRIMARY_HOST=mysql-primary
       - MYSQL_REPLICA_HOST=mysql-replica

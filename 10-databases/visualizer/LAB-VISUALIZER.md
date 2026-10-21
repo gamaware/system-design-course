@@ -7,8 +7,9 @@
 
 This is the main lab for Module 10. You will use an interactive web
 visualizer connected to a live MySQL primary-replica cluster to
-explore three database scalability mechanisms: replication, ACID
-consistency, and query optimization through indexing. Every button
+explore six database scalability mechanisms: replication, ACID
+consistency, query optimization through indexing, the CAP theorem,
+materialized views, and vertical scaling. Every button
 click executes real SQL against real databases -- the animated
 diagrams show actual data flow with measured latency.
 
@@ -23,6 +24,9 @@ see the results in real time.
 - Execute ACID transactions and see atomicity in action (commit vs
   rollback)
 - Use EXPLAIN to compare query execution plans with and without indexes
+- Simulate a network partition and observe the CAP trade-off
+- Compare a live JOIN with a materialized view and observe staleness
+- Measure how buffer pool size affects cache hit ratio and latency
 - Run SQL directly against primary and replica nodes to verify behavior
 - Connect these mechanisms to real-world scaling strategies (read
   replicas, transactional safety, query optimization)
@@ -50,8 +54,10 @@ chmod +x setup.sh cleanup.sh
 ./setup.sh
 ```
 
-Open [http://localhost:8081](http://localhost:8081) in your browser.
-Then skip to **Task 1** below.
+The first run downloads the MySQL image (about 1 GB) and takes a few
+minutes. Wait until the script prints `=== Visualizer ready ===`, then
+open [http://localhost:8081](http://localhost:8081) in your browser
+and skip to **Task 1** below.
 
 ### Option B: EC2 Setup (AWS Academy)
 
@@ -85,6 +91,7 @@ In the AWS Console:
    upload `cloudformation.yaml`
 1. Click **Next**
 1. Enter the stack name: `lab10-visualizer`
+1. Leave **KeyName** as `vockey` (the Learner Lab key pair)
 1. In **AllowedCidr**, enter your public IP address followed by `/32`
    (for example `203.0.113.25/32`). Open
    [checkip.amazonaws.com](https://checkip.amazonaws.com) to find it.
@@ -94,9 +101,14 @@ In the AWS Console:
 
 #### Step 4: Wait for the stack to complete
 
-The stack takes about 5-10 minutes to create (Docker pulls MySQL and
-builds the visualizer image on first launch). Watch the progress in
-the **Events** tab.
+The stack takes about 5-10 minutes to create: the instance installs
+Docker, pulls MySQL, builds the visualizer image, and configures
+replication. The stack only reaches **CREATE_COMPLETE** when all of
+that has finished, so you can open the visualizer as soon as it does.
+Watch the progress in the **Events** tab.
+
+If the stack ends in **ROLLBACK_COMPLETE**, the setup failed or took
+longer than 20 minutes. Delete the stack and create it again.
 
 When complete, click the **Outputs** tab to find:
 
@@ -111,11 +123,11 @@ Open the **VisualizerURL** from the Outputs tab in your browser:
 http://YOUR_PUBLIC_IP:8081
 ```
 
-The visualizer should load with the three tabs and sidebar showing
-database state. If the page does not load, wait another minute for
-the setup to finish. If it still does not load, check that your IP has
-not changed since you created the stack: update the stack with your new
-address in **AllowedCidr**.
+The visualizer should load with its six tabs and the **Database
+State** sidebar. If the page does not load, check that your IP has not
+changed since you created the stack (open
+[checkip.amazonaws.com](https://checkip.amazonaws.com) again) and
+update the stack with your new address in **AllowedCidr**.
 
 Then continue with **Task 1** below. The visualizer works identically
 whether running locally or on EC2.
@@ -195,8 +207,9 @@ The sidebar on the right shows live database state:
 
 ### Step 1.2: Open the SQL Console
 
-At the bottom of the page, click **SQL Console** to expand it.
-Select **Primary** and run:
+The **SQL Console** is always open at the bottom right of the page.
+Select **Primary**, type the query, and press **Enter** (or click
+**Run**):
 
 ```sql
 SHOW TABLES;
@@ -244,12 +257,14 @@ In the **Replication** tab:
 
 Watch the animation:
 
-1. Blue arrow: INSERT goes to the Primary node
-1. Purple arrow: SELECT reads from the Replica node
+1. Blue arrow (**write**): the INSERT goes to the Primary node
+1. Green arrow (**read**): the SELECT finds the row on the Replica
+   node. If the first read is too early, the arrow flashes red and the
+   visualizer reads again until the row arrives
 1. Latency pills show real timing for each operation
 
-The result panel shows **REPLICATED** -- the data appeared on the
-replica within milliseconds:
+The result panel shows **REPLICATED** and how long the row took to
+reach the replica (a few milliseconds):
 
 ![Replication Result](screenshots/03-replication-result.png)
 
@@ -331,16 +346,22 @@ The result shows **COMMITTED**. Check the sidebar: CS101 dropped from
 
 ### Step 3.2: Trigger a rollback
 
-Now try to transfer Student 1 to PHYS101 again (they are already
-enrolled there):
+Now move Student 3 from CS101 to CS201. Student 3 is already enrolled
+in CS201, so the transaction will fail halfway:
 
-1. Same settings: Student ID `1`, From `CS101`, To `PHYS101`
+1. Set Student ID to `3`, From Course to `CS101`, To Course to `CS201`
 1. Click **Transfer Enrollment**
 
-The INSERT fails with **CONSTRAINT VIOLATION** (duplicate enrollment).
-The result shows **ROLLED BACK** -- the DELETE and UPDATE that happened
-before the failed INSERT were also undone. The counts in the sidebar
-remain unchanged.
+Watch the steps: the DELETE from CS101 and the `UPDATE CS101
+enrolled-1` succeed, then the INSERT into CS201 fails with
+**CONSTRAINT VIOLATION** (duplicate enrollment). The result shows
+**ROLLED BACK**: MySQL undid the DELETE and the UPDATE that had
+already run. Check the sidebar: CS101 still shows 3 and CS201 still
+shows 2.
+
+If you try a transfer for a student who is not enrolled in the From
+course, the transaction stops at the first step with **NOT ENROLLED**
+and MySQL rolls it back the same way.
 
 ### Step 3.3: Verify atomicity via SQL Console
 
@@ -381,9 +402,10 @@ accessing resource-10.
 1. Set Student ID to `3`, Resource to `resource-10`
 1. Click **Run EXPLAIN**
 
-The result shows **Rows scanned: ~10,000** in red, with Key: **NONE
-(full scan)**. MySQL examined nearly all 10,000 rows to find a
-handful of matches. Check the sidebar: Indexes shows **None**:
+The result shows **Rows scanned** close to 10,000 in red, with Key:
+**NONE (full scan)**. MySQL examined nearly all 10,000 rows to find a
+few dozen matches. EXPLAIN reports an estimate, so the exact number
+varies slightly between installations. Check the sidebar: Indexes shows **None**:
 
 ![Schema No Index](screenshots/05-schema-no-index.png)
 
@@ -398,9 +420,11 @@ Check the sidebar: Indexes now shows **idx_student_resource**.
 
 Click **Run EXPLAIN** again (same query).
 
-The result now shows **Rows scanned: ~24** in green, with Key:
-**idx_student_resource**. MySQL used the index to jump directly to
-matching rows -- a ~400x improvement:
+The result now shows **Rows scanned** in green, with Key:
+**idx_student_resource**. The number is just the matching rows (a few
+dozen; the sample data is random, so it differs per installation).
+MySQL used the index to jump directly to them -- hundreds of times
+less work than the full scan:
 
 ![Schema With Index](screenshots/06-schema-with-index.png)
 
@@ -444,7 +468,9 @@ longer because MySQL must update both the table and the index.
 
 ## Task 5: SQL Console Exploration
 
-Use the SQL Console to verify what you learned:
+Use the SQL Console to verify what you learned. The console takes
+one statement at a time on a single line: paste multi-line queries
+from this guide and they run as one line.
 
 ![SQL Console](screenshots/07-sql-console.png)
 
@@ -463,17 +489,25 @@ ORDER BY s.name;
 Run the same SELECT on both Primary and Replica to verify they
 return identical results.
 
-**Test isolation by running concurrent queries:**
+**Watch replication:**
 
-In one SQL Console query, insert a student. In the sidebar, watch
-the Primary Rows counter increment and -- a moment later -- the
-Replica Rows counter catch up.
+With **Primary** selected, insert a student:
+
+```sql
+INSERT INTO students (name, email, major) VALUES ('Lab Test', 'lab.test@university.edu', 'Physics');
+```
+
+Switch to **Replica** and run
+`SELECT name FROM students WHERE email = 'lab.test@university.edu';`.
+The row is already there: the replica applied it through the binary
+log. In the sidebar, **Primary Rows** and **Replica Rows** match.
 
 **Reset the database:**
 
 Click the **Reset DB** button in the top-right corner to restore
 the original data (10 students, 4 courses, 10 enrollments, no
-custom indexes).
+custom indexes). Reset also restarts replication if you stopped it,
+drops the materialized view, and sets the buffer pool back to 128 MB.
 
 ---
 
@@ -539,12 +573,14 @@ Reads become fast, but the view must be refreshed after writes.
 
 Switch to the **Materialized Views** tab. Click **Query with JOINs**.
 
-This runs a 3-table JOIN (students + enrollments + courses) to fetch
-enrollment data:
+This runs a JOIN across students, enrollments, and courses, plus a
+per-student count of their `access_log` entries -- the kind of report
+query that gets expensive as tables grow:
 
 ![Views JOIN](screenshots/10-views-join.png)
 
-Note the query time and that 3 tables were scanned.
+Note the query time, the number of tables scanned (4), and the rows
+returned (10, one per enrollment).
 
 ### Step 7.2: Create and query the materialized view
 
@@ -558,16 +594,27 @@ Compare the timing with Step 7.1.
 
 ### Step 7.3: Observe staleness
 
-Use the SQL Console to insert a new enrollment:
+Use the SQL Console (Primary) to enroll Grace Kim (student 7) in
+CS101:
 
 ```sql
-INSERT INTO students (name, email, major)
-VALUES ('New Student', 'new@university.edu', 'Engineering');
+INSERT INTO enrollments (student_id, course_id) VALUES (7, 1);
 ```
 
-Now click **Query from View** again. The new student does NOT appear
-in the view because it was created before the insert. Click
-**Refresh View** to rebuild it -- now the new data appears.
+Now compare the two queries:
+
+1. Click **Query from View**: still **10 rows**, and Grace Kim is not
+   in the list. The view is a snapshot taken before the insert.
+1. Click **Query with JOINs**: **11 rows**, including Grace Kim. The
+   live query always sees the latest data.
+1. Click **Refresh View** to rebuild the snapshot, then
+   **Query from View** again: now it also returns **11 rows**.
+
+Scroll inside the result box to see every row. Notice that the
+sidebar still shows 4 students in CS101: `courses.enrolled` is a
+stored counter that only the **Transfer Enrollment** button updates.
+Stored totals like this go stale the same way a materialized view
+does.
 
 > **Question:** A dashboard shows daily sales summaries for managers.
 > Should you use a materialized view or a live JOIN query?
@@ -587,25 +634,31 @@ InnoDB buffer pool -- the amount of RAM used to cache data pages.
 ### Step 8.1: Set a small buffer and benchmark
 
 Switch to the **Vertical Scaling** tab. Select **16 MB** from the
-dropdown, click **Set Buffer**, then click
+dropdown and click **Set Buffer** (shrinking the buffer takes a few
+seconds while MySQL frees memory), then click
 **Run Benchmark (200 queries)**:
 
 ![Vertical Benchmark](screenshots/12-vertical-benchmark.png)
 
-Note the **buffer hit ratio**, **avg latency**, and **queries/sec**.
+The benchmark reads random ranges of a 72 MB table (`bench_data`,
+created automatically the first time you run it), so a 16 MB buffer
+cannot hold it all. Note the **buffer hit ratio** (around 80-85%),
+**avg latency**, and **queries/sec**.
 
 ### Step 8.2: Set a large buffer and benchmark again
 
 Select **256 MB**, click **Set Buffer**, then
 **Run Benchmark (200 queries)** again.
 
-Compare the results. With more RAM, the buffer hit ratio increases
-and query latency decreases -- more data is served from memory
-instead of disk.
+Compare the results. With more RAM, the buffer hit ratio rises to
+100% and query latency decreases -- the whole table is now served
+from memory instead of disk. Try **64 MB** and **128 MB** as well:
+the hit ratio climbs to about 97% and then 100%.
 
 ### Step 8.3: Understand the ceiling
 
-Vertical scaling has diminishing returns. Once the entire working set
+Vertical scaling has diminishing returns. In your measurements, going
+from 128 MB to 256 MB changed nothing: once the entire working set
 fits in the buffer pool, adding more RAM provides no benefit. And
 every machine has a physical limit -- you cannot add infinite RAM.
 
@@ -631,8 +684,8 @@ Use the SQL Console to explore on your own:
 ![SQL Console](screenshots/07-sql-console.png)
 
 Refer to the previous Task 5 for example queries. Try combining
-concepts: create an index, then benchmark with different buffer
-sizes. Or stop replication, insert data, query the materialized view,
+concepts: add the index with **Add Index** on the Schema & Indexing
+tab, then benchmark with different buffer sizes. Or stop replication, insert data, query the materialized view,
 and observe the interaction between these mechanisms.
 
 **Reset the database:**
@@ -658,12 +711,16 @@ Console (see [EC2 Cleanup](#ec2-cleanup) above).
 
 | Issue | Cause | Fix |
 | --- | --- | --- |
-| Port 8081 in use | Another service running | Change port in docker-compose.yml |
-| SQL Console shows error | Blocked SQL command | Some DDL commands are blocked for safety |
+| Port 8081, 3306, or 3307 in use | Another service (often a local MySQL) uses the port | Stop that service, then run `./setup.sh` again |
+| `Conflict ... container name ... in use` | Lab 10A (MySQL CLI) is still running | Run `../mysql/cleanup.sh`, then `./setup.sh` |
+| Setup stopped halfway or keeps failing | Half-initialized database volume | Run `./cleanup.sh` and then `./setup.sh` |
+| `./setup.sh` does not run on Windows | Scripts need a Linux shell | Run it from WSL or Git Bash |
+| SQL Console shows "not allowed" | The console blocks DDL (CREATE, DROP, ALTER) | Use the tab buttons (Add Index, Create View, ...) for schema changes |
 | Replica shows `--` in sidebar | Replication not configured | Re-run `./setup.sh` |
-| EXPLAIN shows `rows: 1` | Table stats stale | Run `ANALYZE TABLE access_log;` in the console |
 | Animation stuck | Previous operation still running | Wait for it to finish or refresh the page |
-| EC2 page does not load | Stack still initializing | Wait 5-10 min after CREATE_COMPLETE for Docker setup |
+| EC2 stack ends in ROLLBACK_COMPLETE | Setup failed or timed out | Delete the stack and create it again |
+| EC2 page does not load | Your public IP changed | Update the stack with your new IP in **AllowedCidr** |
+| EC2 page does not load after the Learner Lab restarts | The instance got a new public IP | Open the visualizer at the new **Public IPv4 address** shown in the EC2 console (the Outputs tab keeps the old one) |
 | EC2 stack create fails | Learner Lab not started | Ensure the AWS indicator is green before creating the stack |
 
 ## Key Concepts
@@ -702,7 +759,7 @@ Console (see [EC2 Cleanup](#ec2-cleanup) above).
 
 3. **Indexes are the highest-impact optimization for query
    performance.** A single composite index turned a 10,000-row scan
-   into a 24-row lookup -- a 400x improvement. But indexes are not
+   into a lookup of a few dozen rows -- hundreds of times less work. But indexes are not
    free: they consume storage and slow down writes. The right index
    depends on your query patterns.
 

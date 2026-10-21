@@ -770,7 +770,7 @@ h3 {
 
 .result-body {
   min-height: 0;
-  max-height: 260px;
+  max-height: 480px;
   overflow: auto;
 }
 
@@ -1573,6 +1573,11 @@ h3 {
 .console-error {
   font-weight: 600;
   color: var(--err);
+}
+
+.console-vertical {
+  margin: 6px 0 4px;
+  color: var(--ink);
 }
 
 .console-result-table {

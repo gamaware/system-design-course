@@ -7,10 +7,12 @@
 
 ## Overview
 
-This hands-on lab explores three fundamental database scalability
-mechanisms: replication (distributing reads across nodes), ACID
-transactions (guaranteeing consistency under concurrency), and indexing
-(optimizing query performance on large tables). Students interact with
+This hands-on lab explores six database scalability mechanisms:
+replication (distributing reads across nodes), ACID transactions
+(guaranteeing consistency under concurrency), indexing (optimizing
+query performance on large tables), the CAP theorem (behavior during a
+network partition), materialized views (trading freshness for read
+speed), and vertical scaling (more memory for the buffer pool). Students interact with
 a live MySQL primary-replica cluster through an interactive web
 visualizer that animates real SQL operations, measures latency, and
 includes a built-in SQL console. Optional CLI labs extend the same
@@ -36,6 +38,9 @@ For optional CLI-based labs with MongoDB and Cassandra, see
 - Execute ACID transactions and see atomicity in action (commit vs
   rollback)
 - Use EXPLAIN to compare query execution plans with and without indexes
+- Simulate a network partition and observe the CAP trade-off
+- Compare a live JOIN with a materialized view and observe staleness
+- Measure how buffer pool size affects cache hit ratio and latency
 - Run SQL directly against primary and replica nodes via the built-in
   console
 - Compare how MySQL, MongoDB, and Cassandra each implement replication,
@@ -73,7 +78,7 @@ CloudFormation.
 ├── diagrams/                           # Architecture diagrams (draw.io source + PNG)
 ├── LAB.md                              # Full lab index with comparison table
 ├── visualizer/                         # Main lab (interactive browser)
-│   ├── LAB-VISUALIZER.md              # Step-by-step instructions (5 tasks)
+│   ├── LAB-VISUALIZER.md              # Step-by-step instructions (9 tasks)
 │   ├── docker-compose.yml             # MySQL primary + replica + visualizer
 │   ├── cloudformation.yaml            # EC2 deployment (AWS Academy)
 │   ├── setup.sh / cleanup.sh          # Start and stop environment
@@ -81,7 +86,7 @@ CloudFormation.
 │   ├── server.py                      # API bridge (proxies SQL to MySQL)
 │   ├── index.html                     # Interactive UI with SVG diagram
 │   ├── app.js                         # Animation engine and SQL console
-│   └── style.css                      # Dark theme styling
+│   └── style.css                      # Light and dark theme styling
 ├── mysql/                              # Optional: MySQL CLI lab
 │   ├── LAB-MYSQL.md                   # 4 tasks (replication, ACID, indexing)
 │   ├── docker-compose.yml             # MySQL primary + replica
@@ -116,17 +121,18 @@ cd visualizer
 Open [http://localhost:8081](http://localhost:8081).
 
 **EC2 (AWS Academy):** Upload `visualizer/cloudformation.yaml` to
-CloudFormation. When the stack completes (~5-10 min), open the
-**VisualizerURL** from the Outputs tab.
+CloudFormation. When the stack reaches CREATE_COMPLETE (~5-10 min),
+open the **VisualizerURL** from the Outputs tab.
 
-The visualizer has three tabs (Replication, Consistency, Schema &
-Indexing) and a SQL console at the bottom. Follow
+The visualizer has six tabs (Replication, Consistency, Schema &
+Indexing, CAP Theorem, Materialized Views, Vertical Scaling) and a SQL
+console at the bottom. Follow
 [LAB-VISUALIZER.md](visualizer/LAB-VISUALIZER.md) for the guided
 walkthrough.
 
 ## Tasks Overview
 
-### Main Lab (Interactive Visualizer, ~45 min)
+### Main Lab (Interactive Visualizer, ~75 min)
 
 | Task | Topic | What You Do |
 | --- | --- | --- |
@@ -134,7 +140,11 @@ walkthrough.
 | 2. Replication | Scaling reads | Write to primary, read from replica, observe lag |
 | 3. ACID Transactions | Consistency | Transfer enrollment atomically, trigger rollback |
 | 4. Indexing | Query optimization | EXPLAIN with/without index, compare rows scanned |
-| 5. Free Exploration | SQL console | Run arbitrary queries, compare primary vs replica |
+| 5. SQL Console | Verification | Run JOINs, compare primary vs replica, watch replication |
+| 6. CAP Theorem | Partition tolerance | Stop replication, write, see the nodes diverge and recover |
+| 7. Materialized Views | Read speed vs freshness | Compare a JOIN with a view, observe staleness, refresh |
+| 8. Vertical Scaling | Buffer pool | Benchmark small vs large buffer pool, see diminishing returns |
+| 9. Free Exploration | SQL console | Combine the mechanisms on your own |
 
 ### Optional CLI Labs (~30 min each)
 
@@ -155,14 +165,12 @@ cd visualizer
 
 | Issue | Cause | Fix |
 | --- | --- | --- |
-| Port 8081 in use | Another service running | Change port in `visualizer/docker-compose.yml` |
-| SQL Console shows error | Blocked SQL command | Some DDL commands are blocked for safety |
+| Port 8081, 3306, or 3307 in use | Another service (often a local MySQL) | Stop that service, then run `./setup.sh` again |
+| SQL Console shows "not allowed" | The console blocks DDL (CREATE, DROP, ALTER) | Use the tab buttons for schema changes |
 | Replica shows `--` in sidebar | Replication not configured | Re-run `./setup.sh` |
-| EXPLAIN shows `rows: 1` | Table stats stale | Run `ANALYZE TABLE access_log;` in the console |
 | Animation stuck | Previous operation running | Wait for it to finish or refresh the page |
-| Port 3306 in use | Local MySQL running | Stop local MySQL or change port in docker-compose |
 | Cassandra OOM crash | Not enough Docker memory | Allocate at least 4 GB RAM in Docker Desktop |
-| EC2 page does not load | Stack still initializing | Wait 5-10 min after CREATE_COMPLETE for Docker setup |
+| EC2 page does not load | Your public IP changed | Update the stack with your new IP in **AllowedCidr** |
 | EC2 stack create fails | Learner Lab not started | Ensure the AWS indicator is green before creating the stack |
 
 ## Key Concepts

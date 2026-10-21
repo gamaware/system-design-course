@@ -12,7 +12,7 @@ const PATTERN_DESCRIPTIONS = {
   schema: 'Run EXPLAIN to see query plans. Add/drop indexes and compare rows scanned.',
   cap: 'Stop replication to simulate a network partition. Write data and observe divergence between primary and replica.',
   views:
-    'Compare expensive multi-table JOINs vs a pre-computed materialized view. See the read-speed vs write-cost trade-off.',
+    'Compare an expensive JOIN query with a pre-computed materialized view. The view reads fast but goes stale until you refresh it.',
   vertical:
     'Adjust the InnoDB buffer pool size and benchmark query performance. More RAM = more data cached in memory = faster reads.',
 };
@@ -29,13 +29,13 @@ const EXPLANATIONS = {
       title: '2. SELECT on Replica',
       detail:
         'The replica applies binlog events via its IO and SQL threads. ' +
-        'We immediately read the row from the replica to check replication.',
+        'We read the row from the replica every 5 ms (up to 1.5 s) and report how long after the commit it appeared.',
     },
     {
       title: '3. Check Replication Lag',
       detail:
         'SHOW REPLICA STATUS reveals Seconds_Behind_Source. ' +
-        'In this local setup it is typically 0, but under heavy load it grows.',
+        'It counts whole seconds, so sub-second lag shows as 0; under heavy load it grows.',
     },
   ],
   consistency: [
@@ -49,7 +49,7 @@ const EXPLANATIONS = {
       title: '2. DELETE + UPDATE (source course)',
       detail:
         'Remove the enrollment and decrement the enrolled count. ' +
-        'If the student is not enrolled, no rows are affected.',
+        'If the student is not enrolled, the DELETE affects 0 rows and the transaction rolls back.',
     },
     {
       title: '3. INSERT + UPDATE (target course)',
@@ -102,13 +102,13 @@ const EXPLANATIONS = {
     {
       title: '1. Query with JOINs (Expensive)',
       detail:
-        'A 3-table JOIN (students + enrollments + courses) scans multiple tables ' +
-        'and computes the result on every query. Slow at scale.',
+        'JOIN students + enrollments + courses and count the access_log rows of each student. ' +
+        'The whole result is recomputed on every query, so it is always current but slow at scale.',
     },
     {
       title: '2. Materialized View (Pre-computed)',
       detail:
-        'CREATE TABLE ... AS SELECT pre-computes the JOIN result into a single flat table. ' +
+        'CREATE TABLE ... AS SELECT stores the result of that same query in a single flat table. ' +
         'Reads are fast (single table scan), but the view becomes stale after writes.',
     },
     {
@@ -128,7 +128,7 @@ const EXPLANATIONS = {
     {
       title: '2. Run Benchmark',
       detail:
-        '200 random queries hit the access_log table. With a small buffer, most reads go to disk (slow). ' +
+        '200 random range queries read the 72 MB bench_data table. With a small buffer, many reads go to disk (slow). ' +
         'With a large buffer, the working set fits in RAM (fast).',
     },
     {
@@ -182,8 +182,8 @@ function el(tag, className, text) {
 // Map a step result string to a visual tone: ok, warn or err.
 function toneOf(text) {
   const t = String(text ?? '').toLowerCase();
-  if (/error|fail|violation|rolled|not found|denied|refused/.test(t)) return 'err';
-  if (/not yet|stale|lag|diverged|partition/.test(t)) return 'warn';
+  if (/error|fail|violation|rolled|not found|not enrolled|not running|incomplete|denied|refused/.test(t)) return 'err';
+  if (/not yet|not in sync|stale|stopped|lag|diverged|partition/.test(t)) return 'warn';
   return 'ok';
 }
 
@@ -228,12 +228,7 @@ function logSqlToConsole(result) {
     output.appendChild(qDiv);
 
     const rDiv = document.createElement('div');
-    rDiv.className =
-      step.result.toLowerCase().includes('error') ||
-      step.result.toLowerCase().includes('not found') ||
-      step.result.toLowerCase().includes('stale')
-        ? 'console-error'
-        : 'console-meta';
+    rDiv.className = toneOf(step.result) === 'ok' ? 'console-meta' : 'console-error';
     rDiv.textContent = `-- ${step.result} (${step.latency_ms}ms)`;
     output.appendChild(rDiv);
   });
@@ -280,6 +275,7 @@ async function animateArrow(arrowId, dotId, latencyId, ms, cls) {
   const latGroup = $(`#${latencyId}`);
 
   if (arrow) {
+    arrow.classList.remove('arrow-success', 'arrow-op', 'arrow-error');
     arrow.classList.add('arrow-active', cls || 'arrow-op');
   }
 
@@ -481,7 +477,7 @@ function renderResultData(data) {
   return null;
 }
 
-function showResult(status, latency, data, cls, apiResult) {
+function showResult(status, latency, data, cls, apiResult, latencyLabel = 'total') {
   const panel = $('#result-panel');
   const statusEl = $('#result-status');
   const latencyEl = $('#result-latency');
@@ -492,7 +488,7 @@ function showResult(status, latency, data, cls, apiResult) {
   statusEl.className = `result-status ${cls || ''}`;
   statusEl.innerHTML = iconSvg(tone === 'neutral' ? 'info' : tone);
   statusEl.append(el('span', '', status));
-  latencyEl.textContent = `${Number(latency || 0).toFixed(1)}ms total`;
+  latencyEl.textContent = `${Number(latency || 0).toFixed(1)}ms ${latencyLabel}`;
   dataEl.textContent = JSON.stringify(data, null, 2);
   panel.classList.remove('hidden');
 
@@ -703,8 +699,9 @@ async function doReplication() {
   }
 
   for (const step of result.steps) {
-    const idx = step.seq - 1;
-    highlightExpStep(idx);
+    if (step.action === 'INSERT') highlightExpStep(0);
+    else if (step.action.startsWith('SELECT')) highlightExpStep(1);
+    else highlightExpStep(2);
     logEvent(step);
 
     if (step.action === 'INSERT') {
@@ -715,7 +712,7 @@ async function doReplication() {
         step.latency_ms,
         'arrow-op',
       );
-    } else if (step.action === 'SELECT') {
+    } else if (step.action.startsWith('SELECT')) {
       const cls = step.result === 'FOUND' ? 'arrow-success' : 'arrow-error';
       await animateArrow(
         'arrow-app-replica',
@@ -728,12 +725,11 @@ async function doReplication() {
     await sleep(STEP_PAUSE_MS);
   }
 
-  const lastStep = result.steps[result.steps.length - 1];
   showResult(
-    lastStep.data?.lag_seconds === 0 ? 'REPLICATED' : 'LAG DETECTED',
+    result.replicated ? 'REPLICATED' : 'NOT YET REPLICATED',
     result.total_ms,
     result.steps.map((s) => ({ action: s.action, result: s.result, ms: s.latency_ms })),
-    lastStep.data?.lag_seconds === 0 ? 'committed' : 'rolled-back',
+    result.replicated ? 'committed' : 'rolled-back',
     result,
   );
 
@@ -789,7 +785,7 @@ async function doTransfer() {
         'dot-app-primary',
         'latency-app-primary',
         step.latency_ms,
-        'arrow-op',
+        step.result === 'OK' ? 'arrow-op' : 'arrow-error',
       );
     } else if (step.action.startsWith('INSERT')) {
       expIdx = 2;
@@ -847,6 +843,13 @@ async function doExplain() {
     resource,
   });
 
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+    animating = false;
+    setButtonsDisabled(false);
+    return;
+  }
+
   highlightExpStep(0);
   for (const step of result.steps) {
     logEvent(step);
@@ -863,12 +866,13 @@ async function doExplain() {
   const plan = result.steps[0]?.data || {};
   const rows = plan.rows || plan.row || '?';
   const keyUsed = plan.key || 'NONE (full scan)';
+  const fullScan = !plan.key || plan.type === 'ALL';
 
   showResult(
     `Rows scanned: ${rows} | Key: ${keyUsed}`,
     result.total_ms,
     plan,
-    rows > 1000 ? 'rolled-back' : 'committed',
+    fullScan ? 'rolled-back' : 'committed',
     result,
   );
 
@@ -877,26 +881,48 @@ async function doExplain() {
   setButtonsDisabled(false);
 }
 
-async function doAddIndex() {
-  const result = await apiPost('/api/schema/add-index', {});
-  logEvent({
-    action: 'CREATE INDEX',
-    target: 'primary',
-    result: result.result,
-    latency_ms: result.latency_ms,
-  });
+// Add Index / Drop Index replace the result panel with their own outcome.
+async function doIndexChange(url, verb) {
+  if (animating) return;
+  animating = true;
+  setButtonsDisabled(true);
+  clearAnimations();
+  showExplanation('schema');
+  highlightExpStep(1);
+
+  const result = await apiPost(url, {});
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+  } else {
+    result.steps.forEach(logEvent);
+    await animateArrow(
+      'arrow-app-primary',
+      'dot-app-primary',
+      'latency-app-primary',
+      result.latency_ms,
+      'arrow-op',
+    );
+    const changed = result.result === 'CREATED' || result.result === 'DROPPED';
+    showResult(
+      changed ? `INDEX ${verb} ${result.index}` : `INDEX ${result.result} ${result.index}`,
+      result.latency_ms,
+      result.steps.map((s) => ({ action: s.action, result: s.result, ms: s.latency_ms })),
+      changed ? 'committed' : '',
+      result,
+    );
+  }
+
   await updateSidebar();
+  animating = false;
+  setButtonsDisabled(false);
 }
 
-async function doDropIndex() {
-  const result = await apiPost('/api/schema/drop-index', {});
-  logEvent({
-    action: 'DROP INDEX',
-    target: 'primary',
-    result: result.result,
-    latency_ms: result.latency_ms,
-  });
-  await updateSidebar();
+function doAddIndex() {
+  return doIndexChange('/api/schema/add-index', 'CREATED');
+}
+
+function doDropIndex() {
+  return doIndexChange('/api/schema/drop-index', 'DROPPED');
 }
 
 // --- CAP Theorem Actions ---
@@ -985,6 +1011,8 @@ async function doCapTest() {
         step.latency_ms,
         'arrow-success',
       );
+    } else if (step.action === 'SHOW REPLICA STATUS') {
+      highlightExpStep(step.result.includes('STOPPED') ? 0 : 2);
     } else if (step.action === 'SELECT (replica)') {
       highlightExpStep(1);
       const cls = step.result.includes('stale') ? 'arrow-error' : 'arrow-success';
@@ -1046,6 +1074,11 @@ async function doViewsDrop() {
   await updateSidebar();
 }
 
+// The result panel is narrow: show the columns that tell rows apart.
+function viewRows(rows) {
+  return rows.map((r) => ({ name: r.name, code: r.code, title: r.title, accesses: r.accesses }));
+}
+
 async function doViewsJoin() {
   if (animating) return;
   animating = true;
@@ -1055,6 +1088,13 @@ async function doViewsJoin() {
   highlightExpStep(0);
 
   const result = await apiPost('/api/views/query-join', {});
+
+  if (result.error) {
+    showResult('ERROR', 0, result, 'rolled-back');
+    animating = false;
+    setButtonsDisabled(false);
+    return;
+  }
 
   for (const step of result.steps) {
     logEvent(step);
@@ -1070,14 +1110,11 @@ async function doViewsJoin() {
 
   showResult(
     `JOIN: ${result.row_count} rows`,
-    result.total_ms,
-    result.steps.map((s) => ({
-      action: s.action,
-      result: s.result,
-      ms: s.latency_ms,
-    })),
+    result.query_ms,
+    viewRows(result.rows),
     'committed',
     result,
+    'query',
   );
 
   animating = false;
@@ -1114,14 +1151,11 @@ async function doViewsView() {
 
   showResult(
     `VIEW: ${result.row_count} rows`,
-    result.total_ms,
-    result.steps.map((s) => ({
-      action: s.action,
-      result: s.result,
-      ms: s.latency_ms,
-    })),
+    result.query_ms,
+    viewRows(result.rows),
     'committed',
     result,
+    'query',
   );
 
   animating = false;
@@ -1149,9 +1183,18 @@ async function doViewsRefresh() {
 
 // --- Vertical Scaling Actions ---
 
+function formatMb(bytes) {
+  return `${Math.round(Number(bytes) / (1024 * 1024))} MB`;
+}
+
 async function doVerticalSet() {
   const size = $('#vert-buffer').value;
   const label = $('#vert-buffer').options[$('#vert-buffer').selectedIndex].text;
+  if (animating) return;
+  animating = true;
+  setButtonsDisabled(true);
+  showExplanation('vertical');
+  highlightExpStep(0);
   const result = await apiPost('/api/vertical/set-buffer', { size });
   logEvent({
     action: `SET BUFFER ${label}`,
@@ -1159,13 +1202,23 @@ async function doVerticalSet() {
     result: result.error ? 'ERROR' : 'OK',
     latency_ms: result.latency_ms || 0,
   });
-  showExplanation('vertical');
-  highlightExpStep(0);
   if (result.error) {
-    showResult('ERROR', 0, result, 'rolled-back');
+    showResult('ERROR', result.latency_ms || 0, result, 'rolled-back', result);
   } else {
-    showResult(`Buffer pool set to ${label}`, result.latency_ms, result, 'committed', result);
+    showResult(
+      `Buffer pool is now ${formatMb(result.actual_size)}`,
+      result.latency_ms,
+      {
+        previous_size: formatMb(result.previous_size),
+        requested_size: formatMb(result.size),
+        actual_size: formatMb(result.actual_size),
+      },
+      'committed',
+      result,
+    );
   }
+  animating = false;
+  setButtonsDisabled(false);
 }
 
 async function doVerticalBench() {
@@ -1203,7 +1256,7 @@ async function doVerticalBench() {
     `${s.queries} queries | ${s.avg_latency_ms}ms avg | ${s.buffer_hit_ratio}% hit ratio`,
     result.total_ms,
     {
-      buffer_pool_size: s.buffer_pool_size,
+      buffer_pool_size: formatMb(s.buffer_pool_size),
       avg_latency_ms: s.avg_latency_ms,
       p95_latency_ms: s.p95_latency_ms,
       queries_per_sec: s.queries_per_sec,
@@ -1223,12 +1276,36 @@ async function doVerticalBench() {
 // --- Reset ---
 
 async function doReset() {
+  if (animating) return;
+  const ok = window.confirm(
+    'Reset the database to its initial state?\n\n' +
+      'This deletes added students, enrollments and access_log rows, drops the index and ' +
+      'the materialized view, restarts replication and sets the buffer pool back to 128 MB.',
+  );
+  if (!ok) return;
+  animating = true;
+  setButtonsDisabled(true);
   const result = await apiPost('/api/db/reset', {});
-  logEvent({ action: 'RESET DB', target: 'primary', result: result.result || 'OK', latency_ms: 0 });
+  logSqlToConsole(result);
+  logEvent({
+    action: 'RESET DB',
+    target: 'primary',
+    result: result.error ? 'ERROR' : result.result || 'OK',
+    latency_ms: (result.steps || []).reduce((sum, s) => sum + s.latency_ms, 0),
+  });
   await updateSidebar();
-  renderResultEmpty(currentTab());
+  $('#vert-buffer').value = '134217728';
+  const replicaRect = document.querySelector('#node-replica rect');
+  if (replicaRect) replicaRect.style.opacity = '1';
   $('#explanation-panel').classList.add('hidden');
   clearAnimations();
+  animating = false;
+  setButtonsDisabled(false);
+  if (result.error || result.result !== 'OK') {
+    showResult('RESET INCOMPLETE', 0, { message: result.error || result.message }, 'rolled-back');
+  } else {
+    renderResultEmpty(currentTab());
+  }
 }
 
 // --- Init ---
@@ -1264,6 +1341,19 @@ function initTabs() {
 const consoleHistory = [];
 let consoleHistoryIndex = -1;
 
+// Like the mysql client's \G: one "column: value" line per column, per row.
+function renderVerticalRows(result) {
+  const width = Math.max(...result.columns.map((c) => c.length));
+  const stars = '*'.repeat(27);
+  const lines = [];
+  result.rows.slice(0, 20).forEach((row, i) => {
+    lines.push(`${stars} ${i + 1}. row ${stars}`);
+    result.columns.forEach((c) => lines.push(`${c.padStart(width)}: ${formatValue(row[c])}`));
+  });
+  if (result.rows.length > 20) lines.push(`(showing 20 of ${result.rows.length} rows)`);
+  return el('div', 'console-vertical', lines.join('\n'));
+}
+
 async function doSqlExec() {
   const input = $('#console-input');
   const query = input.value.trim();
@@ -1289,6 +1379,12 @@ async function doSqlExec() {
     errDiv.className = 'console-error';
     errDiv.textContent = `ERROR: ${result.error}`;
     output.appendChild(errDiv);
+  } else if (result.columns && result.vertical) {
+    output.appendChild(renderVerticalRows(result));
+    const meta = document.createElement('div');
+    meta.className = 'console-meta';
+    meta.textContent = `${result.row_count} row(s) in ${result.latency_ms}ms`;
+    output.appendChild(meta);
   } else if (result.columns) {
     // Build HTML table
     const table = document.createElement('table');

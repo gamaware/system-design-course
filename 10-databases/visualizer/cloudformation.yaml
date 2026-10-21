@@ -21,6 +21,16 @@ Parameters:
     AllowedPattern: ^(\d{1,3}\.){3}\d{1,3}/(3[0-2]|[12]?\d)$
     ConstraintDescription: Must be an IPv4 CIDR such as 203.0.113.25/32
 
+  KeyName:
+    Description: >-
+      EC2 key pair for SSH. AWS Academy Learner Lab provides vockey
+      (download labsuser.pem from AWS Details). Leave empty for no SSH key.
+    Type: String
+    Default: vockey
+
+Conditions:
+  HasKeyName: !Not [!Equals [!Ref KeyName, ""]]
+
 Resources:
   LabSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -40,23 +50,36 @@ Resources:
 
   LabInstance:
     Type: AWS::EC2::Instance
+    # The stack reaches CREATE_COMPLETE only after setup.sh has finished and
+    # replication is running, so students know the visualizer is ready.
+    CreationPolicy:
+      ResourceSignal:
+        Count: 1
+        Timeout: PT20M
     Properties:
       InstanceType: t3.large
       ImageId: !Ref LatestAmiId
-      KeyName: vockey
+      KeyName: !If [HasKeyName, !Ref KeyName, !Ref AWS::NoValue]
       SecurityGroupIds:
         - !GetAtt LabSecurityGroup.GroupId
       Tags:
         - Key: Name
           Value: lab10-db-visualizer
       UserData:
-        Fn::Base64: |
+        Fn::Base64: !Sub |
           #!/bin/bash
-          set -ex
+          set -x
 
-          # Install Docker from Amazon Linux repos
-          dnf update -y
-          dnf install -y docker git
+          # Report the result to CloudFormation on any exit, success or failure
+          signal() {
+            /opt/aws/bin/cfn-signal -e "$1" --stack ${AWS::StackName} \
+              --resource LabInstance --region ${AWS::Region}
+          }
+          trap 'signal 1' ERR
+          set -e
+
+          # Install Docker and the CloudFormation helper scripts
+          dnf install -y docker git aws-cfn-bootstrap
           systemctl enable docker
           systemctl start docker
           usermod -aG docker ec2-user
@@ -65,30 +88,37 @@ Resources:
           ARCH=$(uname -m)
           mkdir -p /usr/local/lib/docker/cli-plugins
 
-          curl -fsSL \
-            "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-${ARCH}" \
+          curl -fsSL --retry 3 \
+            "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-${!ARCH}" \
             -o /usr/local/lib/docker/cli-plugins/docker-compose
           chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
           # Install Docker Buildx plugin (required by Compose for build)
-          if [ "${ARCH}" = "x86_64" ]; then BUILDX_ARCH="amd64"; else BUILDX_ARCH="arm64"; fi
-          BUILDX_VERSION=$(curl -fsSL https://api.github.com/repos/docker/buildx/releases/latest \
+          if [ "${!ARCH}" = "x86_64" ]; then BUILDX_ARCH="amd64"; else BUILDX_ARCH="arm64"; fi
+          BUILDX_VERSION=$(curl -fsSL --retry 3 https://api.github.com/repos/docker/buildx/releases/latest \
             | grep '"tag_name"' | head -1 | cut -d'"' -f4)
-          curl -fsSL \
-            "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-${BUILDX_ARCH}" \
+          test -n "${!BUILDX_VERSION}"
+          BUILDX_URL="https://github.com/docker/buildx/releases/download/${!BUILDX_VERSION}"
+          curl -fsSL --retry 3 \
+            "${!BUILDX_URL}/buildx-${!BUILDX_VERSION}.linux-${!BUILDX_ARCH}" \
             -o /usr/local/lib/docker/cli-plugins/docker-buildx
           chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx
 
-          # Clone the repo and run the visualizer as ec2-user
+          # Clone the repo and run the visualizer as ec2-user. The .env file
+          # publishes the UI on the public interface on every run of setup.sh
+          # (the security group still limits access to AllowedCidr).
           su - ec2-user -c '
+            set -e
             git clone https://github.com/gamaware/system-design-course.git
             cd system-design-course/10-databases/visualizer
+            echo "VISUALIZER_BIND=0.0.0.0" > .env
             chmod +x setup.sh cleanup.sh
             ./setup.sh
           '
 
           # Signal that setup is complete
           touch /home/ec2-user/LAB_READY
+          signal 0
 
 Outputs:
   InstanceId:

@@ -34,7 +34,7 @@
           id="btn-reset-db"
           class="btn btn-reset"
           type="button"
-          data-tooltip="Restore original 10 students, 4 courses, drop indexes"
+          data-tooltip="Restore the initial state: original students, courses, enrollments and access_log rows; no index or view; replication running; 128 MB buffer pool"
           title="Reset database to initial state"
         >
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -249,7 +249,7 @@
                 id="views-create"
                 class="btn btn-primary"
                 type="button"
-                data-tooltip="CREATE TABLE ... AS SELECT (pre-compute the JOIN)"
+                data-tooltip="CREATE TABLE ... AS SELECT (store the JOIN query result)"
               >
                 Create View
               </button>
@@ -266,7 +266,7 @@
                 id="views-join"
                 class="btn btn-secondary"
                 type="button"
-                data-tooltip="SELECT with 3-table JOIN (students+enrollments+courses)"
+                data-tooltip="JOIN students+enrollments+courses and count access_log rows per student, computed live"
               >
                 Query with JOINs
               </button>
@@ -313,7 +313,7 @@
                 id="vert-bench"
                 class="btn btn-primary"
                 type="button"
-                data-tooltip="Run 200 random queries and measure latency + hit ratio"
+                data-tooltip="Run 200 random range queries on bench_data and measure latency + hit ratio"
               >
                 Run Benchmark (200 queries)
               </button>
