@@ -220,6 +220,11 @@ You should see: `students`, `courses`, `enrollments`, `access_log`.
 Now select **Replica** and run the same query. The replica has
 identical tables -- it received them through replication.
 
+> **Note:** If this environment already went through Task 8, the
+> primary also lists `bench_data`, and the replica does not. That
+> table exists only on the primary (see Step 8.1), and **Reset DB**
+> keeps it. Both are expected.
+
 ### Step 1.3: Inspect the schema
 
 In the SQL Console (Primary), run:
@@ -508,6 +513,8 @@ Click the **Reset DB** button in the top-right corner to restore
 the original data (10 students, 4 courses, 10 enrollments, no
 custom indexes). Reset also restarts replication if you stopped it,
 drops the materialized view, and sets the buffer pool back to 128 MB.
+It keeps the `bench_data` benchmark table from Task 8, so the next
+benchmark does not have to rebuild it.
 
 ---
 
@@ -640,9 +647,12 @@ seconds while MySQL frees memory), then click
 
 ![Vertical Benchmark](screenshots/12-vertical-benchmark.png)
 
-The benchmark reads random ranges of a 72 MB table (`bench_data`,
-created automatically the first time you run it), so a 16 MB buffer
-cannot hold it all. Note the **buffer hit ratio** (around 80-85%),
+The benchmark reads random ranges of a 72 MB table (`bench_data`),
+so a 16 MB buffer cannot hold it all. The visualizer creates that
+table the first time you click **Set Buffer** or **Run Benchmark**,
+which is why that first click takes longer. It is local benchmark
+data: the visualizer builds it with the binary log turned off, so it
+exists only on the primary and never reaches the replica. Note the **buffer hit ratio** (around 80-85%),
 **avg latency**, and **queries/sec**.
 
 ### Step 8.2: Set a large buffer and benchmark again
@@ -692,7 +702,8 @@ and observe the interaction between these mechanisms.
 
 Click the **Reset DB** button in the top-right corner to restore
 the original data (10 students, 4 courses, 10 enrollments, no
-custom indexes).
+custom indexes). As in Task 5, the `bench_data` table stays on the
+primary.
 
 ---
 
