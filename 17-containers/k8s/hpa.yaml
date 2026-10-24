@@ -1,0 +1,20 @@
+# Optional part of Task 7: scale lab17-web between 3 and 8 replicas to keep average CPU near 50 %
+# of the CPU each pod requests (50m). Requires metrics-server.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: lab17-web
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: lab17-web
+  minReplicas: 3
+  maxReplicas: 8
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50

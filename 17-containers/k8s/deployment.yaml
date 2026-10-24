@@ -1,0 +1,90 @@
+# Deployment for Tasks 5 to 8: three replicas of lab17-web, pulled from the local registry.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab17-web
+  labels:
+    app: lab17-web
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: lab17-web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Add one new pod at a time and never drop below the desired count (Task 8).
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: lab17-web
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      # Spread the replicas over the two workers when possible.
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: lab17-web
+      # By default a pod waits 300 s on a node that stopped answering before Kubernetes replaces it.
+      # The lab lowers that wait to 10 s so that Task 6 finishes in about a minute.
+      tolerations:
+        - key: node.kubernetes.io/unreachable
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 10
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 10
+      containers:
+        - name: web
+          image: localhost:5001/lab17-web:v1
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            # The app answers /readyz with 503 for its first 3 seconds, like a service that warms up.
+            - name: READY_DELAY
+              value: "3"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 2
+            failureThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          lifecycle:
+            # Keep serving for 5 s after the pod is marked for deletion, while every node removes it
+            # from the Service; then Kubernetes sends SIGTERM.
+            preStop:
+              sleep:
+                seconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

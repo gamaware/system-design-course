@@ -35,7 +35,7 @@ due. Use this table to find the folder for each Canvas item.
 | [14](./14-distributed-messaging) | Módulo 12: Sistema de Mensajería Distribuida | 🧪 Lab 10 |
 | [15](./15-serverless) | Módulo 13: Serverless | Lab (Canvas number pending) |
 | [16](./16-artificial-intelligence) | Módulo 16: Inteligencia Artificial | Coming soon |
-| [17](./17-containers) | Módulo 15: Contenedores | Coming soon |
+| [17](./17-containers) | Módulo 15: Contenedores | Lab (Canvas number pending) |
 
 ### 📚 Course Modules
 
@@ -210,7 +210,21 @@ event source mappings, partial batch responses, idempotency, concurrency, thrott
 
 #### [16 — Artificial Intelligence](./16-artificial-intelligence) _(coming soon)_
 
-#### [17 — Containers](./17-containers) _(coming soon)_
+#### [17 — Containers](./17-containers)
+
+Local lab that goes from one container to a self-healing Kubernetes cluster, with Docker and kind.
+Students learn to:
+
+- Show the namespaces and cgroups that isolate a container
+- Build a small, non-root image with a multi-stage Dockerfile and push it to a registry
+- Create a multi-node kind cluster and find every control plane and node component
+- Deploy an app with a Deployment and a Service, then measure self-healing, scaling and a zero-downtime rolling update
+
+**Technologies**: Docker, kind, Kubernetes, kubectl, Go, distroless images, Docker Registry
+
+**Key Concepts**: namespaces, cgroups, image layers, multi-stage builds, registries and digests, control plane,
+kubelet, Deployment, ReplicaSet, Service, readiness probes, self-healing, HorizontalPodAutoscaler, rolling update,
+rollback
 
 ### 👨🏫 Instructor
 

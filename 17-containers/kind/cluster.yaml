@@ -1,0 +1,19 @@
+# kind cluster for Lab 17: one control plane node and two worker nodes, each one a Docker container.
+# Every node uses the same Kubernetes node image, pinned by digest to the build published with kind v0.33.0.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: lab17
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+    # The Service of Task 5 listens on NodePort 30080. This mapping publishes that port on the
+    # loopback address of your machine only.
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 30080
+        listenAddress: "127.0.0.1"
+        protocol: TCP
+  - role: worker
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+  - role: worker
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5

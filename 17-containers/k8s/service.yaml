@@ -1,0 +1,17 @@
+# Service for Task 5: one stable address in front of every ready lab17-web pod.
+# NodePort 30080 is published on 127.0.0.1:30080 by kind/cluster.yaml.
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab17-web
+  labels:
+    app: lab17-web
+spec:
+  type: NodePort
+  selector:
+    app: lab17-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30080

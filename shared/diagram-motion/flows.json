@@ -1530,5 +1530,56 @@
         ]
       }
     ]
+  },
+  "17-containers/diagrams/lab17-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e-student-first"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e-student-web"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e-web-registry"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e-student-api"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-registry-w2",
+          "e-registry-w1"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e-student-svc",
+          "e-svc-w1",
+          "e-svc-w2"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "glow": [
+          "cp",
+          "w1",
+          "w2"
+        ]
+      }
+    ]
   }
 }
