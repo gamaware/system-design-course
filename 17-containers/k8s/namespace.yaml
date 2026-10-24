@@ -1,0 +1,7 @@
+# Namespace for every object of Lab 17 (Task 5). Deleting it deletes everything inside it.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab17
+  labels:
+    app.kubernetes.io/part-of: lab17

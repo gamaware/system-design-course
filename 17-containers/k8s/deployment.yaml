@@ -3,8 +3,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lab17-web
+  namespace: lab17
   labels:
     app: lab17-web
+  annotations:
+    # Task 8 updates the image by tag (v1, v2, v3) to show rollouts and rollbacks by name;
+    # a production manifest would reference the digest that Task 3 shows.
+    checkov.io/skip1: CKV_K8S_43=Tags keep the rolling update steps readable; Task 3 teaches digests
+    # A NetworkPolicy is outside the scope of this lab: the cluster runs only this application.
+    checkov.io/skip2: CKV2_K8S_6=Single-application teaching cluster; network policies are not covered
 spec:
   replicas: 3
   revisionHistoryLimit: 5
@@ -51,6 +58,9 @@ spec:
       containers:
         - name: web
           image: localhost:5001/lab17-web:v1
+          # Ask the registry for the current image of the tag every time a container starts. The
+          # registry runs on your machine, so the check costs a few milliseconds.
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080

@@ -1,5 +1,7 @@
 # Single-stage build, kept for comparison in Task 2: the whole Go toolchain ships with the binary
 # and the process runs as root. Do not use this pattern for real images.
+# checkov:skip=CKV_DOCKER_2: intentionally naive image; app/Dockerfile shows the HEALTHCHECK
+# checkov:skip=CKV_DOCKER_3: intentionally runs as root; Task 2 contrasts it with the non-root image
 FROM golang:1.27.2-trixie@sha256:47667934874913a449b96faa7ef4777fa285d9ec29126ee80ed61c45b7cccf0e
 
 WORKDIR /src
