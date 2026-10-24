@@ -82,9 +82,10 @@ func main() {
 		fmt.Fprintf(w, "version=%s host=%s worked=%dms loops=%d\n", version, host, ms, n)
 	})
 
+	var inFlight atomic.Int64
 	srv := &http.Server{
 		Addr:              ":" + port,
-		Handler:           logRequests(mux),
+		Handler:           logRequests(mux, &inFlight),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 
@@ -98,10 +99,14 @@ func main() {
 	// Kubernetes sends SIGTERM before it kills a pod; Docker sends it on "docker stop".
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
+	// Shutdown stops accepting connections at once, so ListenAndServe returns before the requests in
+	// progress finish. main waits on this channel until Shutdown has drained them.
+	drained := make(chan struct{})
 	go func() {
+		defer close(drained)
 		<-ctx.Done()
 		stopping.Store(true)
-		log.Printf("SIGTERM received: finishing in-flight requests")
+		log.Printf("SIGTERM received: finishing %d in-flight request(s)", inFlight.Load())
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		if err := srv.Shutdown(shutdownCtx); err != nil {
@@ -112,17 +117,23 @@ func main() {
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("server: %v", err)
 	}
+	<-drained
 	log.Printf("stopped")
 }
 
-// logRequests writes one line per request to stdout, which "docker logs" and "kubectl logs" show.
-// Probe requests are left out so that the log shows only real traffic.
-func logRequests(next http.Handler) http.Handler {
+// logRequests counts the requests in progress and writes one line per request to stdout, which
+// "docker logs" and "kubectl logs" show. Probe requests are left out of both, so that the count and
+// the log show only real traffic.
+func logRequests(next http.Handler, inFlight *atomic.Int64) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		next.ServeHTTP(w, r)
-		if r.URL.Path != "/healthz" && r.URL.Path != "/readyz" {
-			log.Printf("%s %s from %s", r.Method, r.URL.RequestURI(), r.RemoteAddr)
+		if r.URL.Path == "/healthz" || r.URL.Path == "/readyz" {
+			next.ServeHTTP(w, r)
+			return
 		}
+		inFlight.Add(1)
+		defer inFlight.Add(-1)
+		next.ServeHTTP(w, r)
+		log.Printf("%s %s from %s", r.Method, r.URL.RequestURI(), r.RemoteAddr)
 	})
 }
 
