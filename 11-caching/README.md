@@ -234,7 +234,10 @@ entries to the backend later. Fastest writes but risks data loss.
 
 ### Caching Pattern Decision Guide
 
-![Decision tree: read-heavy traffic picks Cache-Aside if you need the simplest implementation, otherwise Read-Through; write-heavy traffic picks Write-Back if you can tolerate data loss, otherwise Write-Through](diagrams/lab11-decision-guide.svg)
+![Caching pattern decision tree](diagrams/lab11-decision-guide.svg)
+
+For read-heavy traffic, pick Cache-Aside if you need the simplest implementation. Otherwise pick Read-Through.
+For write-heavy traffic, pick Write-Back if you can tolerate data loss. Otherwise pick Write-Through.
 
 ## How This Relates to Scalable Systems Design
 
