@@ -5,8 +5,8 @@
 ![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-> **In Canvas:** this folder is the 🎬 demo of **Módulo 1: Introducción**. There is no lab report to
-> submit. Full mapping: [Canvas equivalence](../README.md#canvas-equivalence).
+> **In Canvas:** this folder is the 🎬 demo of **Módulo 1: Introducción**. It has no lab report. Full
+> mapping: [Canvas equivalence](../README.md#canvas-equivalence).
 
 ## Overview
 

@@ -6,7 +6,7 @@
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
 > **In Canvas:** this folder is the HAProxy demo of **Módulo 3: Balanceo de Carga**, the base of the
-> **Actividad 2** forum. There is no lab report to submit. Full mapping: [Canvas
+> **Actividad 2** forum. It has no lab report. Full mapping: [Canvas
 > equivalence](../README.md#canvas-equivalence).
 
 ## Overview
