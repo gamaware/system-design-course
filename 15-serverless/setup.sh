@@ -37,8 +37,9 @@ echo "  Docker Compose: $(docker compose version --short)"
 echo ""
 
 # Build and start everything. Each function is its own image, built from its own directory.
+# --wait returns when every container with a healthcheck reports healthy (the functions and the gateway).
 echo "Building the function images and the gateway, then starting DynamoDB Local, three functions and the gateway..."
-docker compose up -d --build
+docker compose up -d --build --wait
 
 echo ""
 echo "Waiting for the gateway to be healthy..."

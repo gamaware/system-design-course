@@ -93,9 +93,3 @@ services:
     # Published on 127.0.0.1 only: the gateway has no authentication, so other machines must not reach it.
     ports:
       - "127.0.0.1:8080:8080"
-    healthcheck:
-      test: ["CMD", "python", "-c", "import gateway; gateway.healthcheck()"]
-      interval: 5s
-      timeout: 5s
-      retries: 12
-      start_period: 5s

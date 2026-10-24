@@ -56,8 +56,8 @@ def _parse(body):
         amount = Decimal(str(payment["amount"]))
     except (KeyError, InvalidOperation) as exc:
         raise InvalidPaymentError("body needs order_id and a numeric amount") from exc
-    if amount <= 0:
-        raise InvalidPaymentError(f"amount {amount} is not positive")
+    if not amount.is_finite() or amount <= 0:
+        raise InvalidPaymentError(f"amount {amount} is not a positive number")
     return order_id, amount
 
 

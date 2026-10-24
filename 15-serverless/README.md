@@ -145,8 +145,9 @@ macOS / Linux / Git Bash / WSL:
 ```
 
 The cleanup script stops all containers, including every copy of `fn-work` started in Task 7,
-removes the `lab15_default` network and deletes the four locally built images. DynamoDB Local runs
-in memory, so the lab creates no volumes.
+removes the `lab15_default` network and deletes the four locally built images. It then checks
+that nothing is left; if a container, the network or an image survived, it lists them and exits
+with an error. DynamoDB Local runs in memory, so the lab creates no volumes.
 
 ## Troubleshooting
 
@@ -155,12 +156,12 @@ in memory, so the lab creates no volumes.
 | `docker: command not found` | Docker not installed | Install Docker Desktop |
 | `Cannot connect to the Docker daemon` | Docker not running | Start Docker Desktop |
 | `port is already allocated` for 8080 | Another service uses the port | Stop it, or change the host side of the port in `docker-compose.yml` |
-| `{"errorType": "NoEnvironment"}` | The function container is stopped or restarting | `docker compose up -d` and wait a few seconds |
+| `{"errorType": "NoEnvironment"}` | The function container is stopped or restarting | `docker compose up -d --wait`, which returns when every container is healthy |
 | HTTP 429 `TooManyRequestsException` | Every execution environment of the function is busy | Expected in Task 7; otherwise wait for the running request to finish |
 | A function container exits with a Go `panic` in its log | Two requests reached the emulator of one container at once | Always call functions through the gateway on port 8080, which sends one request at a time to each container |
 | `Task timed out after 3.00 seconds` on the first call | The emulator counts the cold start inside the timeout | Call again: the environment is warm now |
 | `Runtime.ExitError ... signal: killed` | The invocation used more memory than the container limit | Expected in Task 5; ask for less memory or raise `WORK_MEMORY_MB` |
-| Values from Task 5 are still active | `WORK_MEMORY_MB` or `WORK_CPUS` set in the shell | `unset WORK_MEMORY_MB WORK_CPUS`, then `docker compose up -d fn-work` |
+| Values from Task 5 are still active | `WORK_MEMORY_MB` or `WORK_CPUS` set in the shell | `unset WORK_MEMORY_MB WORK_CPUS`, then `docker compose up -d --wait fn-work` |
 | Old payments in `table.py scan` | DynamoDB keeps items between steps | `docker exec lab15-gateway python table.py reset` |
 | `sed: 1: ...: invalid command code` | Old command form on macOS | Use the exact `sed -i.bak` command from Task 3, which works on macOS and Linux |
 
@@ -172,7 +173,7 @@ in memory, so the lab creates no volumes.
 | **Handler** | The function that Lambda calls with an event and a context (`app.handler` in this lab) |
 | **Event** | The JSON input of an invocation; its shape depends on the service that triggered it |
 | **Context** | Runtime information: request ID, function name, memory limit, remaining time |
-| **Execution environment** | The isolated runtime that processes one request at a time and is reused while warm |
+| **Execution environment** | The isolated runtime that processes one request at a time (on the default compute) and is reused while warm |
 | **Cold start** | The first request of a new environment: Lambda runs the INIT phase before the handler |
 | **Warm start** | A request served by an environment that already ran INIT, reusing its clients and memory |
 | **INIT phase** | Module-level code: imports, SDK clients, configuration; it runs once per environment |
@@ -201,8 +202,8 @@ live in DynamoDB, which every environment reads and writes. This is the same sep
 and state that lets a load balancer of Lab 03 send any request to any server.
 
 **Every configuration value is a trade-off.** A longer timeout hides slow dependencies and costs
-more when they hang. More memory buys more CPU: in this lab a CPU-bound task ran about six times
-faster at 1,769 MB than at 256 MB, so seven times the memory cost only about 12% more per
+more when they hang. More memory buys more CPU: in this lab a CPU-bound task ran about seven times
+faster at 1,769 MB than at 256 MB, so seven times the memory cost only about 1% more per
 invocation. Cold starts grow with the work done at INIT and shrink with more CPU.
 
 **Event-driven design needs at-least-once thinking.** SQS and the event source mapping can deliver
@@ -210,8 +211,9 @@ a message more than once, and a failed batch comes back whole unless the functio
 failures. The idempotency record in this lab is the same idea as the idempotent consumer of Lab 14,
 implemented with a DynamoDB transaction instead of SQLite.
 
-**Concurrency is the scaling unit, and it needs a ceiling.** A Lambda execution environment serves
-one request at a time, so 1,000 simultaneous requests need 1,000 environments. Without a limit,
+**Concurrency is the scaling unit, and it needs a ceiling.** On the default compute, a Lambda
+execution environment serves one request at a time, so 1,000 simultaneous requests need 1,000
+environments. Without a limit,
 a traffic spike becomes 1,000 connections to a database that accepts 100. Reserved concurrency,
 queues in front of the function and back-pressure from throttling keep the downstream services
 alive.
@@ -232,11 +234,11 @@ After completing this lab, you should take away these lessons:
 2. **State in memory is lost; state in DynamoDB is not.** After a restart the in-memory visit
    counter went back to 1 while the DynamoDB counter continued at 4.
 
-3. **Cold starts are measurable.** The first request after a restart took about 370 ms, almost all
-   of it the INIT phase; warm requests took about 5 ms in the function and 9 ms at the client.
+3. **Cold starts are measurable.** The first request after a restart took about 380 ms, almost all
+   of it the INIT phase; warm requests took about 6 ms in the function and 10 ms at the client.
 
-4. **Memory is also CPU.** The same CPU-bound task took about 220 ms at 256 MB and 36 ms at
-   1,769 MB, and the INIT phase dropped from about 760 ms to 130 ms.
+4. **Memory is also CPU.** The same CPU-bound task took about 240 ms at 256 MB and 35 ms at
+   1,769 MB, and the INIT phase dropped from about 850 ms to 130 ms.
 
 5. **Retries without idempotency charge twice.** Delivering the same SQS batch twice doubled both
    charges. With the idempotency record in the same transaction, the second delivery charged

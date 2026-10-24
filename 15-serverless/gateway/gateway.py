@@ -115,7 +115,9 @@ class Invocation:
         self.status = 200
         self.payload = b""
         self.environment = ""
-        self.error = ""  # "", "Unhandled" (the function failed) or the reason it never ran
+        # "" on success, "Unhandled" when the function failed, or why it never ran: NoEnvironment,
+        # TooManyRequestsException or ConnectionError (failures of the platform, not of the function).
+        self.error = ""
         self.duration_ms = 0.0
 
 
@@ -146,9 +148,13 @@ def invoke(function, payload, wait=False):
         result.payload = response.read()
         connection.close()
         rie_status = response.status
-    except OSError as exc:
-        rie_status = 502
+    except (OSError, http.client.HTTPException) as exc:
+        # The gateway could not reach the environment: a platform failure, reported as 502.
+        result.duration_ms = round((time.perf_counter() - started) * 1000, 1)
+        result.status, result.error = 502, "ConnectionError"
         result.payload = json.dumps({"errorType": "ConnectionError", "errorMessage": str(exc)}).encode()
+        log(f"invoke {function} on {result.environment}: cannot reach the environment: {exc}")
+        return result
     finally:
         POOL.release(address)
     result.duration_ms = round((time.perf_counter() - started) * 1000, 1)
@@ -318,33 +324,49 @@ def _sqs_record(message):
     }
 
 
+def _reason(error):
+    if not error:
+        return ""
+    return " (function error)" if error == "Unhandled" else f" ({error})"
+
+
 def poll_queue():
-    """The event source mapping: receive a batch, invoke the processor, settle each message."""
+    """The event source mapping: poll forever. One bad batch must never stop the poller."""
     while True:
-        batch = QUEUE.receive(QUEUE_BATCH_SIZE)
-        if not batch:
-            time.sleep(0.5)
-            continue
-        event = {"Records": [_sqs_record(message) for message in batch]}
-        result = invoke("lab15-processor", json.dumps(event).encode(), wait=True)
-        ids = [message["messageId"] for message in batch]
-        failed = set(ids)  # a failed invocation returns the whole batch to the queue
-        if not result.error:
-            try:
-                reported = json.loads(result.payload).get("batchItemFailures", [])
-                failed = {item["itemIdentifier"] for item in reported}
-            except (ValueError, AttributeError, KeyError, TypeError):
-                log("processor returned an invalid batch response: retrying the whole batch")
-        receives = ",".join(str(message["receive_count"]) for message in batch)
-        log(
-            f"esm batch of {len(ids)} (receive counts {receives}): "
-            f"{len(ids) - len(failed)} deleted, {len(failed)} failed{' (function error)' if result.error else ''}"
-        )
-        for message_id in ids:
-            if message_id not in failed:
-                QUEUE.delete(message_id)
-            elif QUEUE.fail(message_id):
-                log(f"esm moved {message_id[:8]} to the dead letter queue after {QUEUE_MAX_RECEIVE_COUNT} receives")
+        try:
+            if not poll_once():
+                time.sleep(0.5)
+        except Exception as exc:  # noqa: BLE001 - log any failure and keep polling, like Lambda's pollers
+            log(f"esm poller error, retrying in 1 s: {type(exc).__name__}: {exc}")
+            time.sleep(1)
+
+
+def poll_once():
+    """Receive one batch, invoke the processor and settle each message. Return False if the queue was empty."""
+    batch = QUEUE.receive(QUEUE_BATCH_SIZE)
+    if not batch:
+        return False
+    event = {"Records": [_sqs_record(message) for message in batch]}
+    result = invoke("lab15-processor", json.dumps(event).encode(), wait=True)
+    ids = [message["messageId"] for message in batch]
+    failed = set(ids)  # a failed invocation returns the whole batch to the queue
+    if not result.error:
+        try:
+            reported = json.loads(result.payload).get("batchItemFailures", [])
+            failed = {item["itemIdentifier"] for item in reported}
+        except (ValueError, AttributeError, KeyError, TypeError):
+            log("processor returned an invalid batch response: retrying the whole batch")
+    receives = ",".join(str(message["receive_count"]) for message in batch)
+    log(
+        f"esm batch of {len(ids)} (receive counts {receives}): "
+        f"{len(ids) - len(failed)} deleted, {len(failed)} failed{_reason(result.error)}"
+    )
+    for message_id in ids:
+        if message_id not in failed:
+            QUEUE.delete(message_id)
+        elif QUEUE.fail(message_id):
+            log(f"esm moved {message_id[:8]} to the dead letter queue after {QUEUE_MAX_RECEIVE_COUNT} receives")
+    return True
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -434,16 +456,20 @@ class Handler(BaseHTTPRequestHandler):
         headers = self._lab_headers(result)
         if result.error == "TooManyRequestsException":
             return self._send(429, {"message": "Too Many Requests"}, headers)
+        if result.error in ("NoEnvironment", "ConnectionError"):
+            return self._send(502, {"message": "Bad Gateway", "error": result.error}, headers)
         if result.error:
             log(f"api {route_key}: function error {result.payload[:200]!r}")
             return self._send(500, {"message": "Internal Server Error"}, headers)
         try:
             answer = json.loads(result.payload)
-        except ValueError:
-            return self._send(500, {"message": "Internal Server Error"}, headers)
-        if isinstance(answer, dict) and "statusCode" in answer:
-            headers.update(answer.get("headers") or {})
-            return self._send(int(answer["statusCode"]), (answer.get("body") or "").encode(), headers)
+            if isinstance(answer, dict) and "statusCode" in answer:
+                status = int(answer["statusCode"])
+                headers.update(answer.get("headers") or {})
+                return self._send(status, str(answer.get("body") or "").encode(), headers)
+        except (ValueError, TypeError) as exc:
+            log(f"api {route_key}: invalid function response ({exc}): {result.payload[:200]!r}")
+            return self._send(502, {"message": "Bad Gateway", "error": "InvalidResponse"}, headers)
         # Payload format 2.0: a function that returns plain JSON gets a 200 with that JSON as body.
         return self._send(200, answer, headers)
 
@@ -457,7 +483,8 @@ def healthcheck():
 
 def main():
     threading.Thread(target=poll_queue, name="event-source-mapping", daemon=True).start()
-    server = ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
+    # All interfaces inside the container; Compose publishes the port on 127.0.0.1 only.
+    server = ThreadingHTTPServer(("0.0.0.0", 8080), Handler)  # nosec B104
     log(
         f"listening on :8080 (queue: batch {QUEUE_BATCH_SIZE}, visibility {QUEUE_VISIBILITY_TIMEOUT_S:g} s, "
         f"max receives {QUEUE_MAX_RECEIVE_COUNT})"

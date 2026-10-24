@@ -29,13 +29,15 @@ def call(index, args, barrier, results):
         results[index] = (0, "-", "error", (time.perf_counter() - started) * 1000)
         return
     elapsed = (time.perf_counter() - started) * 1000
-    cold = ""
-    if response.status == 200:
+    start = ""
+    if response.getheader("X-Amz-Function-Error"):
+        start = "error"  # the function ran and failed (a timeout, a crash): not a success
+    elif response.status == 200:
         try:
-            cold = "cold" if json.loads(body)["environment"]["cold_start"] else "warm"
+            start = "cold" if json.loads(body)["environment"]["cold_start"] else "warm"
         except (ValueError, KeyError, TypeError):
-            cold = "error"
-    results[index] = (response.status, response.getheader("X-Lab-Environment", "-"), cold, elapsed)
+            start = "error"
+    results[index] = (response.status, response.getheader("X-Lab-Environment", "-"), start, elapsed)
 
 
 def main():
@@ -56,14 +58,15 @@ def main():
     wall = time.perf_counter() - started
 
     print(f"{'req':>3}  {'status':>6}  {'environment':<18} {'start':<5} {'ms':>7}")
-    for index, (status, environment, cold, elapsed) in enumerate(results, start=1):
-        print(f"{index:>3}  {status:>6}  {environment:<18} {cold:<5} {elapsed:>7.0f}")
-    ok = [r for r in results if r[0] == 200]
+    for index, (status, environment, start, elapsed) in enumerate(results, start=1):
+        print(f"{index:>3}  {status:>6}  {environment:<18} {start:<5} {elapsed:>7.0f}")
+    ok = [r for r in results if r[0] == 200 and r[2] in ("cold", "warm")]
     throttled = sum(1 for r in results if r[0] == 429)
-    environments = len({r[1] for r in ok})
+    errors = len(results) - len(ok) - throttled
+    environments = len({r[1] for r in results if r[1] != "-"})  # every environment that ran a request
     cold_starts = sum(1 for r in ok if r[2] == "cold")
     print(
-        f"{len(ok)} succeeded, {throttled} throttled (429), {environments} environment(s) used, "
+        f"{len(ok)} succeeded, {throttled} throttled (429), {errors} failed, {environments} environment(s) used, "
         f"{cold_starts} cold start(s), wall time {wall:.2f} s"
     )
 

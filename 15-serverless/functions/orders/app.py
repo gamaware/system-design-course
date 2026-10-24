@@ -67,8 +67,8 @@ def _create_order(event, environment):
         amount = Decimal(str(body["amount"]))
     except (ValueError, KeyError, TypeError, ArithmeticError):
         return _response(400, {"error": 'send a JSON body like {"item": "book", "amount": 12.5}'}, environment)
-    if amount <= 0:
-        return _response(400, {"error": "amount must be positive"}, environment)
+    if not amount.is_finite() or amount <= 0:
+        return _response(400, {"error": "amount must be a positive number"}, environment)
 
     order = {
         "pk": f"ORDER#ORD-{uuid.uuid4().hex[:8]}",

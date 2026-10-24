@@ -40,7 +40,8 @@ directory helps to follow the function logs with
 All outputs below come from a real run of this lab. Order IDs, request
 IDs and message IDs are random, so yours differ. Timings depend on your
 machine: compare your own cold and warm numbers with each other, not with
-the ones printed here.
+the ones printed here. The commands that read the container logs remove
+the timestamp at the start of each line.
 
 Each function container runs the **Lambda Runtime Interface Emulator**
 (RIE), the same program that AWS ships in its base images for local
@@ -74,8 +75,9 @@ its own container image.
 ```
 
 The script builds the three function images and the gateway, starts
-DynamoDB Local, the functions and the gateway, waits until the gateway
-answers, and creates the `lab15` table.
+DynamoDB Local, the functions and the gateway, waits until every
+container is healthy and the gateway answers, and creates the `lab15`
+table.
 
 Expected output (abbreviated):
 
@@ -90,11 +92,11 @@ Table lab15 created (partition key pk, on-demand capacity).
 
 Containers:
 NAME                 IMAGE                         STATUS
-lab15-dynamodb       amazon/dynamodb-local:3.3.2   Up 2 seconds
-lab15-fn-orders      lab15-fn-orders:local         Up 1 second
-lab15-fn-processor   lab15-fn-processor:local      Up 2 seconds
-lab15-fn-work-1      lab15-fn-work:local           Up 1 second
-lab15-gateway        lab15-gateway:local           Up 1 second (health: starting)
+lab15-dynamodb       amazon/dynamodb-local:3.3.2   Up 6 seconds
+lab15-fn-orders      lab15-fn-orders:local         Up 6 seconds (healthy)
+lab15-fn-processor   lab15-fn-processor:local      Up 6 seconds (healthy)
+lab15-fn-work-1      lab15-fn-work:local           Up 5 seconds (healthy)
+lab15-gateway        lab15-gateway:local           Up 6 seconds (healthy)
 
 === Environment ready ===
 ```
@@ -106,7 +108,7 @@ Local, which takes a few minutes.
 
 ```bash
 docker image ls 'lab15-fn-*' --format 'table {{.Repository}}\t{{.Tag}}\t{{.Size}}'
-docker history lab15-fn-orders:local --format 'table {{.CreatedBy}}\t{{.Size}}' | head -4
+docker history lab15-fn-orders:local --format 'table {{.CreatedBy}}\t{{.Size}}' | head -5
 ```
 
 Expected output:
@@ -114,18 +116,23 @@ Expected output:
 ```text
 REPOSITORY           TAG       SIZE
 lab15-fn-orders      local     779MB
-lab15-fn-work        local     779MB
 lab15-fn-processor   local     779MB
+lab15-fn-work        local     779MB
 CREATED BY                                      SIZE
 CMD ["app.handler"]                             0B
+HEALTHCHECK {Test:[CMD bash -c exec 3<>/dev/…   0B
+USER 10001                                      0B
 COPY app.py /var/task/ # buildkit               20.5kB
-/bin/sh -c #(nop)  LABEL com.amazonaws.lambd…   0B
 ```
 
 Each image is the AWS Lambda Python base image plus **one layer** with the
-code of that function. Open `functions/orders/Dockerfile`: it has three
-instructions. `CMD ["app.handler"]` is the **handler** setting, the same
-value you give Lambda in AWS: the module `app`, the function `handler`.
+code of that function. Open `functions/orders/Dockerfile`: `FROM` names
+the base image, `COPY` adds the code, `USER` runs the function as an
+unprivileged user, and `HEALTHCHECK` tells Docker when the emulator
+accepts connections. `CMD ["app.handler"]` is the **handler** setting, the
+same value you give Lambda in AWS: the module `app`, the function
+`handler`. `USER`, `HEALTHCHECK` and `CMD` only change the metadata of the
+image, so their layers are empty.
 The 779 MB of runtime are shared by the three images, and the part you
 deploy is about 20 KB.
 
@@ -147,13 +154,13 @@ Expected output:
 {
   "function": "lab15-work",
   "environment": {
-    "id": "635e395c813c",
+    "id": "b21928c499eb",
     "cold_start": true,
     "invocations": 1,
-    "init_ms": 311.1
+    "init_ms": 285.4
   },
   "handler_ms": 0.0,
-  "remaining_time_in_millis": 2124
+  "remaining_time_in_millis": 2154
 }
 ```
 
@@ -180,7 +187,7 @@ Content-Length: 292
 Content-Type: application/json
 X-Lab-Function: lab15-orders
 X-Lab-Environment: lab15-fn-orders
-X-Lab-Duration-Ms: 592.5
+X-Lab-Duration-Ms: 447.0
 
 {
   "order": {
@@ -188,22 +195,23 @@ X-Lab-Duration-Ms: 592.5
     "amount": 12.5,
     "status": "PLACED",
     "created_by": "lab15-fn-orders",
-    "order_id": "ORD-9de39952"
+    "order_id": "ORD-8b524dc3"
   },
   "version": "v1",
   "environment": {
     "id": "lab15-fn-orders",
     "cold_start": true,
     "invocations": 1,
-    "init_ms": 209.4
+    "init_ms": 193.4
   }
 }
 ```
 
-Read the order back with **your** order ID:
+Read the order back. Replace `<your-order-id>` with the `order_id` of
+your own output, because every run creates a new one:
 
 ```bash
-curl -s http://localhost:8080/orders/ORD-318a5557
+curl -s http://localhost:8080/orders/<your-order-id>
 ```
 
 Expected output:
@@ -215,21 +223,21 @@ Expected output:
     "amount": 12.5,
     "created_by": "lab15-fn-orders",
     "status": "PLACED",
-    "order_id": "ORD-9de39952"
+    "order_id": "ORD-8b524dc3"
   },
   "version": "v1",
   "environment": {
     "id": "lab15-fn-orders",
     "cold_start": false,
     "invocations": 2,
-    "init_ms": 209.4
+    "init_ms": 193.4
   }
 }
 ```
 
 The `X-Lab-*` headers come from the gateway: which function and which
 environment answered, and how long the invocation took. The first request
-took about 600 ms because the environment was cold.
+took about 450 ms because the environment was cold.
 
 **Record:** your order ID and the `X-Lab-Duration-Ms` of the first
 `POST /orders`.
@@ -263,10 +271,10 @@ Expected output:
 {
   "function": "lab15-work",
   "environment": {
-    "id": "635e395c813c",
+    "id": "b21928c499eb",
     "cold_start": false,
     "invocations": 2,
-    "init_ms": 311.1
+    "init_ms": 285.4
   },
   "event": {
     "echo": true,
@@ -276,7 +284,7 @@ Expected output:
     "function_name": "lab15-work",
     "function_version": "$LATEST",
     "memory_limit_in_mb": "256",
-    "aws_request_id": "876fc8d0-0aea-47e7-ac59-2d0ce5d5ba5a",
+    "aws_request_id": "cd261854-6017-4600-abb9-d378e28a6a29",
     "log_group_name": "/aws/lambda/Functions",
     "log_stream_name": "$LATEST",
     "remaining_time_in_millis": 3000
@@ -320,7 +328,7 @@ Expected output (abbreviated):
         "path": "/work",
         ...
       },
-      "requestId": "2edc4e15-f263-4364-b019-f6b90de8dbe1",
+      "requestId": "627f79f8-6a77-48b1-ac1d-7d8369527aaa",
       "routeKey": "GET /work",
       "stage": "$default",
       ...
@@ -387,8 +395,8 @@ curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocation
 Expected output:
 
 ```text
-"remaining_time_in_millis": 3000
-"remaining_time_in_millis": 1991
+"remaining_time_in_millis": 2999
+"remaining_time_in_millis": 1998
 ```
 
 The first value was read when the handler started, the second after one
@@ -441,6 +449,7 @@ Both counters agree while the same environment serves every request.
 
 ```bash
 docker compose restart fn-orders
+docker compose up -d --wait fn-orders
 curl -s http://localhost:8080/visits
 ```
 
@@ -455,10 +464,15 @@ Expected output:
     "id": "lab15-fn-orders",
     "cold_start": true,
     "invocations": 1,
-    "init_ms": 182.9
+    "init_ms": 100.2
   }
 }
 ```
+
+`docker compose up -d --wait` returns when the healthcheck of the
+container passes, that is, when the emulator accepts connections on port
+8080. The check only opens a TCP connection and never calls the handler,
+so the next request still finds a cold environment.
 
 The restart started a new Python process, the way Lambda starts a new
 environment. The counter in memory went back to 1. The counter in
@@ -474,7 +488,7 @@ Expected output:
 
 ```text
 COUNTER#visits               visits=4
-ORDER#ORD-9de39952           amount=12.5  created_by=lab15-fn-orders  item=book  status=PLACED
+ORDER#ORD-8b524dc3           amount=12.5  created_by=lab15-fn-orders  item=book  status=PLACED
 2 item(s)
 ```
 
@@ -492,7 +506,7 @@ curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocation
 ```
 
 ```text
-    "id": "635e395c813c",
+    "id": "b21928c499eb",
     "cold_start": false,
     "invocations": 5,
 ```
@@ -501,7 +515,7 @@ Now deploy `v2` of `lab15-orders`:
 
 ```bash
 sed -i.bak 's/^VERSION = "v1"/VERSION = "v2"/' functions/orders/app.py && rm functions/orders/app.py.bak
-docker compose up -d --build fn-orders
+docker compose up -d --build --wait fn-orders
 curl -s http://localhost:8080/visits
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocations -d '{}' \
     | grep -E '"(id|cold_start|invocations)"'
@@ -513,6 +527,7 @@ Expected output (Compose lines abbreviated):
  Container lab15-fn-orders Recreate
  Container lab15-fn-orders Recreated
  Container lab15-fn-orders Started
+ Container lab15-fn-orders Healthy
 {
   "visits_in_memory": 1,
   "visits_in_dynamodb": 5,
@@ -521,10 +536,10 @@ Expected output (Compose lines abbreviated):
     "id": "lab15-fn-orders",
     "cold_start": true,
     "invocations": 1,
-    "init_ms": 188.7
+    "init_ms": 113.4
   }
 }
-    "id": "635e395c813c",
+    "id": "b21928c499eb",
     "cold_start": false,
     "invocations": 6,
 ```
@@ -538,7 +553,7 @@ Put `v1` back:
 
 ```bash
 git checkout -- functions/orders/app.py
-docker compose up -d --build fn-orders
+docker compose up -d --build --wait fn-orders
 ```
 
 **Record:** `visits_in_memory` and `visits_in_dynamodb` after the restart
@@ -566,49 +581,54 @@ that.
 
 ```bash
 docker compose restart fn-orders
-for i in 1 2 3 4 5; do curl -s -o /dev/null -w '%{time_total}\n' http://localhost:8080/visits; done
+docker compose up -d --wait fn-orders
+for i in 1 2 3 4 5; do
+    curl -s -o /dev/null -w '%{http_code} %{time_total}\n' http://localhost:8080/visits
+done
 ```
 
-Expected output (seconds, measured by `curl`):
+Expected output (HTTP status and seconds, measured by `curl`; Compose
+lines omitted). Every line must start with `200`: any other status means
+that the request failed, and its time says nothing about cold starts.
 
 ```text
-0.368916
-0.006538
-0.010018
-0.008509
-0.009126
+200 0.382684
+200 0.013208
+200 0.010503
+200 0.009695
+200 0.009878
 ```
 
 ### Step 4.2: Read the log lines of the runtime
 
 ```bash
 docker compose logs --no-log-prefix fn-orders | grep -E 'INIT REPORT|^REPORT' | tail -6 \
-    | sed -E 's/RequestId: [0-9a-f-]+[[:space:]]+//'
+    | sed -E 's/^[0-9]+ [A-Z][a-z]+ [0-9]+ [0-9:,]+ //' | sed -E 's/RequestId: [0-9a-f-]+[[:space:]]+//'
 ```
 
 Expected output:
 
 ```text
-24 Oct 2026 17:22:25,442 [INFO] (rapid) INIT REPORT(durationMs: 357.090000)
-REPORT Init Duration: 0.03 ms Duration: 365.21 ms Billed Duration: 366 ms Memory Size: 512 MB Max Memory Used: 512 MB
-REPORT Duration: 4.17 ms Billed Duration: 5 ms Memory Size: 512 MB Max Memory Used: 512 MB
-REPORT Duration: 5.72 ms Billed Duration: 6 ms Memory Size: 512 MB Max Memory Used: 512 MB
-REPORT Duration: 4.78 ms Billed Duration: 5 ms Memory Size: 512 MB Max Memory Used: 512 MB
-REPORT Duration: 5.47 ms Billed Duration: 6 ms Memory Size: 512 MB Max Memory Used: 512 MB
+[INFO] (rapid) INIT REPORT(durationMs: 367.478000)
+REPORT Init Duration: 0.02 ms Duration: 377.36 ms Billed Duration: 378 ms Memory Size: 512 MB Max Memory Used: 512 MB
+REPORT Duration: 7.50 ms Billed Duration: 8 ms Memory Size: 512 MB Max Memory Used: 512 MB
+REPORT Duration: 5.96 ms Billed Duration: 6 ms Memory Size: 512 MB Max Memory Used: 512 MB
+REPORT Duration: 5.84 ms Billed Duration: 6 ms Memory Size: 512 MB Max Memory Used: 512 MB
+REPORT Duration: 6.68 ms Billed Duration: 7 ms Memory Size: 512 MB Max Memory Used: 512 MB
 ```
 
 Lambda writes one `REPORT` line per invocation to CloudWatch Logs. The
 emulator writes it to the container log. Read it with the emulator's
 differences in mind:
 
-- `INIT REPORT(durationMs: 357.090000)` is the cold start: 357 ms of INIT.
-- The first `REPORT` shows `Duration: 365.21 ms` because the emulator
+- `INIT REPORT(durationMs: 367.478000)` is the cold start: 367 ms of INIT.
+- The first `REPORT` shows `Duration: 377.36 ms` because the emulator
   adds INIT to the first invocation. Its `Init Duration: 0.03 ms` is a
   placeholder.
-- The warm invocations took 4 to 6 ms.
+- The warm invocations took 6 to 8 ms.
 
-The `sed` command removes the request IDs so that each line fits on the
-screen; in the log the fields are separated by tabs.
+The `sed` commands remove the timestamps and the request IDs so that each
+line fits on the screen; in the log the fields are separated by tabs.
 
 A real Lambda `REPORT` line keeps INIT in its own field. This example
 comes from the
@@ -635,10 +655,10 @@ curl -s http://localhost:8080/visits | grep -E '"(cold_start|init_ms)"'
 
 ```text
     "cold_start": false,
-    "init_ms": 177.6
+    "init_ms": 180.6
 ```
 
-Of the 357 ms of INIT, 178 ms went to creating the DynamoDB resource
+Of the 367 ms of INIT, 181 ms went to creating the DynamoDB resource
 (`init_ms`). The rest is the start of the Python runtime and the import
 of `boto3`. All of it happens once per environment, and every warm
 invocation reuses the client.
@@ -688,7 +708,7 @@ follows `WORK_MEMORY_MB` and `cpus` follows `WORK_CPUS` (open
 curl -s -i -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocations \
     -d '{"sleep_ms": 5000}' | grep -E '^HTTP|X-Amz|X-Lab-Env|Task'
 docker compose logs --no-log-prefix fn-work | grep -E 'Reset|SIGKILL|Duration: 3000' | tail -3 \
-    | sed -E 's/RequestId: [0-9a-f-]+[[:space:]]+//'
+    | sed -E 's/^[0-9]+ [A-Z][a-z]+ [0-9]+ [0-9:,]+ //' | sed -E 's/RequestId: [0-9a-f-]+[[:space:]]+//'
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocations -d '{}' \
     | grep -E '"(cold_start|invocations)"'
 ```
@@ -700,8 +720,8 @@ HTTP/1.0 200 OK
 X-Lab-Environment: lab15-fn-work-1
 X-Amz-Function-Error: Unhandled
 Task timed out after 3.00 seconds
-24 Oct 2026 17:22:28,721 [WARNING] (rapid) Reset initiated: Timeout
-24 Oct 2026 17:22:28,721 [INFO] (rapid) Sending SIGKILL to runtime-1(16).
+[WARNING] (rapid) Reset initiated: Timeout
+[INFO] (rapid) Sending SIGKILL to runtime-1(28).
 REPORT Duration: 3000.00 ms Billed Duration: 3000 ms Memory Size: 256 MB Max Memory Used: 256 MB
     "cold_start": true,
     "invocations": 1,
@@ -728,47 +748,49 @@ done
 Expected output:
 
 ```text
-"cpu_ms": 173.4
-"cpu_ms": 280.6
-"cpu_ms": 211.1
+"cpu_ms": 174.4
+"cpu_ms": 269.0
+"cpu_ms": 277.5
 ```
 
 Redeploy `lab15-work` with 1,769 MB and one full CPU, and run it again:
 
 ```bash
-WORK_MEMORY_MB=1769 WORK_CPUS=1.0 docker compose up -d fn-work
+WORK_MEMORY_MB=1769 WORK_CPUS=1.0 docker compose up -d --wait fn-work
 for i in 1 2 3 4; do
     curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocations \
         -d '{"iterations": 200000}' | grep -oE '"cold_start": [a-z]+|"cpu_ms": [0-9.]*' | paste -sd' ' -
 done
-docker compose logs --no-log-prefix fn-work | grep -E 'INIT REPORT' | tail -1
+docker compose logs --no-log-prefix fn-work | grep -E 'INIT REPORT' | tail -1 \
+    | sed -E 's/^[0-9]+ [A-Z][a-z]+ [0-9]+ [0-9:,]+ //'
 ```
 
 Expected output:
 
 ```text
-"cold_start": true "cpu_ms": 35.8
-"cold_start": false "cpu_ms": 36.3
-"cold_start": false "cpu_ms": 36.0
-"cold_start": false "cpu_ms": 34.5
-24 Oct 2026 17:22:31,329 [INFO] (rapid) INIT REPORT(durationMs: 132.222000)
+"cold_start": true "cpu_ms": 34.9
+"cold_start": false "cpu_ms": 37.3
+"cold_start": false "cpu_ms": 34.4
+"cold_start": false "cpu_ms": 33.3
+[INFO] (rapid) INIT REPORT(durationMs: 127.681000)
 ```
 
-The task ran about six times faster. The INIT phase also benefits: go
+The task ran about seven times faster. The INIT phase also benefits: go
 back to the default size and look at the cold start there:
 
 ```bash
-docker compose up -d fn-work
+docker compose up -d --wait fn-work
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocations -d '{}' > /dev/null
-docker compose logs --no-log-prefix fn-work | grep -E 'INIT REPORT' | tail -1
+docker compose logs --no-log-prefix fn-work | grep -E 'INIT REPORT' | tail -1 \
+    | sed -E 's/^[0-9]+ [A-Z][a-z]+ [0-9]+ [0-9:,]+ //'
 ```
 
 ```text
-24 Oct 2026 17:22:32,772 [INFO] (rapid) INIT REPORT(durationMs: 758.674000)
+[INFO] (rapid) INIT REPORT(durationMs: 848.749000)
 ```
 
 Without the variables, Compose recreated the container with the defaults
-again. At 256 MB the same INIT took 759 ms instead of 132 ms.
+again. At 256 MB the same INIT took 849 ms instead of 128 ms.
 
 ### Step 5.3: Cost per invocation
 
@@ -777,16 +799,16 @@ seconds. Compute it for both sizes with your `cpu_ms` values (warm runs):
 
 | Memory | GB | Warm duration (s) | GB-seconds per invocation |
 | --- | --- | --- | --- |
-| 256 MB | 0.25 | 0.222 | 0.25 x 0.222 = 0.0555 |
-| 1,769 MB | 1.7275 | 0.036 | 1.7275 x 0.036 = 0.0622 |
+| 256 MB | 0.25 | 0.240 | 0.25 x 0.240 = 0.0600 |
+| 1,769 MB | 1.7275 | 0.035 | 1.7275 x 0.035 = 0.0605 |
 
 Multiply by the price per GB-second of the
 [AWS Lambda pricing page](https://aws.amazon.com/lambda/pricing/) (its
 examples use USD 0.0000166667 for x86). For one million invocations the
-two sizes cost about USD 0.93 and USD 1.04 of compute: 7 times the memory
-cost about 12% more and answered six times faster. For CPU-bound code a
-larger memory setting often costs little extra, and for I/O-bound code
-(like `sleep_ms`) it only adds cost.
+two sizes cost about USD 1.00 and USD 1.01 of compute: 7 times the memory
+cost about 1% more and answered about seven times faster. For CPU-bound
+code a larger memory setting often costs little extra, and for I/O-bound
+code (like `sleep_ms`) it only adds cost.
 
 ### Step 5.4: Run out of memory
 
@@ -797,7 +819,8 @@ curl -s -i -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocat
     -d '{"allocate_mb": 300}' | grep -E '^HTTP|X-Amz|"error'
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-work/invocations \
     -d '{"allocate_mb": 100}' | grep -oE '"cold_start": [a-z]+|"allocated_mb": [0-9]+' | paste -sd' ' -
-docker compose logs --no-log-prefix fn-work | grep -E 'exited: signal' | tail -1
+docker compose logs --no-log-prefix fn-work | grep -E 'exited: signal' | tail -1 \
+    | sed -E 's/^[0-9]+ [A-Z][a-z]+ [0-9]+ [0-9:,]+ //'
 ```
 
 Expected output:
@@ -806,9 +829,9 @@ Expected output:
 HTTP/1.0 200 OK
 X-Amz-Function-Error: Unhandled
   "errorType": "Runtime.ExitError",
-  "errorMessage": "RequestId: 3815bbf8-68a8-4953-a62b-521b6e036ad3 Error: Runtime exited with error: signal: killed"
+  "errorMessage": "RequestId: 856ada18-010e-48ef-8745-5976c4deda56 Error: Runtime exited with error: signal: killed"
 "cold_start": true "allocated_mb": 100
-24 Oct 2026 17:22:33,090 [WARNING] (rapid) Process runtime-1 exited: signal: killed
+[WARNING] (rapid) Process runtime-1 exited: signal: killed
 ```
 
 The kernel killed the runtime when it passed the limit, and the next
@@ -880,7 +903,7 @@ batch twice, as SQS does after a timeout or a lost acknowledgment:
 
 ```bash
 docker exec lab15-gateway python table.py reset
-IDEMPOTENCY=off docker compose up -d fn-processor
+IDEMPOTENCY=off docker compose up -d --wait fn-processor
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-processor/invocations \
     -d @events/sqs-batch.json
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-processor/invocations \
@@ -912,7 +935,7 @@ Redeploy with the default (`IDEMPOTENCY=on`) and repeat:
 
 ```bash
 docker exec lab15-gateway python table.py reset
-docker compose up -d fn-processor
+docker compose up -d --wait fn-processor
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-processor/invocations \
     -d @events/sqs-batch.json
 curl -s -X POST http://localhost:8080/2015-03-31/functions/lab15-processor/invocations \
@@ -984,7 +1007,7 @@ Expected output:
   "deleted": 2,
   "dead_letter_queue": [
     {
-      "messageId": "bcaaf717-b7fd-40ef-b4dc-63cc76acd615",
+      "messageId": "60c38bed-343d-4693-9fcd-f788f0530262",
       "body": "{\"order_id\": \"ORD-2002\", \"amount\": -5}",
       "receiveCount": 3
     }
@@ -995,7 +1018,7 @@ Expected output:
 [gateway] esm batch of 3 (receive counts 1,1,1): 2 deleted, 1 failed
 [gateway] esm batch of 1 (receive counts 2): 0 deleted, 1 failed
 [gateway] esm batch of 1 (receive counts 3): 0 deleted, 1 failed
-[gateway] esm moved bcaaf717 to the dead letter queue after 3 receives
+[gateway] esm moved 60c38bed to the dead letter queue after 3 receives
 PAYMENT#ORD-2001             charged_total=10  charges=1
 PAYMENT#ORD-2003             charged_total=30  charges=1
 2 item(s)
@@ -1038,9 +1061,9 @@ Expected output (the two `curl -X` answers omitted):
       "receiveCount": 3
       "body": "{\"order_id\": \"ORD-3003\", \"amount\": 30}",
       "receiveCount": 3
-{"message_id": "a7a8dae9-e670-4bb8-b818-9a7bb548c3c8", "receives": 1, "order_id": "ORD-3001", "outcome": "charged"}
-{"message_id": "a7a8dae9-e670-4bb8-b818-9a7bb548c3c8", "receives": 2, "order_id": "ORD-3001", "outcome": "duplicate"}
-{"message_id": "a7a8dae9-e670-4bb8-b818-9a7bb548c3c8", "receives": 3, "order_id": "ORD-3001", "outcome": "duplicate"}
+{"message_id": "05efc246-3422-419f-86a2-1bdc1ccdcf7a", "receives": 1, "order_id": "ORD-3001", "outcome": "charged"}
+{"message_id": "05efc246-3422-419f-86a2-1bdc1ccdcf7a", "receives": 2, "order_id": "ORD-3001", "outcome": "duplicate"}
+{"message_id": "05efc246-3422-419f-86a2-1bdc1ccdcf7a", "receives": 3, "order_id": "ORD-3001", "outcome": "duplicate"}
 PAYMENT#ORD-3001             charged_total=10  charges=1
 1 item(s)
 ```
@@ -1082,7 +1105,8 @@ outcome of each delivery of `ORD-3001`.
 
 ## Task 7: Concurrency and Throttling
 
-An execution environment processes **one request at a time**. When more
+On the default Lambda compute, an execution environment processes **one
+request at a time**. When more
 requests arrive than there are idle environments, Lambda creates new ones,
 each with its own cold start, up to the concurrency quota of the account
 or the limit you set on the function. Above that limit Lambda answers
@@ -1104,13 +1128,13 @@ Expected output:
 
 ```text
 req  status  environment        start      ms
-  1     429  -                             10
-  2     429  -                             10
-  3     429  -                             11
-  4     429  -                             11
-  5     429  -                              9
-  6     200  lab15-fn-work-1    warm     1020
-1 succeeded, 5 throttled (429), 1 environment(s) used, 0 cold start(s), wall time 1.02 s
+  1     429  -                              8
+  2     200  lab15-fn-work-1    warm     1010
+  3     429  -                              7
+  4     429  -                              8
+  5     429  -                              6
+  6     429  -                              8
+1 succeeded, 5 throttled (429), 0 failed, 1 environment(s) used, 0 cold start(s), wall time 1.01 s
 ```
 
 One request got the environment; the other five were rejected within
@@ -1120,7 +1144,7 @@ like this in AWS.
 ### Step 7.2: Three environments
 
 ```bash
-docker compose up -d --scale fn-work=3 fn-work
+docker compose up -d --wait --scale fn-work=3 fn-work
 docker exec lab15-gateway python load.py --requests 6 --sleep-ms 1000
 docker exec lab15-gateway python load.py --requests 6 --sleep-ms 1000
 ```
@@ -1129,30 +1153,30 @@ Expected output:
 
 ```text
 req  status  environment        start      ms
-  1     429  -                             19
-  2     429  -                             18
-  3     429  -                             17
-  4     200  lab15-fn-work-2    cold     1814
-  5     200  lab15-fn-work-3    cold     1798
-  6     200  lab15-fn-work-1    warm     1020
-3 succeeded, 3 throttled (429), 3 environment(s) used, 2 cold start(s), wall time 1.82 s
+  1     200  lab15-fn-work-2    cold     1694
+  2     200  lab15-fn-work-3    cold     1724
+  3     429  -                             11
+  4     200  lab15-fn-work-1    warm     1022
+  5     429  -                             11
+  6     429  -                             11
+3 succeeded, 3 throttled (429), 0 failed, 3 environment(s) used, 2 cold start(s), wall time 1.73 s
 req  status  environment        start      ms
-  1     200  lab15-fn-work-2    warm     1012
-  2     429  -                              8
-  3     429  -                              8
-  4     429  -                              8
-  5     200  lab15-fn-work-3    warm     1013
-  6     200  lab15-fn-work-1    warm     1013
-3 succeeded, 3 throttled (429), 3 environment(s) used, 0 cold start(s), wall time 1.01 s
+  1     200  lab15-fn-work-2    warm     1014
+  2     200  lab15-fn-work-3    warm     1015
+  3     200  lab15-fn-work-1    warm     1013
+  4     429  -                             13
+  5     429  -                             14
+  6     429  -                             13
+3 succeeded, 3 throttled (429), 0 failed, 3 environment(s) used, 0 cold start(s), wall time 1.02 s
 ```
 
-The two new environments paid a cold start of about 0.8 s on top of the
+The two new environments paid a cold start of about 0.7 s on top of the
 one second of work. In the second round all three were warm.
 
 ### Step 7.3: Six environments
 
 ```bash
-docker compose up -d --scale fn-work=6 fn-work
+docker compose up -d --wait --scale fn-work=6 fn-work
 docker exec lab15-gateway python load.py --requests 6 --sleep-ms 1000
 ```
 
@@ -1160,18 +1184,48 @@ Expected output:
 
 ```text
 req  status  environment        start      ms
-  1     200  lab15-fn-work-1    warm     1015
-  2     200  lab15-fn-work-6    cold     1699
-  3     200  lab15-fn-work-4    cold     1732
-  4     200  lab15-fn-work-5    cold     1770
-  5     200  lab15-fn-work-2    warm     1015
-  6     200  lab15-fn-work-3    warm     1015
-6 succeeded, 0 throttled (429), 6 environment(s) used, 3 cold start(s), wall time 1.77 s
+  1     200  lab15-fn-work-5    cold     1704
+  2     200  lab15-fn-work-6    cold     1720
+  3     200  lab15-fn-work-3    warm     1014
+  4     200  lab15-fn-work-2    warm     1015
+  5     200  lab15-fn-work-4    cold     1721
+  6     200  lab15-fn-work-1    warm     1015
+6 succeeded, 0 throttled (429), 0 failed, 6 environment(s) used, 3 cold start(s), wall time 1.72 s
 ```
 
 Six simultaneous requests need six environments. Each environment also
-has its own memory: run `curl -s http://localhost:8080/work` a few times
-and watch `environment.id` and `invocations` change, which is the second
+has its own memory. Requests sent one after another would all reach the
+same idle environment, so send six that overlap, twice:
+
+```bash
+for round in 1 2; do
+    for i in 1 2 3 4 5 6; do
+        curl -s -i 'http://localhost:8080/work?sleep_ms=500' \
+            | grep -oE 'X-Lab-Environment: [a-z0-9-]+|"invocations": [0-9]+' | paste -sd' ' - &
+    done
+    wait
+done
+```
+
+Expected output (the order of the lines changes from run to run):
+
+```text
+X-Lab-Environment: lab15-fn-work-1 "invocations": 5
+X-Lab-Environment: lab15-fn-work-2 "invocations": 4
+X-Lab-Environment: lab15-fn-work-3 "invocations": 4
+X-Lab-Environment: lab15-fn-work-4 "invocations": 2
+X-Lab-Environment: lab15-fn-work-5 "invocations": 2
+X-Lab-Environment: lab15-fn-work-6 "invocations": 2
+X-Lab-Environment: lab15-fn-work-1 "invocations": 6
+X-Lab-Environment: lab15-fn-work-2 "invocations": 5
+X-Lab-Environment: lab15-fn-work-3 "invocations": 5
+X-Lab-Environment: lab15-fn-work-4 "invocations": 3
+X-Lab-Environment: lab15-fn-work-5 "invocations": 3
+X-Lab-Environment: lab15-fn-work-6 "invocations": 3
+```
+
+Each environment counts only the requests that it served, so the same
+global variable holds a different value in each one. That is the second
 answer to the question of Step 3.4.
 
 ### Step 7.4: What real Lambda does differently
@@ -1182,15 +1236,30 @@ answer to the question of Step 3.4.
 | Default ceiling | The number of containers | 1,000 concurrent executions per Region for the account (a quota you can raise) |
 | Scaling rate | Instant, the containers already exist | Up to 1,000 new execution environments every 10 seconds per function |
 | Limit per function | The number of containers | Reserved concurrency, which also reserves that capacity |
-| Above the limit | 429 from the gateway | 429 `TooManyRequestsException`; asynchronous sources such as SQS retry later |
+| Above the limit | 429 from the gateway | The invocation is throttled; what happens next depends on who invoked the function (below) |
 
 Sources: [Lambda scaling behavior](https://docs.aws.amazon.com/lambda/latest/dg/scaling-behavior.html)
 and [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html).
 
+Who retries a throttled invocation depends on how the function was
+invoked:
+
+- **Synchronous calls** (API Gateway, the `Invoke` API) receive the 429
+  `TooManyRequestsException`, and the caller decides whether to retry.
+- **SQS** reaches the function through an event source mapping, which
+  invokes it synchronously. When the function is throttled, Lambda backs
+  off and reduces the concurrency of the mapping, and the messages stay
+  in the queue until they become visible again
+  ([SQS error handling](https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-errorhandling.html)).
+- **Asynchronous invocations** (S3, SNS, EventBridge) wait in an internal
+  queue of Lambda. Lambda retries a throttled event for up to 6 hours by
+  default, and a function error 2 more times
+  ([asynchronous error handling](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-error-handling.html)).
+
 Scale back to one environment:
 
 ```bash
-docker compose up -d --scale fn-work=1 fn-work
+docker compose up -d --wait --scale fn-work=1 fn-work
 ```
 
 **Record:** for 1, 3 and 6 environments, the number of successful and
@@ -1226,7 +1295,7 @@ providers change their limits.
 | Hosting and billing | One serverless model: requests plus GB-seconds, INIT included ([pricing](https://aws.amazon.com/lambda/pricing/)) | A choice of plans: **Flex Consumption** (the recommended serverless plan), Consumption (legacy), Premium, Dedicated (App Service) and Container Apps ([hosting options](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale), [pricing](https://azure.microsoft.com/en-us/pricing/details/functions/)) |
 | Memory and CPU | 128 MB to 10,240 MB; CPU in proportion, 1,769 MB = 1 vCPU ([memory](https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html)) | Flex Consumption instances of 512 MB, 2,048 MB or 4,096 MB; Consumption instances of 1.5 GB ([Flex Consumption](https://learn.microsoft.com/en-us/azure/azure-functions/flex-consumption-plan)) |
 | Maximum duration | 900 s, default 3 s ([timeout](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)) | Consumption 10 min (default 5); Flex Consumption, Premium and Dedicated default 30 min and no fixed maximum; an HTTP trigger must answer within 230 s ([hosting options](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale)) |
-| Requests per instance | One per execution environment ([concurrency](https://docs.aws.amazon.com/lambda/latest/dg/lambda-concurrency.html)) | Several per instance; Flex Consumption defaults to 4, 16 or 32 concurrent HTTP requests for the 512, 2,048 and 4,096 MB sizes, and 1 for Python apps ([concurrency](https://learn.microsoft.com/en-us/azure/azure-functions/functions-concurrency)) |
+| Requests per instance | One invocation per environment on the default compute ([concurrency](https://docs.aws.amazon.com/lambda/latest/dg/lambda-concurrency.html)); with **Lambda Managed Instances**, one environment handles several invocations at once ([Managed Instances](https://docs.aws.amazon.com/lambda/latest/dg/lambda-managed-instances.html)) | Several per instance; Flex Consumption defaults to 4, 16 or 32 concurrent HTTP requests for the 512, 2,048 and 4,096 MB sizes, and 1 for Python apps ([concurrency](https://learn.microsoft.com/en-us/azure/azure-functions/functions-concurrency)) |
 | Scale-out limit | 1,000 concurrent executions per Region by default; 1,000 new environments every 10 s per function ([scaling](https://docs.aws.amazon.com/lambda/latest/dg/scaling-behavior.html)) | Consumption 200 instances (Windows) or 100 (Linux); Flex Consumption up to 1,000 (default 100); Premium 100 (Windows) or 20 to 100 (Linux) ([event-driven scaling](https://learn.microsoft.com/en-us/azure/azure-functions/event-driven-scaling)) |
 | Cold start mitigation | **Provisioned Concurrency**; **SnapStart** for Java 11+, Python 3.12+ and .NET 8+ ([SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html)) | **Premium**: always-ready and prewarmed instances ([Premium plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan)); **Flex Consumption**: always-ready instances |
 | Long workflows with state | AWS Step Functions, and Lambda durable functions ([durable functions](https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html)) | Durable Functions ([overview](https://learn.microsoft.com/en-us/azure/durable-task/durable-functions/durable-functions-overview)) |
@@ -1243,7 +1312,7 @@ Map what you did in this lab to Azure:
 | Provisioned Concurrency against cold starts | Always-ready instances (Flex Consumption) or prewarmed instances (Premium) |
 
 **Record:** for 100 simultaneous HTTP requests, the number of AWS Lambda
-execution environments needed, and the number of Flex Consumption
+execution environments needed on the default compute, and the number of Flex Consumption
 instances of 2,048 MB needed for a Node.js app and for a Python app with
 the default concurrency.
 
@@ -1257,8 +1326,9 @@ the default concurrency.
 > **Question:** Why does the per-instance concurrency of Azure Functions
 > change how you would write the visit counter of Task 3?
 >
-> **Hint:** On Lambda, one environment runs one request at a time. What
-> happens to a global variable when 16 requests share one process?
+> **Hint:** On the default Lambda compute, one environment runs one
+> request at a time. What happens to a global variable when 16 requests
+> share one process?
 
 ---
 
@@ -1347,7 +1417,8 @@ rm -f orders.zip response.json
 ./cleanup.sh
 ```
 
-Expected output:
+Expected output (Compose lines omitted). If any lab container, network
+or image survives, the script lists it and exits with an error instead.
 
 ```text
 === Lab 15: Cleanup ===
