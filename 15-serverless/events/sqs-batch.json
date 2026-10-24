@@ -1,0 +1,34 @@
+{
+  "Records": [
+    {
+      "messageId": "6f1c1a52-8a39-4c1e-9a77-0c0f3c7e1001",
+      "receiptHandle": "AQEBlab15receipthandle1001",
+      "body": "{\"order_id\": \"ORD-1001\", \"amount\": 25.0}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1700000000000",
+        "SenderId": "lab15-checkout",
+        "ApproximateFirstReceiveTimestamp": "1700000000100"
+      },
+      "messageAttributes": {},
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:000000000000:lab15-orders",
+      "awsRegion": "us-east-1"
+    },
+    {
+      "messageId": "6f1c1a52-8a39-4c1e-9a77-0c0f3c7e1002",
+      "receiptHandle": "AQEBlab15receipthandle1002",
+      "body": "{\"order_id\": \"ORD-1002\", \"amount\": 40.0}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1700000000000",
+        "SenderId": "lab15-checkout",
+        "ApproximateFirstReceiveTimestamp": "1700000000100"
+      },
+      "messageAttributes": {},
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:000000000000:lab15-orders",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

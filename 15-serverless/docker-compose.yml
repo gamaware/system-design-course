@@ -1,0 +1,101 @@
+name: lab15
+
+# Settings shared by the three functions. Each function still builds its own image from its own
+# directory: the function, not the application, is the unit you deploy.
+x-function: &function
+  init: true
+  restart: on-failure
+  depends_on:
+    dynamodb:
+      condition: service_started
+
+x-function-env: &function-env
+  TABLE_NAME: lab15
+  DYNAMODB_ENDPOINT: http://dynamodb:8000
+  AWS_REGION: us-east-1
+  AWS_DEFAULT_REGION: us-east-1
+  # DynamoDB Local accepts any credentials; in AWS the function's execution role provides them.
+  AWS_ACCESS_KEY_ID: lab15
+  AWS_SECRET_ACCESS_KEY: lab15  # pragma: allowlist secret
+
+services:
+  dynamodb:
+    # Pinned to an exact release: a moving tag can change behavior between two runs of the lab.
+    image: amazon/dynamodb-local:3.3.2
+    container_name: lab15-dynamodb
+    # In memory: the data lives as long as this container. -sharedDb ignores region and credentials.
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+
+  fn-orders:
+    <<: *function
+    build: ./functions/orders
+    image: lab15-fn-orders:local
+    container_name: lab15-fn-orders
+    hostname: lab15-fn-orders
+    environment:
+      <<: *function-env
+      AWS_LAMBDA_FUNCTION_NAME: lab15-orders
+      AWS_LAMBDA_FUNCTION_TIMEOUT: "3"
+      AWS_LAMBDA_FUNCTION_MEMORY_SIZE: "512"
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: 0.29
+
+  fn-processor:
+    <<: *function
+    build: ./functions/processor
+    image: lab15-fn-processor:local
+    container_name: lab15-fn-processor
+    hostname: lab15-fn-processor
+    environment:
+      <<: *function-env
+      AWS_LAMBDA_FUNCTION_NAME: lab15-processor
+      AWS_LAMBDA_FUNCTION_TIMEOUT: "2"
+      AWS_LAMBDA_FUNCTION_MEMORY_SIZE: "512"
+      IDEMPOTENCY: ${IDEMPOTENCY:-on}
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: 0.29
+
+  # No container_name: Task 7 runs several copies of it with --scale.
+  fn-work:
+    <<: *function
+    build: ./functions/work
+    image: lab15-fn-work:local
+    environment:
+      <<: *function-env
+      AWS_LAMBDA_FUNCTION_NAME: lab15-work
+      AWS_LAMBDA_FUNCTION_TIMEOUT: "3"
+      AWS_LAMBDA_FUNCTION_MEMORY_SIZE: ${WORK_MEMORY_MB:-256}
+    # Lambda gives a function CPU in proportion to its memory: 1,769 MB is one full vCPU. These
+    # limits copy that rule; Task 5 changes both values together.
+    mem_limit: ${WORK_MEMORY_MB:-256}m
+    memswap_limit: ${WORK_MEMORY_MB:-256}m
+    cpus: ${WORK_CPUS:-0.15}
+
+  gateway:
+    build: ./gateway
+    image: lab15-gateway:local
+    container_name: lab15-gateway
+    init: true
+    depends_on:
+      dynamodb:
+        condition: service_started
+    environment:
+      TABLE_NAME: lab15
+      DYNAMODB_ENDPOINT: http://dynamodb:8000
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: lab15
+      AWS_SECRET_ACCESS_KEY: lab15  # pragma: allowlist secret
+      QUEUE_BATCH_SIZE: "10"
+      QUEUE_VISIBILITY_TIMEOUT_S: "12"
+      QUEUE_MAX_RECEIVE_COUNT: "3"
+    # Published on 127.0.0.1 only: the gateway has no authentication, so other machines must not reach it.
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import gateway; gateway.healthcheck()"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s

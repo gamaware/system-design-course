@@ -33,7 +33,7 @@ due. Use this table to find the folder for each Canvas item.
 | [12](./12-proxies) | Módulo 11: Proxies | 🧪 Lab 9 |
 | [13](./13-solutions-architecture) | Módulo 14: Arquitectura de Soluciones | Actividad 10 (in class) |
 | [14](./14-distributed-messaging) | Módulo 12: Sistema de Mensajería Distribuida | 🧪 Lab 10 |
-| [15](./15-serverless) | Módulo 13: Serverless | Coming soon |
+| [15](./15-serverless) | Módulo 13: Serverless | Lab (Canvas number pending) |
 | [16](./16-artificial-intelligence) | Módulo 16: Inteligencia Artificial | Coming soon |
 | [17](./17-containers) | Módulo 15: Contenedores | Coming soon |
 
@@ -192,7 +192,21 @@ DNS failover, cross-cloud service equivalence
 
 #### [14 — Distributed Messaging](./14-distributed-messaging)
 
-#### [15 — Serverless](./15-serverless) _(coming soon)_
+#### [15 — Serverless](./15-serverless)
+
+Local lab that runs real AWS Lambda functions in Docker with the Runtime Interface Emulator,
+DynamoDB Local and a small gateway in the role of API Gateway and SQS. Students learn to:
+
+- Deploy one function at a time and read the event and context objects of a handler
+- Measure cold and warm starts, timeouts, and how the memory setting changes CPU and cost
+- Process SQS batches with partial failures, retries, a dead letter queue and an idempotent consumer
+- Observe concurrency and throttling, and compare AWS Lambda with Azure Functions
+
+**Technologies**: AWS Lambda (Python 3.12 base image), Lambda Runtime Interface Emulator, DynamoDB Local,
+Docker, Docker Compose, Python (boto3)
+
+**Key Concepts**: Function as a Service, execution environments, cold starts, stateless compute,
+event source mappings, partial batch responses, idempotency, concurrency, throttling
 
 #### [16 — Artificial Intelligence](./16-artificial-intelligence) _(coming soon)_
 

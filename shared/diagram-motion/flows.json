@@ -1487,5 +1487,48 @@
         ]
       }
     ]
+  },
+  "15-serverless/diagrams/lab15-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e-student-gateway",
+          "e-student-invoke",
+          "e-student-queue"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e-invoke-work"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e-http-orders"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e-queue-processor"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-orders-ddb",
+          "e-processor-ddb"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "glow": [
+          "work-box"
+        ]
+      }
+    ]
   }
 }
