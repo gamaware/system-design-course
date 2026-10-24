@@ -171,28 +171,11 @@ locally built Docker images.
 
 ### Storage Model Decision Guide
 
-```text
-                  ┌───────────────────────┐
-                  │ What type of access    │
-                  │ does your app need?    │
-                  └───────────┬───────────┘
-                 ┌─────────────┴─────────────┐
-                 ▼                           ▼
-        Random read/write            Sequential read/write
-        (edit in place)              (upload once, read many)
-                 │                           │
-         ┌───────┴───────┐           ┌───────┴───────┐
-         │ Need POSIX    │           │ Need massive   │
-         │ semantics?    │           │ scale + HTTP?  │
-         └───┬───────┬───┘           └───┬───────┬───┘
-             ▼       ▼                   ▼       ▼
-           Yes      No                Yes      No
-             │       │                   │       │
-             ▼       ▼                   ▼       ▼
-           NFS    Consider           Object    Block
-                  either            Storage   Storage
-                                 (MinIO/S3)  (EBS/iSCSI)
-```
+![Storage model decision tree](diagrams/lab09-storage-decision-guide.svg)
+
+For random read/write (edit in place), pick NFS if you need POSIX semantics. Otherwise consider either model.
+For sequential read/write (upload once, read many), pick object storage (MinIO/S3) if you need massive scale and HTTP
+access. Otherwise pick block storage (EBS/iSCSI).
 
 ## How This Relates to Scalable Systems Design
 
