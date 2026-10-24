@@ -1,6 +1,9 @@
 # Module 15 — Serverless
 
 > **Coming Soon**
+>
+> **In Canvas:** this folder is **Módulo 13: Serverless** (the repository numbers folders by topic).
+> Full mapping: [Canvas equivalence](../README.md#canvas-equivalence).
 
 ## Topics Covered
 

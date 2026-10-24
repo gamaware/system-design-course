@@ -1,6 +1,9 @@
 # Module 17 — Containers
 
 > **Coming Soon**
+>
+> **In Canvas:** this folder is **Módulo 15: Contenedores** (the repository numbers folders by
+> topic). Full mapping: [Canvas equivalence](../README.md#canvas-equivalence).
 
 ## Topics Covered
 

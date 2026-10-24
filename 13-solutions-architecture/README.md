@@ -6,6 +6,10 @@
 ![Oracle Cloud](https://img.shields.io/badge/Oracle_Cloud-%23C74634.svg?style=for-the-badge&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
 
+> **In Canvas:** this folder is **Actividad 10** in **Módulo 14: Arquitectura de Soluciones**,
+> worked in class. There is no lab report to submit. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This lab turns solutions architecture into a "complete the diagram" exercise. Each scenario

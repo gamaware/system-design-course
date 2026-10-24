@@ -5,6 +5,11 @@
 ![Cassandra](https://img.shields.io/badge/Cassandra-%231287B1.svg?style=for-the-badge&logo=apachecassandra&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 7** in **Módulo 9: Bases de Datos**. The repository numbers
+> folders by topic, so "Lab 10" in these files and diagrams means this same lab. Name your report
+> `ApellidoPaterno_ApellidoMaterno_Lab07.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab explores six database scalability mechanisms:

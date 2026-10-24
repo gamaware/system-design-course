@@ -12,6 +12,31 @@
 
 Course materials and demos for Scalable Systems Design.
 
+### Canvas equivalence
+
+The folders follow the order of the topics, while Canvas numbers labs in the order they are
+due. Use this table to find the folder for each Canvas item.
+
+| Folder | Canvas module | Canvas item |
+| --- | --- | --- |
+| [01](./01-introduction-horizontal-scalability) | Módulo 1: Introducción | 🎬 Demo (no report) |
+| [02](./02-compute-ec2-basics) | Módulo 2: Cómputo | 🧪 Lab 1 |
+| [03](./03-load-balancing-haproxy) | Módulo 3: Balanceo de Carga | Demo for Actividad 2 |
+| [04](./04-dns-dig-bind9) | Módulo 4: DNS | 🧪 Lab 2 |
+| [05](./05-distributed-systems-high-availability) | Módulo 5: Características clave | Optional (🧪 Lab 3 is in AWS Academy) |
+| [06](./06-security-https-oauth2-keycloak) | Módulo 6: Seguridad | 🧪 Lab 4 |
+| [07](./07-networking) | Módulo 7: Redes | 🧪 Lab 5 |
+| [08](./08-cloud-networking-vpc) | Módulo 7: Redes | Follow-up linked from 🧪 Lab 5 |
+| [09](./09-distributed-file-systems) | Módulo 8: Sistemas de Archivos Distribuidos | 🧪 Lab 6 |
+| [10](./10-databases) | Módulo 9: Bases de Datos | 🧪 Lab 7 |
+| [11](./11-caching) | Módulo 10: Caché y CDN | 🧪 Lab 8 |
+| [12](./12-proxies) | Módulo 11: Proxies | 🧪 Lab 9 |
+| [13](./13-solutions-architecture) | Módulo 14: Arquitectura de Soluciones | Actividad 10 (in class) |
+| [14](./14-distributed-messaging) | Módulo 12: Sistema de Mensajería Distribuida | 🧪 Lab 10 |
+| [15](./15-serverless) | Módulo 13: Serverless | Coming soon |
+| [16](./16-artificial-intelligence) | Módulo 16: Inteligencia Artificial | Coming soon |
+| [17](./17-containers) | Módulo 15: Contenedores | Coming soon |
+
 ### 📚 Course Modules
 
 #### [01 — Introduction: Horizontal Scalability](./01-introduction-horizontal-scalability)

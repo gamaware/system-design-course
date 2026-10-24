@@ -5,6 +5,11 @@
 ![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![AWS S3](https://img.shields.io/badge/AWS_S3-%23569A31.svg?style=for-the-badge&logo=amazons3&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 6** in **Módulo 8: Sistemas de Archivos Distribuidos**. The
+> repository numbers folders by topic, so "Lab 09" in these files and diagrams means this same lab.
+> Name your report `ApellidoPaterno_ApellidoMaterno_Lab06.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab explores two fundamental approaches to distributed

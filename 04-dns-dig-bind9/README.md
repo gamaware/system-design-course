@@ -5,6 +5,11 @@
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 2** in **Módulo 4: Domain Name System (DNS)**. The
+> repository numbers folders by topic, so "Lab 04" in these files and diagrams means this same lab.
+> Name your report `ApellidoPaterno_ApellidoMaterno_Lab02.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab teaches DNS fundamentals through practical exercises using `dig` and BIND9.

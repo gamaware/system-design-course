@@ -4,6 +4,11 @@
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![SSH](https://img.shields.io/badge/SSH-%23000000.svg?style=for-the-badge&logo=gnu-bash&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 1** in **Módulo 2: Cómputo**. The repository numbers folders
+> by topic, so "Lab 02" in these files and diagrams means this same lab. Name your report
+> `ApellidoPaterno_ApellidoMaterno_Lab01.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab teaches Amazon EC2 fundamentals through practical exercises. Students will learn

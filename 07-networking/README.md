@@ -4,6 +4,11 @@
 ![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Networking](https://img.shields.io/badge/Networking-%23009688.svg?style=for-the-badge&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 5** in **Módulo 7: Redes**. The repository numbers folders
+> by topic, so "Lab 07" in these files and diagrams means this same lab. Name your report
+> `ApellidoPaterno_ApellidoMaterno_Lab05.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab teaches Linux networking fundamentals through a troubleshooting

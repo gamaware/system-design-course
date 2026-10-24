@@ -5,6 +5,10 @@
 ![Terraform](https://img.shields.io/badge/Terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 ![Networking](https://img.shields.io/badge/Networking-%23009688.svg?style=for-the-badge&logoColor=white)
 
+> **In Canvas:** this folder is linked from **🧪 Lab 5** in **Módulo 7: Redes** as a follow-up. The
+> Lab 5 report covers folder `07-networking`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab teaches AWS VPC networking through Infrastructure as Code.

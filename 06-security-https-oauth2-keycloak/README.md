@@ -7,6 +7,11 @@
 ![Flask](https://img.shields.io/badge/Flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 4** in **Módulo 6: Seguridad**. The repository numbers
+> folders by topic, so "Lab 06" in these files and diagrams means this same lab. Name your report
+> `ApellidoPaterno_ApellidoMaterno_Lab04.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab teaches OAuth 2.0 authentication fundamentals using Keycloak as an Identity and

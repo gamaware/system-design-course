@@ -6,6 +6,11 @@
 ![OpenSSL](https://img.shields.io/badge/OpenSSL-%23721412.svg?style=for-the-badge&logo=openssl&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
+> **In Canvas:** this folder is **🧪 Lab 9** in **Módulo 11: Proxies**. The repository numbers
+> folders by topic, so "Lab 12" in these files and diagrams means this same lab. Name your report
+> `ApellidoPaterno_ApellidoMaterno_Lab09.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab puts a proxy in the middle of a conversation and measures what changes. Students run nginx as a

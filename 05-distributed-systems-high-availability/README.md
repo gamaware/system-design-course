@@ -5,6 +5,10 @@
 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 
+> **In Canvas:** this folder belongs to **Módulo 5** and is optional. **🧪 Lab 3** in Canvas is the
+> AWS Academy high availability lab, not this folder. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab makes the key characteristics of a distributed system observable. Students run three

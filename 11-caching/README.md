@@ -8,6 +8,11 @@
 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)
 ![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
+> **In Canvas:** this folder is **🧪 Lab 8** in **Módulo 10: Caché y CDN**. The repository numbers
+> folders by topic, so "Lab 11" in these files and diagrams means this same lab. Name your report
+> `ApellidoPaterno_ApellidoMaterno_Lab08.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
+
 ## Overview
 
 This hands-on lab teaches caching as a system design pattern using Redis.
