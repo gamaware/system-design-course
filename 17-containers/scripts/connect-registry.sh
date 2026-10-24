@@ -41,7 +41,7 @@ fi
 echo "  $REGISTRY joined the 'kind' Docker network"
 
 # Advertise the registry to tools that look for it (KEP-1755).
-kubectl apply -f - <<YAML
+kubectl --context "kind-${CLUSTER}" apply -f - <<YAML
 apiVersion: v1
 kind: ConfigMap
 metadata:
