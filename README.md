@@ -33,9 +33,9 @@ due. Use this table to find the folder for each Canvas item.
 | [12](./12-proxies) | Módulo 11: Proxies | 🧪 Lab 9 |
 | [13](./13-solutions-architecture) | Módulo 14: Arquitectura de Soluciones | Actividad 10 (in class) |
 | [14](./14-distributed-messaging) | Módulo 12: Sistema de Mensajería Distribuida | 🧪 Lab 10 |
-| [15](./15-serverless) | Módulo 13: Serverless | Lab (Canvas number pending) |
+| [15](./15-serverless) | Módulo 13: Serverless | 🧪 Lab 11 |
 | [16](./16-artificial-intelligence) | Módulo 16: Inteligencia Artificial | Coming soon |
-| [17](./17-containers) | Módulo 15: Contenedores | Lab (Canvas number pending) |
+| [17](./17-containers) | Módulo 15: Contenedores | 🧪 Lab 12 |
 
 ### 📚 Course Modules
 

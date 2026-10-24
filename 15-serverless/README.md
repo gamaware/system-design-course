@@ -5,8 +5,10 @@
 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 
-> **In Canvas:** this folder is the lab of **Módulo 13: Serverless** (the repository numbers folders by
-> topic). Full mapping: [Canvas equivalence](../README.md#canvas-equivalence).
+> **In Canvas:** this folder is **🧪 Lab 11** in **Módulo 13: Serverless**.
+> The repository numbers folders by topic, so "Lab 15" in these files and diagrams means this same
+> lab. Name your report `ApellidoPaterno_ApellidoMaterno_Lab11.pdf`. Full mapping: [Canvas
+> equivalence](../README.md#canvas-equivalence).
 
 ## Overview
 
