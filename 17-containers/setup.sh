@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Checks the tools Lab 17 needs and downloads the pinned images ahead of time, so that no task waits on
-# a download. It starts nothing: you run every container and create the cluster yourself in LAB.md.
+# Checks the tools Lab 17 needs and downloads the pinned images that Docker uses ahead of time, so that
+# no task waits on them. It starts nothing: you run every container and create the cluster in LAB.md.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -10,14 +10,13 @@ cd "$SCRIPT_DIR"
 KIND_TESTED="v0.33.0"
 KUBECTL_MINOR_TESTED="37"
 
-# Every image the lab pulls, pinned by digest. kind/cluster.yaml pins the node image the same way.
+# Every image Docker pulls on your machine, pinned by digest. kind/cluster.yaml pins the node image the same way.
 IMAGES=(
     "nginx:1.30.6-alpine@sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951"
     "alpine:3.24@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a"
     "golang:1.27.2-trixie@sha256:47667934874913a449b96faa7ef4777fa285d9ec29126ee80ed61c45b7cccf0e"
     "gcr.io/distroless/static-debian13:nonroot@sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99"
     "registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373"
-    "busybox:1.37.0@sha256:bdf57e528e45e4433820e045b29b4597825a1c9e38353532d90a01445013f82e"
     "kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5"
 )
 

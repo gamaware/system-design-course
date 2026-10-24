@@ -226,7 +226,7 @@ the gap, and keep that description in version control.
 
 **Self-healing has a detection delay.** A deleted pod came back in about
 5 seconds, but a lost node took about 50 seconds to detect, and during
-that window a third of the requests failed. Orchestration does not remove
+that window every request sent to its pods failed. Orchestration does not remove
 the need for timeouts, retries and several replicas spread over failure
 domains: it shortens the outage, it does not hide it.
 
@@ -249,7 +249,7 @@ CPU.
 After completing this lab, you should take away these lessons:
 
 1. **A container is a process with a restricted view.** nginx was PID 1
-   inside its container and PID 1417 on the host, saw only its own 19
+   inside its container and PID 43431 on the host, saw only its own 19
    processes, and the kernel killed a process that crossed its 32 MiB
    memory limit with exit code 137.
 
@@ -267,12 +267,12 @@ After completing this lab, you should take away these lessons:
 
 5. **Recovery time depends on what failed.** A deleted pod was replaced
    and ready in 5 seconds, a crashed container restarted in place, and a
-   stopped node cost about 50 seconds of detection and 43 failed requests
-   before Kubernetes moved its pod.
+   stopped node cost about 50 seconds of detection and 40 failed requests
+   before Kubernetes moved its two pods.
 
 6. **Updates can be invisible, or not.** The rolling update from v1 to v2
-   answered 303 requests with 0 errors, the broken v3 release never took
-   traffic and rolled back in 0.2 seconds, and the same update with
+   answered 345 requests with 0 errors, the broken v3 release never took
+   traffic and rolled back in a fraction of a second, and the same update with
    `Recreate` failed every request for about 6 seconds.
 
 ## Next Steps
