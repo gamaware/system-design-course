@@ -45,7 +45,7 @@ fi
 
 echo "Removing the lab containers..."
 # Without kind, or after a half-created cluster, the node containers are removed here too.
-docker ps -a --filter name=lab17- --format '{{.Names}}' | while read -r name; do
+docker ps -a --filter 'name=^lab17-' --format '{{.Names}}' | while read -r name; do
     if docker rm -f -v "$name" > /dev/null; then
         echo "  $name"
     fi
@@ -96,7 +96,7 @@ while read -r name; do
     if [ "$name" != "" ]; then
         leftovers="${leftovers}  container $name"$'\n'
     fi
-done < <(docker ps -a --filter name=lab17- --format '{{.Names}}')
+done < <(docker ps -a --filter 'name=^lab17-' --format '{{.Names}}')
 while read -r image; do
     if [ "$image" != "" ]; then
         leftovers="${leftovers}  image $image"$'\n'

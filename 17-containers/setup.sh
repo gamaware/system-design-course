@@ -76,7 +76,7 @@ fi
 
 echo ""
 echo "Checking for leftovers of an earlier run..."
-leftovers="$(docker ps -a --filter name=lab17- --format '{{.Names}}')"
+leftovers="$(docker ps -a --filter 'name=^lab17-' --format '{{.Names}}')"
 if [ "$leftovers" != "" ]; then
     echo "ERROR: these containers already exist:"
     echo "$leftovers" | sed 's/^/  /'
