@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
-# Deletes everything Lab 17 created: the kind cluster, the containers, the images built and pulled for
-# the lab, and the "kind" Docker network when no other cluster uses it.
+# Deletes everything Lab 17 created: the kind cluster, the lab17-* containers, the images built in the
+# lab, and the "kind" Docker network when no other cluster uses it. The pinned base images stay in the
+# local cache, as in the other labs, unless you ask for them to go.
 #
-#   ./cleanup.sh                 remove everything
-#   ./cleanup.sh --keep-images   keep the pinned base images, to repeat the lab without downloading them
+#   ./cleanup.sh                   remove what the lab created, keep the pinned base images
+#   ./cleanup.sh --remove-images   also remove the pinned base images
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
-keep_images=false
-if [ "${1:-}" = "--keep-images" ]; then
-    keep_images=true
-fi
+remove_images=false
+case "${1:-}" in
+    "") ;;
+    --remove-images) remove_images=true ;;
+    *)
+        echo "Usage: ./cleanup.sh [--remove-images]" >&2
+        exit 2
+        ;;
+esac
 
 # Same list as setup.sh.
 IMAGES=(
@@ -36,31 +42,35 @@ echo "Deleting the kind cluster lab17..."
 if command -v kind &> /dev/null; then
     kind delete cluster --name lab17 2>&1 | sed 's/^/  /'
 fi
-# Without kind, or if the cluster was half created, remove the node containers directly.
-docker rm -f -v lab17-control-plane lab17-worker lab17-worker2 &> /dev/null || true
 
 echo "Removing the lab containers..."
+# Without kind, or after a half-created cluster, the node containers are removed here too.
 docker ps -a --filter name=lab17- --format '{{.Names}}' | while read -r name; do
-    docker rm -f -v "$name" > /dev/null
-    echo "  $name"
+    if docker rm -f -v "$name" > /dev/null; then
+        echo "  $name"
+    fi
 done
 
 echo "Removing the images built in the lab..."
 for repo in lab17-web localhost:5001/lab17-web; do
     docker images "$repo" --format '{{.Repository}}:{{.Tag}}' | while read -r image; do
-        docker image rm "$image" > /dev/null
-        echo "  $image"
+        if docker image rm "$image" > /dev/null; then
+            echo "  $image"
+        fi
     done
 done
 
-if [ "$keep_images" = false ]; then
+kept=0
+if [ "$remove_images" = true ]; then
     echo "Removing the pinned base images..."
     for image in "${IMAGES[@]}"; do
         if docker image inspect "$image" &> /dev/null; then
-            if docker image rm "$image" > /dev/null 2>&1; then
+            # Docker refuses when a container still uses the image; show its reason and keep going.
+            if docker image rm "$image" > /dev/null; then
                 echo "  ${image%@*}"
             else
-                echo "  ${image%@*}: kept, another container still uses it"
+                echo "  ${image%@*}: kept"
+                kept=$((kept + 1))
             fi
         fi
     done
@@ -77,4 +87,45 @@ if docker network inspect kind &> /dev/null; then
 fi
 
 echo ""
-echo "Cleanup complete. The cluster, the containers, the lab images and the kind network are gone."
+echo "Checking that nothing is left..."
+leftovers=""
+if command -v kind &> /dev/null && kind get clusters 2> /dev/null | grep -qx lab17; then
+    leftovers="${leftovers}  kind cluster lab17"$'\n'
+fi
+while read -r name; do
+    if [ "$name" != "" ]; then
+        leftovers="${leftovers}  container $name"$'\n'
+    fi
+done < <(docker ps -a --filter name=lab17- --format '{{.Names}}')
+while read -r image; do
+    if [ "$image" != "" ]; then
+        leftovers="${leftovers}  image $image"$'\n'
+    fi
+done < <(docker images --format '{{.Repository}}:{{.Tag}}' | grep -E '^(localhost:5001/)?lab17-web:' || true)
+
+if [ "$leftovers" != "" ]; then
+    echo "ERROR: these lab resources are still there:"
+    printf '%s' "$leftovers"
+    echo "Remove them by hand (docker rm -f, docker image rm, kind delete cluster --name lab17)."
+    exit 1
+fi
+echo "  nothing left"
+
+if command -v kubectl &> /dev/null && ! kubectl config current-context &> /dev/null; then
+    echo ""
+    echo "kubectl has no current context now that kind-lab17 is gone. To return to another cluster:"
+    echo "  kubectl config get-contexts"
+    echo "  kubectl config use-context <name>"
+fi
+
+echo ""
+if [ "$remove_images" = true ]; then
+    if [ "$kept" -gt 0 ]; then
+        echo "Cleanup complete. $kept pinned image(s) kept because other containers use them."
+    else
+        echo "Cleanup complete. The cluster, the containers, all the lab images and the kind network are gone."
+    fi
+else
+    echo "Cleanup complete. The cluster, the containers, the lab images and the kind network are gone."
+    echo "The pinned images stay in the local cache; remove them with './cleanup.sh --remove-images' if needed."
+fi
