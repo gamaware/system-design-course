@@ -32,6 +32,10 @@ _invocations = 0
 _visits_in_memory = 0
 
 
+# Business limit that also keeps every amount inside the DynamoDB Number range.
+MAX_AMOUNT = Decimal("1000000")
+
+
 def _environment():
     global _cold_start, _invocations
     _invocations += 1
@@ -67,8 +71,8 @@ def _create_order(event, environment):
         amount = Decimal(str(body["amount"]))
     except (ValueError, KeyError, TypeError, ArithmeticError):
         return _response(400, {"error": 'send a JSON body like {"item": "book", "amount": 12.5}'}, environment)
-    if not amount.is_finite() or amount <= 0:
-        return _response(400, {"error": "amount must be a positive number"}, environment)
+    if not amount.is_finite() or amount <= 0 or amount > MAX_AMOUNT:
+        return _response(400, {"error": f"amount must be a positive number up to {MAX_AMOUNT}"}, environment)
 
     order = {
         "pk": f"ORDER#ORD-{uuid.uuid4().hex[:8]}",

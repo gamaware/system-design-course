@@ -34,6 +34,10 @@ class InvalidPaymentError(Exception):
     """The message can never succeed: retrying it will fail again."""
 
 
+# Business limit that also keeps every amount inside the DynamoDB Number range.
+MAX_AMOUNT = Decimal("1000000")
+
+
 def _environment():
     global _cold_start, _invocations
     _invocations += 1
@@ -51,13 +55,15 @@ def _parse(body):
         raise InvalidPaymentError("body is not a JSON object")
     if payment.get("crash"):
         raise RuntimeError("simulated crash: the function fails before it answers")
+    order_id = payment.get("order_id")
+    if not isinstance(order_id, str) or not order_id.strip():
+        raise InvalidPaymentError("order_id must be a non-empty string")
     try:
-        order_id = str(payment["order_id"])
         amount = Decimal(str(payment["amount"]))
     except (KeyError, InvalidOperation) as exc:
         raise InvalidPaymentError("body needs order_id and a numeric amount") from exc
-    if not amount.is_finite() or amount <= 0:
-        raise InvalidPaymentError(f"amount {amount} is not a positive number")
+    if not amount.is_finite() or amount <= 0 or amount > MAX_AMOUNT:
+        raise InvalidPaymentError(f"amount {amount} is not a positive number up to {MAX_AMOUNT}")
     return order_id, amount
 
 
