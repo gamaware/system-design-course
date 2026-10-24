@@ -102,7 +102,7 @@ practice here carries over:
 ├── README.md               # This file (lab overview)
 ├── LAB.md                  # Step-by-step instructions (8 tasks)
 ├── setup.sh                # Check the tools and ports, download the pinned images
-├── cleanup.sh              # Delete the cluster, containers, images and the kind network
+├── cleanup.sh              # Delete the cluster, containers, lab images and the kind network
 ├── diagrams/               # Architecture diagram (draw.io source, animated SVG, PNG)
 ├── app/
 │   ├── main.go             # The web service: /, /healthz, /readyz, /work
@@ -113,6 +113,7 @@ practice here carries over:
 ├── kind/
 │   └── cluster.yaml        # One control plane + two workers, node image pinned by digest
 ├── k8s/
+│   ├── namespace.yaml      # The lab17 namespace that holds every object of the lab
 │   ├── deployment.yaml     # 3 replicas, probes, limits, rolling update settings
 │   ├── service.yaml        # NodePort 30080
 │   └── hpa.yaml            # Optional autoscaler, 3 to 8 replicas
@@ -156,10 +157,11 @@ macOS / Linux / Git Bash:
 ```
 
 The cleanup script deletes the kind cluster (and its kubectl context),
-removes every `lab17-*` container, the images built in the lab, the
-pinned base images, and the `kind` Docker network if no other cluster
-uses it. `./cleanup.sh --keep-images` keeps the base images for a second
-run.
+removes every `lab17-*` container, the images built in the lab, and the
+`kind` Docker network if no other cluster uses it, then checks that
+nothing of the lab is left. The pinned base images stay in the local
+cache, as in the other labs; `./cleanup.sh --remove-images` removes them
+too.
 
 ## Troubleshooting
 
@@ -175,6 +177,7 @@ run.
 | Pods stay in `ErrImagePull` for `localhost:5001/lab17-web:v1` | The registry is not connected or the image was not pushed | Run `./scripts/connect-registry.sh`; check `curl -s http://localhost:5001/v2/lab17-web/tags/list` |
 | `curl 127.0.0.1:30080` is refused | The cluster was created without `--config kind/cluster.yaml`, or the Service is missing | `kubectl get svc lab17-web`; recreate the cluster with the config file |
 | `kubectl` talks to another cluster | The current context changed | `kubectl config use-context kind-lab17` |
+| `kubectl get pods` shows no `lab17-web` pods | The context namespace is not `lab17` | `kubectl config set-context --current --namespace=lab17` |
 | A stopped node never turns `NotReady` | You watched less than 50 seconds | Keep watching: the node monitor grace period is 50 seconds |
 | `kubectl top` says `metrics not available yet` | metrics-server needs about a minute after it starts | Wait 30 to 60 seconds and try again |
 | Linux: `too many open files` when the cluster starts | inotify limits too low for three nodes | `sudo sysctl fs.inotify.max_user_instances=512 fs.inotify.max_user_watches=524288` |
@@ -267,11 +270,11 @@ After completing this lab, you should take away these lessons:
 
 5. **Recovery time depends on what failed.** A deleted pod was replaced
    and ready in 5 seconds, a crashed container restarted in place, and a
-   stopped node cost about 50 seconds of detection and 40 failed requests
-   before Kubernetes moved its two pods.
+   stopped node cost about 50 seconds of detection and 44 failed requests
+   before Kubernetes moved its pod.
 
 6. **Updates can be invisible, or not.** The rolling update from v1 to v2
-   answered 345 requests with 0 errors, the broken v3 release never took
+   answered 309 requests with 0 errors, the broken v3 release never took
    traffic and rolled back in a fraction of a second, and the same update with
    `Recreate` failed every request for about 6 seconds.
 

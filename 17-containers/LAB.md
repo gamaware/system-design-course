@@ -31,16 +31,22 @@ brew install kind kubectl
 Docker Desktop also installs a `kubectl`. Either one works if
 `kubectl version --client` reports 1.36, 1.37 or 1.38.
 
-**Windows** (PowerShell), with winget or Chocolatey:
+**Windows with WSL:** in the WSL terminal, use the Linux commands below.
+WSL does not see programs installed for Windows.
+
+**Windows with Git Bash:** install the Windows versions from PowerShell,
+with winget or Chocolatey, pinned to the versions this lab was tested
+with:
 
 ```powershell
-winget install Kubernetes.kind
-winget install Kubernetes.kubectl
+winget install Kubernetes.kind --version 0.33.0
+winget install Kubernetes.kubectl --version 1.37.1
 # or
-choco install kind kubernetes-cli
+choco install kind --version 0.33.0
+choco install kubernetes-cli --version 1.37.1
 ```
 
-Close and reopen the terminal so that it finds the new commands.
+Close and reopen Git Bash so that it finds the new commands.
 
 **Linux** (x86-64; for ARM replace `amd64` with `arm64` and use the
 matching checksum from the kind release page):
@@ -360,8 +366,8 @@ Expected output:
 
 ```text
 IMAGE              ID             DISK USAGE   CONTENT SIZE   EXTRA
-lab17-web:single   db94c45452b4       1.44GB          335MB
-lab17-web:v1       a5284e731a30       15.1MB         3.39MB
+lab17-web:single   edf54a832526       1.44GB          335MB
+lab17-web:v1       b1a777920ef8       15.1MB         3.39MB
 ```
 
 The same program weighs 1.44 GB in one image and 15 MB in the other,
@@ -456,12 +462,12 @@ docker top lab17-web -o user,pid,args
 Expected output:
 
 ```text
-506c95c64f263e8355e612374554bce265c5fa4b18101034f96773a8539e8d66
+62d8bfe1e98df5f8037e7ba0cf02d3956bb9e94418d6fdff3d93bee4043500b6
 Up Less than a second (health: starting)
 Up 8 seconds (healthy)
-version=v1 host=506c95c64f26 uptime=8s
+version=v1 host=62d8bfe1e98d uptime=8s
 USER                PID                 COMMAND
-65532               47715               /web
+65532               11944               /web
 ```
 
 Docker ran `/web -healthcheck` inside the container, about 5 seconds after
@@ -471,25 +477,44 @@ status to `healthy`. The process runs as user
 
 ### Step 2.6: Graceful shutdown
 
+Start a request that takes one second (`/work?ms=1000`) in the
+background, stop the container while the request is still running, and
+read the log:
+
 ```bash
-docker stop lab17-web
+curl -s 'http://127.0.0.1:8172/work?ms=1000' &
+sleep 0.3
+time docker stop lab17-web
+wait
 docker logs lab17-web
 docker rm lab17-web
 ```
 
-Expected output (the log):
+Expected output (your shell also prints the job number of the background
+`curl`, and zsh prints the time on one line):
 
 ```text
-2026/10/24 17:32:10 lab17-web v1 listening on :8080 (host 506c95c64f26, ready after 0s)
-2026/10/24 17:32:10 ready to receive traffic
-2026/10/24 17:32:18 GET / from 172.17.0.1:59128
-2026/10/24 17:32:18 SIGTERM received: finishing in-flight requests
-2026/10/24 17:32:18 stopped
+version=v1 host=62d8bfe1e98d worked=1000ms loops=27093166
+lab17-web
+
+real    0m1.225s
+...
+2026/10/24 18:05:17 lab17-web v1 listening on :8080 (host 62d8bfe1e98d, ready after 0s)
+2026/10/24 18:05:17 ready to receive traffic
+2026/10/24 18:05:25 GET / from 172.17.0.1:63130
+2026/10/24 18:05:26 SIGTERM received: finishing 1 in-flight request(s)
+2026/10/24 18:05:26 GET /work?ms=1000 from 172.17.0.1:63142
+2026/10/24 18:05:27 stopped
+lab17-web
 ```
 
-The application catches `SIGTERM`, finishes the requests in progress and
-exits. Kubernetes sends the same signal before it removes a pod, which
-matters for the zero-downtime update of Task 8.
+The application caught `SIGTERM`, stopped accepting new connections,
+finished the request in progress and only then exited: the `curl` got
+its full answer, and `docker stop` took about a second instead of
+returning at once. The log line of a request is written when the request
+ends, which is why `GET /work` appears after `SIGTERM`. Kubernetes sends
+the same signal before it removes a pod, which matters for the
+zero-downtime update of Task 8.
 
 **Record for your report:** the size of both images (disk usage and
 content size), the number of layers of each, the user each one runs as,
@@ -552,10 +577,10 @@ Expected output (abbreviated):
 ```text
 The push refers to repository [localhost:5001/lab17-web]
 c172f21841df: Pushed
-ee8000616ae5: Pushed
+44136fa355b3: Pushed
 ...
-1e0fcc46e872: Pushed
-v1: digest: sha256:a5284e731a30c3ea3b08b07f2212e7b84c21bd1ee62f06a445ac3d1d1f30ff56 size: 856
+5689407c3340: Pushed
+v1: digest: sha256:b1a777920ef8517056895d500fd2c37e6e7f22556f912e7a8c636ab1e5183fbb size: 856
 {"repositories":["lab17-web"]}
 {"name":"lab17-web","tags":["v1"]}
 ```
@@ -574,7 +599,7 @@ Expected output:
 
 ```text
 Content-Type: application/vnd.oci.image.index.v1+json
-Docker-Content-Digest: sha256:a5284e731a30c3ea3b08b07f2212e7b84c21bd1ee62f06a445ac3d1d1f30ff56
+Docker-Content-Digest: sha256:b1a777920ef8517056895d500fd2c37e6e7f22556f912e7a8c636ab1e5183fbb
 ```
 
 The top-level object is an **image index**: a list with one image
@@ -597,16 +622,16 @@ Expected output:
 ```text
 Untagged: localhost:5001/lab17-web:v1
 Untagged: lab17-web:v1
-Deleted: sha256:a5284e731a30c3ea3b08b07f2212e7b84c21bd1ee62f06a445ac3d1d1f30ff56
+Deleted: sha256:b1a777920ef8517056895d500fd2c37e6e7f22556f912e7a8c636ab1e5183fbb
 v1: Pulling from lab17-web
 ...
 a99dd1dd5eaf: Already exists
 ...
-1e0fcc46e872: Pull complete
-Digest: sha256:a5284e731a30c3ea3b08b07f2212e7b84c21bd1ee62f06a445ac3d1d1f30ff56
+8ed8d5c24276: Pull complete
+Digest: sha256:b1a777920ef8517056895d500fd2c37e6e7f22556f912e7a8c636ab1e5183fbb
 Status: Downloaded newer image for localhost:5001/lab17-web:v1
 localhost:5001/lab17-web:v1
-localhost:5001/lab17-web@sha256:a5284e731a30c3ea3b08b07f2212e7b84c21bd1ee62f06a445ac3d1d1f30ff56
+localhost:5001/lab17-web@sha256:b1a777920ef8517056895d500fd2c37e6e7f22556f912e7a8c636ab1e5183fbb
 ```
 
 The pulled image has the same digest as the pushed one: the registry
@@ -626,8 +651,8 @@ docker stop lab17-pulled
 Expected output:
 
 ```text
-8fc3bab646fc7f28fb85bc9afbbfaed229e047b565bd338794dfbc70e1761b8d
-version=v1 host=8fc3bab646fc uptime=1s
+55d21cb885c4c62152b2f9dbc497c64f9847c87a7f1cfda0c9a97a6290f10a3f
+version=v1 host=55d21cb885c4 uptime=1s
 lab17-pulled
 ```
 
@@ -703,8 +728,8 @@ then run it:
 Expected output:
 
 ```text
-  lab17-worker2: localhost:5001 -> http://lab17-registry:5000
   lab17-control-plane: localhost:5001 -> http://lab17-registry:5000
+  lab17-worker2: localhost:5001 -> http://lab17-registry:5000
   lab17-worker: localhost:5001 -> http://lab17-registry:5000
   lab17-registry joined the 'kind' Docker network
 configmap/local-registry-hosting created
@@ -725,19 +750,19 @@ Expected output:
 
 ```text
 NAMES                 IMAGE                  PORTS
+lab17-control-plane   kindest/node:v1.37.0   127.0.0.1:30080->30080/tcp, 127.0.0.1:55687->6443/tcp
 lab17-worker2         kindest/node:v1.37.0
-lab17-control-plane   kindest/node:v1.37.0   127.0.0.1:30080->30080/tcp, 127.0.0.1:59516->6443/tcp
 lab17-worker          kindest/node:v1.37.0
 lab17-registry        registry:2.8.3         127.0.0.1:5001->5000/tcp
 NAME                  STATUS   ROLES           AGE   VERSION   INTERNAL-IP   ...   CONTAINER-RUNTIME
-lab17-control-plane   Ready    control-plane   24s   v1.37.0   172.19.0.3    ...   containerd://2.3.4
+lab17-control-plane   Ready    control-plane   28s   v1.37.0   172.19.0.3    ...   containerd://2.3.4
 lab17-worker          Ready    <none>          13s   v1.37.0   172.19.0.4    ...   containerd://2.3.4
 lab17-worker2         Ready    <none>          13s   v1.37.0   172.19.0.2    ...   containerd://2.3.4
 ```
 
 Three containers play the role of three machines. Port 6443 of the
 control plane is the **API server**; kubectl reaches it on a random local
-port (59516 here).
+port (55687 here).
 
 ### Step 4.4: The control plane
 
@@ -749,21 +774,21 @@ kubectl get pods -n kube-system -o wide | awk '{print $1, $3, $(NF-2)}' | column
 Expected output:
 
 ```text
-Kubernetes control plane is running at https://127.0.0.1:59516
-CoreDNS is running at https://127.0.0.1:59516/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Kubernetes control plane is running at https://127.0.0.1:55687
+CoreDNS is running at https://127.0.0.1:55687/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 ...
 NAME                                         STATUS   NODE
-coredns-559f6c778d-bxhq8                     Running  lab17-control-plane
-coredns-559f6c778d-vtjwq                     Running  lab17-control-plane
+coredns-559f6c778d-cshm5                     Running  lab17-control-plane
+coredns-559f6c778d-d28rt                     Running  lab17-control-plane
 etcd-lab17-control-plane                     Running  lab17-control-plane
-kindnet-4hjbd                                Running  lab17-control-plane
-kindnet-pbmv6                                Running  lab17-worker
-kindnet-vlkdw                                Running  lab17-worker2
+kindnet-7fzsk                                Running  lab17-worker2
+kindnet-8pjqw                                Running  lab17-worker
+kindnet-d44wf                                Running  lab17-control-plane
 kube-apiserver-lab17-control-plane           Running  lab17-control-plane
 kube-controller-manager-lab17-control-plane  Running  lab17-control-plane
-kube-proxy-7dgv4                             Running  lab17-worker
-kube-proxy-lbwg2                             Running  lab17-control-plane
-kube-proxy-tsb8v                             Running  lab17-worker2
+kube-proxy-5q7qz                             Running  lab17-control-plane
+kube-proxy-tmnz8                             Running  lab17-worker
+kube-proxy-v964z                             Running  lab17-worker2
 kube-scheduler-lab17-control-plane           Running  lab17-control-plane
 ```
 
@@ -811,13 +836,13 @@ docker exec lab17-worker crictl ps
 Expected output:
 
 ```text
-    130 containerd
-    245 kubelet
-    426 kube-proxy
-    525 kindnetd
-CONTAINER       IMAGE           CREATED                  STATE    NAME          ...  POD               NAMESPACE
-127ca52c96153   8e13ccc0aaa68   Less than a second ago   Running  kindnet-cni   ...  kindnet-pbmv6     kube-system
-13d2000758f8d   550b682d81d41   1 second ago             Running  kube-proxy    ...  kube-proxy-7dgv4  kube-system
+    129 containerd
+    248 kubelet
+    420 kube-proxy
+    465 kindnetd
+CONTAINER       IMAGE           CREATED          STATE    NAME          ...  POD               NAMESPACE
+61e75e2e0e8f1   8e13ccc0aaa68   11 seconds ago   Running  kindnet-cni   ...  kindnet-8pjqw     kube-system
+f8f31ad6fa307   550b682d81d41   11 seconds ago   Running  kube-proxy    ...  kube-proxy-tmnz8  kube-system
 ```
 
 A worker runs the **kubelet**, the agent that receives pods from the API
@@ -850,21 +875,33 @@ You do not tell Kubernetes "start three containers". You declare a
 **desired state**, three replicas of this image, and controllers make it
 true and keep it true.
 
-Open `k8s/deployment.yaml` and `k8s/service.yaml`. The Deployment asks
-for three replicas of `localhost:5001/lab17-web:v1`, with probes, resource
-requests and limits, and a non-root security context. The Service gives
+Open the three files in `k8s/`. `namespace.yaml` creates the `lab17`
+**namespace**, a named group of objects inside the cluster; the other
+manifests place their objects in it. The Deployment asks for three
+replicas of `localhost:5001/lab17-web:v1`, with probes, resource requests
+and limits, and a non-root security context. Its `imagePullPolicy:
+Always` makes every new container ask the registry which image the tag
+points to, so a tag that you push again takes effect. The Service gives
 the pods one stable address and publishes it on NodePort 30080.
 
 ### Step 5.1: Apply the manifests
 
 ```bash
+kubectl apply -f k8s/namespace.yaml
+kubectl config set-context --current --namespace=lab17
 kubectl apply -f k8s/deployment.yaml -f k8s/service.yaml
 kubectl rollout status deployment/lab17-web --timeout=120s
 ```
 
+The second command makes `lab17` the namespace of the `kind-lab17`
+context, so every `kubectl` command of the rest of the lab works in it
+without `-n lab17`.
+
 Expected output:
 
 ```text
+namespace/lab17 created
+Context "kind-lab17" modified.
 deployment.apps/lab17-web created
 service/lab17-web created
 Waiting for deployment "lab17-web" rollout to finish: 0 of 3 updated replicas are available...
@@ -883,21 +920,21 @@ Expected output (trimmed):
 
 ```text
 NAME                        READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES
-deployment.apps/lab17-web   3/3     3            3           12s   web          localhost:5001/lab17-web:v1
+deployment.apps/lab17-web   3/3     3            3           6s    web          localhost:5001/lab17-web:v1
 
 NAME                                   DESIRED   CURRENT   READY   AGE
-replicaset.apps/lab17-web-67d987c499   3         3         3       12s
+replicaset.apps/lab17-web-75f757df57   3         3         3       6s
 
 NAME                             READY   STATUS    RESTARTS   AGE   IP           NODE
-pod/lab17-web-67d987c499-b677h   1/1     Running   0          12s   10.244.1.2   lab17-worker
-pod/lab17-web-67d987c499-fhvpk   1/1     Running   0          12s   10.244.2.3   lab17-worker2
-pod/lab17-web-67d987c499-g65vx   1/1     Running   0          12s   10.244.2.2   lab17-worker2
+pod/lab17-web-75f757df57-6wnkv   1/1     Running   0          6s    10.244.2.3   lab17-worker2
+pod/lab17-web-75f757df57-88hqq   1/1     Running   0          6s    10.244.1.2   lab17-worker
+pod/lab17-web-75f757df57-8vr47   1/1     Running   0          6s    10.244.2.2   lab17-worker2
 
-NAME                TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-service/lab17-web   NodePort   10.96.95.153   <none>        80:30080/TCP   12s
+NAME                TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+service/lab17-web   NodePort   10.96.20.23   <none>        80:30080/TCP   6s
 
 NAME                                             ADDRESSTYPE   PORTS   ENDPOINTS
-endpointslice.discovery.k8s.io/lab17-web-npcdf   IPv4          8080    10.244.1.2,10.244.2.2,10.244.2.3
+endpointslice.discovery.k8s.io/lab17-web-vm6cs   IPv4          8080    10.244.2.2,10.244.1.2,10.244.2.3
 ```
 
 Read it from top to bottom: the **Deployment** created a **ReplicaSet**,
@@ -913,8 +950,8 @@ kubectl get events --field-selector reason=Pulled -o custom-columns=POD:.involve
 
 ```text
 POD                          MESSAGE
-lab17-web-67d987c499-b677h   Successfully pulled image "localhost:5001/lab17-web:v1" in 5.849s (5.849s includi
-lab17-web-67d987c499-fhvpk   Successfully pulled image "localhost:5001/lab17-web:v1" in 209ms (5.16s including
+lab17-web-75f757df57-6wnkv   Successfully pulled image "localhost:5001/lab17-web:v1" in 30ms (343ms including
+lab17-web-75f757df57-88hqq   Successfully pulled image "localhost:5001/lab17-web:v1" in 320ms (320ms including
 ```
 
 ### Step 5.3: Reach the application
@@ -926,17 +963,17 @@ for i in 1 2 3 4 5 6; do curl -s http://127.0.0.1:30080/; done
 Expected output:
 
 ```text
-version=v1 host=lab17-web-67d987c499-g65vx uptime=4s
-version=v1 host=lab17-web-67d987c499-fhvpk uptime=4s
-version=v1 host=lab17-web-67d987c499-g65vx uptime=4s
-version=v1 host=lab17-web-67d987c499-fhvpk uptime=4s
-version=v1 host=lab17-web-67d987c499-fhvpk uptime=4s
-version=v1 host=lab17-web-67d987c499-b677h uptime=4s
+version=v1 host=lab17-web-75f757df57-88hqq uptime=5s
+version=v1 host=lab17-web-75f757df57-88hqq uptime=5s
+version=v1 host=lab17-web-75f757df57-6wnkv uptime=5s
+version=v1 host=lab17-web-75f757df57-6wnkv uptime=5s
+version=v1 host=lab17-web-75f757df57-6wnkv uptime=5s
+version=v1 host=lab17-web-75f757df57-88hqq uptime=5s
 ```
 
 Every request opens a new connection, and kube-proxy picks one of the
 ready pods for it at random. From now on you will use
-`scripts/traffic.sh`, which sends about eight requests per second and
+`scripts/traffic.sh`, which sends about seven requests per second and
 counts the answers by version and by pod:
 
 ```bash
@@ -947,15 +984,15 @@ Expected output:
 
 ```text
 Sending requests to http://127.0.0.1:30080/ for 5 s (one every 0.1 s)...
-  t=  1s  sent=8     errors=0    last: version=v1 host=lab17-web-67d987c499-g65vx
+  t=  1s  sent=4     errors=0    last: version=v1 host=lab17-web-75f757df57-88hqq
 ...
-=== Summary: 38 requests in 5 s, 0 errors ===
+=== Summary: 32 requests in 5 s, 0 errors ===
 By version:
-    38 version=v1
+    32 version=v1
 By pod:
-    14 host=lab17-web-67d987c499-b677h
-    16 host=lab17-web-67d987c499-fhvpk
-     8 host=lab17-web-67d987c499-g65vx
+    12 host=lab17-web-75f757df57-6wnkv
+    14 host=lab17-web-75f757df57-88hqq
+     6 host=lab17-web-75f757df57-8vr47
 ```
 
 Read the latest lines of the log of one pod, chosen through the
@@ -966,9 +1003,9 @@ kubectl logs deployment/lab17-web --tail=2
 ```
 
 ```text
-Found 3 pods, using pod/lab17-web-67d987c499-b677h
-2026/10/24 17:33:57 GET / from 172.19.0.3:1136
-2026/10/24 17:33:57 GET / from 172.19.0.3:64812
+Found 3 pods, using pod/lab17-web-75f757df57-8vr47
+2026/10/24 18:06:15 GET / from 172.19.0.3:4258
+2026/10/24 18:06:16 GET / from 172.19.0.3:32800
 ```
 
 The requests come from `172.19.0.3`, the control plane node: your
@@ -978,13 +1015,13 @@ connection entered there on port 30080 and kube-proxy forwarded it.
 pods, the node of each pod, and how many requests each pod answered in
 the 5-second test.
 
-> **Question:** The pod names share the suffix `67d987c499`. Where does it
+> **Question:** The pod names share the suffix `75f757df57`. Where does it
 > come from, and what will change in Task 8?
 >
 > **Hint:** Compare the ReplicaSet name with the pod names.
 >
-> **Question:** The traffic test spread 38 requests 14, 16 and 8. Why not
-> 13, 13 and 12?
+> **Question:** The traffic test spread 32 requests 12, 14 and 6. Why not
+> 11, 11 and 10?
 >
 > **Hint:** kube-proxy chooses a pod at random for each new connection.
 > What happens to the split with 10,000 requests?
@@ -1015,19 +1052,19 @@ Expected output:
 
 ```text
 POD                          NODE            CREATED                READY-SINCE
-lab17-web-67d987c499-b677h   lab17-worker    2026-10-24T17:33:40Z   2026-10-24T17:33:51Z
-lab17-web-67d987c499-fhvpk   lab17-worker2   2026-10-24T17:33:40Z   2026-10-24T17:33:52Z
-lab17-web-67d987c499-g65vx   lab17-worker2   2026-10-24T17:33:40Z   2026-10-24T17:33:52Z
-pod "lab17-web-67d987c499-b677h" deleted from default namespace
+lab17-web-75f757df57-6wnkv   lab17-worker2   2026-10-24T18:06:06Z   2026-10-24T18:06:12Z
+lab17-web-75f757df57-88hqq   lab17-worker    2026-10-24T18:06:06Z   2026-10-24T18:06:12Z
+lab17-web-75f757df57-8vr47   lab17-worker2   2026-10-24T18:06:06Z   2026-10-24T18:06:11Z
+pod "lab17-web-75f757df57-6wnkv" deleted from lab17 namespace
 NAME                         READY   STATUS              RESTARTS   AGE
-lab17-web-67d987c499-b677h   1/1     Terminating         0          24s
-lab17-web-67d987c499-dldmb   0/1     ContainerCreating   0          0s
-lab17-web-67d987c499-fhvpk   1/1     Running             0          24s
-lab17-web-67d987c499-g65vx   1/1     Running             0          24s
+lab17-web-75f757df57-6wnkv   1/1     Terminating         0          11s
+lab17-web-75f757df57-779g8   0/1     ContainerCreating   0          0s
+lab17-web-75f757df57-88hqq   1/1     Running             0          11s
+lab17-web-75f757df57-8vr47   1/1     Running             0          11s
 ```
 
 The ReplicaSet saw two pods where it wanted three and created
-`...-dldmb` at once. The new pod is not ready yet: the app answers
+`...-779g8` at once. The new pod is not ready yet: the app answers
 `/readyz` with 503 for its first 3 seconds (`READY_DELAY` in the
 Deployment), so the Service does not send it traffic. The deleted pod
 stays `Terminating` for 5 seconds, the `preStop` pause of Task 8. Wait 10
@@ -1040,14 +1077,15 @@ kubectl get pods -l app=lab17-web -o "$COLS"
 
 ```text
 POD                          NODE            CREATED                READY-SINCE
-lab17-web-67d987c499-dldmb   lab17-worker    2026-10-24T17:34:04Z   2026-10-24T17:34:09Z
-lab17-web-67d987c499-fhvpk   lab17-worker2   2026-10-24T17:33:40Z   2026-10-24T17:33:52Z
-lab17-web-67d987c499-g65vx   lab17-worker2   2026-10-24T17:33:40Z   2026-10-24T17:33:52Z
+lab17-web-75f757df57-779g8   lab17-worker    2026-10-24T18:06:17Z   2026-10-24T18:06:22Z
+lab17-web-75f757df57-88hqq   lab17-worker    2026-10-24T18:06:06Z   2026-10-24T18:06:12Z
+lab17-web-75f757df57-8vr47   lab17-worker2   2026-10-24T18:06:06Z   2026-10-24T18:06:11Z
 ```
 
-The replacement was ready 5 seconds after it was created. The first three
-pods took 11 or 12 seconds because their nodes had to pull the image
-first.
+The replacement was ready 5 seconds after it was created, about as fast
+as the first three pods: the pull from the local registry takes less than
+a second, and most of the 5 seconds are the 3 seconds of `READY_DELAY`
+plus the wait for the next readiness probe.
 
 ### Step 6.2: Crash the process
 
@@ -1069,14 +1107,16 @@ Expected output (trimmed):
 ```text
 lab17-worker
 NAME                         READY   STATUS    RESTARTS     AGE   IP           NODE
-lab17-web-67d987c499-dldmb   0/1     Running   1 (4s ago)   23s   10.244.1.3   lab17-worker
-lab17-web-67d987c499-fhvpk   1/1     Running   0            47s   10.244.2.3   lab17-worker2
-lab17-web-67d987c499-g65vx   1/1     Running   0            47s   10.244.2.2   lab17-worker2
+lab17-web-75f757df57-779g8   0/1     Running   1 (4s ago)   14s   10.244.1.3   lab17-worker
+lab17-web-75f757df57-88hqq   0/1     Running   1 (4s ago)   25s   10.244.1.2   lab17-worker
+lab17-web-75f757df57-8vr47   1/1     Running   0            25s   10.244.2.2   lab17-worker2
 ```
 
-This time nobody replaced the pod: the **kubelet** restarted its
-container in place. The pod keeps its name and its IP address, and
-`RESTARTS` counts the crash. The reason of the last termination:
+Both pods on `lab17-worker` lost their process. This time nobody
+replaced them: the **kubelet** restarted each container in place. The
+pods keep their names and IP addresses, and `RESTARTS` counts the crash.
+For the next 3 seconds only `...-8vr47` was ready to serve. The reason of
+the last termination:
 
 ```bash
 kubectl describe pod -l app=lab17-web | grep -A3 'Last State' | head -4
@@ -1086,7 +1126,7 @@ kubectl describe pod -l app=lab17-web | grep -A3 'Last State' | head -4
     Last State:     Terminated
       Reason:       Error
       Exit Code:    137
-      Started:      Sat, 24 Oct 2026 11:34:05 -0600
+      Started:      Sat, 24 Oct 2026 12:06:17 -0600
 ```
 
 Exit code 137 is `SIGKILL`, as in the memory test of Task 1.
@@ -1118,77 +1158,75 @@ done
 Expected output (abbreviated):
 
 ```text
-17:34:50
+18:06:36
 lab17-worker2
---- 17:35:00
+--- 18:06:47
 lab17-control-plane Ready
 lab17-worker Ready
 lab17-worker2 Ready
-lab17-web-67d987c499-dldmb Running lab17-worker
-lab17-web-67d987c499-fhvpk Running lab17-worker2
-lab17-web-67d987c499-g65vx Running lab17-worker2
+lab17-web-75f757df57-779g8 Running lab17-worker
+lab17-web-75f757df57-88hqq Running lab17-worker
+lab17-web-75f757df57-8vr47 Running lab17-worker2
 ...
---- 17:35:41
+--- 18:07:37
 lab17-control-plane Ready
 lab17-worker Ready
 lab17-worker2 NotReady
-lab17-web-67d987c499-dldmb Running lab17-worker
-lab17-web-67d987c499-fhvpk Running lab17-worker2
-lab17-web-67d987c499-g65vx Running lab17-worker2
---- 17:35:51
+lab17-web-75f757df57-779g8 Running lab17-worker
+lab17-web-75f757df57-88hqq Running lab17-worker
+lab17-web-75f757df57-8vr47 Running lab17-worker2
+--- 18:07:47
 lab17-control-plane Ready
 lab17-worker Ready
 lab17-worker2 NotReady
-lab17-web-67d987c499-dldmb Running lab17-worker
-lab17-web-67d987c499-fhvpk Terminating lab17-worker2
-lab17-web-67d987c499-g65vx Terminating lab17-worker2
-lab17-web-67d987c499-n945b Running lab17-worker
-lab17-web-67d987c499-pgbkd Running lab17-worker
+lab17-web-75f757df57-779g8 Running lab17-worker
+lab17-web-75f757df57-88hqq Running lab17-worker
+lab17-web-75f757df57-8vr47 Terminating lab17-worker2
+lab17-web-75f757df57-fb7gr Running lab17-worker
 ```
 
 Three phases:
 
-1. **Nobody knows (about 50 s).** The node stopped at 17:34:50, but the
-   control plane reported it `Ready` until 17:35:41. The controller
+1. **Nobody knows (about 50 s).** The node stopped at 18:06:36, but the
+   control plane reported it `Ready` until 18:07:27. The controller
    manager marks a node `NotReady` only after its kubelet misses
    heartbeats for 50 seconds.
 2. **Eviction (about 10 s).** The Deployment tolerates a `NotReady` node
    for 10 seconds (`tolerationSeconds` in `k8s/deployment.yaml`; the
-   default is 300). Then Kubernetes evicts the two pods, and the
-   ReplicaSet creates `...-n945b` and `...-pgbkd` on the healthy worker.
-3. **Recovered.** Three pods run again. The old ones stay `Terminating`
-   because no kubelet is left to confirm that they stopped.
+   default is 300). Then Kubernetes evicts the pod, and the ReplicaSet
+   creates `...-fb7gr` on the healthy worker.
+3. **Recovered.** Three pods run again. The old one stays `Terminating`
+   because no kubelet is left to confirm that it stopped.
 
 When the traffic generator finishes, read its output:
 
 ```text
-  t=  5s  sent=33    errors=0    last: version=v1 host=lab17-web-67d987c499-g65vx
-  t=  6s  sent=38    errors=1    last: ERROR timeout (no answer within 1 s)
+  t=  6s  sent=40    errors=0    last: version=v1 host=lab17-web-75f757df57-779g8
+  t=  7s  sent=42    errors=1    last: ERROR timeout (no answer within 1 s)
 ...
-  t= 50s  sent=89    errors=37   last: ERROR timeout (no answer within 1 s)
-  t= 51s  sent=96    errors=37   last: version=v1 host=lab17-web-67d987c499-dldmb
+  t= 57s  sent=149   errors=38   last: ERROR timeout (no answer within 1 s)
+  t= 58s  sent=156   errors=38   last: version=v1 host=lab17-web-75f757df57-779g8
 ...
-=== Summary: 522 requests in 110 s, 40 errors ===
+=== Summary: 486 requests in 110 s, 44 errors ===
 By version:
-   482 version=v1
+   442 version=v1
 By pod:
-   227 host=lab17-web-67d987c499-dldmb
-    13 host=lab17-web-67d987c499-fhvpk
-     9 host=lab17-web-67d987c499-g65vx
-   104 host=lab17-web-67d987c499-n945b
-   129 host=lab17-web-67d987c499-pgbkd
+   164 host=lab17-web-75f757df57-779g8
+   172 host=lab17-web-75f757df57-88hqq
+    19 host=lab17-web-75f757df57-8vr47
+    87 host=lab17-web-75f757df57-fb7gr
 Errors:
-     1 ERROR connection closed without an answer
-    39 ERROR timeout (no answer within 1 s)
+     7 ERROR connection closed without an answer
+    37 ERROR timeout (no answer within 1 s)
 ```
 
-For about 45 seconds, every request that kube-proxy sent to one of the two
-pods on the stopped node failed, and only the requests that reached
-`...-dldmb` succeeded. Each failure waited the full 1-second timeout,
+For about 50 seconds, every request that kube-proxy sent to the pod on
+the stopped node failed: 38 of 109, about one in three, because one of
+the three pods was there. Each failure waited the full 1-second timeout,
 which is why the request rate dropped. The errors stopped when the node
-turned `NotReady`: Kubernetes then marked its pods not ready and removed
-them from the EndpointSlice. A few isolated errors can still appear for
-a minute or two, while the network forgets the old connections (3 in this
+turned `NotReady`: Kubernetes then marked its pod not ready and removed
+it from the EndpointSlice. A few isolated errors can still appear for a
+minute or two, while the network forgets the old connections (6 in this
 run).
 
 ### Step 6.4: Bring the node back
@@ -1205,12 +1243,12 @@ Expected output:
 ```text
 lab17-worker2
 node/lab17-worker2 condition met
-lab17-web-67d987c499-dldmb Running lab17-worker
-lab17-web-67d987c499-n945b Running lab17-worker
-lab17-web-67d987c499-pgbkd Running lab17-worker
+lab17-web-75f757df57-779g8 Running lab17-worker
+lab17-web-75f757df57-88hqq Running lab17-worker
+lab17-web-75f757df57-fb7gr Running lab17-worker
 ```
 
-The node is back, the stale pods are gone, and all three pods still run on
+The node is back, the stale pod is gone, and all three pods still run on
 `lab17-worker`. Kubernetes does not move running pods to rebalance a
 cluster. A rolling restart replaces them one by one, and the scheduler
 spreads the new pods over both workers:
@@ -1248,15 +1286,16 @@ deployment "lab17-web" successfully rolled out
 > **Hint:** Think of a node that is slow or on a congested network, and of
 > what an eviction costs.
 >
-> **Question:** In this run two of the three pods were on the stopped node,
-> so about two out of three requests failed. How would you make sure that
-> losing one node never takes most of the replicas with it?
+> **Question:** In this run one of the three pods was on the stopped node,
+> so about one request in three failed. In your run the scheduler may have
+> put two of them there. How would you make sure that losing one node
+> never takes most of the replicas with it?
 >
 > **Hint:** Look at `topologySpreadConstraints` in `k8s/deployment.yaml`
 > and what `whenUnsatisfiable: ScheduleAnyway` allows.
 >
 > **Question:** What would make the clients themselves stop failing during
-> those 45 seconds?
+> those 50 seconds?
 >
 > **Hint:** Recall health checks and retries from the load balancing lab:
 > which component could retry a timed-out request on another pod?
@@ -1283,9 +1322,9 @@ Waiting for deployment "lab17-web" rollout to finish: 3 of 6 updated replicas ar
 Waiting for deployment "lab17-web" rollout to finish: 4 of 6 updated replicas are available...
 Waiting for deployment "lab17-web" rollout to finish: 5 of 6 updated replicas are available...
 deployment "lab17-web" successfully rolled out
-real    0m5.402s
+real    0m5.019s
 NAME        READY   UP-TO-DATE   AVAILABLE   AGE
-lab17-web   6/6     6            6           4m22s
+lab17-web   6/6     6            6           2m51s
    3 lab17-worker
    3 lab17-worker2
 ```
@@ -1301,16 +1340,16 @@ in zsh, the default shell of macOS; the number is the same. Check that all six t
 Expected output (summary):
 
 ```text
-=== Summary: 68 requests in 10 s, 0 errors ===
+=== Summary: 66 requests in 10 s, 0 errors ===
 By version:
-    68 version=v1
+    66 version=v1
 By pod:
-     8 host=lab17-web-5cb577b849-4z7k9
-    17 host=lab17-web-5cb577b849-kqdz2
-     9 host=lab17-web-5cb577b849-nbdmd
-    11 host=lab17-web-5cb577b849-qsztn
-    12 host=lab17-web-5cb577b849-qt2nx
-    11 host=lab17-web-5cb577b849-rcv5d
+    12 host=lab17-web-65967f89fd-2gxfk
+     6 host=lab17-web-65967f89fd-gj95j
+    13 host=lab17-web-65967f89fd-qdmtk
+    13 host=lab17-web-65967f89fd-rd299
+     8 host=lab17-web-65967f89fd-vq868
+    14 host=lab17-web-65967f89fd-xv5zm
 ```
 
 The Service picked up the new pods without any change to it: it selects
@@ -1327,9 +1366,9 @@ Expected output:
 ```text
 deployment.apps/lab17-web scaled
 NAME                         READY   STATUS    RESTARTS   AGE
-lab17-web-5cb577b849-qsztn   1/1     Running   0          57s
-lab17-web-5cb577b849-qt2nx   1/1     Running   0          62s
-lab17-web-5cb577b849-rcv5d   1/1     Running   0          52s
+lab17-web-65967f89fd-2gxfk   1/1     Running   0          50s
+lab17-web-65967f89fd-qdmtk   1/1     Running   0          55s
+lab17-web-65967f89fd-xv5zm   1/1     Running   0          45s
 ```
 
 The ReplicaSet removed the three newest pods and kept the ones that had
@@ -1355,9 +1394,9 @@ Expected output:
 
 ```text
 NAME                         CPU(cores)   MEMORY(bytes)
-lab17-web-5cb577b849-qsztn   1m           3Mi
-lab17-web-5cb577b849-qt2nx   1m           5Mi
-lab17-web-5cb577b849-rcv5d   1m           2Mi
+lab17-web-65967f89fd-2gxfk   1m           2Mi
+lab17-web-65967f89fd-qdmtk   1m           1Mi
+lab17-web-65967f89fd-xv5zm   1m           1Mi
 ```
 
 Open `k8s/hpa.yaml`: between 3 and 8 replicas, targeting 50 % of the CPU
@@ -1377,18 +1416,18 @@ Expected output:
 ```text
 horizontalpodautoscaler.autoscaling/lab17-web created
 pod/lab17-load created
-lab17-web   Deployment/lab17-web   cpu: 2%/50%     3     8     3     15s
-lab17-web   Deployment/lab17-web   cpu: 168%/50%   3     8     3     30s
-lab17-web   Deployment/lab17-web   cpu: 552%/50%   3     8     6     46s
-lab17-web   Deployment/lab17-web   cpu: 464%/50%   3     8     8     61s
-lab17-web   Deployment/lab17-web   cpu: 294%/50%   3     8     8     76s
-lab17-web   Deployment/lab17-web   cpu: 234%/50%   3     8     8     91s
+lab17-web   Deployment/lab17-web   cpu: 78%/50%    3     8     3     15s
+lab17-web   Deployment/lab17-web   cpu: 238%/50%   3     8     5     30s
+lab17-web   Deployment/lab17-web   cpu: 402%/50%   3     8     8     45s
+lab17-web   Deployment/lab17-web   cpu: 262%/50%   3     8     8     60s
+lab17-web   Deployment/lab17-web   cpu: 230%/50%   3     8     8     75s
+lab17-web   Deployment/lab17-web   cpu: 244%/50%   3     8     8     90s
 ```
 
 The load pod reaches the Service by its name, `lab17-web`, through the
 cluster DNS. Every 15 seconds the HPA computes the replicas it needs as
 current replicas x measured utilization / target, and it adds pods in
-steps: it went to 6, and 15 seconds later to the maximum of 8.
+steps: it went to 5, and 15 seconds later to the maximum of 8.
 Utilization stays above 50 % because 8 is the ceiling. Read its
 decisions:
 
@@ -1400,8 +1439,8 @@ kubectl describe hpa lab17-web | sed -n '/Events/,$p'
 Events:
   Type    Reason             Age   From                       Message
   ----    ------             ----  ----                       -------
-  Normal  SuccessfulRescale  61s   horizontal-pod-autoscaler  New size: 6; reason: cpu resource utilization ...
-  Normal  SuccessfulRescale  46s   horizontal-pod-autoscaler  New size: 8; reason: cpu resource utilization ...
+  Normal  SuccessfulRescale  75s   horizontal-pod-autoscaler  New size: 5; reason: cpu resource utilization ...
+  Normal  SuccessfulRescale  60s   horizontal-pod-autoscaler  New size: 8; reason: cpu resource utilization ...
 ```
 
 Stop the load and remove the autoscaler before Task 8:
@@ -1457,26 +1496,28 @@ Expected output (abbreviated):
 
 ```text
 ...
-#8 [build 3/5] COPY go.mod ./
-#8 CACHED
-#9 [build 4/5] COPY main.go ./
-#9 CACHED
-#10 [build 5/5] RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=v2" -o /out/web .
+#10 [build 3/5] COPY go.mod ./
+#10 CACHED
+#11 [build 4/5] COPY main.go ./
+#11 CACHED
+#12 [build 5/5] RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=v2" -o /out/web .
+#12 DONE 3.0s
 ...
 The push refers to repository [localhost:5001/lab17-web]
-401d177fd1e8: Layer already exists
-dd64bf2dd177: Layer already exists
-85d12462d802: Pushed
+2780920e5dbf: Layer already exists
+52630fc75a18: Layer already exists
 ...
-ffa59bb3453f: Pushed
+c440148646e2: Pushed
 ...
-v2: digest: sha256:3d63fe5b2b1f15e80b3ec55ba51287067d24162307a0a4ba16d8478d590a468a size: 856
+5ef0d3184855: Pushed
+...
+v2: digest: sha256:42d562b6218105c18f801472c3ce2e9339152b466449a8a161a0f5ae3ec321a9 size: 856
 {"name":"lab17-web","tags":["v2","v1"]}
 ```
 
 A changed build argument invalidates only the `RUN` that uses it, so
-Docker reused the `COPY` layers and reran only the compile step (here it
-even found that compile in its cache from an earlier build). The push
+Docker reused the `COPY` layers and reran only the compile step, which
+took 3 seconds. The push
 uploaded two new blobs, among them the layer with the v2 binary; the
 registry already had every other layer.
 
@@ -1510,7 +1551,7 @@ Waiting for deployment "lab17-web" rollout to finish: 1 out of 3 new replicas ha
 Waiting for deployment "lab17-web" rollout to finish: 2 out of 3 new replicas have been updated...
 Waiting for deployment "lab17-web" rollout to finish: 1 old replicas are pending termination...
 deployment "lab17-web" successfully rolled out
-real    0m13.549s
+real    0m14.747s
 deployment.apps/lab17-web annotated
 ```
 
@@ -1518,17 +1559,17 @@ Revision 1 is the first deployment and revision 2 the restart of Task 6.
 When the traffic generator finishes:
 
 ```text
-=== Summary: 345 requests in 45 s, 0 errors ===
+=== Summary: 309 requests in 45 s, 0 errors ===
 By version:
-    99 version=v1
-   246 version=v2
+   118 version=v1
+   191 version=v2
 By pod:
-    24 host=lab17-web-5cb577b849-qsztn
-    42 host=lab17-web-5cb577b849-qt2nx
-    33 host=lab17-web-5cb577b849-rcv5d
-    68 host=lab17-web-7577df6c46-5jbr8
-    92 host=lab17-web-7577df6c46-jtl2f
-    86 host=lab17-web-7577df6c46-twvfb
+    33 host=lab17-web-65967f89fd-2gxfk
+    58 host=lab17-web-65967f89fd-qdmtk
+    27 host=lab17-web-65967f89fd-xv5zm
+    80 host=lab17-web-7b885f5d4f-brbqx
+    60 host=lab17-web-7b885f5d4f-wkq6n
+    51 host=lab17-web-7b885f5d4f-z547k
 ```
 
 Zero errors while every pod was replaced. For a few seconds both versions
@@ -1557,15 +1598,15 @@ deployment.apps/lab17-web annotated
 Waiting for deployment "lab17-web" rollout to finish: 1 out of 3 new replicas have been updated...
 error: timed out waiting for the condition
 NAME                         READY   STATUS         RESTARTS   AGE
-lab17-web-5f4dfb4d5f-8pkd4   0/1     ErrImagePull   0          30s
-lab17-web-7577df6c46-5jbr8   1/1     Running        0          90s
-lab17-web-7577df6c46-jtl2f   1/1     Running        0          99s
-lab17-web-7577df6c46-twvfb   1/1     Running        0          95s
+lab17-web-5d5fdd6bf6-pmsdl   0/1     ErrImagePull   0          30s
+lab17-web-7b885f5d4f-brbqx   1/1     Running        0          75s
+lab17-web-7b885f5d4f-wkq6n   1/1     Running        0          65s
+lab17-web-7b885f5d4f-z547k   1/1     Running        0          70s
 NAME                   DESIRED   CURRENT   READY   AGE
-lab17-web-5cb577b849   0         0         0       5m50s
-lab17-web-5f4dfb4d5f   1         1         0       30s
-lab17-web-67d987c499   0         0         0       9m35s
-lab17-web-7577df6c46   3         3         3       99s
+lab17-web-5d5fdd6bf6   1         1         0       30s
+lab17-web-65967f89fd   0         0         0       5m4s
+lab17-web-75f757df57   0         0         0       7m25s
+lab17-web-7b885f5d4f   3         3         3       75s
 ```
 
 The rollout created one v3 pod (`maxSurge: 1`), which cannot pull its
@@ -1574,9 +1615,9 @@ v2 pod until a v3 pod is ready. The three v2 pods kept serving, and the
 traffic generator reports **0 errors**:
 
 ```text
-=== Summary: 383 requests in 50 s, 0 errors ===
+=== Summary: 349 requests in 50 s, 0 errors ===
 By version:
-   383 version=v2
+   349 version=v2
 ```
 
 The old ReplicaSets stay at 0 replicas: they are the revisions you can
@@ -1596,7 +1637,7 @@ Warning: resource deployments/lab17-web was previously managed with 'kubectl app
 kubectl.kubernetes.io/last-applied-configuration annotation, ...
 deployment.apps/lab17-web rolled back
 deployment "lab17-web" successfully rolled out
-real    0m0.131s
+real    0m0.125s
 deployment.apps/lab17-web
 REVISION  CHANGE-CAUSE
 1         <none>
@@ -1626,15 +1667,15 @@ time (kubectl set image deployment/lab17-web web=localhost:5001/lab17-web:v1 && 
 Expected traffic output:
 
 ```text
-  t=  9s  sent=65    errors=0    last: version=v2 host=lab17-web-7577df6c46-5jbr8
-  t= 10s  sent=72    errors=2    last: ERROR timeout (no answer within 1 s)
-  t= 12s  sent=73    errors=3    last: ERROR timeout (no answer within 1 s)
-  t= 13s  sent=74    errors=4    last: ERROR timeout (no answer within 1 s)
-  t= 14s  sent=75    errors=5    last: ERROR timeout (no answer within 1 s)
-  t= 15s  sent=76    errors=6    last: ERROR timeout (no answer within 1 s)
-  t= 16s  sent=80    errors=6    last: version=v1 host=lab17-web-5cb577b849-xvl9b
+  t= 13s  sent=88    errors=0    last: version=v2 host=lab17-web-7b885f5d4f-wkq6n
+  t= 14s  sent=93    errors=1    last: ERROR timeout (no answer within 1 s)
+  t= 15s  sent=94    errors=2    last: ERROR timeout (no answer within 1 s)
+  t= 17s  sent=95    errors=3    last: ERROR timeout (no answer within 1 s)
+  t= 18s  sent=96    errors=4    last: ERROR timeout (no answer within 1 s)
+  t= 19s  sent=97    errors=5    last: ERROR timeout (no answer within 1 s)
+  t= 20s  sent=102   errors=5    last: version=v1 host=lab17-web-65967f89fd-n58pb
 ...
-=== Summary: 264 requests in 40 s, 6 errors ===
+=== Summary: 236 requests in 40 s, 5 errors ===
 ```
 
 For about 6 seconds no pod was ready and every request failed. Each one
@@ -1686,27 +1727,38 @@ Expected output:
 
 Deleting the kind cluster lab17...
   Deleting cluster "lab17" ...
-  Deleted nodes: ["lab17-worker2" "lab17-control-plane" "lab17-worker"]
+  Deleted nodes: ["lab17-control-plane" "lab17-worker2" "lab17-worker"]
 Removing the lab containers...
   lab17-registry
 Removing the images built in the lab...
   lab17-web:single
   localhost:5001/lab17-web:v2
   localhost:5001/lab17-web:v1
-Removing the pinned base images...
-  nginx:1.30.6-alpine
-  alpine:3.24
-  golang:1.27.2-trixie
-  gcr.io/distroless/static-debian13:nonroot
-  registry:2.8.3
-  kindest/node:v1.37.0
 Removed the Docker network kind.
 
+Checking that nothing is left...
+  nothing left
+
+kubectl has no current context now that kind-lab17 is gone. To return to another cluster:
+  kubectl config get-contexts
+  kubectl config use-context <name>
+
 Cleanup complete. The cluster, the containers, the lab images and the kind network are gone.
+The pinned images stay in the local cache; remove them with './cleanup.sh --remove-images' if needed.
 ```
 
-Run `./cleanup.sh --keep-images` instead if you plan to repeat the lab
-and want to skip the downloads.
+The script ends by checking that no `lab17` cluster, `lab17-*`
+container or lab image is left; if it finds one, it lists it and exits
+with an error. The pinned base images stay in the local cache, as in the
+other labs, so a second run skips the downloads. To remove them too:
+
+```bash
+./cleanup.sh --remove-images
+```
+
+Docker refuses to remove an image that another container still uses (for
+example `nginx` or `golang` from another lab); the script then shows
+Docker's message, keeps that image and counts it in its last line.
 
 Verify cleanup:
 
@@ -1729,4 +1781,11 @@ error: context kind-lab17 not found
 
 No `lab17-*` container or image and no `kind` network
 remain, and `kind delete cluster` also removed the `kind-lab17` context
-from your kubeconfig.
+from your kubeconfig. kubectl now has **no current context**, so its
+commands fail until you choose one. If you work with another cluster,
+list your contexts and switch back to it:
+
+```bash
+kubectl config get-contexts
+kubectl config use-context <name>
+```
