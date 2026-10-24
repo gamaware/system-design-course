@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 780" width="1400" height="780">
+  <title>Lab 11 - Caching Pattern Decision Guide</title>
+  <desc>Decision tree: are reads or writes more frequent? Read-heavy: need simplest implementation? Yes leads to Cache-Aside, No leads to Read-Through. Write-heavy: can tolerate data loss? Yes leads to Write-Back, No leads to Write-Through.</desc>
+  <style>
+    text { font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; }
+    .q { font-size: 20px; font-weight: 700; fill: #ffffff; }
+    .r { font-size: 20px; font-weight: 700; fill: #232F3E; }
+    .branch { font-size: 17px; font-weight: 700; fill: #232F3E; }
+    .yn { font-size: 16px; font-weight: 700; fill: #232F3E; }
+    .legend { font-size: 15px; fill: #545b64; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="9" refX="11" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4.5, 0 9" fill="#545b64"/>
+    </marker>
+  </defs>
+
+  <rect id="canvas" width="1400" height="780" fill="#ffffff"/>
+
+  <!-- Header, same layout as the other Lab 11 diagrams -->
+  <text id="title" x="24" y="46" font-size="32" font-weight="700" fill="#000000">Lab 11 - Caching Pattern Decision Guide</text>
+  <text id="subtitle" x="28" y="80" font-size="18" fill="#000000">Pick the pattern from the dominant traffic, then from how much simplicity or durability you need</text>
+  <line id="rule" x1="24" y1="100" x2="1376" y2="100" stroke="#FF9900" stroke-width="2"/>
+
+  <!-- Edges (drawn first so labels and nodes sit on top) -->
+  <g id="edges" fill="none" stroke="#545b64" stroke-width="2" stroke-linejoin="round">
+    <path id="e-root-read" d="M700 230 V290 H350 V384" marker-end="url(#arrow)"/>
+    <path id="e-root-write" d="M700 230 V290 H1050 V384" marker-end="url(#arrow)"/>
+    <path id="e-read-yes" d="M350 470 V520 H200 V614" marker-end="url(#arrow)"/>
+    <path id="e-read-no" d="M350 470 V520 H500 V614" marker-end="url(#arrow)"/>
+    <path id="e-write-yes" d="M1050 470 V520 H900 V614" marker-end="url(#arrow)"/>
+    <path id="e-write-no" d="M1050 470 V520 H1200 V614" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Edge labels with canvas-colored backgrounds -->
+  <g id="edge-labels">
+    <rect x="290" y="321" width="120" height="30" fill="#ffffff"/>
+    <text id="l-read" class="branch" text-anchor="middle" x="350" y="342">Read-Heavy</text>
+    <rect x="985" y="321" width="130" height="30" fill="#ffffff"/>
+    <text id="l-write" class="branch" text-anchor="middle" x="1050" y="342">Write-Heavy</text>
+
+    <rect x="176" y="553" width="48" height="28" fill="#ffffff"/>
+    <text id="l-read-yes" class="yn" text-anchor="middle" x="200" y="573">Yes</text>
+    <rect x="478" y="553" width="44" height="28" fill="#ffffff"/>
+    <text id="l-read-no" class="yn" text-anchor="middle" x="500" y="573">No</text>
+    <rect x="876" y="553" width="48" height="28" fill="#ffffff"/>
+    <text id="l-write-yes" class="yn" text-anchor="middle" x="900" y="573">Yes</text>
+    <rect x="1178" y="553" width="44" height="28" fill="#ffffff"/>
+    <text id="l-write-no" class="yn" text-anchor="middle" x="1200" y="573">No</text>
+  </g>
+
+  <!-- Question nodes: solid blue -->
+  <g id="questions">
+    <rect id="q-root" x="520" y="140" width="360" height="90" rx="12" fill="#007cbd" stroke="#005a8c" stroke-width="2"/>
+    <text class="q" text-anchor="middle" x="700" y="180">Are reads or writes</text>
+    <text class="q" text-anchor="middle" x="700" y="206">more frequent?</text>
+
+    <rect id="q-read" x="180" y="386" width="340" height="84" rx="12" fill="#007cbd" stroke="#005a8c" stroke-width="2"/>
+    <text class="q" text-anchor="middle" x="350" y="423">Need simplest</text>
+    <text class="q" text-anchor="middle" x="350" y="449">implementation?</text>
+
+    <rect id="q-write" x="880" y="386" width="340" height="84" rx="12" fill="#007cbd" stroke="#005a8c" stroke-width="2"/>
+    <text class="q" text-anchor="middle" x="1050" y="423">Can tolerate</text>
+    <text class="q" text-anchor="middle" x="1050" y="449">data loss?</text>
+  </g>
+
+  <!-- Result nodes: light orange with orange border -->
+  <g id="results">
+    <rect id="r-cache-aside" x="85" y="616" width="230" height="70" rx="12" fill="#FFF5EB" stroke="#FF9900" stroke-width="2.5"/>
+    <text class="r" text-anchor="middle" x="200" y="658">Cache-Aside</text>
+
+    <rect id="r-read-through" x="385" y="616" width="230" height="70" rx="12" fill="#FFF5EB" stroke="#FF9900" stroke-width="2.5"/>
+    <text class="r" text-anchor="middle" x="500" y="658">Read-Through</text>
+
+    <rect id="r-write-back" x="785" y="616" width="230" height="70" rx="12" fill="#FFF5EB" stroke="#FF9900" stroke-width="2.5"/>
+    <text class="r" text-anchor="middle" x="900" y="658">Write-Back</text>
+
+    <rect id="r-write-through" x="1085" y="616" width="230" height="70" rx="12" fill="#FFF5EB" stroke="#FF9900" stroke-width="2.5"/>
+    <text class="r" text-anchor="middle" x="1200" y="658">Write-Through</text>
+  </g>
+
+  <!-- Legend -->
+  <g id="legend">
+    <rect x="24" y="728" width="28" height="20" rx="5" fill="#007cbd" stroke="#005a8c" stroke-width="1.5"/>
+    <text class="legend" x="62" y="743">Question</text>
+    <rect x="160" y="728" width="28" height="20" rx="5" fill="#FFF5EB" stroke="#FF9900" stroke-width="2"/>
+    <text class="legend" x="198" y="743">Recommended pattern</text>
+  </g>
+</svg>

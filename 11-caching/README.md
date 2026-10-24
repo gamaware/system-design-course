@@ -5,14 +5,16 @@
 ![C++](https://img.shields.io/badge/C++-%2300599C.svg?style=for-the-badge&logo=cplusplus&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)
 ![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)
+![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
 ## Overview
 
 This hands-on lab teaches caching as a system design pattern using Redis.
 Students implement four caching strategies (cache-aside, read-through,
-write-through, write-back) in their choice of C++, C#, or Java, then
-configure and observe Redis eviction policies (LRU, LFU, TTL) under
-memory pressure. A simulated slow backend (500ms per request) makes the
+write-through, write-back) in their choice of C++, C#, Java, Python, or
+Go, then configure and observe Redis eviction policies (LRU, LFU, TTL)
+under memory pressure. A simulated slow backend (500ms per request) makes the
 performance impact of caching immediately measurable.
 
 ## Choose Your Operating System
@@ -30,7 +32,7 @@ Redis commands are the same regardless of your local operating system.
 
 ## Choose Your Language
 
-Select one language for the lab exercises. All three implement the same
+Select one language for the lab exercises. All five implement the same
 caching patterns with the same learning outcomes:
 
 | Language | Directory | Redis Client Library | Build Tool |
@@ -38,6 +40,8 @@ caching patterns with the same learning outcomes:
 | C++ | `cpp/` | hiredis | CMake |
 | C# | `csharp/` | StackExchange.Redis | .NET 8 |
 | Java | `java/` | Jedis | Maven |
+| Python | `python/` | redis-py | pip |
+| Go | `go/` | go-redis | Go modules |
 
 ## Learning Objectives
 
@@ -54,7 +58,7 @@ caching patterns with the same learning outcomes:
 ## Prerequisites
 
 - **Docker Desktop** installed and running (includes Docker Compose)
-- Basic familiarity with one of: C++, C#, or Java
+- Basic familiarity with one of: C++, C#, Java, Python, or Go
 - No cloud account required -- everything runs locally via Docker
 
 ## Architecture
@@ -101,6 +105,14 @@ student application implements caching patterns in their chosen language.
 │   ├── Dockerfile                     # JDK 21 build environment
 │   └── src/main/java/com/lab/
 │       └── CacheLab.java             # Caching exercises (Java)
+├── python/
+│   ├── Dockerfile                     # Python 3.13 image (redis-py + requests)
+│   └── cache_lab.py                   # Caching exercises (Python)
+├── go/
+│   ├── go.mod                         # Go module (go-redis)
+│   ├── go.sum                         # Module checksums
+│   ├── Dockerfile                     # Go 1.27 build environment
+│   └── main.go                        # Caching exercises (Go)
 └── scripts/
     └── seed-database.sh               # Verify backend data
 ```
@@ -167,6 +179,8 @@ locally built Docker images.
 | C++ build fails with missing headers | Dockerfile dependencies | Rebuild with `docker compose --profile cpp build --no-cache` |
 | C# restore fails | NuGet connectivity | Check internet connection, rebuild the container |
 | Java `mvn` fails | Maven dependency download | Check internet connection, rebuild the container |
+| Python `pip install` fails | PyPI connectivity | Check internet connection, rebuild the container |
+| Go `go mod download` fails | Go module proxy connectivity | Check internet connection, rebuild the container |
 | `CONFIG SET` returns error | Redis `maxmemory` syntax | Use bytes: `CONFIG SET maxmemory 1048576` or shorthand `1mb` |
 | Eviction not happening | `maxmemory-policy noeviction` | Run `CONFIG SET maxmemory-policy allkeys-lru` first |
 
@@ -220,25 +234,7 @@ entries to the backend later. Fastest writes but risks data loss.
 
 ### Caching Pattern Decision Guide
 
-```text
-                    ┌─────────────────────┐
-                    │ Are reads or writes  │
-                    │    more frequent?    │
-                    └──────────┬──────────┘
-                   ┌───────────┴───────────┐
-                   ▼                       ▼
-              Read-Heavy              Write-Heavy
-                   │                       │
-           ┌───────┴───────┐       ┌───────┴───────┐
-           │ Need simplest │       │ Can tolerate   │
-           │ implementation?│      │ data loss?     │
-           └───┬───────┬───┘       └───┬───────┬───┘
-               ▼       ▼               ▼       ▼
-             Yes      No             Yes      No
-               │       │               │       │
-               ▼       ▼               ▼       ▼
-          Cache-Aside  Read-Through  Write-Back  Write-Through
-```
+![Decision tree: read-heavy traffic picks Cache-Aside if you need the simplest implementation, otherwise Read-Through; write-heavy traffic picks Write-Back if you can tolerate data loss, otherwise Write-Through](diagrams/lab11-decision-guide.svg)
 
 ## How This Relates to Scalable Systems Design
 

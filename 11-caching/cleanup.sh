@@ -8,10 +8,10 @@ echo "=== Lab 11: Cleanup ==="
 echo ""
 
 echo "Stopping all containers..."
-docker compose --profile cpp --profile csharp --profile java down -v 2>/dev/null || true
+docker compose --profile cpp --profile csharp --profile java --profile python --profile go down -v 2>/dev/null || true
 
 echo "Removing locally built images..."
-docker compose --profile cpp --profile csharp --profile java down --rmi local 2>/dev/null || true
+docker compose --profile cpp --profile csharp --profile java --profile python --profile go down --rmi local 2>/dev/null || true
 
 echo ""
 echo "Cleanup complete. All containers, volumes, and images removed."

@@ -50,21 +50,23 @@ Docker Compose version v2.x.x
 
 ### Choose Your Language
 
-Pick one language for the exercises. You do not need C++, C#, and Java
-installed locally -- everything runs inside Docker containers.
+Pick one language for the exercises. You do not need C++, C#, Java, Python,
+or Go installed locally -- everything runs inside Docker containers.
 
 | Language | Run Command |
 | --- | --- |
 | C++ | `docker compose --profile cpp up --build` |
 | C# | `docker compose --profile csharp up --build` |
 | Java | `docker compose --profile java up --build` |
+| Python | `docker compose --profile python up --build` |
+| Go | `docker compose --profile go up --build` |
 
 ### Prior Knowledge
 
 - Basic understanding of key-value stores (similar to a dictionary or
   hash map)
 - Familiarity with HTTP GET/PUT requests
-- Basic experience with one of C++, C#, or Java
+- Basic experience with one of C++, C#, Java, Python, or Go
 
 ## Quick Start
 
@@ -175,6 +177,8 @@ cache-aside exercise (Exercise 1):
 | C++ | `cpp\cache_lab.cpp` |
 | C# | `csharp\CacheLab.cs` |
 | Java | `java\src\main\java\com\lab\CacheLab.java` |
+| Python | `python\cache_lab.py` |
+| Go | `go\main.go` |
 
 The code implements `get_product(id)` (or `GetProduct`/`getProduct`):
 
@@ -192,6 +196,8 @@ Start your chosen language container:
 docker compose --profile cpp up --build
 docker compose --profile csharp up --build
 docker compose --profile java up --build
+docker compose --profile python up --build
+docker compose --profile go up --build
 ```
 
 Watch the output. The program fetches product 1 twice:

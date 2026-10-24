@@ -9,11 +9,11 @@ Write-Host "=== Lab 11: Cleanup ===" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Stopping all containers..."
-docker compose --profile cpp --profile csharp --profile java down -v 2>$null
+docker compose --profile cpp --profile csharp --profile java --profile python --profile go down -v 2>$null
 if ($LASTEXITCODE -ne 0) { Write-Host "  (no containers were running)" }
 
 Write-Host "Removing locally built images..."
-docker compose --profile cpp --profile csharp --profile java down --rmi local 2>$null
+docker compose --profile cpp --profile csharp --profile java --profile python --profile go down --rmi local 2>$null
 if ($LASTEXITCODE -ne 0) { Write-Host "  (no local images to remove)" }
 
 Write-Host ""
