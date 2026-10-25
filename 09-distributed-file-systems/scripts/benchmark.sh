@@ -65,7 +65,7 @@ export AWS_DEFAULT_REGION=us-east-1
 
 # --- MinIO: Timed Upload ---
 echo "--- MinIO: Timed Upload (256 MB file) ---"
-dd if=/dev/urandom of=/tmp/bench-256m.bin bs=1m count=256 2>/dev/null
+dd if=/dev/urandom of=/tmp/bench-256m.bin bs=1M count=256 2>/dev/null
 
 aws --endpoint-url http://minio-server:9000 \
     s3 mb s3://benchmark-test 2>/dev/null || true
