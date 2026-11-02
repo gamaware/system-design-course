@@ -99,6 +99,10 @@ docker compose version
 The script builds and starts two containers: Redis (cache) and the backend
 (simulated database). It verifies both are healthy before continuing.
 
+The backend is published on IPv4 loopback (`127.0.0.1:5050`). Use this address
+for requests from Windows: `localhost` can resolve to IPv6 (`::1`) first,
+causing connection delays or health check timeouts on an IPv4-only port.
+
 ### Step 1.3: Verify Redis is running
 
 ```powershell
@@ -115,7 +119,7 @@ PONG
 
 ```powershell
 $start = Get-Date
-$response = Invoke-RestMethod -Uri "http://localhost:5050/products/1"
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:5050/products/1"
 $elapsed = (Get-Date) - $start
 $response | ConvertTo-Json
 Write-Host "Elapsed: $($elapsed.TotalMilliseconds)ms"

@@ -180,6 +180,7 @@ locally built Docker images.
 | `port 6379 already in use` | Another Redis instance running | Stop the other instance or change the port in docker-compose.yml |
 | `port 5050 already in use` | Another service on port 5050 | Stop the conflicting service or change the port in docker-compose.yml |
 | Backend returns 500ms for every request | This is intentional | The 500ms delay simulates a slow database |
+| Windows setup times out although containers are healthy | `localhost` can try IPv6 before the IPv4-only published port | Use `127.0.0.1:5050` for host requests; see [Windows instructions](LAB-WINDOWS.md#step-12-start-the-environment) |
 | Redis `READONLY` error | Connected to a replica | Ensure you connect to the primary (default setup has one instance) |
 | C++ build fails with missing headers | Dockerfile dependencies | Rebuild with `docker compose --profile cpp build --no-cache` |
 | C# restore fails | NuGet connectivity | Check internet connection, rebuild the container |

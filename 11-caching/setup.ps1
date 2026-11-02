@@ -5,6 +5,10 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Set-Location $ScriptDir
 
+# Match the IPv4 loopback binding in docker-compose.yml. On Windows, localhost
+# can try ::1 first and exhaust the health check timeout before falling back.
+$BackendBaseUrl = "http://127.0.0.1:5050"
+
 Write-Host "=== Lab 11: Caching Patterns with Redis ===" -ForegroundColor Cyan
 Write-Host ""
 
@@ -55,7 +59,7 @@ for ($i = 1; $i -le $maxAttempts; $i++) {
     } catch {}
 
     try {
-        $response = Invoke-WebRequest -Uri "http://localhost:5050/health" -UseBasicParsing -TimeoutSec 2 2>$null
+        $response = Invoke-WebRequest -Uri "$BackendBaseUrl/health" -UseBasicParsing -TimeoutSec 2 2>$null
         if ($response.StatusCode -eq 200) { $backendOk = $true }
     } catch {}
 
@@ -79,7 +83,7 @@ Write-Host ""
 Write-Host "Verifying backend data..."
 foreach ($id in @(1, 50, 100)) {
     try {
-        $response = Invoke-WebRequest -Uri "http://localhost:5050/products/$id" -UseBasicParsing -TimeoutSec 5
+        $response = Invoke-WebRequest -Uri "$BackendBaseUrl/products/$id" -UseBasicParsing -TimeoutSec 5
         if ($response.StatusCode -ne 200) {
             Write-Host "ERROR: Backend returned $($response.StatusCode) for product $id" -ForegroundColor Red
             exit 1
