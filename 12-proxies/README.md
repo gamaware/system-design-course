@@ -123,8 +123,10 @@ full 8-task walkthrough.
 ./cleanup.sh
 ```
 
-The cleanup script stops and removes all containers, the three networks, the locally built image, and the
-generated `certs/` directory. Verify with `docker ps -a --filter name=lab12-`.
+The cleanup script stops and removes all containers, the three networks, the two locally built service images,
+and the generated `certs/` directory. Verify with `docker ps -a --filter name=lab12-`. The base images pulled from
+Docker Hub (about 1.4 GB, most of it `nicolaka/netshoot`) are kept for the next run; remove them with `docker rmi`
+if you need the space.
 
 ## Troubleshooting
 
@@ -138,6 +140,7 @@ generated `certs/` directory. Verify with `docker ps -a --filter name=lab12-`.
 | Every request returns `429` | The bucket for that key is still full | Wait two seconds; each key refills at 2 requests per second |
 | `X-Cache-Status` never shows `HIT` | Requests sent to `/users/` instead of `/users/report` | Only `/users/report` is cached |
 | `tshark` prints nothing | The request was sent before the capture started | Start the capture first, then send the request within 15 seconds |
+| The Squid log is missing the request you just sent | `docker logs` copies Squid's log file about once per second | Wait two seconds and run the command again |
 | `cat /var/log/nginx/access.log` in the proxy never ends | The file is a link to the container's stdout | Read the log with `docker logs lab12-proxy` instead |
 | Changes to `nginx/reverse-proxy.conf` have no effect | nginx reads its configuration at start | `docker exec lab12-proxy nginx -t && docker exec lab12-proxy nginx -s reload` |
 
