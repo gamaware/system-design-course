@@ -12,7 +12,7 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-echo "Stopping and removing containers, networks, volumes and the backend image..."
+echo "Stopping and removing containers, networks, volumes and the backend images..."
 docker compose down -v --rmi local --remove-orphans 2>/dev/null || true
 
 # Remove anything left behind if the compose project was renamed or edited.

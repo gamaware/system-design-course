@@ -16,7 +16,7 @@ if ! command -v curl &> /dev/null; then
     exit 1
 fi
 
-printf '%-4s %-14s %10s   %s\n' "#" "X-Cache-Status" "time (ms)" "generated_at (by the service)"
+printf '%-4s %-14s %10s   %s\n' "#" "X-Cache-Status" "time (ms)" "generated_at (UTC, by the service)"
 for ((i = 1; i <= REQUESTS; i++)); do
     seconds=$(curl -s --cacert "$LAB_DIR/certs/proxy.crt" -D "$HEADERS" -o "$BODY" \
         -w '%{time_total}' "$URL")

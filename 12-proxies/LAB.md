@@ -25,13 +25,13 @@ appears, not the exact number.
 
 - **Docker Desktop** installed and running
 - **curl** and **openssl** on your machine (both ship with macOS, Linux, and Git for Windows)
-- A bash terminal (macOS Terminal, Linux shell, Git Bash, or WSL)
+- A bash or zsh terminal (macOS Terminal uses zsh by default; Linux shell, Git Bash, or WSL also work)
 - Lab 03 (load balancing) and Lab 06 (HTTPS) are useful background
 
 > **Git Bash on Windows:** Git Bash rewrites any argument that starts with `/` into a Windows path, which breaks
 > commands such as `docker exec lab12-workstation curl --cacert /certs/proxy.crt ...`. Run
 > `export MSYS_NO_PATHCONV=1` once in each new terminal before you start. `setup.sh` already does it for its own
-> commands.
+> commands. If `docker exec -it` answers `the input device is not a TTY`, put `winpty` in front of it.
 
 ### Quick Start
 
@@ -131,7 +131,7 @@ HTTP/2 200
 server: nginx
 date: Sat, 17 Oct 2026 05:44:29 GMT
 content-type: application/json
-content-length: 247
+content-length: 243
 
 {
   "service": "users-service",
@@ -218,9 +218,9 @@ a path prefix and `proxy_pass` names the upstream that answers it. Paths that ma
 ### Step 2.2: Send requests to each route
 
 ```bash
-for path in /users/ /users/profile/42 /payments/; do
-    printf '%-20s ' "$path"
-    curl -s --cacert certs/proxy.crt -o /dev/null -w '%{http_code}\n' "https://localhost:8443$path"
+for route in /users/ /users/profile/42 /payments/; do
+    printf '%-20s ' "$route"
+    curl -s --cacert certs/proxy.crt -o /dev/null -w '%{http_code}\n' "https://localhost:8443$route"
 done
 curl -s --cacert certs/proxy.crt https://localhost:8443/users/profile/42 | grep -E '"service"|"path_seen"'
 curl -s --cacert certs/proxy.crt https://localhost:8443/payments/
@@ -314,23 +314,34 @@ Expected output:
 
 ```bash
 echo | openssl s_client -connect localhost:8443 -servername localhost 2>/dev/null \
-    | grep -E '^subject|^issuer|Protocol  :|Cipher    :'
+    | grep -E '^subject|^issuer|Cipher is|Protocol *:'
 openssl x509 -in certs/proxy.crt -noout -dates
 openssl x509 -in certs/proxy.crt -noout -text | grep -A1 'Subject Alternative Name'
 ```
 
-Expected output on macOS (LibreSSL). With OpenSSL 3 on Linux or WSL the cipher, the `subject=` format, and the
-wording of curl errors (for example `self-signed certificate`) differ slightly:
+Expected output with the `openssl` that ships with macOS (LibreSSL). LibreSSL names the protocol family
+`TLSv1/SSLv3` on the `Cipher is` line; the `Protocol` line below it shows the version actually negotiated:
 
 ```text
 subject=/O=Lab 12 Proxies/CN=localhost
 issuer=/O=Lab 12 Proxies/CN=localhost
+New, TLSv1/SSLv3, Cipher is AEAD-CHACHA20-POLY1305-SHA256
     Protocol  : TLSv1.3
-    Cipher    : AEAD-CHACHA20-POLY1305-SHA256
 notBefore=Oct 17 05:44:14 2026 GMT
 notAfter=Nov 16 05:44:14 2026 GMT
             X509v3 Subject Alternative Name:
                 DNS:localhost, DNS:shop.example.test, IP Address:127.0.0.1
+```
+
+With OpenSSL 3 or later (Linux, WSL, Git Bash, or `openssl` installed with Homebrew) the first lines look like
+this instead, and curl words its errors slightly differently (for example `self-signed certificate`). OpenSSL 3.0
+prints the `Cipher is` line but not the `Protocol:` line; the `New, TLSv1.3` part already names the version:
+
+```text
+subject=O=Lab 12 Proxies, CN=localhost
+issuer=O=Lab 12 Proxies, CN=localhost
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
 ```
 
 `subject` and `issuer` are the same: the certificate is self-signed. `setup.sh` generated it with `openssl req
@@ -382,6 +393,9 @@ Expected output in the second terminal:
 ...
 ```
 
+tshark also prints `Capturing on 'any'`, a harmless warning that promiscuous mode is not supported on the `any`
+device, and `N packets captured` when it stops.
+
 All a network observer learns is the server name in the `Client Hello` (SNI) and the size of each record. The
 path, the headers, and the marker travel as encrypted `Application Data`.
 
@@ -427,6 +441,8 @@ Plain-text lines on the service hop that carry the marker:
   GET / HTTP/1.1
   x-lab-marker: confidential-order-4111
 ```
+
+The packet counts can differ by a few on your machine; the `Marker found` column is what matters.
 
 > **Question:** What do you gain by terminating TLS at the proxy instead of in each service? What do you give up?
 >
@@ -475,10 +491,10 @@ Expected output:
 Expected output:
 
 ```text
-#    X-Cache-Status  time (ms)   generated_at (by the service)
+#    X-Cache-Status  time (ms)   generated_at (UTC, by the service)
 1    MISS               1510.0   05:44:50.926
 2    HIT                   5.7   05:44:50.926
-3    HIT                  5.4   05:44:50.926
+3    HIT                   5.4   05:44:50.926
 4    HIT                   4.8   05:44:50.926
 5    HIT                   4.6   05:44:50.926
 ```
@@ -513,7 +529,7 @@ sleep 21
 Expected output:
 
 ```text
-#    X-Cache-Status  time (ms)   generated_at (by the service)
+#    X-Cache-Status  time (ms)   generated_at (UTC, by the service)
 1    EXPIRED            1509.3   05:45:13.774
 2    HIT                   5.4   05:45:13.774
 ```
@@ -533,6 +549,7 @@ Expected output:
 KEY: http://users_service/report
 HTTP/1.0 200 OK
 Server: PythonBackend/1.0 Python/3.15.0
+Date: Sat, 17 Oct 2026 05:45:13 GMT
 ```
 
 The file name is the MD5 hash of the cache key, and `levels=1:2` spreads files across subdirectories made from
@@ -651,7 +668,7 @@ for i in 1 2 3 4 5; do
     curl -s -o /dev/null --cacert certs/proxy.crt -H "X-API-Key: $API_KEY" https://localhost:8443/orders/
 done
 curl -si --cacert certs/proxy.crt -H "X-API-Key: $API_KEY" https://localhost:8443/orders/
-docker logs lab12-proxy 2>&1 | grep -m1 'limiting requests'
+docker logs lab12-proxy 2>&1 | grep 'limiting requests' | tail -1
 ```
 
 Expected output:
@@ -871,9 +888,11 @@ for i in 1 2 3; do curl -sS -o /dev/null -x http://forward-proxy:3128 http://new
 exit
 ```
 
-Back on your machine, read the Squid log:
+Back on your machine, read the Squid log. The `sleep 2` gives `docker logs` time to show the newest lines: the
+image copies Squid's log file to the container output about once per second.
 
 ```bash
+sleep 2
 docker logs lab12-forward-proxy 2>&1 | grep 'client=' | tail -4
 ```
 
@@ -908,11 +927,13 @@ The TCP connection came from Squid (`172.18.0.3`). Squid added `X-Forwarded-For`
 
 ### Step 7.6: HTTPS through a forward proxy
 
-From your machine (not inside the workstation shell), request an HTTPS page through Squid:
+From your machine (not inside the workstation shell), request an HTTPS page through Squid. As in Step 7.4,
+the `sleep 2` lets the newest Squid line reach `docker logs`.
 
 ```bash
 docker exec lab12-workstation curl -sS --cacert /certs/public-site.crt \
     -x http://forward-proxy:3128 https://news.example.test/private/salary-report
+sleep 2
 docker logs lab12-forward-proxy 2>&1 | grep CONNECT | tail -1
 docker logs lab12-public-site 2>/dev/null | grep salary | tail -1
 ```
@@ -995,7 +1016,10 @@ because `squid.conf` lists it in both `Safe_ports` and `SSL_ports`.
 
 ### Step 8.2: Follow the request through each log
 
+As in Steps 7.4 and 7.6, the `sleep 2` lets the newest Squid line reach `docker logs`.
+
 ```bash
+sleep 2
 docker logs lab12-forward-proxy 2>&1 | grep 'shop.example.test' | tail -1
 docker logs lab12-proxy 2>/dev/null | grep 'GET /users/' | tail -1
 docker logs lab12-users 2>&1 | tail -1
@@ -1009,9 +1033,10 @@ Expected output:
 users-service GET / client=172.19.0.4 xff=172.18.0.3 proto=https host=shop.example.test
 ```
 
-Fill in what each hop knows:
+Fill in what each hop knows. Use the addresses from your own logs: Docker assigns them in start order, so they
+may not match the ones shown here.
 
-| Hop | Sees the workstation (`172.20.0.3`)? | Sees the URL path? | Connection comes from |
+| Hop | Sees the workstation (`client=` in the Squid log)? | Sees the URL path? | Connection comes from |
 | --- | --- | --- | --- |
 | Squid (forward) | Yes | No, only `shop.example.test:8443` | the workstation |
 | nginx (reverse) | No | Yes, after TLS termination | Squid (`172.18.0.3`) |
@@ -1064,7 +1089,7 @@ Expected output:
 ```text
 === Lab 12: Cleanup ===
 
-Stopping and removing containers, networks, volumes and the backend image...
+Stopping and removing containers, networks, volumes and the backend images...
 Removing generated TLS certificates...
 
 Cleanup complete. Verify with: docker ps -a --filter name=lab12-
