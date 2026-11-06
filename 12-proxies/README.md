@@ -140,7 +140,7 @@ if you need the space.
 | Every request returns `429` | The bucket for that key is still full | Wait two seconds; each key refills at 2 requests per second |
 | `X-Cache-Status` never shows `HIT` | Requests sent to `/users/` instead of `/users/report` | Only `/users/report` is cached |
 | `tshark` prints nothing | The request was sent before the capture started | Start the capture first, then send the request within 15 seconds |
-| The Squid log is missing the request you just sent | `docker logs` copies Squid's log file about once per second | Wait two seconds and run the command again |
+| The Squid log is missing the request you just sent | The image's entrypoint copies Squid's log file to the container output (what `docker logs` shows) about once per second | Wait two seconds and run the command again |
 | `cat /var/log/nginx/access.log` in the proxy never ends | The file is a link to the container's stdout | Read the log with `docker logs lab12-proxy` instead |
 | Changes to `nginx/reverse-proxy.conf` have no effect | nginx reads its configuration at start | `docker exec lab12-proxy nginx -t && docker exec lab12-proxy nginx -s reload` |
 
