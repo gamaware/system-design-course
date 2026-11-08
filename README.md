@@ -36,6 +36,7 @@ due. Use this table to find the folder for each Canvas item.
 | [15](./15-serverless) | Módulo 13: Serverless | 🧪 Lab 11 |
 | [16](./16-artificial-intelligence) | Módulo 16: Inteligencia Artificial | Coming soon |
 | [17](./17-containers) | Módulo 15: Contenedores | 🧪 Lab 12 |
+| [18](./18-game-server-hosting) | Módulo 15: Contenedores | 🎮 In-class activity |
 
 ### 📚 Course Modules
 
@@ -225,6 +226,22 @@ Students learn to:
 **Key Concepts**: namespaces, cgroups, image layers, multi-stage builds, registries and digests, control plane,
 kubelet, Deployment, ReplicaSet, Service, readiness probes, self-healing, HorizontalPodAutoscaler, rolling update,
 rollback
+
+#### [18 — Game Server Hosting](./18-game-server-hosting)
+
+In-class activity: the whole group races in a SuperTuxKart arena that runs on two Amazon EKS clusters in two
+Regions, with Open Match for matchmaking and Agones for the game servers. Students learn to:
+
+- Follow a matchmaking ticket from the client through the Open Match Frontend, Match Function and Director
+- Explain the Agones GameServer lifecycle, Fleets, FleetAutoscalers and multi-cluster allocation
+- Measure the time from ticket to match and observe a game server failure from the player's side
+- Connect the design to load balancing, Global Accelerator, multi-Region availability, queues, security and cost
+
+**Technologies**: Amazon EKS, Agones, Open Match, AWS Global Accelerator (standard and custom routing), VPC peering,
+cert-manager, Docker, SuperTuxKart
+
+**Key Concepts**: matchmaking, tickets and assignments, match functions, GameServer allocation, Fleets,
+FleetAutoscaler, multi-cluster allocation, UDP routing to a specific server, mutual TLS
 
 ### 👨🏫 Instructor
 

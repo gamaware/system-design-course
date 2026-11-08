@@ -1581,5 +1581,65 @@
         ]
       }
     ]
+  },
+  "18-game-server-hosting/diagrams/lab18-architecture.drawio": {
+    "steps": [
+      {
+        "badge": "badge-1",
+        "edges": [
+          "e-student-ga"
+        ]
+      },
+      {
+        "badge": "badge-2",
+        "edges": [
+          "e-ga-nlb",
+          "e-nlb-fe",
+          "e-fe-store"
+        ]
+      },
+      {
+        "badge": "badge-3",
+        "edges": [
+          "e-store-mmf",
+          "e-mmf-be"
+        ]
+      },
+      {
+        "badge": "badge-4",
+        "edges": [
+          "e-be-dir"
+        ]
+      },
+      {
+        "badge": "badge-5",
+        "edges": [
+          "e-dir-alloc1",
+          "e-alloc1-alloc2"
+        ]
+      },
+      {
+        "badge": "badge-6",
+        "edges": [
+          "e-alloc1-fleet1",
+          "e-alloc2-fleet2"
+        ]
+      },
+      {
+        "badge": "badge-7",
+        "edges": [
+          "e-student-gacr",
+          "e-gacr-fleet1",
+          "e-gacr-fleet2"
+        ]
+      },
+      {
+        "badge": "badge-8",
+        "glow": [
+          "fleet1-box",
+          "fleet2-box"
+        ]
+      }
+    ]
   }
 }
