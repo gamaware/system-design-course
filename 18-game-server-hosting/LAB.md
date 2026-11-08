@@ -407,6 +407,8 @@ docker rmi joalgama32179/scalers-kart:1.0
 rm -rf ~/scalers-kart
 ```
 
+On Windows PowerShell, delete the folder with `Remove-Item -Recurse -Force "$HOME\scalers-kart"`.
+
 Verify that nothing remains:
 
 ```bash
@@ -427,7 +429,11 @@ REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 
 The arena is the AWS guidance
 [Game Server Hosting on Amazon EKS with Agones and Open Match](https://github.com/aws-solutions-library-samples/guidance-for-game-server-hosting-using-agones-and-open-match-on-amazon-eks),
-deployed in two Regions:
+deployed in two Regions.
+
+> **Cost:** the arena bills by the hour even with no players (two EKS control planes, about 18 nodes, NAT
+> gateways, three accelerators and load balancers), on the order of a few US dollars per hour. Deploy it the
+> morning of the class and destroy it the same day.
 
 1. Deploy the clusters, the in-cluster components and the extra-cluster resources (VPC peering, ECR,
    Global Accelerator) with the three Terraform stages of the guidance README, in order.

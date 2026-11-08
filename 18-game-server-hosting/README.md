@@ -28,7 +28,7 @@ instructions in **[LAB.md](LAB.md)**.
 | Environment | Requirements | Setup |
 | --- | --- | --- |
 | Student laptop | Docker Desktop, a browser, the frontend address and certificate bundle shared in Canvas | `docker run` (see [Quick Start](#quick-start)) |
-| Instructor (AWS) | An AWS account, Terraform, kubectl, Helm, Go, Docker | The guidance deployment steps (see [Instructor Notes](LAB.md#instructor-notes)) |
+| Instructor (AWS) | An AWS account and the tools of the guidance prerequisites (AWS CLI, Terraform, kubectl, Helm, jq, gettext, Go, Docker, OpenSSL); that list is authoritative | The guidance deployment steps (see [Instructor Notes](LAB.md#instructor-notes)) |
 
 ## Learning Objectives
 
@@ -149,6 +149,8 @@ delete the certificate bundle:
 docker rmi joalgama32179/scalers-kart:1.0
 rm -rf certs
 ```
+
+On Windows PowerShell, delete the folder with `Remove-Item -Recurse -Force .\certs`.
 
 The instructor destroys both clusters, the accelerators and the VPC peering after class, so the frontend
 address and the certificates stop working.
