@@ -21,7 +21,8 @@ happens before class: you pull and start the client in the classroom.
 1. The instructor confirms the tag in class. If it changed, use the new tag in the commands of Task 1 and
    Task 2 before the races.
 2. The whole group searches for a match at the same time. Open Match groups **four players** with a similar
-   latency into one race.
+   latency into one race. If you are left waiting because the group is not a multiple of four, stay in the
+   queue: players who finish a race search again, so everyone races.
 3. During the races, the instructor projects the cluster from the terminal, deletes a game server and scales
    a Fleet so that you can see the effect from both sides.
 4. The class closes with the design questions of Task 5.
