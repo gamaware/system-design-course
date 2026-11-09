@@ -1587,54 +1587,55 @@
       {
         "badge": "badge-1",
         "edges": [
-          "e-student-ga"
-        ]
-      },
-      {
-        "badge": "badge-2",
-        "edges": [
+          "e-omc-ga",
           "e-ga-nlb",
           "e-nlb-fe",
           "e-fe-store"
         ]
       },
       {
+        "badge": "badge-2",
+        "edges": [
+          "e-dir-be",
+          "e-be-mmf",
+          "e-mmf-store"
+        ]
+      },
+      {
         "badge": "badge-3",
         "edges": [
-          "e-store-mmf",
-          "e-mmf-be"
+          "e-dir-alloc1",
+          "e-alloc1-fleet1",
+          "e-alloc1-alloc2",
+          "e-alloc2-fleet2"
         ]
       },
       {
         "badge": "badge-4",
         "edges": [
-          "e-be-dir"
+          "e-dir-be-assign"
         ]
       },
       {
         "badge": "badge-5",
         "edges": [
-          "e-dir-alloc1",
-          "e-alloc1-alloc2"
+          "e-omc-ga-get"
+        ],
+        "glow": [
+          "fe-box"
         ]
       },
       {
         "badge": "badge-6",
         "edges": [
-          "e-alloc1-fleet1",
-          "e-alloc2-fleet2"
+          "e-stk-gacr1",
+          "e-gacr1-fleet1",
+          "e-stk-gacr2",
+          "e-gacr2-fleet2"
         ]
       },
       {
         "badge": "badge-7",
-        "edges": [
-          "e-student-gacr",
-          "e-gacr-fleet1",
-          "e-gacr-fleet2"
-        ]
-      },
-      {
-        "badge": "badge-8",
         "glow": [
           "fleet1-box",
           "fleet2-box"

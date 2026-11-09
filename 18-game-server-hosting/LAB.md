@@ -5,23 +5,34 @@
 
 ## How the Class Runs
 
-This lab runs live, with the whole group connected to the same arena:
+This lab runs live over two class sessions, with the whole group connected to the same arena. Nothing
+happens before class: you pull and start the client in the classroom.
 
-1. The instructor presents the architecture and shows the two EKS clusters running.
-2. The instructor publishes two things in Canvas: the **frontend address** (a Global Accelerator host name)
-   and a **certificate bundle** for the game client.
-3. Every student starts the game container on their laptop and searches for a match. Open Match groups
-   **four players** with a similar latency into one race.
-4. During the races, the instructor projects the cluster from the terminal, deletes a game server and scales
+### First Session: Architecture and Setup
+
+1. The instructor presents the architecture of the arena, and the class discusses it.
+2. The instructor confirms in class the **tag** of the **class image**, the client image built for the
+   current deployment, which is also published in Canvas. Each deployment gets its own tag.
+3. In class, every student pulls the class image, starts the game container on their laptop with one command
+   and checks that the client starts (Task 1, then Task 2 up to the configuration check of Step 2.2).
+
+### Second Session: Race and Design
+
+1. The instructor confirms the tag in class. If it changed, use the new tag in the commands of Task 1 and
+   Task 2 before the races.
+2. The whole group searches for a match at the same time. Open Match groups **four players** with a similar
+   latency into one race.
+3. During the races, the instructor projects the cluster from the terminal, deletes a game server and scales
    a Fleet so that you can see the effect from both sides.
-5. The class closes with the design questions of Task 5.
+4. The class closes with the design questions of Task 5.
 
 Work alone on your laptop, but talk to the classmates in your race: some observations compare what each
 player saw.
 
-The certificate bundle lets your client verify that it is talking to the matchmaker of this class (the CA
-certificate). Your client also sends its own key pair, but the Frontend does not check it: Task 5 asks you
-what that means. Do not share the bundle outside the class or upload it anywhere.
+The class image carries three things, all of them public: the CA certificate of the Open Match server, the
+frontend address, and the static IP addresses of the accelerators. The CA certificate lets your client verify
+that it talks to the matchmaker of this class. You receive no certificate of your own: the Frontend does not
+ask for one, and Task 5 asks you what that means.
 
 ## Prerequisites
 
@@ -29,6 +40,7 @@ what that means. Do not share the bundle outside the class or upload it anywhere
 - A modern web browser
 - Free local port **8080**
 - About 2 GB of free disk for the image
+- The **image tag** of the class, published in Canvas
 - A network that allows outbound TCP to port 50504 and outbound UDP. If the campus network blocks one of them,
   connect to a phone hotspot
 
@@ -39,8 +51,7 @@ shows it in your browser.
 
 ## Task 1: Prepare Your Laptop
 
-Do this task before the class, or at the start of it, so that the image download does not compete with the
-rest of the group.
+Do this task in class during the first session, after the instructor confirms the tag.
 
 ### Step 1.1: Check Docker and the port
 
@@ -72,35 +83,25 @@ Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue
 No output on Windows, or `port 8080 is free` on macOS and Linux, means you can use the port. If another
 program uses it, see [Troubleshooting](README.md#troubleshooting).
 
-### Step 1.2: Pull the image
+### Step 1.2: Pull the class image
+
+In class, replace `<tag>` with the tag that the instructor confirms (also published in Canvas):
 
 ```bash
-docker pull joalgama32179/scalers-kart:1.0
+docker pull joalgama32179/scalers-kart:<tag>
 ```
 
 The image works on Apple silicon and on Intel or AMD laptops. It contains the matchmaking client, the
-SuperTuxKart game and a small web interface. It contains no certificates and no addresses: you provide both
-when you start it.
+SuperTuxKart game and a small web interface, plus the public data of the current deployment: the CA certificate
+of the Open Match server, the frontend address and the static IP addresses of the accelerators. It contains no
+private key and no credential.
 
-> **Question:** Why is it a good idea that the public image contains no certificate or address, even though
-> that makes the `docker run` command longer?
+> **Question:** The class image is public on Docker Hub and contains the CA certificate and the addresses of
+> the arena. Why is it safe to publish them, and why does every deployment get a new tag instead of reusing
+> the same one?
 >
-> **Hint:** Think about who can download a public image, and what happens next semester when the arena runs
-> in a new account with new certificates.
-
-### Step 1.3: Place the certificate bundle
-
-Create a working folder, then download the bundle from Canvas and extract **every file** into a subfolder
-named `certs`:
-
-```bash
-mkdir -p ~/scalers-kart/certs
-cd ~/scalers-kart
-ls certs
-```
-
-The `ls` command must list the certificate files of the bundle: a CA certificate (`ca.crt` or
-`publicCA.cert`) and a client certificate with its key. Keep the original file names.
+> **Hint:** Think about what a CA certificate proves and who holds the matching private key, and about a
+> laptop that still has last week's image in its cache.
 
 ---
 
@@ -108,21 +109,11 @@ The `ls` command must list the certificate files of the bundle: a CA certificate
 
 ### Step 2.1: Start the container
 
-From the folder that contains `certs`, run the container with the frontend address from Canvas. Replace
-`<frontend-address>` with that host name and keep `:50504` at the end.
-
-macOS, Linux, WSL or Git Bash:
-
-```bash
-docker run --rm -p 127.0.0.1:8080:8080 -v "$PWD/certs:/certs:ro" \
-  -e FRONTEND=<frontend-address>:50504 joalgama32179/scalers-kart:1.0
-```
-
+Run the class image with the tag from Canvas. The same command works in macOS, Linux, WSL, Git Bash and
 Windows PowerShell:
 
-```powershell
-docker run --rm -p 127.0.0.1:8080:8080 -v "${PWD}/certs:/certs:ro" `
-  -e FRONTEND=<frontend-address>:50504 joalgama32179/scalers-kart:1.0
+```bash
+docker run --rm -p 127.0.0.1:8080:8080 joalgama32179/scalers-kart:<tag>
 ```
 
 Each part of the command has a purpose:
@@ -131,17 +122,24 @@ Each part of the command has a purpose:
 | --- | --- |
 | `--rm` | Deletes the container when it stops |
 | `-p 127.0.0.1:8080:8080` | Publishes the web interface on your laptop only, never on the campus network |
-| `-v "$PWD/certs:/certs:ro"` | Mounts the bundle read-only inside the container |
-| `-e FRONTEND=...` | Tells the client where the Open Match Frontend is |
+| `joalgama32179/scalers-kart:<tag>` | The class image of the current deployment, with the frontend address and the CA certificate inside |
 
 Leave this terminal open. Its log shows each step of the matchmaking; you stop the container with `Ctrl+C`.
 
 ### Step 2.2: Open the arena
 
-Open <http://localhost:8080>. The page checks your configuration first: if a certificate or the address is
-missing, it says which one. Choose a nickname and your team (Scalers 1 to 8), keep **Valores de la clase**
-for the latency, then start the search. With the class values every student sends the same latency, so the
-whole group lands in one pool and races fill faster.
+Open <http://localhost:8080>. The page checks your configuration first: if you started a tag without class
+data, it says **Falta configuración**.
+
+> **First session:** stop here. If the page opens without **Falta configuración**, the client starts on your
+> laptop. Stop the container with `Ctrl+C`; you search for a match in the second session.
+
+Choose a nickname and your team (Scalers 1 to 8), keep **Valores de la clase** for the latency, then press
+**Buscar partida**. With the class values every student sends the same latency, so the whole group lands in
+one pool and races fill faster.
+
+The game has sound. It starts with the **Buscar partida** click, because browsers play audio only after a
+click; the **Sonido** button mutes it and turns it back on.
 
 ### Step 2.3: Read the matchmaking timeline
 
@@ -155,7 +153,10 @@ active and then done:
 | Match formado | The Director fetched a match that contains your ticket |
 | Servidor asignado por Agones | Agones allocated a game server and the Director wrote its address in your ticket |
 | Conectando | SuperTuxKart connects over UDP to that server through Global Accelerator |
-| ¡A correr! | The race runs; the game appears on the page. The player with the crown in the lobby presses **Start race** |
+| ¡A correr! | The race runs; the game appears on the page. The player with the crown in the lobby presses **Empezar carrera** |
+
+When the track appears, click it so that the keyboard goes to the game. Drive with the arrow keys; `Space`
+uses an item, `N` fires the nitro and `V` drifts.
 
 Write down three values that the page shows: your **ticket ID**, the **assignment** (the address and port
 of your game server) once it arrives, and your **measured latency** to `us-east-1` and to `us-east-2`
@@ -171,8 +172,8 @@ of your game server) once it arrives, and your **measured latency** to `us-east-
 
 ## Task 3: Race and Measure
 
-Play at least **two races**. Before each race, note the time when you press search, and fill one row of the
-table when the race ends.
+Play at least **one race** (more if there is time). Before each race, note the time when you press search,
+and fill one row of the table when the race ends.
 
 ### Step 3.1: Time the matchmaking
 
@@ -304,7 +305,7 @@ Write down how many seconds the new servers took to reach `Ready`.
 ## Task 5: Design Questions
 
 Answer each question in three to six sentences, using what you observed. The class discusses them at the end
-of the session.
+of the second session.
 
 ### Step 5.1: Load balancing and proxies
 
@@ -365,9 +366,10 @@ of the session.
 >
 > **Hint:** Time from ticket to match, number of `Ready` servers per Region, and failed allocations.
 >
-> **Question:** The Director and the Agones allocators authenticate each other with mutual TLS, but the
-> Open Match Frontend accepts any client that reaches port 50504, certificate or not. What could an
-> attacker on the internet do with that, and what would you put in front of the Frontend to stop it?
+> **Question:** You joined the arena without any certificate of your own, and the Frontend still accepted
+> your tickets: it uses server-only TLS, while the Director and the Agones allocators authenticate each other
+> with mutual TLS. Anyone who reaches port 50504 can do what you did. What could an attacker on the internet
+> do with that, and what would you put in front of the Frontend to authenticate players?
 >
 > **Hint:** Flooding the pools with fake tickets delays every real match. Think of the game frontend and
 > API gateway pattern from the proxies lab, and of the authentication you used in the Keycloak lab.
@@ -382,9 +384,10 @@ of the session.
 
 ## Deliverable
 
-Submit one PDF named `ApellidoPaterno_ApellidoMaterno_Lab18.pdf` with:
+There is no written submission in Canvas: the activity is graded by attendance and participation in class.
+Keep these as notes for the discussion of Task 5:
 
-1. The **observation table** of Step 3.4, with at least two races.
+1. The **observation table** of Step 3.4, with at least one race.
 2. A **screenshot of the matchmaking timeline** at the moment the assignment arrives, showing your ticket ID
    and the assignment.
 3. A **screenshot of a race** in progress in your browser.
@@ -392,27 +395,24 @@ Submit one PDF named `ApellidoPaterno_ApellidoMaterno_Lab18.pdf` with:
    took to recover.
 5. Your answers to the **design questions** of Task 5, three to six sentences each.
 
-If your network did not let you play, write which step failed and the error the page showed, and answer
+If your network did not let you play, write which step failed and the error the page showed, and follow
 Tasks 4 and 5 from the projection and the discussion.
 
 ---
 
 ## Cleanup
 
-Stop the container with `Ctrl+C` in its terminal. Because of `--rm`, Docker deletes it. Then remove the image
-and the certificate bundle:
+Stop the container with `Ctrl+C` in its terminal. Because of `--rm`, Docker deletes it. Then remove every tag of
+the image you downloaded (each session can use a different tag):
 
 ```bash
-docker rmi joalgama32179/scalers-kart:1.0
-rm -rf ~/scalers-kart
+docker rmi $(docker images joalgama32179/scalers-kart -q | sort -u)
 ```
-
-On Windows PowerShell, delete the folder with `Remove-Item -Recurse -Force "$HOME\scalers-kart"`.
 
 Verify that nothing remains:
 
 ```bash
-docker ps -a --filter ancestor=joalgama32179/scalers-kart:1.0
+docker ps -a --filter ancestor=joalgama32179/scalers-kart
 docker images joalgama32179/scalers-kart
 ```
 
@@ -433,18 +433,23 @@ deployed in two Regions.
 
 > **Cost:** the arena bills by the hour even with no players (two EKS control planes, about 18 nodes, NAT
 > gateways, three accelerators and load balancers), on the order of a few US dollars per hour. Deploy it the
-> morning of the class and destroy it the same day.
+> morning of each session that needs it and destroy it the same day; every new deployment needs its own class
+> image and tag.
 
 1. Deploy the clusters, the in-cluster components and the extra-cluster resources (VPC peering, ECR,
    Global Accelerator) with the three Terraform stages of the guidance README, in order.
 2. Deploy the SuperTuxKart Fleets, the Match Function and the Director as the guidance describes in its
    SuperTuxKart section.
-3. Issue a client certificate for the game client from the cluster's cert-manager CA, and share in Canvas
-   only that client certificate, its key and the CA certificate. Never share the private key of the
-   Frontend server certificate.
-4. Share the `global_accelerator_address` output in Canvas as the frontend address.
+3. Build the class image for this deployment. The instructor builds it outside this repository, from the
+   source of the game client: the build reads the CA certificate of the Open Match server from the cluster,
+   and the frontend address and the static IP addresses of the three accelerators from the AWS API. It
+   checks a TLS 1.3 connection to the Frontend without a client certificate, then pushes the image to Docker
+   Hub for `amd64` and `arm64`. Use a new tag for every deployment, never `latest`, and never put a private
+   key in the image.
+4. Publish the tag in Canvas, and run four clients against the arena to confirm that a race starts. Students
+   need only that tag.
 5. After class, follow the **Clean Up Resources** section of the guidance to destroy both clusters, the
    accelerators and the VPC peering, and check that no load balancer or security group remains.
 
 This repository never stores AWS account IDs, Global Accelerator addresses, certificates or keys. They change
-in every deployment and belong in Canvas for the day of the class only.
+in every deployment and reach students only inside the class image whose tag the instructor publishes in Canvas.
