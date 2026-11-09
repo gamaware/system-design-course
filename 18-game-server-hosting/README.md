@@ -5,7 +5,7 @@
 ![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
-> **In Canvas:** this folder is an **in-class activity** in **Módulo 15: Contenedores**, played live during
+> **In Canvas:** this folder is an **in-class activity** in **Módulo 12: Contenedores**, played live during
 > class. You submit nothing in writing: the instructor grades attendance and participation. Full mapping:
 > [Canvas equivalence](../README.md#canvas-equivalence).
 
