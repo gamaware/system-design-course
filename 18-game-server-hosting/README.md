@@ -6,8 +6,8 @@
 ![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
 > **In Canvas:** this folder is an **in-class activity** in **Módulo 15: Contenedores**, played live during
-> class. There is no written submission: it is graded by attendance and participation. Full mapping: [Canvas
-> equivalence](../README.md#canvas-equivalence).
+> class. You submit nothing in writing: the instructor grades attendance and participation. Full mapping:
+> [Canvas equivalence](../README.md#canvas-equivalence).
 
 ## Overview
 
@@ -158,7 +158,7 @@ The lab consists of 5 tasks:
 | 4. Failure and Scale | Reliability | Watch the instructor delete a game server pod and scale a Fleet, and record what you saw |
 | 5. Design Questions | Reflection | Connect each part of the arena to a topic of the semester |
 
-**Deliverable:** none in Canvas; the activity is graded in class. Keep your observation table and answers as
+**Deliverable:** none in Canvas; the instructor grades the activity in class. Keep your observation table and answers as
 notes for the discussion. See the [Deliverable](LAB.md#deliverable) section of the lab.
 
 ## Cleanup

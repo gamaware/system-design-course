@@ -384,7 +384,7 @@ of the second session.
 
 ## Deliverable
 
-There is no written submission in Canvas: the activity is graded by attendance and participation in class.
+You submit nothing in Canvas: the instructor grades attendance and participation in class.
 Keep these as notes for the discussion of Task 5:
 
 1. The **observation table** of Step 3.4, with at least one race.
