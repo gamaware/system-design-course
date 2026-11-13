@@ -4,9 +4,8 @@
 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 
-> **In Canvas:** this folder is **🧪 Lab 10** in **Módulo 13: Sistema de Mensajería Distribuida**.
-> The repository numbers folders by topic, so "Lab 14" in these files and diagrams means this same
-> lab. Name your report `ApellidoPaterno_ApellidoMaterno_Lab10.pdf`. Full mapping: [Canvas
+> **In Canvas:** this folder belongs to **Módulo 13: Sistema de Mensajería Distribuida** and is
+> optional. It has no lab report in Canvas. Full mapping: [Canvas
 > equivalence](../README.md#canvas-equivalence).
 
 ## Overview
