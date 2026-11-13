@@ -4,9 +4,9 @@
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-%23326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
-> **In Canvas:** this folder is **🧪 Lab 12** in **Módulo 12: Contenedores**.
+> **In Canvas:** this folder is **🧪 Lab 10** in **Módulo 12: Contenedores**.
 > The repository numbers folders by topic, so "Lab 17" in these files and diagrams means this same
-> lab. Name your report `ApellidoPaterno_ApellidoMaterno_Lab12.pdf`. Full mapping: [Canvas
+> lab. Name your report `ApellidoPaterno_ApellidoMaterno_Lab10.pdf`. Full mapping: [Canvas
 > equivalence](../README.md#canvas-equivalence).
 
 ## Overview

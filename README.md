@@ -31,12 +31,12 @@ due. Use this table to find the folder for each Canvas item.
 | [10](./10-databases) | Módulo 9: Bases de Datos | 🧪 Lab 7 |
 | [11](./11-caching) | Módulo 10: Caché y CDN | 🧪 Lab 8 |
 | [12](./12-proxies) | Módulo 11: Proxies | 🧪 Lab 9 |
-| [13](./13-solutions-architecture) | Módulo 15: Arquitectura de Soluciones | Actividad 10 (in class) |
-| [14](./14-distributed-messaging) | Módulo 13: Sistema de Mensajería Distribuida | 🧪 Lab 10 |
-| [15](./15-serverless) | Módulo 14: Serverless | 🧪 Lab 11 |
+| [13](./13-solutions-architecture) | Módulo 14: Arquitectura de Soluciones | Actividad 10 (in class) |
+| [14](./14-distributed-messaging) | Módulo 13: Sistema de Mensajería Distribuida | Optional (no lab report) |
+| [15](./15-serverless) | Módulo 15: Serverless | 🧪 Lab 11 |
 | [16](./16-artificial-intelligence) | Módulo 16: Inteligencia Artificial | Coming soon |
-| [17](./17-containers) | Módulo 12: Contenedores | 🧪 Lab 12 |
-| [18](./18-game-server-hosting) | Módulo 12: Contenedores | 🎮 In-class activity |
+| [17](./17-containers) | Módulo 12: Contenedores | 🧪 Lab 10 |
+| [18](./18-game-server-hosting) | Módulo 12: Contenedores | 🎮 Actividad 9 (in class) |
 
 ### 📚 Course Modules
 

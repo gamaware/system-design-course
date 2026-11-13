@@ -383,7 +383,7 @@ slot 5, que lee analítica (fija).
 
 ---
 
-## Escenario 9 (Actividad 9). El DNS elige la región y el balanceador elige la instancia
+## Escenario 9 (Actividad 10). El DNS elige la región y el balanceador elige la instancia
 
 **Origen:** Lab 04, `lab04-dns-plus-load-balancer-multi-region.drawio`. Route 53 (latencia, TTL de 60 s) responde con el
 ALB de us-east-1 o el de eu-west-1. Cada ALB reparte entre su grupo de Auto Scaling, y si cae una región el DNS conmuta.
