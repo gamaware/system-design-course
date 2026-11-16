@@ -10,6 +10,9 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 10
+    groups:
+      github-actions-all:
+        patterns: ["*"]
 
   # Terraform providers
   - package-ecosystem: "terraform"
@@ -18,6 +21,9 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 7
+    groups:
+      terraform-all:
+        patterns: ["*"]
 
   # Python (CDK apps) — lab 01
   - package-ecosystem: "pip"
@@ -34,6 +40,9 @@ updates:
     groups:
       aws-cdk:
         patterns: ["aws-cdk-lib", "constructs"]
+      pip-all:
+        group-by: dependency-name
+        patterns: ["*"]
 
   # Node demo app — lab 01
   - package-ecosystem: "npm"
@@ -43,6 +52,9 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    groups:
+      npm-all:
+        patterns: ["*"]
 
   # Ruby demo app — lab 01 (Rails 8.1; PRs need manual review)
   - package-ecosystem: "bundler"
@@ -52,3 +64,6 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 3
+    groups:
+      bundler-all:
+        patterns: ["*"]
