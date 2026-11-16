@@ -13,6 +13,7 @@ updates:
     groups:
       github-actions-all:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Terraform providers
   - package-ecosystem: "terraform"
@@ -24,6 +25,7 @@ updates:
     groups:
       terraform-all:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Python (CDK apps) — lab 01
   - package-ecosystem: "pip"
@@ -41,8 +43,8 @@ updates:
       aws-cdk:
         patterns: ["aws-cdk-lib", "constructs"]
       pip-all:
-        group-by: dependency-name
         patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Node demo app — lab 01
   - package-ecosystem: "npm"
@@ -55,6 +57,7 @@ updates:
     groups:
       npm-all:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Ruby demo app — lab 01 (Rails 8.1; PRs need manual review)
   - package-ecosystem: "bundler"
@@ -67,3 +70,4 @@ updates:
     groups:
       bundler-all:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
