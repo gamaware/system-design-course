@@ -229,9 +229,9 @@ def exercise_eviction() -> None:
     # Reset stats to get a clean eviction count
     r.config_resetstat()
 
-    print("Inserting 200 products into cache...")
+    print("Inserting 2000 products into cache...")
     insert_errors = 0
-    for i in range(1, 201):
+    for i in range(1, 2001):
         product = {
             "id": i,
             "name": f"Bulk Product {i}",
@@ -255,7 +255,7 @@ def exercise_eviction() -> None:
     r.config_set("maxmemory-policy", "noeviction")
 
     # Clean up eviction keys
-    r.delete(*(f"evict:product:{i}" for i in range(1, 201)))
+    r.delete(*(f"evict:product:{i}" for i in range(1, 2001)))
     print()
 
 
